@@ -5,9 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * default Spring entry class
- * Jualakja
+ *
  * @author Dennis Thanner
- * markus
  * @since 0.0.1
  */
 @SpringBootApplication
