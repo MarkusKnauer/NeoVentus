@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * default Spring entry class
- *
+ * Jualakja
  * @author Dennis Thanner
  * @since 0.0.1
  */
