@@ -14,6 +14,13 @@ Ziel diese Projektes ist es, in einem anerkannten Softwareengineering-Prozess, e
 
 [Teamkalender](https://calendar.google.com/calendar/embed?src=olaemoefk157tamjupikrnrkt4%40group.calendar.google.com&ctz=Europe/Berlin)
 
+### Coding Guide Lines ###
+* EditorConfig aktivieren
+* File Header enthält Autoren und Versionierung mit Änderungen, angefangen bei Version 0.0.1
+* Ständige Entwicklung der Unittests
+* **TODO**: einheitlicher Klassenaufbau
+* Vor dem Commit alle UnitTest durchlaufen lassen
+
 ### Einrichtung Entwicklungsumgebung ###
 
 * Installation [IntelliJ Ultimate 2017](https://www.jetbrains.com/idea/download/) ([JetBrains Student](https://www.jetbrains.com/student/) Account nötig)

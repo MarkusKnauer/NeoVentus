@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * default Spring entry class
  *
  * @author Dennis Thanner
- * @since 0.0.1
+ * @version 0.0.1
  */
 @SpringBootApplication
 public class Application {
