@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.logging.Logger;
 
 /**
+ * unit test for checking on profile switch
+ *
  * @author Dennis Thanner
  * @version 0.0.1
  **/
@@ -19,7 +21,7 @@ public class TestSpringProfile extends AbstractTest {
 	@Test
 	public void testProfileDatabaseNameProperty() {
 		Logger.getAnonymousLogger().info(databaseName);
-		Assert.assertTrue(databaseName.equals("neoventustesting"));
+		Assert.assertTrue(databaseName.equals("NeoVentus_test"));
 	}
 	
 }
