@@ -15,8 +15,17 @@ Ziel diese Projektes ist es, in einem anerkannten Softwareengineering-Prozess, e
 [Teamkalender](https://calendar.google.com/calendar/embed?src=olaemoefk157tamjupikrnrkt4%40group.calendar.google.com&ctz=Europe/Berlin)
 
 ### Coding Guide Lines ###
-* EditorConfig aktivieren
-* File Header enthält Autoren und Versionierung mit Änderungen, angefangen bei Version 0.0.1
+* Settings -> Editor -> Code Style -> [x] Enable EditorConfig support
+* Settings -> Editor -> File and Code Templates -> Includes -> File Header: 
+```
+/**
+ * Class description
+ * 
+ * @author ${USER}
+ * @version 0.0.1
+ */
+```
+
 * Ständige Entwicklung der Unittests
 * **TODO**: einheitlicher Klassenaufbau
 * Vor dem Commit alle UnitTest durchlaufen lassen
@@ -31,6 +40,8 @@ Ziel diese Projektes ist es, in einem anerkannten Softwareengineering-Prozess, e
 * Zum Anzeigen des Projektexplorers Doppelklick auf den Projektnamen links oben
 * View *Maven Projects* öffnen (Doppel Shift, nach Maven Projects suchen)
 * Verzeichnis *neoventus/backend/src/main/java* als *Sources Root* markieren
+* Verzeichnis *neoventus/backend/src/test* als *Test Sources Root* 
+* Verzeichnis *neoventus/backend/src/main/resources* als *Resources Root* markieren
 * Maven Einstellungen: File -> Settings -> Build, Execution, Deployment -> Build Tools -> Maven 
 * Maven: [x] *Always update snapshots*
 * Maven/Importing: [x] *Import Maven projects automatically*
