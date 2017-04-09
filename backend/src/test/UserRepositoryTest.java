@@ -12,24 +12,23 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @version 0.0.1
  **/
 public class UserRepositoryTest extends AbstractTest {
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Test
 	public void testSearchByName() {
 		User u = new User();
 		u.setUsername("Test 1");
-		
 		userRepository.save(u);
-		
+
 		u = userRepository.findByUsername("Test 1");
-		
+
 		Assert.assertNotNull(u);
-		
+
 		Assert.assertTrue(u.getUsername().equals("Test 1"));
 	}
-	
+
 	/**
 	 * clear the data written
 	 */
@@ -37,5 +36,5 @@ public class UserRepositoryTest extends AbstractTest {
 	public void deleteAll() {
 		userRepository.deleteAll();
 	}
-	
+
 }
