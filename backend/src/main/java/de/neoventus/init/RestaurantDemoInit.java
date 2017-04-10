@@ -1,10 +1,12 @@
 package de.neoventus.init;
 
 import de.neoventus.persistence.entity.Desk;
+import de.neoventus.persistence.entity.OrderItem;
 import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.repository.DeskRepository;
 import de.neoventus.persistence.repository.MenuItemRepository;
+import de.neoventus.persistence.repository.OrderItemRepository;
 import de.neoventus.persistence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,7 +37,10 @@ public class RestaurantDemoInit {
 	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
+    @Autowired
+    private OrderItemRepository orderItemRepository;
+
+    @Autowired
 	private MenuItemRepository menuItemRepository;
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
@@ -51,6 +56,8 @@ public class RestaurantDemoInit {
 		generateDesks();
 		generateMenuItems();
 		generateUser();
+		setDeskToWaiter();
+		setOrder();
 	}
 
 	/**
@@ -184,6 +191,47 @@ public class RestaurantDemoInit {
 		userRepository.save(use);
 
 	}
+// DANGER! Here must be Parametres in use for dynamic assignment
+	private void setDeskToWaiter(){
+        User waiter = userRepository.findByUsername("Karl");
+        ArrayList<Desk> desks = new ArrayList<>();
+        desks.add(deskRepository.findByNumber(1));
+        desks.add(deskRepository.findByNumber(2));
+        desks.add(deskRepository.findByNumber(3));
+        desks.add(deskRepository.findByNumber(4));
+        waiter.setDesks(desks);
+        userRepository.save(waiter);
+        // Second Waiter
+        waiter = userRepository.findByUsername("Katja");
+        desks = new ArrayList<>();
+        desks.add(deskRepository.findByNumber(5));
+        desks.add(deskRepository.findByNumber(6));
+        desks.add(deskRepository.findByNumber(7));
+        waiter.setDesks(desks);
+        userRepository.save(waiter);
+        // Third Waiter
+        waiter = userRepository.findByUsername("Knut");
+        desks = new ArrayList<>();
+        desks.add(deskRepository.findByNumber(8));
+        desks.add(deskRepository.findByNumber(9));
+        desks.add(deskRepository.findByNumber(10));
+        waiter.setDesks(desks);
+        userRepository.save(waiter);
+    }
+// Demo-Order with Waiter: Katja, Desk 2 from Katja (Desk 6) and the Meal "kleiner Salat"
+    private void setOrder(){
+        logger.info("Init demo Order");
+        User waiter;
+        OrderItem order = new OrderItem();
+        order.setWaiter((waiter = userRepository.findByUsername("Katja")));
+        order.setDesk(waiter.getDesks().get(1));
+        order.setItem(menuItemRepository.findByName("kleiner Salat"));
+        order.setGuestWish("Ohne Zwiebeln");
+        orderItemRepository.save(order);
+
+    }
+
+
 
 	/**
 	 * clear before regenerate to allow changes
@@ -192,6 +240,7 @@ public class RestaurantDemoInit {
 		deskRepository.deleteAll();
 		menuItemRepository.deleteAll();
 		userRepository.deleteAll();
+		orderItemRepository.deleteAll();
 	}
 
 }

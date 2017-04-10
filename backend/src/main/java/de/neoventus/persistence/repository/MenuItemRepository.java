@@ -8,4 +8,12 @@ import org.springframework.data.repository.CrudRepository;
  * @version 0.0.1
  **/
 public interface MenuItemRepository extends CrudRepository<MenuItem, String> {
+
+    /**
+     * find menuitem by name
+     *
+     * @param name name to search for
+     * @return MenuItem
+     */
+    MenuItem findByName(String name);
 }
