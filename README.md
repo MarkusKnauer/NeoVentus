@@ -14,25 +14,6 @@ Ziel diese Projektes ist es, in einem anerkannten Softwareengineering-Prozess, e
 
 [Teamkalender](https://calendar.google.com/calendar/embed?src=olaemoefk157tamjupikrnrkt4%40group.calendar.google.com&ctz=Europe/Berlin)
 
-### Coding Guide Lines ###
-* Settings -> Editor -> Code Style -> [x] Enable EditorConfig support
-* Settings -> Editor -> File and Code Templates -> Includes -> File Header:
-```
-/**
- * Class description
- *
- * @author ${USER}
- * @version 0.0.1
- */
-```
-
-* Ständige Entwicklung der Unittests
-* einheitlicher Klassenaufbau
-* Vor dem Commit **alle UnitTest** durchlaufen lassen
-* Changelog kurz und knapp im Javadoc der Klasse führen
-* Standard Klassennamen und Variablennamen in CamelCase
-* Vor dem Commit Code Reformat zulassen und Imports optimieren
-
 ### Einrichtung Entwicklungsumgebung ###
 
 * Installation [IntelliJ Ultimate 2017](https://www.jetbrains.com/idea/download/) ([JetBrains Student](https://www.jetbrains.com/student/) Account nötig)
@@ -49,3 +30,23 @@ Ziel diese Projektes ist es, in einem anerkannten Softwareengineering-Prozess, e
 * Maven: [x] *Always update snapshots*
 * Maven/Importing: [x] *Import Maven projects automatically*
 * In View *Maven Projects* -> *Reimport All Maven Projects*. Nun sollten automatisch alle in der *pom.xml* deklarierten Dependencies heruntergeladen werden und im Ordner *External Libraries* auftauchen (Unter Windows entspricht das dem Ordner *C:\Users\User\.m2\repository*).
+
+### Coding Guide Lines ###
+* Settings -> Editor -> Code Style -> [x] Enable EditorConfig support
+* Settings -> Editor -> File and Code Templates -> Includes -> File Header:
+```
+/**
+ * Class description
+ *
+ * @author ${USER}
+ * @version 0.0.1
+ */
+```
+
+* Ständige Entwicklung der Unittests
+* einheitlicher Klassenaufbau
+* Vor dem Commit **alle UnitTest** durchlaufen lassen
+* Changelog kurz und knapp im Javadoc der Klasse führen
+* Standard Klassennamen (UpperCamelCase) und Variablennamen (lowerCamelCase)
+* Vor dem Commit Code Reformat zulassen und Imports optimieren
+* Sämtliche Namen, Kommentare und Javadoc auf Englisch
