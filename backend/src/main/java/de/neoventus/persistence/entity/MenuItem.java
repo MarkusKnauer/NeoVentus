@@ -6,15 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Dennis Thanner
- * @version 0.0.1
- * * ------------------------------------------------------------------
- * Change Date  : 09.04.2017
- * Change-Author: Julian Beck
- * Changes      : Add a full constructor, Variable: currency + print Sign
- * ------------------------------------------------------------------
+ * @author Dennis Thanner, Julian Beck
+ * @version 0.0.3
+ *
+ * Change Log:
+ * 0.0.3 code clean up
+ * 0.0.2 added full constructor, currency and print currency method
  **/
-
 public class MenuItem extends AbstractDocument {
 
 	@Indexed(unique = true)
@@ -30,10 +28,12 @@ public class MenuItem extends AbstractDocument {
 
 	private String currency;
 
-
+	public MenuItem() {
+		this.notices = new ArrayList<>();
+	}
 
 	// constructor
-	public void allSet(String name, Double price,String currency, String description, String mediaUrl, List<String> notices){
+	public void MenuItem(String name, Double price, String currency, String description, String mediaUrl, List<String> notices) {
 		this.name = name;
 		this.price = price;
 		this.currency = currency;
@@ -41,14 +41,16 @@ public class MenuItem extends AbstractDocument {
 		this.mediaUrl = mediaUrl;
 		this.notices = notices;
 	}
-	public MenuItem() {
-		this.notices = new ArrayList<>();
-	}
 
-	// Transform Text to Sign
-	public String printCurrencySign(String currency){
-		if(currency.equals("EUR")) return"€";
-		if(currency.equals("USD")) return"$";
+	/**
+	 * print currency sign
+	 *
+	 * @param currency currency to print sign for
+	 * @return currency sign string, defaults to currency name
+	 */
+	public String printCurrencySign(String currency) {
+		if (currency.equals("EUR")) return "€";
+		if (currency.equals("USD")) return "$";
 		return currency;
 	}
 
@@ -70,9 +72,13 @@ public class MenuItem extends AbstractDocument {
 		this.price = price;
 	}
 
-	public String getCurrency(){ return currency; }
+	public String getCurrency() {
+		return currency;
+	}
 
-	public void setCurrency(String currency) { this.currency = currency; }
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
 
 	public String getDescription() {
 		return description;
