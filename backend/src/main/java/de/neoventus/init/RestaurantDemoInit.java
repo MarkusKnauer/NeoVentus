@@ -1,9 +1,11 @@
 package de.neoventus.init;
 
 import de.neoventus.persistence.entity.Desk;
+import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.repository.DeskRepository;
 import de.neoventus.persistence.repository.MenuItemRepository;
+import de.neoventus.persistence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +18,11 @@ import java.util.logging.Logger;
  *
  * @author Dennis Thanner, Julian Beck
  * @version 0.0.1
+ * ---------------------------------------------------
+ * Change-Date: 10.04.2017
+ * Change-Author: Beck
+ * Change: new Methode generateUser
+ * ---------------------------------------------------
  */
 @Component
 public class RestaurantDemoInit {
@@ -24,6 +31,9 @@ public class RestaurantDemoInit {
 
 	@Autowired
 	private DeskRepository deskRepository;
+
+	@Autowired
+	private UserRepository userRepository;
 
 	@Autowired
 	private MenuItemRepository menuItemRepository;
@@ -40,6 +50,7 @@ public class RestaurantDemoInit {
 		clearData();
 		generateDesks();
 		generateMenuItems();
+		generateUser();
 	}
 
 	/**
@@ -105,6 +116,7 @@ public class RestaurantDemoInit {
 		mI = new MenuItem();
 		mI.MenuItem("Heiße Schokolade", 2.10, "EUR", "mit Sahne", "", new ArrayList<>());
 		menuItemRepository.save(mI);
+
 	}
 
 	/**
@@ -121,11 +133,65 @@ public class RestaurantDemoInit {
 	}
 
 	/**
+	 * generate demo User
+	 */
+	private void generateUser(){
+		logger.info("Init demo User");
+		// geneeate eight waiter
+		User use = new User();
+		use.setUsername("Karl");
+		use.setStatus(1);
+		userRepository.save(use);
+
+		use = new User();
+		use.setUsername("Karmen");
+		use.setStatus(1);
+		userRepository.save(use);
+
+		use = new User();
+		use.setStatus(1);
+		use.setUsername("Konstantin");
+		userRepository.save(use);
+
+		use = new User();
+		use.setUsername("Kimberley");
+		use.setStatus(1);
+		userRepository.save(use);
+
+		use = new User();
+		use.setUsername("Katharina");
+		use.setStatus(1);
+		userRepository.save(use);
+
+		use = new User();
+		use.setUsername("Knut");
+		use.setStatus(1);
+		userRepository.save(use);
+
+		use = new User();
+		use.setUsername("Kurt");
+		use.setStatus(1);
+		userRepository.save(use);
+
+		use = new User();
+		use.setUsername("Katja");
+		use.setStatus(1);
+		userRepository.save(use);
+// CEO
+		 use = new User();
+		use.setUsername("Walter");
+		use.setStatus(0);
+		userRepository.save(use);
+
+	}
+
+	/**
 	 * clear before regenerate to allow changes
 	 */
 	private void clearData() {
 		deskRepository.deleteAll();
 		menuItemRepository.deleteAll();
+		userRepository.deleteAll();
 	}
 
 }
