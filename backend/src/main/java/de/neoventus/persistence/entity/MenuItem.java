@@ -27,13 +27,13 @@ public class MenuItem extends AbstractDocument {
 	private List<String> notices;
 
 	private String currency;
-
+	// constructor
 	public MenuItem() {
 		this.notices = new ArrayList<>();
 	}
 
-	// constructor
-	public void MenuItem(String name, Double price, String currency, String description, String mediaUrl, List<String> notices) {
+	// Setter for All Attributes
+	public void setAll(String name, Double price, String currency, String description, String mediaUrl, List<String> notices) {
 		this.name = name;
 		this.price = price;
 		this.currency = currency;
