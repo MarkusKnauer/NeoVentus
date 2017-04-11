@@ -30,6 +30,7 @@ Ziel diese Projektes ist es, in einem anerkannten Softwareengineering-Prozess, e
 * Maven: [x] *Always update snapshots*
 * Maven/Importing: [x] *Import Maven projects automatically*
 * In View *Maven Projects* -> *Reimport All Maven Projects*. Nun sollten automatisch alle in der *pom.xml* deklarierten Dependencies heruntergeladen werden und im Ordner *External Libraries* auftauchen (Unter Windows entspricht das dem Ordner *C:\Users\User\.m2\repository*).
+* Falls die Dependencies bereits heruntergeladen wurden und unter External Libraries angezeigt werden, in den Sourcen allerdings nicht gefunden werden, hilft: File -> Invalidate Caches
 
 ### Coding Guide Lines ###
 * Settings -> Editor -> Code Style -> [x] Enable EditorConfig support
