@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Dennis Thanner
- * @version 0.0.1
+ * @author Dennis Thanner, Julian Beck
+ * @version 0.0.3 user status clean up - DT
+ *          0.0.2 added user status - JB
  **/
 public class User extends AbstractDocument {
 
 	@Indexed(unique = true)
 	private String username;
-	private int status; //Status 0 = CEO; 1 = employees; 2 = guests
 	private String password;
 
 	private List<String> permissions;
@@ -37,13 +37,6 @@ public class User extends AbstractDocument {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public int getStatus(){
-		return status;
-	}
-	public void setStatus(int status){
-		this.status =status;
 	}
 
 	public String getPassword() {

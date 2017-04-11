@@ -1,9 +1,9 @@
 package de.neoventus.init;
 
 import de.neoventus.persistence.entity.Desk;
+import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.entity.OrderItem;
 import de.neoventus.persistence.entity.User;
-import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.repository.DeskRepository;
 import de.neoventus.persistence.repository.MenuItemRepository;
 import de.neoventus.persistence.repository.OrderItemRepository;
@@ -13,23 +13,24 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 /**
  * initialize the demo data for the project
  *
  * @author Dennis Thanner, Julian Beck
- * @version 0.0.1
- * ---------------------------------------------------
- * Change-Date: 10.04.2017
- * Change-Author: Beck
- * Change: new Methode generateUser
- * ---------------------------------------------------
+ * @version 0.0.3 user status clean up - DT
+ * 			0.0.2 added users - JB
+ *
  */
 @Component
 public class RestaurantDemoInit {
 
 	private static int MAX_DESKS = 10;
+
+	private static String ADMIN_ROLE = "ROLE_ADMIN";
+	private static String SERVICE_ROLE = "ROLE_SERVICE";
 
 	@Autowired
 	private DeskRepository deskRepository;
@@ -145,50 +146,50 @@ public class RestaurantDemoInit {
 	private void generateUser(){
 		logger.info("Init demo User");
 		// geneeate eight waiter
-		User use = new User();
-		use.setUsername("Karl");
-		use.setStatus(1);
-		userRepository.save(use);
+		User user = new User();
+		user.setUsername("Karl");
+		user.setPermissions(Arrays.asList(SERVICE_ROLE));
+		userRepository.save(user);
 
-		use = new User();
-		use.setUsername("Karmen");
-		use.setStatus(1);
-		userRepository.save(use);
+		user = new User();
+		user.setUsername("Karmen");
+		user.setPermissions(Arrays.asList(SERVICE_ROLE));
+		userRepository.save(user);
 
-		use = new User();
-		use.setStatus(1);
-		use.setUsername("Konstantin");
-		userRepository.save(use);
+		user = new User();
+		user.setPermissions(Arrays.asList(SERVICE_ROLE));
+		user.setUsername("Konstantin");
+		userRepository.save(user);
 
-		use = new User();
-		use.setUsername("Kimberley");
-		use.setStatus(1);
-		userRepository.save(use);
+		user = new User();
+		user.setUsername("Kimberley");
+		user.setPermissions(Arrays.asList(SERVICE_ROLE));
+		userRepository.save(user);
 
-		use = new User();
-		use.setUsername("Katharina");
-		use.setStatus(1);
-		userRepository.save(use);
+		user = new User();
+		user.setUsername("Katharina");
+		user.setPermissions(Arrays.asList(SERVICE_ROLE));
+		userRepository.save(user);
 
-		use = new User();
-		use.setUsername("Knut");
-		use.setStatus(1);
-		userRepository.save(use);
+		user = new User();
+		user.setUsername("Knut");
+		user.setPermissions(Arrays.asList(SERVICE_ROLE));
+		userRepository.save(user);
 
-		use = new User();
-		use.setUsername("Kurt");
-		use.setStatus(1);
-		userRepository.save(use);
+		user = new User();
+		user.setUsername("Kurt");
+		user.setPermissions(Arrays.asList(SERVICE_ROLE));
+		userRepository.save(user);
 
-		use = new User();
-		use.setUsername("Katja");
-		use.setStatus(1);
-		userRepository.save(use);
+		user = new User();
+		user.setUsername("Katja");
+		user.setPermissions(Arrays.asList(SERVICE_ROLE));
+		userRepository.save(user);
 // CEO
-		 use = new User();
-		use.setUsername("Walter");
-		use.setStatus(0);
-		userRepository.save(use);
+		user = new User();
+		user.setUsername("Walter");
+		user.setPermissions(Arrays.asList(ADMIN_ROLE, SERVICE_ROLE));
+		userRepository.save(user);
 
 	}
 // DANGER! Here must be Parametres in use for dynamic assignment
