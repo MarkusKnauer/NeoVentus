@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * @author Dennis Thanner, Julian Beck, Markus Knauer
- * @version 0.0.4 edit permissions as enum
+ * @version 0.0.4 edit permissions as enum - MK
  * 			0.0.3 user status clean up - DT
  *          0.0.2 added user status - JB
  **/
