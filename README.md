@@ -19,7 +19,7 @@ Ziel diese Projektes ist es, in einem anerkannten Softwareengineering-Prozess, e
 * Installation [IntelliJ Ultimate 2017](https://www.jetbrains.com/idea/download/) ([JetBrains Student](https://www.jetbrains.com/student/) Account nötig)
 * Installation [Git](https://git-scm.com/downloads).
 * IntelliJ starten, *Check out from Version Control*, *Git*
-* Git Repository URL: *git@bitbucket.org:timperator/neoventus.git* Clone
+* Git Repository URL: *https://name@bitbucket.org/timperator/neoventus* Clone
 * Eventuell muss zunächst die Java SDK 1.8 hinzugefügt werden
 * Zum Anzeigen des Projektexplorers Doppelklick auf den Projektnamen links oben
 * View *Maven Projects* öffnen (Doppel Shift, nach Maven Projects suchen)
