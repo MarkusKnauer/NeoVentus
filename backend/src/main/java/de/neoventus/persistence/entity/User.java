@@ -1,5 +1,6 @@
 package de.neoventus.persistence.entity;
 
+import de.neoventus.init.Permission;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
@@ -7,8 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Dennis Thanner, Julian Beck
- * @version 0.0.3 user status clean up - DT
+ * @author Dennis Thanner, Julian Beck, Markus Knauer
+ * @version 0.0.4 edit permissions as enum
+ * 			0.0.3 user status clean up - DT
  *          0.0.2 added user status - JB
  **/
 public class User extends AbstractDocument {
@@ -17,7 +19,7 @@ public class User extends AbstractDocument {
 	private String username;
 	private String password;
 
-	private List<String> permissions;
+	private List<Permission> permissions;
 
 	@DBRef
 	private List<Desk> desks;
@@ -47,11 +49,11 @@ public class User extends AbstractDocument {
 		this.password = password;
 	}
 
-	public List<String> getPermissions() {
+	public List<Permission> getPermissions() {
 		return permissions;
 	}
 
-	public void setPermissions(List<String> permissions) {
+	public void setPermissions(List<Permission> permissions) {
 		this.permissions = permissions;
 	}
 

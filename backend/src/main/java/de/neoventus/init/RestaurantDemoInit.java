@@ -19,8 +19,9 @@ import java.util.logging.Logger;
 /**
  * initialize the demo data for the project
  *
- * @author Dennis Thanner, Julian Beck
- * @version 0.0.3 user status clean up - DT
+ * @autor Dennis Thanner, Julian Beck, Markus Knauer
+ * @version 0.0.4 added persissions as enum
+ * 			0.0.3 user status clean up - DT
  * 			0.0.2 added users - JB
  *
  */
@@ -28,9 +29,6 @@ import java.util.logging.Logger;
 public class RestaurantDemoInit {
 
 	private static int MAX_DESKS = 10;
-
-	private static String ADMIN_ROLE = "ROLE_ADMIN";
-	private static String SERVICE_ROLE = "ROLE_SERVICE";
 
 	@Autowired
 	private DeskRepository deskRepository;
@@ -148,47 +146,47 @@ public class RestaurantDemoInit {
 		// geneeate eight waiter
 		User user = new User();
 		user.setUsername("Karl");
-		user.setPermissions(Arrays.asList(SERVICE_ROLE));
+		user.setPermissions(Arrays.asList(Permission.SERVICE));
 		userRepository.save(user);
 
 		user = new User();
 		user.setUsername("Karmen");
-		user.setPermissions(Arrays.asList(SERVICE_ROLE));
+		user.setPermissions(Arrays.asList(Permission.SERVICE));
 		userRepository.save(user);
 
 		user = new User();
-		user.setPermissions(Arrays.asList(SERVICE_ROLE));
+		user.setPermissions(Arrays.asList(Permission.SERVICE));
 		user.setUsername("Konstantin");
 		userRepository.save(user);
 
 		user = new User();
 		user.setUsername("Kimberley");
-		user.setPermissions(Arrays.asList(SERVICE_ROLE));
+		user.setPermissions(Arrays.asList(Permission.SERVICE));
 		userRepository.save(user);
 
 		user = new User();
 		user.setUsername("Katharina");
-		user.setPermissions(Arrays.asList(SERVICE_ROLE));
+		user.setPermissions(Arrays.asList(Permission.SERVICE));
 		userRepository.save(user);
 
 		user = new User();
 		user.setUsername("Knut");
-		user.setPermissions(Arrays.asList(SERVICE_ROLE));
+		user.setPermissions(Arrays.asList(Permission.SERVICE));
 		userRepository.save(user);
 
 		user = new User();
 		user.setUsername("Kurt");
-		user.setPermissions(Arrays.asList(SERVICE_ROLE));
+		user.setPermissions(Arrays.asList(Permission.SERVICE));
 		userRepository.save(user);
 
 		user = new User();
 		user.setUsername("Katja");
-		user.setPermissions(Arrays.asList(SERVICE_ROLE));
+		user.setPermissions(Arrays.asList(Permission.SERVICE));
 		userRepository.save(user);
 // CEO
 		user = new User();
 		user.setUsername("Walter");
-		user.setPermissions(Arrays.asList(ADMIN_ROLE, SERVICE_ROLE));
+		user.setPermissions(Arrays.asList(Permission.CEO));
 		userRepository.save(user);
 
 	}

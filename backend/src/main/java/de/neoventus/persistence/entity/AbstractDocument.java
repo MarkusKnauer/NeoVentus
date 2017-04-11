@@ -9,15 +9,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
  **/
 @Document
 public abstract class AbstractDocument {
-	
+
 	@Id
 	protected String id;
-	
-	
+
 	public String getId() {
 		return id;
 	}
-	
+
 	public void setId(String id) {
 		this.id = id;
 	}
