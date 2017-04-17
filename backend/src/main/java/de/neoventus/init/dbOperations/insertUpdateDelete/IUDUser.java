@@ -21,7 +21,7 @@ public class IUDUser extends IUDAbstract {
     @Override
     public void insert(AbstractDocument abs) {
         user = (User)abs;
-        //user.setNumber((int)(userRepository.count()+1));
+        user.setUserID((int)(userRepository.count()+1));
         userRepository.save(user);
     }
 

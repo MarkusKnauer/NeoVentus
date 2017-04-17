@@ -24,6 +24,8 @@ public class MenuItem extends AbstractDocument {
 
 	private String mediaUrl;
 
+	private Integer menuItemID;
+
 	private List<String> notices;
 
 	private String currency;
@@ -55,6 +57,14 @@ public class MenuItem extends AbstractDocument {
 	}
 
 	// getter and setter
+
+	public Integer getMenuItemID() {
+		return menuItemID;
+	}
+
+	public void setMenuItemID(Integer menuItemID) {
+		this.menuItemID = menuItemID;
+	}
 
 	public String getName() {
 		return name;

@@ -9,7 +9,8 @@ import java.util.List;
 
 /**
  * @author Dennis Thanner, Julian Beck, Markus Knauer
- * @version 0.0.4 edit permissions as enum - MK
+ * @version 0.0.5 Add variable userID - JB
+ * 			0.0.4 edit permissions as enum - MK
  * 			0.0.3 user status clean up - DT
  *          0.0.2 added user status - JB
  **/
@@ -18,6 +19,7 @@ public class User extends AbstractDocument {
 	@Indexed(unique = true)
 	private String username;
 	private String password;
+	private Integer userID;
 
 	private List<Permission> permissions;
 
@@ -32,6 +34,13 @@ public class User extends AbstractDocument {
 	}
 
 	// getter and setter
+	public Integer getUserID() {
+		return userID;
+	}
+
+	public void setUserID(Integer userID) {
+		this.userID = userID;
+	}
 
 	public String getUsername() {
 		return username;

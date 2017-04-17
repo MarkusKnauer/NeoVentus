@@ -18,4 +18,12 @@ public interface MenuItemRepository extends CrudRepository<MenuItem, String> {
      * @return MenuItem
      */
     MenuItem findByName(String name);
+
+    /**
+     * find menuItem by ID
+     *
+     * @param menuItemID menuItemID to search for
+     * @return MenuItem
+     */
+    MenuItem findByMenuItemID(Integer menuItemID);
 }

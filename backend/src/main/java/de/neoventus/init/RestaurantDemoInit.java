@@ -50,7 +50,7 @@ public class RestaurantDemoInit {
 	 */
 	@PostConstruct
 	public void initialize() {
-		new DefaultDemoDataIntoDB(deskRepository, userRepository,menuItemRepository);
+		new DefaultDemoDataIntoDB(deskRepository, userRepository,menuItemRepository,orderItemRepository);
 		findWaiterForSetDesk();
 		setOrder();
 	}

@@ -21,7 +21,7 @@ public class IUDOrder extends IUDAbstract{
     public void insert(AbstractDocument abs) {
         orderItem = (OrderItem)abs;
         setCollectionSize(getCollectionSize()+1);
-
+        orderItem.setOrderID(getCollectionSize());
         orderItemRepository.save(orderItem);
     }
 
