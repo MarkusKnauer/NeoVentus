@@ -4,10 +4,9 @@
 
 package de.neoventus.init;
 
-import de.neoventus.persistence.repository.DeskRepository;
-import de.neoventus.persistence.repository.MenuItemRepository;
-import de.neoventus.persistence.repository.OrderItemRepository;
-import de.neoventus.persistence.repository.UserRepository;
+import de.neoventus.persistence.entity.Desk;
+import de.neoventus.persistence.entity.User;
+import de.neoventus.persistence.repository.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -32,16 +31,23 @@ class DefaultDemoDataIntoDB {
     private final static Logger LOGGER = Logger.getLogger(DefaultDemoDataIntoDB.class.getName());
 
     public DefaultDemoDataIntoDB(DeskRepository deskRepository, UserRepository userRepository,
-                                 MenuItemRepository menuItemRepository, OrderItemRepository orderItemRepository) {
+                                 MenuItemRepository menuItemRepository, OrderItemRepository orderItemRepository,
+                                 ReservationRepository reservationRepository, BillingRepository billingRepository) {
 
+        deskRepository.deleteAll();
+        menuItemRepository.deleteAll();
+        userRepository.deleteAll();
+        orderItemRepository.deleteAll();
+        reservationRepository.deleteAll();
         controlEntityObjects = new ControlEntityObjects(deskRepository,
                 userRepository,
                 menuItemRepository,
-                orderItemRepository);
+                orderItemRepository,reservationRepository,billingRepository);
 
         generateDesks();
         generateMenuItems();
         generateUser();
+        updateUserDesk();
         generateOrderItem();
         updateTest();
     }
@@ -140,11 +146,27 @@ class DefaultDemoDataIntoDB {
 
     }
 
+    // DANGER! Here must be Parametres in use for dynamic assignment
+    private void updateUserDesk() {
+        controlEntityObjects.updateUserDesk(1, 1);
+        controlEntityObjects.updateUserDesk(1, 2);
+        controlEntityObjects.updateUserDesk(1, 3);
+        controlEntityObjects.updateUserDesk(1, 4);
+
+        controlEntityObjects.updateUserDesk(2, 5);
+        controlEntityObjects.updateUserDesk(2, 6);
+        controlEntityObjects.updateUserDesk(2, 7);
+
+        controlEntityObjects.updateUserDesk(5, 8);
+        controlEntityObjects.updateUserDesk(5, 9);
+        controlEntityObjects.updateUserDesk(5, 10);
+
+    }
+
     private void generateOrderItem() {
         controlEntityObjects.generateOrder(1, 18, 2,
                 "");
     }
-
 
     private void updateTest() {
 

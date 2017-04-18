@@ -18,9 +18,16 @@ public class Reservation extends AbstractDocument {
 
 	private Date createdAt;
 
+	private Integer reservationID;
+
 	private Date time;
 
 	// getter and setter
+	public Integer getReservationID() {return reservationID;}
+
+	public void setReservationID(Integer reservationID) {
+		this.reservationID = reservationID;
+	}
 
 	public User getReservedBy() {
 		return reservedBy;

@@ -10,4 +10,11 @@ import org.springframework.stereotype.Repository;
  **/
 @Repository
 public interface BillingRepository extends CrudRepository<Billing, String> {
+    /**
+     * find billing by ID
+     *
+     * @param billingID menuItemID to search for
+     * @return Billing
+     */
+    Billing findByBillingID(Integer billingID);
 }

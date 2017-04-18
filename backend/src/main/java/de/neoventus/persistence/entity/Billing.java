@@ -12,6 +12,8 @@ public class Billing extends AbstractDocument {
 
     private Date billedAt;
 
+    private Integer billingID;
+
     private Double totalPaid;
 
     private List<BillingItem> items;
@@ -23,6 +25,14 @@ public class Billing extends AbstractDocument {
     }
 
     // getter and setter
+
+    public Integer getBillingID() {
+        return billingID;
+    }
+
+    public void setBillingID(Integer billingID) {
+        this.billingID = billingID;
+    }
 
     public Date getBilledAt() {
         return billedAt;

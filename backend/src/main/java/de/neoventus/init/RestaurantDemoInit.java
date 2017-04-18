@@ -3,10 +3,7 @@ package de.neoventus.init;
 import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.entity.OrderItem;
 import de.neoventus.persistence.entity.User;
-import de.neoventus.persistence.repository.DeskRepository;
-import de.neoventus.persistence.repository.MenuItemRepository;
-import de.neoventus.persistence.repository.OrderItemRepository;
-import de.neoventus.persistence.repository.UserRepository;
+import de.neoventus.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -37,11 +34,18 @@ public class RestaurantDemoInit {
 
     private final MenuItemRepository menuItemRepository;
 
+    private final ReservationRepository reservationRepository;
+
+    private final BillingRepository billingRepository;
+
     private final static Logger LOGGER = Logger.getLogger(RestaurantDemoInit.class.getName());
 
     @Autowired
     public RestaurantDemoInit(DeskRepository deskRepository, UserRepository userRepository,
-                              OrderItemRepository orderItemRepository, MenuItemRepository menuItemRepository) {
+                              OrderItemRepository orderItemRepository, MenuItemRepository menuItemRepository,
+                              ReservationRepository reservationRepository, BillingRepository billingRepository) {
+        this.billingRepository = billingRepository;
+        this.reservationRepository = reservationRepository;
         this.deskRepository = deskRepository;
         this.userRepository = userRepository;
         this.orderItemRepository = orderItemRepository;
@@ -55,46 +59,8 @@ public class RestaurantDemoInit {
      */
     @PostConstruct
     public void initialize() {
-        new DefaultDemoDataIntoDB(deskRepository, userRepository, menuItemRepository, orderItemRepository);
-        findWaiterForSetDesk();
-        setOrder();
-    }
-
-    // DANGER! Here must be Parametres in use for dynamic assignment
-    private void findWaiterForSetDesk() {
-        User waiter = userRepository.findByUsername("Karl");
-        moveDeskToWaiter(waiter, 1, 2, 3, 4);
-        // Second Waiter
-        waiter = userRepository.findByUsername("Katja");
-        moveDeskToWaiter(waiter, 5, 6, 7);
-        // Third Waiter
-        waiter = userRepository.findByUsername("Knut");
-        moveDeskToWaiter(waiter, 8, 9, 10);
-
-    }
-
-    // Method for set Tables to User (Waiter)  - JB
-    private void moveDeskToWaiter(User waiter, int... table) {
-        ArrayList<Desk> desks = new ArrayList<>();
-
-        for (int i : table) {
-            desks.add(deskRepository.findByNumber(table[i]));
-        }
-        waiter.setDesks(desks);
-        userRepository.save(waiter);
-    }
-
-    // Demo-Order with Waiter: Katja, Desk 2 from Katja (Desk 6) and the Meal "kleiner Salat"
-    private void setOrder() {
-        LOGGER.info("Init demo Order");
-        User waiter;
-        OrderItem order = new OrderItem();
-        order.setWaiter((waiter = userRepository.findByUsername("Katja")));
-        order.setDesk(waiter.getDesks().get(1));
-        order.setItem(menuItemRepository.findByName("kleiner Salat"));
-        order.setGuestWish("Ohne Zwiebeln");
-        orderItemRepository.save(order);
-
+        clearData();
+        new DefaultDemoDataIntoDB(deskRepository, userRepository, menuItemRepository, orderItemRepository, reservationRepository,billingRepository);
     }
 
     /**
@@ -105,6 +71,8 @@ public class RestaurantDemoInit {
         menuItemRepository.deleteAll();
         userRepository.deleteAll();
         orderItemRepository.deleteAll();
+        reservationRepository.deleteAll();
+
     }
 
 }

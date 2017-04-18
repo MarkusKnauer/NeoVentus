@@ -10,4 +10,11 @@ import org.springframework.stereotype.Repository;
  **/
 @Repository
 public interface ReservationRepository extends CrudRepository<Reservation, String> {
+    /**
+     * find reservation by ID
+     *
+     * @param reservationID menuItemID to search for
+     * @return Reservation
+     */
+    Reservation findByReservationID(Integer reservationID);
 }

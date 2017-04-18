@@ -10,4 +10,11 @@ import org.springframework.stereotype.Repository;
  **/
 @Repository
 public interface OrderItemRepository extends CrudRepository<OrderItem, String> {
+    /**
+     * find OrderItem by ID
+     *
+     * @param orderID menuItemID to search for
+     * @return OrderItem
+     */
+    OrderItem findByOrderID(Integer orderID);
 }

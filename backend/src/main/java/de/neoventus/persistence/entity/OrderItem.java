@@ -32,9 +32,7 @@ public class OrderItem extends AbstractDocument {
     }
 
     // getter and setter
-    public Integer getOrderID() {
-        return orderID;
-    }
+    public Integer getOrderID() {return orderID;}
 
     public void setOrderID(Integer orderID) {
         this.orderID = orderID;

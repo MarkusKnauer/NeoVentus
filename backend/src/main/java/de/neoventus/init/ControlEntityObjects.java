@@ -4,15 +4,12 @@
 
 package de.neoventus.init;
 
-import de.neoventus.init.dbOperations.InsertUpdateDelete;
+import de.neoventus.init.dbOperations.*;
 import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.entity.OrderItem;
 import de.neoventus.persistence.entity.User;
-import de.neoventus.persistence.repository.DeskRepository;
-import de.neoventus.persistence.repository.MenuItemRepository;
-import de.neoventus.persistence.repository.OrderItemRepository;
-import de.neoventus.persistence.repository.UserRepository;
+import de.neoventus.persistence.repository.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,26 +23,20 @@ import java.util.logging.Logger;
 class ControlEntityObjects {
 
     // for find and Update -> better methods!
-    private DeskRepository deskRepository;
-    private UserRepository userRepository;
-    private MenuItemRepository menuItemRepository;
-    private OrderItemRepository orderItemRepository;
     private InsertUpdateDelete insUpdDel;
-
+    private SelectByID select;
     private final static Logger LOGGER = Logger.getLogger(ControlEntityObjects.class.getName());
 
     ControlEntityObjects(DeskRepository deskRepository,
                          UserRepository userRepository,
                          MenuItemRepository menuItemRepository,
-                         OrderItemRepository orderItemRepository) {
-        this.deskRepository = deskRepository;
-        this.menuItemRepository = menuItemRepository;
-        this.userRepository = userRepository;
-        this.orderItemRepository = orderItemRepository;
-        clearData();
-        //Danger!! AC/DC with variable in the IUD-Classes (Collectionssize)!!
-        insUpdDel = new InsertUpdateDelete(deskRepository, userRepository, menuItemRepository, null,
-                orderItemRepository, null);
+                         OrderItemRepository orderItemRepository,
+                         ReservationRepository reservationRepository,
+                         BillingRepository billingRepository) {
+        insUpdDel = new InsertUpdateDelete(deskRepository, userRepository, menuItemRepository, billingRepository,
+                orderItemRepository,reservationRepository);
+        select = new SelectByID(userRepository, deskRepository, menuItemRepository, billingRepository,
+                orderItemRepository, reservationRepository);
     }
 
     /**
@@ -79,28 +70,27 @@ class ControlEntityObjects {
     }
 
     void generateOrder(Integer userID, Integer menuItemID, Integer deskID, String guestwish) {
-        User user = userRepository.findByUserID(userID);
-        MenuItem menuItem = menuItemRepository.findByMenuItemID(menuItemID);
-        Desk desk = deskRepository.findByNumber(deskID);
+        /*
+        User user = select.findByUserID(userID);
+        MenuItem menuItem = select.findByMenuItemID(menuItemID);
+        Desk desk = select.findByDeskID(deskID);
         OrderItem orderItem = new OrderItem(user, desk, menuItem, guestwish);
-        insUpdDel.insertOrder(orderItem);
+        */
+        insUpdDel.insertOrder(new OrderItem(select.findByUserID(userID),select.findByDeskID(deskID),select.findByMenuItemID(menuItemID),guestwish));
     }
 
-
-    private void updateTest() {
-        Desk des = deskRepository.findByNumber(1);
-        des.setNumber(12);
-        insUpdDel.updateDesk(des);
+    public void updateUserDesk(Integer userID, Integer deskID){
+        User user = select.findByUserID(userID);
+        List<Desk> tmp = user.getDesks();
+        tmp.add(select.findByDeskID(deskID));
+        user.setDesks(tmp);
+        insUpdDel.updateUser(user);
     }
 
-    /**
-     * clear before regenerate to allow changes
-     */
-    private void clearData() {
-        deskRepository.deleteAll();
-        menuItemRepository.deleteAll();
-        userRepository.deleteAll();
-        orderItemRepository.deleteAll();
+    private void updateUser(Integer userID, String field, String value) {
+        User des = select.findByUserID(userID);
+        insUpdDel.updateUser(des);
     }
+
 
 }
