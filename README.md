@@ -34,6 +34,7 @@ Ziel diese Projektes ist es, in einem anerkannten Softwareengineering-Prozess, e
 
 ### Coding Guide Lines ###
 * Settings -> Editor -> Code Style -> [x] Enable EditorConfig support
+* Settings -> Editor -> Code Style -> Java -> [x] Use tab character
 * Settings -> Editor -> File and Code Templates -> Includes -> File Header:
 ```
 /**
