@@ -1,49 +1,45 @@
 package de.neoventus.persistence.entity;
+
 import org.springframework.data.mongodb.core.index.Indexed;
+
 /**
- * @author Dennis Thanner
- * @version 0.0.1
+ * @author Dennis Thanner, Tim Heidelbach
+ * @version 0.0.2 removed local variable StringBuilder
  **/
 public class Desk extends AbstractDocument {
-	@Indexed(unique = true)
-	private int number;
 
-	private int seats;
+    @Indexed(unique = true)
+    private int number;
 
-	// constructor
+    private int seats;
 
-	public Desk() {
-	}
+    // getter and setter
 
-	// getter and setter
+    public int getNumber() {
+        return number;
+    }
 
-	public int getNumber() {
-		return number;
-	}
+    public void setNumber(int number) {
+        this.number = number;
+    }
 
-	public void setNumber(int number) {
-		this.number = number;
-	}
+    public int getSeats() {
+        return seats;
+    }
 
-	public int getSeats() {
-		return seats;
-	}
+    public void setSeats(int seats) {
+        this.seats = seats;
+    }
 
-	public void setSeats(int seats) {
-		this.seats = seats;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Desk{");
-		sb.append("Id: ");
-		sb.append(this.id);
-		sb.append(", Number: ");
-		sb.append(this.number);
-		sb.append(", Seats: ");
-		sb.append(this.seats);
-		sb.append("}");
-		return sb.toString();
-	}
+    @Override
+    public String toString() {
+        return "Desk{" +
+                "Id: " +
+                this.id +
+                ", Number: " +
+                this.number +
+                ", Seats: " +
+                this.seats +
+                "}";
+    }
 }

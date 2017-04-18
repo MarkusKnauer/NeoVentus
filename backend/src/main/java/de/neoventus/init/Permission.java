@@ -1,20 +1,16 @@
 package de.neoventus.init;
 
 /**
- * Persissions of the Roles
+ * Permissions of the Roles
  *
- * @autor: Markus Knauer
- * @version: 0.0.1
+ * @autor: MK, TH
+ * @version: 0.0.2
  *
  */
 public enum Permission {
-
-    ADMIN(0), CEO(1), SERVICE(2), CHEF(3), BAR(4);
-
-    final int nr;
-
-    private Permission(int nr){
-        this.nr = nr;
-    }
-
+    ADMIN,
+    CEO,
+    SERVICE,
+    CHEF,
+    BAR
 }

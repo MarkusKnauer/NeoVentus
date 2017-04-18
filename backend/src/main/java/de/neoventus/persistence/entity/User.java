@@ -8,85 +8,82 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Dennis Thanner, Julian Beck, Markus Knauer
- * @version 0.0.5 Add variable userID - JB
- * 			0.0.4 edit permissions as enum - MK
- * 			0.0.3 user status clean up - DT
+ * @author Dennis Thanner, Julian Beck, Markus Knauer, Tim Heidelbach
+ * @version 0.0.6 removed local variable StringBuilder
+ *          0.0.5 Add variable userID - JB
+ *          0.0.4 edit permissions as enum - MK
+ *          0.0.3 user status clean up - DT
  *          0.0.2 added user status - JB
  **/
 public class User extends AbstractDocument {
 
-	@Indexed(unique = true)
-	private String username;
-	private String password;
-	private Integer userID;
+    @Indexed(unique = true)
+    private String username;
+    private String password;
+    private Integer userID;
 
-	private List<Permission> permissions;
+    private List<Permission> permissions;
 
-	@DBRef
-	private List<Desk> desks;
+    @DBRef
+    private List<Desk> desks = new ArrayList<>();
 
-	// constructor
+    // constructor
+    public User() {
+        this.permissions = new ArrayList<>();
+    }
 
-	public User() {
-		this.desks = new ArrayList<>();
-		this.permissions = new ArrayList<>();
-	}
+    // getter and setter
+    public Integer getUserID() {
+        return userID;
+    }
 
-	// getter and setter
-	public Integer getUserID() {
-		return userID;
-	}
+    public void setUserID(Integer userID) {
+        this.userID = userID;
+    }
 
-	public void setUserID(Integer userID) {
-		this.userID = userID;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public List<Permission> getPermissions() {
+        return permissions;
+    }
 
-	public List<Permission> getPermissions() {
-		return permissions;
-	}
+    public void setPermissions(List<Permission> permissions) {
+        this.permissions = permissions;
+    }
 
-	public void setPermissions(List<Permission> permissions) {
-		this.permissions = permissions;
-	}
+    public List<Desk> getDesks() {
+        return desks;
+    }
 
-	public List<Desk> getDesks() {
-		return desks;
-	}
+    public void setDesks(List<Desk> desks) {
+        this.desks = desks;
+    }
 
-	public void setDesks(List<Desk> desks) {
-		this.desks = desks;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("User{");
-		sb.append("Id: ");
-		sb.append(this.id);
-		sb.append(", Username: ");
-		sb.append(this.username);
-		sb.append(", Permissions: ");
-		sb.append(this.permissions);
-		sb.append(", Desks: ");
-		sb.append(this.desks);
-		sb.append("}");
-		return sb.toString();
-	}
+    @Override
+    public String toString() {
+        return "User{" +
+                "Id: " +
+                this.id +
+                ", Username: " +
+                this.username +
+                ", Permissions: " +
+                this.permissions +
+                ", Desks: " +
+                this.desks +
+                "}";
+    }
 }
