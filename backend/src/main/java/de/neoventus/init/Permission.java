@@ -3,8 +3,9 @@ package de.neoventus.init;
 /**
  * Permissions of the Roles
  *
- * @autor: MK, TH
- * @version: 0.0.2
+ * @autor: Markus Knauer, Tim Heidelbach
+ * @version: 0.0.2 formated TH
+ * 0.0.1 Class created MK
  *
  */
 public enum Permission {

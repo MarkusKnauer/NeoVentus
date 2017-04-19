@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 /**
  * REST controller for entity User
  *
- * @author Tim
+ * @author Tim Heidelbach
  * @version 0.0.1
  */
 
