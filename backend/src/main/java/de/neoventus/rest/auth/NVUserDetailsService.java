@@ -1,6 +1,6 @@
 package de.neoventus.rest.auth;
 
-import de.neoventus.init.Permission;
+import de.neoventus.persistence.entity.Permission;
 import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

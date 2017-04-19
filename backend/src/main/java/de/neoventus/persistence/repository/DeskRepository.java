@@ -9,12 +9,20 @@ import org.springframework.stereotype.Repository;
  * @version 0.0.1
  **/
 @Repository
-public interface DeskRepository extends CrudRepository<Desk, Integer> {
-    /**
+public interface DeskRepository extends CrudRepository<Desk, String> {
+	/**
      * find desk by number
      *
      * @param number number to search for
      * @return Desk
      */
     Desk findByNumber(Integer number);
+
+	/**
+	 * find with max desk number
+	 *
+	 * @return desk with max desk number
+	 */
+	Desk findFirstByOrderByNumberDesc();
+
 }

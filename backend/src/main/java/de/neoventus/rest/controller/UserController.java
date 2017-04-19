@@ -2,23 +2,24 @@ package de.neoventus.rest.controller;
 
 import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.repository.UserRepository;
+import de.neoventus.rest.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.logging.Logger;
 
 /**
  * REST controller for entity User
  *
  * @author Tim Heidelbach
- * @version 0.0.1
+ * @version 0.0.2 added user dto support
  */
-
 @RestController
+@RequestMapping("/api/user")
 public class UserController {
 
 	private final UserRepository userRepository;
@@ -30,28 +31,43 @@ public class UserController {
 		this.userRepository = userRepository;
 	}
 
-	@RequestMapping(value = "/adduser", method = RequestMethod.POST)
-	public void addUser(@RequestParam List<String> requestParams) {
 
-		if (requestParams.size() >= 2) {
-			String name = requestParams.get(0);
-			String pass = requestParams.get(1);
-
-			User user = new User();
-			user.setUsername(name);
-			user.setPassword(pass); // TODO: save hash instead
-
-			LOGGER.info("Saving user " + name + " in database");
-			userRepository.save(user);
-
-		} else {
-			LOGGER.warning("Cannot save user to database: illegal number of params");
+	/**
+	 * controller method to list user details
+	 *
+	 * @param response
+	 * @param username
+	 * @return
+	 */
+	@RequestMapping(value = "/{username}", method = RequestMethod.GET)
+	public User listUser(HttpServletResponse response, @PathVariable String username) {
+		try {
+			return userRepository.findByUsername(username);
+		} catch(Exception e) {
+			LOGGER.warning("Error searching user with username " + username + ": " + e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return null;
 		}
-
 	}
 
-	@RequestMapping(value = "/getuser", method = RequestMethod.GET)
-	public User getUser(@RequestParam(value = "name") String name) {
-		return userRepository.findByUsername(name);
+	/**
+	 * controller method for inserting user
+	 *
+	 * @param dto
+	 * @param bindingResult
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.POST)
+	public void insert(@RequestBody @Valid UserDto dto, BindingResult bindingResult, HttpServletResponse response) {
+		// todo add on validation failure
+		try {
+			userRepository.save(dto);
+			LOGGER.info("Saving user to database: " + dto.getUsername());
+		} catch(Exception e) {
+			LOGGER.warning("Error inserting user to database: " + e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		}
+
 	}
 }
