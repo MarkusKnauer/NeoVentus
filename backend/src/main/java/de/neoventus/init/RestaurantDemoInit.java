@@ -1,15 +1,11 @@
 package de.neoventus.init;
 
-import de.neoventus.persistence.entity.Desk;
-import de.neoventus.persistence.entity.OrderItem;
-import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
@@ -60,8 +56,8 @@ public class RestaurantDemoInit {
     @PostConstruct
     public void initialize() {
         clearData();
-        new DefaultDemoDataIntoDB(deskRepository, userRepository, menuItemRepository, orderItemRepository, reservationRepository,billingRepository);
-    }
+//        new DefaultDemoDataIntoDB(deskRepository, userRepository, menuItemRepository, orderItemRepository, reservationRepository,billingRepository);
+	}
 
     /**
      * clear before regenerate to allow changes

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>de.neoventus</OriginalElement>
+  <nodes>
+    <node x="-8876.54105752114" y="-3441.0">de.neoventus.persistence.entity.OrderItem</node>
+    <node x="-8627.16605752114" y="-2675.5">de.neoventus.init.dbOperations.insertUpdateDelete.IUDDesk</node>
+    <node x="-8846.54105752114" y="-3222.0">de.neoventus.persistence.entity.BillingItem</node>
+    <node x="-7393.20370493992" y="-3716.0">de.neoventus.persistence.entity.User</node>
+    <node x="-9473.04105752114" y="-3037.0">de.neoventus.persistence.repository.MenuItemRepository</node>
+    <node x="-5724.134807521141" y="-2641.0">de.neoventus.rest.auth.SavedRequestAwareAuthenticationSuccessHandler</node>
+    <node x="-8654.050019470404" y="-2359.0">de.neoventus.init.dbOperations.InsertUpdateDelete</node>
+    <node x="-7254.20370493992" y="-3967.0">de.neoventus.init.Permission</node>
+    <node x="-5648.800019470404" y="-2129.0">de.neoventus.config.SecurityContext</node>
+    <node x="-6608.416057521141" y="-3025.5">de.neoventus.persistence.repository.OrderItemRepository</node>
+    <node x="-8936.04105752114" y="-3072.0">de.neoventus.persistence.entity.Billing</node>
+    <node x="-9019.721314530485" y="-2675.5">de.neoventus.init.dbOperations.insertUpdateDelete.IUDBillingItem</node>
+    <node x="-5123.134807521141" y="-2641.0">de.neoventus.rest.auth.NVUserDetailsService</node>
+    <node x="-5108.950019470403" y="-3037.0">de.neoventus.persistence.repository.UserRepository</node>
+    <node x="-9536.04105752114" y="-2675.5">de.neoventus.init.dbOperations.insertUpdateDelete.IUDMenuItem</node>
+    <node x="-7083.70370493992" y="-2756.0">de.neoventus.init.dbOperations.SelectByID</node>
+    <node x="-8590.16605752114" y="-3060.5">de.neoventus.init.dbOperations.insertUpdateDelete.IUDAbstract</node>
+    <node x="-6550.800019470404" y="-1120.0">de.neoventus.init.RestaurantDemoInit</node>
+    <node x="-8776.125" y="-4080.0">de.neoventus.persistence.entity.AbstractDocument</node>
+    <node x="-7179.416057521141" y="-3025.5">de.neoventus.persistence.repository.ReservationRepository</node>
+    <node x="-9740.0" y="-3952.0">de.neoventus.persistence.entity.MenuItem</node>
+    <node x="-6281.134807521141" y="-2629.0">de.neoventus.rest.auth.RestAuthenticationEntryPoint</node>
+    <node x="-8664.625" y="-3944.5">de.neoventus.persistence.entity.Desk</node>
+    <node x="-6858.416057521141" y="-3025.5">de.neoventus.persistence.repository.DeskRepository</node>
+    <node x="-8283.16605752114" y="-2675.5">de.neoventus.init.dbOperations.insertUpdateDelete.IUDReservation</node>
+    <node x="-7454.666057521141" y="-2638.0">de.neoventus.init.dbOperations.insertUpdateDelete.IUDUser</node>
+    <node x="-4840.134807521141" y="-2664.0">de.neoventus.rest.controller.UserController</node>
+    <node x="-7863.166057521141" y="-2675.5">de.neoventus.init.dbOperations.insertUpdateDelete.IUDOrder</node>
+    <node x="-9740.0" y="-837.0">de.neoventus.Application</node>
+    <node x="-8465.550019470404" y="-1418.0">de.neoventus.init.DefaultDemoDataIntoDB</node>
+    <node x="-8211.66605752114" y="-3441.0">de.neoventus.persistence.entity.Reservation</node>
+    <node x="-8509.050019470404" y="-1706.0">de.neoventus.init.ControlEntityObjects</node>
+    <node x="-9193.04105752114" y="-3025.5">de.neoventus.persistence.repository.BillingRepository</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="de.neoventus.persistence.entity.User" target="de.neoventus.persistence.entity.AbstractDocument">
+      <point x="0.0" y="-84.5" />
+      <point x="-7264.70370493992" y="-4007.0" />
+      <point x="-8635.875" y="-4007.0" />
+      <point x="63.75" y="26.5" />
+    </edge>
+    <edge source="de.neoventus.persistence.entity.OrderItem" target="de.neoventus.persistence.entity.AbstractDocument">
+      <point x="-32.125" y="-84.5" />
+      <point x="-8780.16605752114" y="-3471.0" />
+      <point x="-8797.321461949263" y="-3471.0" />
+      <point x="-8797.321461949263" y="-3987.0" />
+      <point x="-8712.375" y="-3987.0" />
+      <point x="-12.75" y="26.5" />
+    </edge>
+    <edge source="de.neoventus.init.dbOperations.insertUpdateDelete.IUDReservation" target="de.neoventus.init.dbOperations.insertUpdateDelete.IUDAbstract">
+      <point x="-133.33333333333303" y="-73.0" />
+      <point x="-8216.499390854473" y="-2826.0" />
+      <point x="-8415.16605752114" y="-2826.0" />
+      <point x="25.0" y="61.5" />
+    </edge>
+    <edge source="de.neoventus.persistence.entity.Billing" target="de.neoventus.persistence.entity.AbstractDocument">
+      <point x="-59.25" y="-73.0" />
+      <point x="-8876.79105752114" y="-3097.0" />
+      <point x="-8887.04105752114" y="-3097.0" />
+      <point x="-8887.04105752114" y="-3997.0" />
+      <point x="-8737.875" y="-3997.0" />
+      <point x="-38.25" y="26.5" />
+    </edge>
+    <edge source="de.neoventus.init.dbOperations.insertUpdateDelete.IUDDesk" target="de.neoventus.init.dbOperations.insertUpdateDelete.IUDAbstract">
+      <point x="0.0" y="-73.0" />
+      <point x="-25.0" y="61.5" />
+    </edge>
+    <edge source="de.neoventus.init.dbOperations.insertUpdateDelete.IUDUser" target="de.neoventus.init.dbOperations.insertUpdateDelete.IUDAbstract">
+      <point x="-107.33333333333303" y="-73.0" />
+      <point x="-7403.499390854474" y="-2846.0" />
+      <point x="-8315.16605752114" y="-2846.0" />
+      <point x="125.0" y="61.5" />
+    </edge>
+    <edge source="de.neoventus.persistence.entity.MenuItem" target="de.neoventus.persistence.entity.AbstractDocument">
+      <point x="0.0" y="-130.5" />
+      <point x="-9449.0" y="-4007.0" />
+      <point x="-8763.375" y="-4007.0" />
+      <point x="-63.75" y="26.5" />
+    </edge>
+    <edge source="de.neoventus.persistence.entity.Reservation" target="de.neoventus.persistence.entity.AbstractDocument">
+      <point x="0.0" y="-84.5" />
+      <point x="-8083.166057521141" y="-3481.0" />
+      <point x="-8098.625" y="-3481.0" />
+      <point x="-8098.625" y="-3997.0" />
+      <point x="-8661.375" y="-3997.0" />
+      <point x="38.25" y="26.5" />
+    </edge>
+    <edge source="de.neoventus.init.dbOperations.insertUpdateDelete.IUDOrder" target="de.neoventus.init.dbOperations.insertUpdateDelete.IUDAbstract">
+      <point x="-128.66666666666697" y="-73.0" />
+      <point x="-7798.832724187808" y="-2836.0" />
+      <point x="-8365.16605752114" y="-2836.0" />
+      <point x="75.0" y="61.5" />
+    </edge>
+    <edge source="de.neoventus.init.dbOperations.insertUpdateDelete.IUDMenuItem" target="de.neoventus.init.dbOperations.insertUpdateDelete.IUDAbstract">
+      <point x="128.66666666666697" y="-73.0" />
+      <point x="-9214.374390854473" y="-2786.0" />
+      <point x="-8565.16605752114" y="-2786.0" />
+      <point x="-125.0" y="61.5" />
+    </edge>
+    <edge source="de.neoventus.init.dbOperations.insertUpdateDelete.IUDBillingItem" target="de.neoventus.init.dbOperations.insertUpdateDelete.IUDAbstract">
+      <point x="112.33333333333303" y="-73.0" />
+      <point x="-8738.887981197151" y="-2776.0" />
+      <point x="-8515.16605752114" y="-2776.0" />
+      <point x="-75.0" y="61.5" />
+    </edge>
+    <edge source="de.neoventus.persistence.entity.Desk" target="de.neoventus.persistence.entity.AbstractDocument">
+      <point x="0.0" y="-50.0" />
+      <point x="-8566.125" y="-3987.0" />
+      <point x="-8686.875" y="-3987.0" />
+      <point x="12.75" y="26.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.40000000000000013" x="-7064.75" y="-2171.0" />
+  <SelectedNodes>
+    <node>de.neoventus.init.dbOperations.insertUpdateDelete.IUDUser</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Properties</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

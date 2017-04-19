@@ -4,42 +4,51 @@ import org.springframework.data.mongodb.core.index.Indexed;
 
 /**
  * @author Dennis Thanner, Tim Heidelbach
- * @version 0.0.2 removed local variable StringBuilder
+ * @version 0.0.3 added constructors
+ *          0.0.2 removed local variable StringBuilder
  **/
 public class Desk extends AbstractDocument {
 
-    @Indexed(unique = true)
-    private int number;
+	@Indexed(unique = true)
+	private Integer number;
 
-    private int seats;
+	private Integer seats;
 
-    // getter and setter
+	// constructor
+	public Desk() {
+	}
 
-    public int getNumber() {
-        return number;
-    }
+	public Desk(Integer seats) {
+		this.seats = seats;
+	}
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
+	// getter and setter
 
-    public int getSeats() {
-        return seats;
-    }
+	public Integer getNumber() {
+		return number;
+	}
 
-    public void setSeats(int seats) {
-        this.seats = seats;
-    }
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
 
-    @Override
-    public String toString() {
-        return "Desk{" +
-                "Id: " +
-                this.id +
-                ", Number: " +
-                this.number +
-                ", Seats: " +
-                this.seats +
-                "}";
-    }
+	public Integer getSeats() {
+		return seats;
+	}
+
+	public void setSeats(Integer seats) {
+		this.seats = seats;
+	}
+
+	@Override
+	public String toString() {
+		return "Desk{" +
+				"Id: " +
+				this.id +
+				", Number: " +
+				this.number +
+				", Seats: " +
+				this.seats +
+				"}";
+	}
 }
