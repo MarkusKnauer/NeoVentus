@@ -1,6 +1,7 @@
 package de.neoventus.persistence.repository;
 
 import de.neoventus.persistence.entity.Reservation;
+import de.neoventus.persistence.repository.customs.ReservationRepositoryCustom;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
  * @version 0.0.1
  **/
 @Repository
-public interface ReservationRepository extends CrudRepository<Reservation, String> {
+public interface ReservationRepository extends CrudRepository<Reservation, String>, ReservationRepositoryCustom {
     /**
      * find reservation by ID
      *
