@@ -1,7 +1,7 @@
 package de.neoventus.persistence.repository;
 
 import de.neoventus.persistence.entity.Reservation;
-import de.neoventus.persistence.repository.customs.ReservationRepositoryCustom;
+import de.neoventus.persistence.repository.advanced.ReservationRepositoryCustom;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

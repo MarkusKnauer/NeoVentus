@@ -1,7 +1,7 @@
 package de.neoventus.persistence.repository;
 
 import de.neoventus.persistence.entity.Billing;
-import de.neoventus.persistence.repository.customs.BillingRepositoryCustom;
+import de.neoventus.persistence.repository.advanced.BillingRepositoryCustom;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

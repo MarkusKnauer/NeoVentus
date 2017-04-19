@@ -56,66 +56,7 @@ class DefaultDemoDataIntoDB {
 	private void generateMenuItems() {
 		LOGGER.info("Init demo menu item data");
 
-		List<MenuItem> items = new ArrayList<>();
-		items.add(new MenuItem("kleiner Salat", 4.80, "EUR",
-				"kalte Vorspeise", "", new ArrayList<>()));
-
-		items.add(new MenuItem("Bärlauchcremesuppe mit Räucherlachs", 4.80, "EUR",
-				"warme Vorspeise", "", new ArrayList<>()));
-
-		items.add(new MenuItem("Lachsfilet", 14.60, "EUR",
-				"mit Tagliatelle und Tomaten", "", new ArrayList<>()));
-
-		items.add(new MenuItem("Salatteller", 13.80, "EUR",
-				"mit gebratenem Zanderfilet", "", new ArrayList<>()));
-
-		items.add(new MenuItem("Pasta Bolognese", 11.90, "EUR",
-				"mit Tomaten und Parmesan", "", new ArrayList<>()));
-
-		items.add(new MenuItem("Schweinerückensteak", 13.90, "EUR",
-				"mit Pfefferrahmsauce und Kartoffel Wedges", "", new ArrayList<>()));
-
-		items.add(new MenuItem("Hausgemachte Kartoffel Gnocchi", 11.80, "EUR",
-				"Gnocchi mit mediterranem Gemüse, Fetakäse, Rucola & Parmesan", "",
-				new ArrayList<>()));
-
-		items.add(new MenuItem("Hausgemachte Käsespätzle", 11.60, "EUR",
-				"mit Beilagensalat", "", new ArrayList<>()));
-
-		items.add(new MenuItem("Drei Kugeln Eis", 6.10, "EUR",
-				"mit Sahne", "", new ArrayList<>()));
-
-		items.add(new MenuItem("Spezi", 2.10, "EUR", "0,20l",
-				"", new ArrayList<>()));
-
-		items.add(new MenuItem("Ginger Ale", 2.20, "EUR", "0,20l",
-				"", new ArrayList<>()));
-
-		items.add(new MenuItem("Warsteiner", 2.00, "EUR", "0.25l",
-				"", new ArrayList<>()));
-
-		items.add(new MenuItem("Guinness", 3.00, "EUR", "0.30l",
-				"", new ArrayList<>()));
-
-		items.add(new MenuItem("Cabernet Sauvignon", 3.90, "EUR",
-				"0.20l", "", new ArrayList<>()));
-
-		items.add(new MenuItem("Pinot Grigio", 3.90, "EUR", "0.20l",
-				"", new ArrayList<>()));
-
-		items.add(new MenuItem("Jägermeister", 2.00, "EUR", "5cl",
-				"", new ArrayList<>()));
-
-		items.add(new MenuItem("Sambuca", 3.90, "EUR", "5cl",
-				"", new ArrayList<>()));
-
-		items.add(new MenuItem("Tasse Kaffee", 1.50, "EUR",
-				"mit Milch, Zucker", "", new ArrayList<>()));
-
-		items.add(new MenuItem("Heiße Schokolade", 2.10, "EUR",
-				"mit Sahne", "", new ArrayList<>()));
-
-		menuItemRepository.save(items);
+		menuItemRepository.setDefaultMenu();
 	}
 
 	/**
@@ -123,7 +64,7 @@ class DefaultDemoDataIntoDB {
 	 */
 	private void generateDesks() {
 		LOGGER.info("Init demo restaurant desks");
-		for(int i = 0; i < MAX_DESKS; i++) deskRepository.save(new Desk((int) (Math.random() * 5) + 3));
+		for(int i = 0; i < MAX_DESKS; i++) deskRepository.insertDesk(new Desk((int) (Math.random() * 5) + 3));
 	}
 
 	/**
@@ -153,20 +94,20 @@ class DefaultDemoDataIntoDB {
 
 	// DANGER! Here must be Parametres in use for dynamic assignment
 	private void updateUserDesk() {
-		User u = userRepository.findByUserId(1);
+		User u = userRepository.findByUsername("Karl");
 		u.getDesks().add(deskRepository.findByNumber(1));
 		u.getDesks().add(deskRepository.findByNumber(2));
 		u.getDesks().add(deskRepository.findByNumber(3));
 		u.getDesks().add(deskRepository.findByNumber(4));
 		userRepository.save(u);
 
-		u = userRepository.findByUserId(2);
+		u = userRepository.findByUsername("Katja");
 		u.getDesks().add(deskRepository.findByNumber(5));
 		u.getDesks().add(deskRepository.findByNumber(6));
 		u.getDesks().add(deskRepository.findByNumber(7));
 		userRepository.save(u);
 
-		u = userRepository.findByUserId(5);
+		u = userRepository.findByUsername("Knut");
 		u.getDesks().add(deskRepository.findByNumber(8));
 		u.getDesks().add(deskRepository.findByNumber(9));
 		u.getDesks().add(deskRepository.findByNumber(10));

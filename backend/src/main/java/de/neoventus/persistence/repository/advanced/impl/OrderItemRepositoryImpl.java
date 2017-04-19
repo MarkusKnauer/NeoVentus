@@ -1,10 +1,10 @@
-package de.neoventus.persistence.repository.implementation;/**
+package de.neoventus.persistence.repository.advanced.impl;/**
  * Created by julian on 19.04.2017.
  */
 
 import de.neoventus.persistence.entity.OrderItem;
 import de.neoventus.persistence.repository.OrderItemRepository;
-import de.neoventus.persistence.repository.customs.OrderItemRepositoryCustom;
+import de.neoventus.persistence.repository.advanced.OrderItemRepositoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

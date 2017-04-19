@@ -1,6 +1,7 @@
 package de.neoventus.persistence.repository;
 
 import de.neoventus.persistence.entity.Desk;
+import de.neoventus.persistence.repository.advanced.DeskRepositoryCustom;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
  * @version 0.0.1
  **/
 @Repository
-public interface DeskRepository extends CrudRepository<Desk, String> {
+public interface DeskRepository extends CrudRepository<Desk, String>,DeskRepositoryCustom {
 	/**
      * find desk by number
      *

@@ -1,6 +1,7 @@
 package de.neoventus.persistence.repository;
 
 import de.neoventus.persistence.entity.MenuItem;
+import de.neoventus.persistence.repository.advanced.MenuItemRepositoryCustom;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Repository;
  *          0.0.2 added find by menuItemID - JB
  **/
 @Repository
-public interface MenuItemRepository extends CrudRepository<MenuItem, String> {
+public interface MenuItemRepository extends CrudRepository<MenuItem, String>,MenuItemRepositoryCustom {
 
 	/**
 	 * find menuitem by name

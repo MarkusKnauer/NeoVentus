@@ -1,4 +1,4 @@
-package de.neoventus.persistence.repository.customs;
+package de.neoventus.persistence.repository.advanced;
 
 import de.neoventus.persistence.entity.Reservation;
 

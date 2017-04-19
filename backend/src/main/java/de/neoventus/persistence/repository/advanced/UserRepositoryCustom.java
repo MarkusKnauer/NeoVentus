@@ -1,4 +1,4 @@
-package de.neoventus.persistence.repository.customs;/**
+package de.neoventus.persistence.repository.advanced;/**
  * Created by julian on 19.04.2017.
  */
 

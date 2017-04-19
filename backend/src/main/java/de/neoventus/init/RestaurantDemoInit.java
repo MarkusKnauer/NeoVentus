@@ -56,7 +56,7 @@ public class RestaurantDemoInit {
     @PostConstruct
     public void initialize() {
         clearData();
-//        new DefaultDemoDataIntoDB(deskRepository, userRepository, menuItemRepository, orderItemRepository, reservationRepository,billingRepository);
+        new DefaultDemoDataIntoDB(deskRepository, userRepository, menuItemRepository, orderItemRepository, reservationRepository,billingRepository);
 	}
 
     /**

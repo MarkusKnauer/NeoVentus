@@ -1,10 +1,10 @@
-package de.neoventus.persistence.repository.implementation;/**
+package de.neoventus.persistence.repository.advanced.impl;/**
  * Created by julian on 19.04.2017.
  */
 
 import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.repository.DeskRepository;
-import de.neoventus.persistence.repository.customs.DeskRepositoryCustom;
+import de.neoventus.persistence.repository.advanced.DeskRepositoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

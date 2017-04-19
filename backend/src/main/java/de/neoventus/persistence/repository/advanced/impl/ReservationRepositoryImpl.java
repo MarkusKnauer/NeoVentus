@@ -1,10 +1,10 @@
-package de.neoventus.persistence.repository.implementation;/**
+package de.neoventus.persistence.repository.advanced.impl;/**
  * Created by julian on 19.04.2017.
  */
 
 import de.neoventus.persistence.entity.Reservation;
 import de.neoventus.persistence.repository.ReservationRepository;
-import de.neoventus.persistence.repository.customs.ReservationRepositoryCustom;
+import de.neoventus.persistence.repository.advanced.ReservationRepositoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

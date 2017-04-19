@@ -1,7 +1,7 @@
 package de.neoventus.persistence.repository;
 
 import de.neoventus.persistence.entity.OrderItem;
-import de.neoventus.persistence.repository.customs.OrderItemRepositoryCustom;
+import de.neoventus.persistence.repository.advanced.OrderItemRepositoryCustom;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
