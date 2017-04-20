@@ -24,10 +24,10 @@ public class UserLifecycleEvents extends AbstractMongoEventListener<User> {
 		User user = event.getSource();
 
 		// only a worker if he has a permission - and set only if not existis
-		if(!user.getPermissions().isEmpty() && user.getUserId() == null) {
-			User max = userRepository.findFirstByOrderByUserIdDesc();
+		if (!user.getPermissions().isEmpty() && user.getWorkerId() == null) {
+			User max = userRepository.findFirstByOrderByWorkerIdDesc();
 
-			user.setUserId(max == null || max.getUserId() == null ? 1 : max.getUserId() + 1);
+			user.setWorkerId(max == null || max.getWorkerId() == null ? 1 : max.getWorkerId() + 1);
 		}
 	}
 

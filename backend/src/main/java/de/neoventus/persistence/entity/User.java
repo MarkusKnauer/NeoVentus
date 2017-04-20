@@ -11,7 +11,7 @@ import java.util.List;
  * @author Dennis Thanner, Julian Beck, Markus Knauer, Tim Heidelbach
  * @version 0.0.7 added first und lastname - DT
  *          0.0.6 removed local variable StringBuilder
- *          0.0.5 Add variable userId - JB
+ *          0.0.5 Add variable workerId - JB
  *          0.0.4 edit permissions as enum - MK
  *          0.0.3 user status clean up - DT
  *          0.0.2 added user status - JB
@@ -24,7 +24,7 @@ public class User extends AbstractDocument {
 	private String firstName;
 	private String lastName;
 
-	private Integer userId;
+	private Integer workerId;
 
 	private List<Permission> permissions;
 
@@ -43,12 +43,12 @@ public class User extends AbstractDocument {
 	}
 
 	// getter and setter
-	public Integer getUserId() {
-		return userId;
+	public Integer getWorkerId() {
+		return workerId;
 	}
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
+	public void setWorkerId(Integer workerId) {
+		this.workerId = workerId;
 	}
 
 	public String getUsername() {

@@ -23,19 +23,19 @@ public interface UserRepository extends CrudRepository<User, String>, NVUserRepo
 	User findByUsername(String username);
 
 	/**
-	 * find user by userId
+	 * find user by workerId
 	 *
-	 * @param userId userIDto search for
+	 * @param workerId workerId to search for
 	 * @return user
 	 */
-	User findByUserId(Integer userId);
+	User findByWorkerId(Integer workerId);
 
 
 	/**
-	 * find user with max userId
+	 * find user with max workerId
 	 *
 	 * @return user
 	 */
-	User findFirstByOrderByUserIdDesc();
+	User findFirstByOrderByWorkerIdDesc();
 
 }

@@ -1,11 +1,13 @@
 package de.neoventus.config;
 
+import de.neoventus.persistence.entity.Permission;
 import de.neoventus.rest.auth.NVUserDetailsService;
 import de.neoventus.rest.auth.RestAuthenticationEntryPoint;
 import de.neoventus.rest.auth.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -39,6 +41,9 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		http
 				.exceptionHandling()
 				.authenticationEntryPoint(new RestAuthenticationEntryPoint())
+				.and()
+				.authorizeRequests()
+				.antMatchers(HttpMethod.POST, "/api/user").hasRole(Permission.ADMIN.toString())
 				.and()
 				.formLogin()
 				.successHandler(new SavedRequestAwareAuthenticationSuccessHandler())

@@ -1,34 +1,11 @@
-package de.neoventus.persistence.repository.advanced.impl;/**
- * Created by julian on 19.04.2017.
- */
+package de.neoventus.persistence.repository.advanced.impl;
 
-import de.neoventus.persistence.entity.Reservation;
-import de.neoventus.persistence.repository.ReservationRepository;
-import de.neoventus.persistence.repository.advanced.ReservationRepositoryCustom;
-import org.springframework.beans.factory.annotation.Autowired;
+import de.neoventus.persistence.repository.advanced.NVReservationRepository;
 
 /**
- * @author: Julian Beck
- * @version: 0.0.1
- * @description:
+ * @author Julian Beck
+ * @version 0.0.1
  **/
-public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
-    @Autowired
-    private ReservationRepository reservationRepository;
+public class ReservationRepositoryImpl implements NVReservationRepository {
 
-    @Override
-    public void insertReservation(Reservation item) {
-        item.setReservationID((int)reservationRepository.count()+1);
-        reservationRepository.save(item);
-    }
-
-    @Override
-    public void updateReservation(Reservation item) {
-        reservationRepository.save(item);
-    }
-
-    @Override
-    public void deleteReservation(Reservation item) {
-        reservationRepository.delete(item);
-    }
 }

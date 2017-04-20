@@ -1,34 +1,11 @@
-package de.neoventus.persistence.repository.advanced.impl;/**
- * Created by julian on 19.04.2017.
- */
+package de.neoventus.persistence.repository.advanced.impl;
 
-import de.neoventus.persistence.entity.OrderItem;
-import de.neoventus.persistence.repository.OrderItemRepository;
-import de.neoventus.persistence.repository.advanced.OrderItemRepositoryCustom;
-import org.springframework.beans.factory.annotation.Autowired;
+import de.neoventus.persistence.repository.advanced.NVOrderItemRepository;
 
 /**
- * @author: Julian Beck
- * @version: 0.0.1
- * @description:
+ * @author Julian Beck
+ * @version 0.0.1
  **/
-public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom{
-    @Autowired
-    private OrderItemRepository orderItemRepository;
+public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 
-    @Override
-    public void insertOrder(OrderItem item) {
-        item.setOrderID((int)orderItemRepository.count()+1);
-        orderItemRepository.save(item);
-    }
-
-    @Override
-    public void updateOrder(OrderItem item) {
-        orderItemRepository.save(item);
-    }
-
-    @Override
-    public void deleteOrder(OrderItem item) {
-        orderItemRepository.delete(item);
-    }
 }

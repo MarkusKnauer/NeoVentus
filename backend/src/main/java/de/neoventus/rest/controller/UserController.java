@@ -22,9 +22,8 @@ import java.util.logging.Logger;
 @RequestMapping("/api/user")
 public class UserController {
 
-	private final UserRepository userRepository;
-
 	private final static Logger LOGGER = Logger.getLogger(UserController.class.getName());
+	private final UserRepository userRepository;
 
 	@Autowired
 	public UserController(UserRepository userRepository) {
@@ -60,14 +59,58 @@ public class UserController {
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public void insert(@RequestBody @Valid UserDto dto, BindingResult bindingResult, HttpServletResponse response) {
-		// todo add on validation failure
 		try {
-			userRepository.save(dto);
-			LOGGER.info("Saving user to database: " + dto.getUsername());
+			if (bindingResult.hasErrors()) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+			} else {
+				userRepository.save(dto);
+				LOGGER.info("Saving user to database: " + dto.getUsername());
+			}
 		} catch(Exception e) {
 			LOGGER.warning("Error inserting user to database: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
 
 	}
+
+	/**
+	 * controller method for updating user
+	 *
+	 * @param dto
+	 * @param bindingResult
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(method = RequestMethod.PUT)
+	public void update(@RequestBody @Valid UserDto dto, BindingResult bindingResult, HttpServletResponse response) {
+		try {
+			if (bindingResult.hasErrors()) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+			} else {
+				userRepository.save(dto);
+				LOGGER.info("Update user to database: " + dto.getUsername());
+			}
+		} catch (Exception e) {
+			LOGGER.warning("Error updating user to database: " + e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		}
+
+	}
+
+
+	/**
+	 * controller method for deleting user
+	 *
+	 * @param id
+	 */
+	@RequestMapping(method = RequestMethod.DELETE)
+	public void delete(@RequestParam String id, HttpServletResponse response) {
+		try {
+			userRepository.delete(id);
+		} catch (Exception e) {
+			LOGGER.warning("Error updating user to database: " + e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		}
+	}
+
 }

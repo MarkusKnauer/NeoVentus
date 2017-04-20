@@ -1,46 +1,22 @@
-package de.neoventus.persistence.repository.advanced.impl;/**
- * Created by julian on 19.04.2017.
- */
+package de.neoventus.persistence.repository.advanced.impl;
 
 import de.neoventus.persistence.entity.MenuItem;
-import de.neoventus.persistence.repository.MenuItemRepository;
-import de.neoventus.persistence.repository.advanced.MenuItemRepositoryCustom;
+import de.neoventus.persistence.repository.advanced.NVMenuItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
- * @author: Julian Beck
- * @version: 0.0.1
- * @description:
+ * @author Julian Beck
+ * @version 0.0.1
  **/
-public class MenuItemRepositoryImpl implements MenuItemRepositoryCustom{
+public class MenuItemRepositoryImpl implements NVMenuItemRepository {
 
     private final static Logger LOGGER = Logger.getLogger(MenuItemRepositoryImpl.class.getName());
 
-    @Autowired
-    private MenuItemRepository menuItemRepository;
-    @Override
-    public void insertMenuItem(MenuItem item) {
-        LOGGER.info("Insert new MenuItem");
-        item.setMenuItemID((int)menuItemRepository.count()+1);
-        menuItemRepository.save(item);
-    }
-
-    @Override
-    public void updateMenuItem(MenuItem item) {
-        LOGGER.info("Update MenuItem");
-        menuItemRepository.save(item);
-    }
-
-    @Override
-    public void deleteMenuItem(MenuItem item) {
-        LOGGER.info("Delete MenuItem");
-        menuItemRepository.delete(item);
-    }
-
-
+	private MongoTemplate mongoTemplate;
 
     // Default-Values for MenuItem
     @Override
@@ -68,6 +44,11 @@ public class MenuItemRepositoryImpl implements MenuItemRepositoryCustom{
         new MenuItem("Tasse Kaffee", 1.50, "EUR", "mit Milch, Zucker", "", new ArrayList<>()),
         new MenuItem("Heiße Schokolade", 2.10, "EUR", "mit Sahne", "", new ArrayList<>())
         };
-        for(MenuItem m: menu) insertMenuItem(m);
-    }
+		for (MenuItem m : menu) mongoTemplate.save(m);
+	}
+
+	@Autowired
+	private void setMongoTemplate(MongoTemplate mongoTemplate) {
+		this.mongoTemplate = mongoTemplate;
+	}
 }

@@ -4,7 +4,10 @@
 
 package de.neoventus.init;
 
-import de.neoventus.persistence.entity.*;
+import de.neoventus.persistence.entity.Desk;
+import de.neoventus.persistence.entity.OrderItem;
+import de.neoventus.persistence.entity.Permission;
+import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.repository.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -15,7 +18,7 @@ import java.util.logging.Logger;
 /**
  * @author Dennis Thanner, Julian Beck, Markus Knauer, Tim Heidelbach
  * @version 0.0.4 changed to new repositories
- * 0.0.3 Indirectly insert, Update, delete on DB (Class InsertUpdateDelete) +
+ *          0.0.3 Indirectly insert, Update, delete on DB (Class InsertUpdateDelete) +
  *          and repository access in ControlEntityObjects- JB
  *          0.0.2 Refactor default demo data in separate class
  **/
@@ -64,7 +67,7 @@ class DefaultDemoDataIntoDB {
 	 */
 	private void generateDesks() {
 		LOGGER.info("Init demo restaurant desks");
-		for(int i = 0; i < MAX_DESKS; i++) deskRepository.insertDesk(new Desk((int) (Math.random() * 5) + 3));
+		for (int i = 0; i < MAX_DESKS; i++) deskRepository.save(new Desk((int) (Math.random() * 5) + 3));
 	}
 
 	/**
@@ -116,7 +119,7 @@ class DefaultDemoDataIntoDB {
 	}
 
 	private void generateOrderItem() {
-		orderItemRepository.save(new OrderItem(userRepository.findByUserId(1),
+		orderItemRepository.save(new OrderItem(userRepository.findByWorkerId(1),
 				deskRepository.findByNumber(2), menuItemRepository.findByNumber(18), ""));
 
 	}

@@ -64,7 +64,7 @@ public class UserRepositoryTest extends AbstractTest {
 
 		u = userRepository.save(u);
 
-		Assert.assertTrue(u.getUserId() == 1);
+		Assert.assertTrue(u.getWorkerId() == 1);
 
 	}
 

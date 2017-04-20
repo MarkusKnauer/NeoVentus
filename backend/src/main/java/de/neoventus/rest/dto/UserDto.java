@@ -1,5 +1,6 @@
 package de.neoventus.rest.dto;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ public class UserDto implements Serializable {
 
 	private String id;
 
+	@NotNull
 	private String username;
 
 	private String password;

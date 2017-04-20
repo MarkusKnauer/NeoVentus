@@ -1,37 +1,13 @@
-package de.neoventus.persistence.repository.advanced.impl;/**
- * Created by julian on 19.04.2017.
- */
+package de.neoventus.persistence.repository.advanced.impl;
 
-import de.neoventus.persistence.entity.Desk;
-import de.neoventus.persistence.repository.DeskRepository;
-import de.neoventus.persistence.repository.advanced.DeskRepositoryCustom;
-import org.springframework.beans.factory.annotation.Autowired;
+import de.neoventus.persistence.repository.advanced.NVDeskRepository;
 
 /**
- * @author: Julian Beck
- * @version: 0.0.1
- * @description:
+ * @author Julian Beck
+ * @version 0.0.1
  **/
-public class DeskRepositoryImpl implements DeskRepositoryCustom {
+public class DeskRepositoryImpl implements NVDeskRepository {
 
-    @Autowired
-    DeskRepository deskRepository;
-
-    @Override
-    public void insertDesk(Desk desk) {
-        desk.setNumber((int)deskRepository.count()+1);
-        deskRepository.save(desk);
-    }
-
-    @Override
-    public void updateDesk(Desk desk) {
-        deskRepository.save(desk);
-    }
-
-    @Override
-    public void deleteDesk(Desk desk) {
-        deskRepository.delete(desk);
-    }
 
 
 }

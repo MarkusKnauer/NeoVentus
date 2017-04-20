@@ -1,7 +1,7 @@
 package de.neoventus.persistence.repository;
 
 import de.neoventus.persistence.entity.OrderItem;
-import de.neoventus.persistence.repository.advanced.OrderItemRepositoryCustom;
+import de.neoventus.persistence.repository.advanced.NVOrderItemRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
  * @version 0.0.1
  **/
 @Repository
-public interface OrderItemRepository extends CrudRepository<OrderItem, String>,OrderItemRepositoryCustom {
+public interface OrderItemRepository extends CrudRepository<OrderItem, String>, NVOrderItemRepository {
     /**
      * find OrderItem by ID
      *

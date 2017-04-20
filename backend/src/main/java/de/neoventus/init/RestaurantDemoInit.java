@@ -22,19 +22,13 @@ import java.util.logging.Logger;
 @Profile("default")
 public class RestaurantDemoInit {
 
-    private final DeskRepository deskRepository;
-
-    private final UserRepository userRepository;
-
-    private final OrderItemRepository orderItemRepository;
-
-    private final MenuItemRepository menuItemRepository;
-
-    private final ReservationRepository reservationRepository;
-
-    private final BillingRepository billingRepository;
-
     private final static Logger LOGGER = Logger.getLogger(RestaurantDemoInit.class.getName());
+    private final DeskRepository deskRepository;
+    private final UserRepository userRepository;
+    private final OrderItemRepository orderItemRepository;
+    private final MenuItemRepository menuItemRepository;
+    private final ReservationRepository reservationRepository;
+    private final BillingRepository billingRepository;
 
     @Autowired
     public RestaurantDemoInit(DeskRepository deskRepository, UserRepository userRepository,

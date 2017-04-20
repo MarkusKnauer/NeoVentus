@@ -23,12 +23,13 @@ public class UserRepositoryImpl implements NVUserRepository {
 	public void save(UserDto dto) {
 		User u;
 		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-		if(dto.getId() != null)
+		if (dto.getId() != null) {
 			u = mongoTemplate.findById(dto.getId(), User.class);
-		else
+		} else {
 			u = new User();
+		}
 
-//		u.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
+		u.setPassword(dto.getPassword() != null ? bCryptPasswordEncoder.encode(dto.getPassword()) : null);
 		u.setUsername(dto.getUsername());
 		u.setFirstName(dto.getFirstName());
 		u.setLastName(dto.getLastName());
