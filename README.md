@@ -31,6 +31,11 @@ Ziel diese Projektes ist es, in einem anerkannten Softwareengineering-Prozess, e
 * Maven/Importing: [x] *Import Maven projects automatically*
 * In View *Maven Projects* -> *Reimport All Maven Projects*. Nun sollten automatisch alle in der *pom.xml* deklarierten Dependencies heruntergeladen werden und im Ordner *External Libraries* auftauchen (Unter Windows entspricht das dem Ordner *C:\Users\User\.m2\repository*).
 * Falls die Dependencies bereits heruntergeladen wurden und unter External Libraries angezeigt werden, in den Sourcen allerdings nicht gefunden werden, hilft: File -> Invalidate Caches
+* Fürs Frontend:
+    * [node.js](https://nodejs.org/en/) herunterladen
+    * ```npm install -g ionic cordova``` in der Konsole ausführen
+    * Zum Starten der app aus dem terminal in /frontend wechseln und ```ionic serve``` eingeben
+
 
 ### Coding Guide Lines ###
 * Settings -> Editor -> Code Style -> [x] Enable EditorConfig support
