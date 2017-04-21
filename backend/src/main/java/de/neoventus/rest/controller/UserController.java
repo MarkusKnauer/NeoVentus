@@ -4,6 +4,7 @@ import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.repository.UserRepository;
 import de.neoventus.rest.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ import java.util.logging.Logger;
 @RequestMapping("/api/user")
 public class UserController {
 
-	private final static Logger LOGGER = Logger.getLogger(UserController.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(UserController.class.getName());
 	private final UserRepository userRepository;
 
 	@Autowired
@@ -42,7 +43,7 @@ public class UserController {
 	public User listUser(HttpServletResponse response, @PathVariable String username) {
 		try {
 			return userRepository.findByUsername(username);
-		} catch(Exception e) {
+		} catch (DataAccessException e) {
 			LOGGER.warning("Error searching user with username " + username + ": " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return null;
@@ -66,7 +67,7 @@ public class UserController {
 				userRepository.save(dto);
 				LOGGER.info("Saving user to database: " + dto.getUsername());
 			}
-		} catch(Exception e) {
+		} catch (DataAccessException e) {
 			LOGGER.warning("Error inserting user to database: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
@@ -90,7 +91,7 @@ public class UserController {
 				userRepository.save(dto);
 				LOGGER.info("Update user to database: " + dto.getUsername());
 			}
-		} catch (Exception e) {
+		} catch (DataAccessException e) {
 			LOGGER.warning("Error updating user to database: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
@@ -107,7 +108,7 @@ public class UserController {
 	public void delete(@RequestParam String id, HttpServletResponse response) {
 		try {
 			userRepository.delete(id);
-		} catch (Exception e) {
+		} catch (DataAccessException e) {
 			LOGGER.warning("Error updating user to database: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
