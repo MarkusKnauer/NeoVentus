@@ -1,21 +1,18 @@
 package de.neoventus.persistence.repository.advanced.impl;
 
 import de.neoventus.persistence.entity.MenuItem;
-import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.repository.advanced.NVMenuItemRepository;
 import de.neoventus.rest.dto.MenuDto;
-import de.neoventus.rest.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
  * @author Julian Beck, Markus Knauer
- * @version 0.0.2 Insert Method save(MenuDto)
- * 0.0.1
+ * @version 0.0.2 Insert Method save(MenuDto) MK
+ * 0.0.1 created JB
  **/
 public class MenuItemRepositoryImpl implements NVMenuItemRepository {
 
