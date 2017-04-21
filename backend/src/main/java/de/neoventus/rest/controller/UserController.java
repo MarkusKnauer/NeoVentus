@@ -108,7 +108,7 @@ public class UserController {
 		try {
 			userRepository.delete(id);
 		} catch (Exception e) {
-			LOGGER.warning("Error updating user to database: " + e.getMessage());
+			LOGGER.warning("Error deleting user to database: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
 	}
