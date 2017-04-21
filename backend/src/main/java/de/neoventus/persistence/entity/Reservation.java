@@ -6,7 +6,8 @@ import java.util.Date;
 
 /**
  * @author Dennis Thanner, Tim Heidelbach
- * @version 0.0.2 removed local variable StringBuilder
+ * @version 0.0.3 added field duration
+ *          0.0.2 removed local variable StringBuilder
  **/
 public class Reservation extends AbstractDocument {
 
@@ -18,15 +19,19 @@ public class Reservation extends AbstractDocument {
 
 	private Date createdAt;
 
-	private Integer reservationID;
+	private Integer reservationId;
 
 	private Date time;
 
-	// getter and setter
-	public Integer getReservationID() {return reservationID;}
+	private Integer duration;
 
-	public void setReservationID(Integer reservationID) {
-		this.reservationID = reservationID;
+	// getter and setter
+	public Integer getReservationId() {
+		return reservationId;
+	}
+
+	public void setReservationId(Integer reservationId) {
+		this.reservationId = reservationId;
 	}
 
 	public User getReservedBy() {
@@ -61,12 +66,23 @@ public class Reservation extends AbstractDocument {
 		this.time = time;
 	}
 
+	public Integer getDuration() {
+		return duration;
+	}
+
+	public void setDuration(Integer duration) {
+		this.duration = duration;
+	}
+
 	@Override
 	public String toString() {
+
 		return "Reservation{Id: " +
 				this.id +
 				", Time: " +
 				this.time +
+				", Duration: " +
+				this.duration +
 				", Desk: " +
 				this.desk +
 				"}";

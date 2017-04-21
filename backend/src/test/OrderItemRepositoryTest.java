@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.ArrayList;
+
 /**
- * testing the user repository methods
+ * testing the Order repository methods
  *
  * @author Julian beck
  * @version 0.0.1
@@ -25,29 +27,26 @@ public class OrderItemRepositoryTest extends AbstractTest {
 	private DeskRepository deskRepository;
 	@Autowired
 	private UserRepository userRepository;
+
+	private Desk desk = null;
+	private MenuItem menuItem= null;
+	private User user= null;
+	private Reservation reservation= null;
+
 	@Test
-	public void testSearchByName() {
+	public void testSearchByID() {
+
 		OrderItem o = new OrderItem();
-		/*BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 		o.setOrderID(1);
-		Desk desk = new Desk(3);
-		desk.setNumber(1);
-		deskRepository.save(desk);
+		o.setDesk(getDesk());
+		o.setWaiter(getUser());
+		o.setItem(getMenuItem());
 
-		User waiter =new User("Karl", bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE);
-		o.setWaiter(waiter);
-		o.setDesk(desk);
-
-
-		userRepository.save(waiter);
-*/
 		orderItemRepository.save(o);
 
-		//o = orderItemRepository.findByOrderID(1);
-
-		//Assert.assertNotNull(o);
-
-		Assert.assertTrue(o.getOrderID()==1);
+		OrderItem o2 = orderItemRepository.findByOrderID(o.getOrderID());
+		Assert.assertNotNull(o);
+		Assert.assertEquals(o.getOrderID(), o2.getOrderID());
 	}
 
 	/**
@@ -57,18 +56,18 @@ public class OrderItemRepositoryTest extends AbstractTest {
 	 */
 	@Test
 	public void testSaveByDto() {
-		OrderItemDto dto = new OrderItemDto();
-		dto.setOrderID(1);
-		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-		dto.setOrderID(1);
-		dto.setWaiter(1);
-		dto.setDeskNumber(1);
+		getDesk();
+		getMenuItem();
+		getUser();
+
+		OrderItemDto dto = new OrderItemDto(1,1,1,"");
+
 
 		orderItemRepository.save(dto);
 
-		OrderItem u = orderItemRepository.findByOrderID(1);
-
-		Assert.assertNotNull(u);
+		OrderItem o = orderItemRepository.findFirstByOrderByOrderIDDesc();
+		Assert.assertNotNull(o);
+		Assert.assertEquals(o.getOrderID(), dto.getOrderID());
 	}
 
 	/**
@@ -79,40 +78,91 @@ public class OrderItemRepositoryTest extends AbstractTest {
 	@Test
 	public void testBeforeSaveEvent() {
 		OrderItem o2 = new OrderItem();
-		Desk desk = new Desk(14);
-		MenuItem item = new MenuItem();
-//		deskRepository.save(desk);
-//		menuItemRepository.setDefaultMenu();
-		User user = new User();
-		//BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-		user.setUsername("Karl");
+		Desk desk = getDesk();
+		MenuItem item = getMenuItem();
+		User user = getUser();
 
-		o2.setOrderID(3);
-
+		o2.setOrderID(1);
 		o2.setWaiter(user);
 		o2.setDesk(desk);
-		o2.setItem(menuItemRepository.findByNumber(1));
+		o2.setItem(item);
 		orderItemRepository.save(o2);
-
 
 		OrderItem o = new OrderItem();
 
-		BCryptPasswordEncoder bCryptPasswordEncoder2 = new BCryptPasswordEncoder();
-		o.setOrderID(4);
-		o.setWaiter(new User("KarlTest", bCryptPasswordEncoder2.encode("testson"), Permission.SERVICE));
-		o.setDesk(new Desk(24));
+		o.setWaiter(getUser2());
+		o.setDesk(getDesk2());
+		o.setItem(getMenuItem2());
 		o = orderItemRepository.save(o);
-
-		Assert.assertTrue(o.getOrderID() == 4);
+		Assert.assertNotNull(o);
+		Assert.assertTrue(o.getOrderID()== 2);
 
 	}
 
+	private Desk getDesk2() {
+		if (desk == null) {
+			desk = new Desk();
+			desk.setNumber(1000);
+
+			deskRepository.save(getDesk2());
+		}
+		return desk;
+	}
+	private User getUser2() {
+		if (user == null) {
+			user = new User();
+			user.setUsername("Karl-Otto");
+
+			userRepository.save(getUser2());
+		}
+		return user;
+	}
+	private MenuItem getMenuItem2() {
+		if (menuItem == null) {
+			menuItem = new MenuItem();
+			menuItem.setDescription("Fanta");
+
+			menuItemRepository.save(getMenuItem());
+		}
+		return menuItem;
+	}
+
+	private Desk getDesk() {
+		if (desk == null) {
+			desk = new Desk();
+			desk.setNumber(999);
+
+			deskRepository.save(getDesk());
+		}
+		return desk;
+	}
+	private User getUser() {
+		if (user == null) {
+			user = new User();
+			user.setUsername("Otto");
+
+			userRepository.save(getUser());
+		}
+		return user;
+	}
+	private MenuItem getMenuItem() {
+		if (menuItem == null) {
+			menuItem = new MenuItem();
+			menuItem.setDescription("Spezi");
+
+			menuItemRepository.save(getMenuItem());
+		}
+		return menuItem;
+	}
 	/**
 	 * clear the data written
 	 */
 	@After
 	public void deleteAll() {
 		orderItemRepository.deleteAll();
+		deskRepository.deleteAll();
+		menuItemRepository.deleteAll();
+		userRepository.deleteAll();
 	}
 
 }

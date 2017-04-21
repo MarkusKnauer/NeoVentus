@@ -20,14 +20,14 @@ public class DeskLifecycleEvents extends AbstractMongoEventListener<Desk> {
 
 	@Override
 	public void onBeforeSave(BeforeSaveEvent<Desk> event) {
-		// automatically increment set userId
+		// automatically increment set deskId
 		Desk desk = event.getSource();
 
 		// only set number if not exists yet
 		if(desk.getNumber() == null) {
 			Desk max = deskRepository.findFirstByOrderByNumberDesc();
 
-			desk.setNumber(max == null ? 1 : max.getNumber() + 1);
+			desk.setNumber(max.getNumber() == null ? 1 : max.getNumber() + 1);
 		}
 	}
 

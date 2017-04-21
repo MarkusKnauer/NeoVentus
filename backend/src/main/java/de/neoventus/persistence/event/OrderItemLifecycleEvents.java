@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
 import org.springframework.stereotype.Component;
 
 /**
- * class for handling entity events for desks
+ * class for handling entity events for OrderItems
  *
  * @author Julian Beck
  * @version 0.0.1
@@ -24,7 +24,7 @@ public class OrderItemLifecycleEvents extends AbstractMongoEventListener<OrderIt
 		OrderItem orderItem = event.getSource();
 
 		// only set number if not exists yet
-		if(orderItem == null) {
+		if(orderItem.getOrderID() == null) {
 			OrderItem max = orderItemRepository.findFirstByOrderByOrderIDDesc();
 
 			orderItem.setOrderID(max == null ? 1 : max.getOrderID() + 1);
