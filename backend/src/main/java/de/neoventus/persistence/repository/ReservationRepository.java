@@ -6,16 +6,25 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * @author Dennis Thanner
- * @version 0.0.1
+ * @author Dennis Thanner, Tim Heidelbach
+ * @version 0.0.2
  **/
 @Repository
 public interface ReservationRepository extends CrudRepository<Reservation, String>, NVReservationRepository {
+
     /**
      * find reservation by ID
      *
-     * @param reservationID menuItemID to search for
+     * @param reservationId reservationID to search for
      * @return Reservation
      */
-    Reservation findByReservationID(Integer reservationID);
+    Reservation findByReservationId(Integer reservationId);
+
+    /**
+     * find reservation with max reservationId
+     *
+     * @return Reservation
+     */
+    Reservation findFirstByOrderByReservationIdDesc();
+
 }
