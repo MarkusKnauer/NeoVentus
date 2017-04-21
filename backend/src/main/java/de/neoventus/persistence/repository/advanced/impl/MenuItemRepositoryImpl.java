@@ -4,6 +4,7 @@ import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.repository.advanced.NVMenuItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -12,6 +13,7 @@ import java.util.logging.Logger;
  * @author Julian Beck
  * @version 0.0.1
  **/
+@Repository
 public class MenuItemRepositoryImpl implements NVMenuItemRepository {
 
     private final static Logger LOGGER = Logger.getLogger(MenuItemRepositoryImpl.class.getName());

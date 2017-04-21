@@ -9,7 +9,7 @@ import de.neoventus.rest.dto.UserDto;
 public interface NVUserRepository {
 
 	/**
-	 * convenience method to update or method user by dto
+	 * convenience method to update or create user by dto
 	 *
 	 * @param dto
 	 */

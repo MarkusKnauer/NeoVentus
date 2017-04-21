@@ -27,7 +27,7 @@ public class DeskLifecycleEvents extends AbstractMongoEventListener<Desk> {
 		if(desk.getNumber() == null) {
 			Desk max = deskRepository.findFirstByOrderByNumberDesc();
 
-			desk.setNumber(max == null ? 1 : max.getNumber() + 1);
+			desk.setNumber(max.getNumber() == null ? 1 : max.getNumber() + 1);
 		}
 	}
 

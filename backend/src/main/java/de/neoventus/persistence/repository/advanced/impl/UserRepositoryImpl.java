@@ -7,11 +7,13 @@ import de.neoventus.rest.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Dennis Thanner
  * @version 0.0.1
  **/
+@Repository
 public class UserRepositoryImpl implements NVUserRepository {
 
 	private MongoTemplate mongoTemplate;
