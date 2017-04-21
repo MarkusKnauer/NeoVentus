@@ -20,7 +20,7 @@ public class DeskLifecycleEvents extends AbstractMongoEventListener<Desk> {
 
 	@Override
 	public void onBeforeSave(BeforeSaveEvent<Desk> event) {
-		// automatically increment set userId
+		// automatically increment set deskId
 		Desk desk = event.getSource();
 
 		// only set number if not exists yet
