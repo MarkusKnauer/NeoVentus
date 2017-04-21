@@ -20,21 +20,26 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 /**
  * spring security config class
  *
- * @author Dennis Thanner
- * @version 0.0.1
+ * @author Dennis Thanner, Tim Heidelbach
+ * @version 0.0.2
  **/
 @EnableWebSecurity
 @Configuration
 public class SecurityContext extends WebSecurityConfigurerAdapter {
 
-	@Autowired
+
 	private NVUserDetailsService userDetailsService;
+
+	@Autowired
+	public void setUserDetailsService(NVUserDetailsService userDetailsService) {
+		this.userDetailsService = userDetailsService;
+	}
 
 	/**
 	 * configure security
 	 *
-	 * @param http
-	 * @throws Exception
+	 * @param http the http sercurity
+	 * @throws Exception the exception
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -44,6 +49,9 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 				.and()
 				.authorizeRequests()
 				.antMatchers(HttpMethod.POST, "/api/user").hasRole(Permission.ADMIN.toString())
+				.antMatchers(HttpMethod.POST, "/api/reservation").hasAnyRole(
+				Permission.SERVICE.toString(),
+				Permission.ADMIN.toString())
 				.and()
 				.formLogin()
 				.successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
@@ -57,8 +65,8 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 	/**
 	 * set custom auth provider to be used for authentication
 	 *
-	 * @param auth
-	 * @throws Exception
+	 * @param auth the authentication manager builder
+	 * @throws Exception the exception
 	 */
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {

@@ -5,11 +5,13 @@ import de.neoventus.persistence.repository.advanced.NVDeskRepository;
 import de.neoventus.rest.dto.DeskDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Julian Beck, Dominik Streif
  * @version 0.0.1
  **/
+@Repository
 public class DeskRepositoryImpl implements NVDeskRepository {
 
 	private MongoTemplate mongoTemplate;
