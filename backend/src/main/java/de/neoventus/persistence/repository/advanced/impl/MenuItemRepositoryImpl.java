@@ -1,16 +1,21 @@
 package de.neoventus.persistence.repository.advanced.impl;
 
 import de.neoventus.persistence.entity.MenuItem;
+import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.repository.advanced.NVMenuItemRepository;
+import de.neoventus.rest.dto.MenuDto;
+import de.neoventus.rest.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
- * @author Julian Beck
- * @version 0.0.1
+ * @author Julian Beck, Markus Knauer
+ * @version 0.0.2 Insert Method save(MenuDto)
+ * 0.0.1
  **/
 public class MenuItemRepositoryImpl implements NVMenuItemRepository {
 
@@ -46,6 +51,29 @@ public class MenuItemRepositoryImpl implements NVMenuItemRepository {
         };
 		for (MenuItem m : menu) mongoTemplate.save(m);
 	}
+
+    @Override
+    public void save(MenuDto dto) {
+        MenuItem item;
+        if (dto.getMenuItemID() != null) {
+            item = mongoTemplate.findById(dto.getMenuItemID(), MenuItem.class);
+        } else {
+            item = new MenuItem();
+        }
+
+        item.setCurrency(dto.getCurrency());
+        item.setDescription(dto.getDescription());
+        item.setMediaUrl(dto.getMediaUrl());
+        item.setMenuItemID(dto.getMenuItemID());
+        item.setName(dto.getName());
+        item.setNotices(dto.getNotices());
+        item.setNumber(dto.getNumber());
+        item.setPrice(dto.getPrice());
+        // todo item.setId(dto.getMenuItemID(), wird das benötigt?
+
+        mongoTemplate.save(item);
+    }
+
 
 	@Autowired
 	private void setMongoTemplate(MongoTemplate mongoTemplate) {

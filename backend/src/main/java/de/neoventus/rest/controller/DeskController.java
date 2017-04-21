@@ -15,8 +15,9 @@ import java.util.logging.Logger;
 /**
  * REST controller for entity Desk
  *
- * @author Dominik Streif
- * @version 0.0.1
+ * @author Dominik Streif, Markus Knauer
+ * @version 0.0.2 edited Logger to DeskController MK
+ * 0.0.1 DS
  */
 
 
@@ -24,7 +25,7 @@ import java.util.logging.Logger;
 @RequestMapping("/api/desk")
 public class DeskController {
 
-	private final static Logger LOGGER = Logger.getLogger(UserController.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(DeskController.class.getName());
 	private final DeskRepository deskRepository;
 
 	@Autowired
