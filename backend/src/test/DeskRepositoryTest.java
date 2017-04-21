@@ -40,7 +40,14 @@ public class DeskRepositoryTest extends AbstractTest {
 	 */
 	@Test
 	public void testSaveByDto() {
-	//???? to do
+
+		DeskDto dto = new DeskDto();
+		dto.setSeats(new Integer(4711));
+
+		deskRepository.save(dto);
+
+		Desk d = deskRepository.findFirstByOrderByNumberDesc();
+		Assert.assertEquals(dto.getSeats(), d.getSeats());
 
 	}
 
