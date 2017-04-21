@@ -14,8 +14,15 @@ public interface OrderItemRepository extends CrudRepository<OrderItem, String>, 
     /**
      * find OrderItem by ID
      *
-     * @param orderID menuItemID to search for
+     * @param orderID orderID to search for
      * @return OrderItem
      */
     OrderItem findByOrderID(Integer orderID);
+
+    /**
+     * find orderItem with max OrderItem
+     *
+     * @return OrderItem
+     */
+    OrderItem findFirstByOrderByOrderIDDesc();
 }
