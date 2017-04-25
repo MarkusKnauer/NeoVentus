@@ -9,7 +9,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 /**
  * @author Julian Beck
- * @version 0.0.1
+ * @version 0.0.2 added variable state - DS
+ * 			0.0.1
  **/
 public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 
@@ -32,7 +33,8 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 		o.setDesk(dto.getDeskNumber() != null ? deskRepository.findByNumber(dto.getDeskNumber()): null);
 		o.setItem(dto.getMenuItemNumber() != null ? menuItemRepository.findByNumber(dto.getMenuItemNumber()):null);
 		o.setWaiter(dto.getWaiter() != null ? userRepository.findByWorkerId(dto.getWaiter()): null);
-		o.setGuestWish(dto.getGuestWish()!= null? dto.getGuestWish(): "");
+		o.setGuestWish(dto.getGuestWish() != null ? dto.getGuestWish() : "");
+		o.setState(dto.getState() != null ? dto.getState() : "");
 
 
 		mongoTemplate.save(o);

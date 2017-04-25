@@ -4,7 +4,9 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 
 /**
  * @author Dennis Thanner, Tim Heidelbach
- * @version 0.0.2 removed local variable StringBuilder
+ * @version
+ * @version 0.0.3 added variable state - DS
+ *          0.0.2 removed local variable StringBuilder
  **/
 public class OrderItem extends AbstractDocument {
 
@@ -21,14 +23,17 @@ public class OrderItem extends AbstractDocument {
 
     private String guestWish;
 
+    private String state;
+
     public OrderItem() {
     }
 
-    public OrderItem(User user, Desk desk, MenuItem menuItem, String guestwish) {
+    public OrderItem(User user, Desk desk, MenuItem menuItem, String guestwish, String state) {
         setWaiter(user);
         setDesk(desk);
         setGuestWish(guestwish);
         setItem(menuItem);
+        setState(state);
     }
 
     // getter and setter
@@ -68,6 +73,14 @@ public class OrderItem extends AbstractDocument {
 
     public void setGuestWish(String guestWish) {
         this.guestWish = guestWish;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     @Override

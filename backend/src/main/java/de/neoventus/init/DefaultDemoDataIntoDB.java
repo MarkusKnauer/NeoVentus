@@ -120,7 +120,7 @@ class DefaultDemoDataIntoDB {
 
 	private void generateOrderItem() {
 		orderItemRepository.save(new OrderItem(userRepository.findByWorkerId(1),
-				deskRepository.findByNumber(2), menuItemRepository.findByNumber(18), ""));
+				deskRepository.findByNumber(2), menuItemRepository.findByNumber(18), "", "aufgegeben"));
 
 	}
 

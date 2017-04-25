@@ -5,7 +5,8 @@ import java.io.Serializable;
 
 /**
  * @author Julian
- * @version 0.0.1
+ * @version 0.0.2 added variable state - DS
+ * 			0.0.1
  **/
 public class OrderItemDto implements Serializable {
 
@@ -24,14 +25,17 @@ public class OrderItemDto implements Serializable {
 
 	private String guestWish;
 
+	private String state;
+
 	public OrderItemDto() {
 	}
 
-	public OrderItemDto(Integer user, Integer desk, Integer menuItem, String guestwish) {
+	public OrderItemDto(Integer user, Integer desk, Integer menuItem, String guestwish, String state) {
 		setWaiter(user);
 		setDeskNumber(desk);
 		setGuestWish(guestwish);
 		setMenuItemNumber(menuItem);
+		setState(state);
 	}
 
 	// getter and setter
@@ -71,6 +75,14 @@ public class OrderItemDto implements Serializable {
 
 	public void setGuestWish(String guestWish) {
 		this.guestWish = guestWish;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 
 }
