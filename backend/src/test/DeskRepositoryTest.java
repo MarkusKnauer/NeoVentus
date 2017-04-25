@@ -10,8 +10,8 @@ import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
 /**
  * testing the desk repository methods
  *
- * @author Dominik Streif
- * @version 0.0.1
+ * @author Dominik Streif, Dennis Thanner
+ * @version 0.0.2 extended before save event test - DT
  */
 public class DeskRepositoryTest extends AbstractTest {
 
@@ -54,12 +54,18 @@ public class DeskRepositoryTest extends AbstractTest {
 	/**
 	 * test if the specified before save event works
 	 *
-	 * @see de.neoventus.persistence.event.UserLifecycleEvents#onBeforeSave(BeforeSaveEvent)
+	 * @see de.neoventus.persistence.event.DeskLifecycleEvents#onBeforeSave(BeforeSaveEvent)
 	 */
 	@Test
 	public void testBeforeSaveEvent() {
+		Desk d3 = new Desk();
+
+		d3 = deskRepository.save(d3);
+
+		Assert.assertTrue(d3.getNumber() == 1);
+
 		Desk d2 = new Desk();
-		d2.setNumber(new Integer(4711));
+		d2.setNumber(4711);
 
 		deskRepository.save(d2);
 

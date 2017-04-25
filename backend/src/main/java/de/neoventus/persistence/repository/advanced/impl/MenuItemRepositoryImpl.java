@@ -54,16 +54,15 @@ public class MenuItemRepositoryImpl implements NVMenuItemRepository {
     @Override
     public void save(MenuDto dto) {
         MenuItem item;
-        if (dto.getMenuItemID() != null) {
-            item = mongoTemplate.findById(dto.getMenuItemID(), MenuItem.class);
-        } else {
+		if(dto.getId() != null) {
+			item = mongoTemplate.findById(dto.getId(), MenuItem.class);
+		} else {
             item = new MenuItem();
         }
 		item.setCategory(dto.getCategory() != null ? MenuItemCategory.valueOf(dto.getCategory()) : null);
 		item.setCurrency(dto.getCurrency());
         item.setDescription(dto.getDescription());
         item.setMediaUrl(dto.getMediaUrl());
-        item.setMenuItemID(dto.getMenuItemID());
         item.setName(dto.getName());
         item.setNotices(dto.getNotices());
         item.setNumber(dto.getNumber());

@@ -1,5 +1,6 @@
 package de.neoventus.rest.dto;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -12,6 +13,7 @@ public class DeskDto implements Serializable {
 
 	private String id;
 
+	@NotNull
 	private Integer seats;
 
 

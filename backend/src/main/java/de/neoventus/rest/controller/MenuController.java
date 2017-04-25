@@ -1,10 +1,8 @@
 package de.neoventus.rest.controller;
 
 import de.neoventus.persistence.entity.MenuItem;
-import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.repository.MenuItemRepository;
 import de.neoventus.rest.dto.MenuDto;
-import de.neoventus.rest.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -17,8 +15,8 @@ import java.util.logging.Logger;
 /**
  * REST controller for entity Menu
  *
- * @author Markus Knauer
- * @version 0.0.1
+ * @author Markus Knauer, Dennis Thanner
+ * @version 0.0.2 - redundancy clean up - DT
  */
 
 @RestController
@@ -66,8 +64,8 @@ public class MenuController {
                 response.setStatus(HttpStatus.BAD_REQUEST.value());
             } else {
                 menuItemRepository.save(dto);
-                LOGGER.info("Saving MenuItem to database: " + dto.getMenuItemID());
-            }
+				LOGGER.info("Saving MenuItem to database: " + dto.getId());
+			}
         } catch(Exception e) {
             LOGGER.warning("Error inserting menuItem to database: " + e.getMessage());
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -90,8 +88,8 @@ public class MenuController {
                 response.setStatus(HttpStatus.BAD_REQUEST.value());
             } else {
                 menuItemRepository.save(dto);
-                LOGGER.info("Update menuItem to database: " + dto.getMenuItemID());
-            }
+				LOGGER.info("Update menuItem to database: " + dto.getId());
+			}
         } catch (Exception e) {
             LOGGER.warning("Error updating menuItem to database: " + e.getMessage());
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

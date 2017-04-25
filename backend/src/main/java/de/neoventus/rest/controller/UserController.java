@@ -1,6 +1,5 @@
 package de.neoventus.rest.controller;
 
-import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.repository.UserRepository;
 import de.neoventus.rest.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +9,15 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.logging.Logger;
 
 /**
  * REST controller for entity User
  *
- * @author Tim Heidelbach
- * @version 0.0.2 added user dto support
+ * @author Tim Heidelbach, Dennis Thanner
+ * @version 0.0.3 remove user detail exposing,  added principal controller method DT
+ *          0.0.2 added user dto support - DT
  */
 @RestController
 @RequestMapping("/api/user")
@@ -32,21 +33,15 @@ public class UserController {
 
 
 	/**
-	 * controller method to list user details
+	 * controller method to expose user principal for frontend role based access management
 	 *
 	 * @param response
-	 * @param username
+	 * @param principal
 	 * @return
 	 */
-	@RequestMapping(value = "/{username}", method = RequestMethod.GET)
-	public User listUser(HttpServletResponse response, @PathVariable String username) {
-		try {
-			return userRepository.findByUsername(username);
-		} catch(Exception e) {
-			LOGGER.warning("Error searching user with username " + username + ": " + e.getMessage());
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			return null;
-		}
+	@RequestMapping(method = RequestMethod.GET)
+	public Principal listUser(HttpServletResponse response, Principal principal) {
+		return principal;
 	}
 
 	/**
@@ -60,7 +55,7 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.POST)
 	public void insert(@RequestBody @Valid UserDto dto, BindingResult bindingResult, HttpServletResponse response) {
 		try {
-			if (bindingResult.hasErrors()) {
+			if(bindingResult.hasErrors()) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 			} else {
 				userRepository.save(dto);
@@ -84,13 +79,13 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.PUT)
 	public void update(@RequestBody @Valid UserDto dto, BindingResult bindingResult, HttpServletResponse response) {
 		try {
-			if (bindingResult.hasErrors()) {
+			if(bindingResult.hasErrors()) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 			} else {
 				userRepository.save(dto);
 				LOGGER.info("Update user to database: " + dto.getUsername());
 			}
-		} catch (Exception e) {
+		} catch(Exception e) {
 			LOGGER.warning("Error updating user to database: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
@@ -107,7 +102,7 @@ public class UserController {
 	public void delete(@RequestParam String id, HttpServletResponse response) {
 		try {
 			userRepository.delete(id);
-		} catch (Exception e) {
+		} catch(Exception e) {
 			LOGGER.warning("Error updating user to database: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}

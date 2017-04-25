@@ -2,12 +2,12 @@ package de.neoventus.rest.dto;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Markus Knauer, Julian Beck
- * @version 0.0.2 new varibale category - JB
+ * @author Markus Knauer, Julian Beck, Dennis Thanner
+ * @version 0.0.3 redundancy clean up, extended validation - DT
+ * 			0.0.2 new varibale category - JB
  *          0.0.1 created by - MK
  */
 public class MenuDto implements Serializable {
@@ -17,7 +17,8 @@ public class MenuDto implements Serializable {
     @NotNull
     private String name;
 
-    private Double price;
+	@NotNull
+	private Double price;
 
     private String description;
 
@@ -42,16 +43,16 @@ public class MenuDto implements Serializable {
 
 	public void setCategory(String category) {this.category = category;}
 
-	public Integer getMenuItemID() {
-        return number;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setMenuItemID(Integer menuItemID) {
-        this.number = menuItemID;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public String getName() {
-        return name;
+	public String getName() {
+		return name;
     }
 
     public void setName(String name) {

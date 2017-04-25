@@ -4,14 +4,14 @@ import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.repository.MenuItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
-import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
+import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.stereotype.Component;
 
 /**
  * class for handling entity events for menuItem
  *
  * @author Dennis Thanner
- * @version 0.0.1
+ * @version 0.0.2 changed before save to before convert
  **/
 @Component
 public class MenuItemLifecycleEvents extends AbstractMongoEventListener<MenuItem> {
@@ -19,7 +19,7 @@ public class MenuItemLifecycleEvents extends AbstractMongoEventListener<MenuItem
 	private MenuItemRepository menuItemRepository;
 
 	@Override
-	public void onBeforeSave(BeforeSaveEvent<MenuItem> event) {
+	public void onBeforeConvert(BeforeConvertEvent<MenuItem> event) {
 		// automatically increment set userId
 		MenuItem menuItem = event.getSource();
 

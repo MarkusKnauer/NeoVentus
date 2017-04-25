@@ -4,14 +4,14 @@ import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.repository.DeskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
-import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
+import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.stereotype.Component;
 
 /**
  * class for handling entity events for desks
  *
  * @author Dennis Thanner
- * @version 0.0.1
+ * @version 0.0.2 changed before save to before convert
  **/
 @Component
 public class DeskLifecycleEvents extends AbstractMongoEventListener<Desk> {
@@ -19,7 +19,7 @@ public class DeskLifecycleEvents extends AbstractMongoEventListener<Desk> {
 	private DeskRepository deskRepository;
 
 	@Override
-	public void onBeforeSave(BeforeSaveEvent<Desk> event) {
+	public void onBeforeConvert(BeforeConvertEvent<Desk> event) {
 		// automatically increment set deskId
 		Desk desk = event.getSource();
 

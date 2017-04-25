@@ -13,6 +13,7 @@ public class OrderItemDto implements Serializable {
 
 	private String id;
 
+	@NotNull
 	private Integer deskNumber;
 
 	@NotNull

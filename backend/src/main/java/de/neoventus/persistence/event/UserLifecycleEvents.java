@@ -4,14 +4,14 @@ import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
-import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
+import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.stereotype.Component;
 
 /**
  * class for handling entity events for user
  *
  * @author Dennis Thanner
- * @version 0.0.1
+ * @version 0.0.2 changed before save to before convert
  **/
 @Component
 public class UserLifecycleEvents extends AbstractMongoEventListener<User> {
@@ -19,7 +19,7 @@ public class UserLifecycleEvents extends AbstractMongoEventListener<User> {
 	private UserRepository userRepository;
 
 	@Override
-	public void onBeforeSave(BeforeSaveEvent<User> event) {
+	public void onBeforeConvert(BeforeConvertEvent<User> event) {
 		// automatically increment set userId
 		User user = event.getSource();
 

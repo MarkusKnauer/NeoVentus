@@ -49,6 +49,8 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 				.and()
 				.authorizeRequests()
 				.antMatchers(HttpMethod.POST, "/api/user").hasRole(Permission.ADMIN.toString())
+				.antMatchers(HttpMethod.PUT, "/api/user").hasRole(Permission.ADMIN.toString())
+				.antMatchers(HttpMethod.GET, "/api/user").authenticated()
 				.antMatchers(HttpMethod.POST, "/api/reservation").hasAnyRole(
 				Permission.SERVICE.toString(),
 				Permission.ADMIN.toString())
