@@ -2,5 +2,15 @@
   "name": "frontend",
   "app_id": "",
   "v2": true,
-  "typescript": true
+  "typescript": true,
+  "proxies": [
+    {
+      "path": "/api",
+      "proxyUrl": "http://localhost:8080/api"
+    },
+    {
+      "path": "/auth",
+      "proxyUrl": "http://localhost:8080/"
+    }
+  ]
 }

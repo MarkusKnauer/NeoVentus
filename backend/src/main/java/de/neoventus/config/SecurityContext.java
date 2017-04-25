@@ -61,6 +61,8 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 				.and()
 				.logout()
 				.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
+				.and()
+				.csrf().disable()
 		;
 	}
 
