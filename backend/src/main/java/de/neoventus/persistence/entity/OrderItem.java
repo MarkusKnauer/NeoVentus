@@ -4,8 +4,8 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 
 /**
  * @author Dennis Thanner, Tim Heidelbach
- * @version
- * @version 0.0.3 added variable state - DS
+ * @version 0.0.4 redundancy clean up - DT
+ * 			0.0.3 added variable state - DS
  *          0.0.2 removed local variable StringBuilder
  **/
 public class OrderItem extends AbstractDocument {
@@ -18,8 +18,6 @@ public class OrderItem extends AbstractDocument {
 
     @DBRef
     private MenuItem item;
-
-    private Integer orderID;
 
     private String guestWish;
 
@@ -37,11 +35,6 @@ public class OrderItem extends AbstractDocument {
     }
 
     // getter and setter
-    public Integer getOrderID() {return orderID;}
-
-    public void setOrderID(Integer orderID) {
-        this.orderID = orderID;
-    }
 
     public Desk getDesk() {
         return desk;

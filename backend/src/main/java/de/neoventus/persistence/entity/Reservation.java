@@ -6,7 +6,8 @@ import java.util.Date;
 
 /**
  * @author Dennis Thanner, Tim Heidelbach
- * @version 0.0.3 added field duration
+ * @version 0.0.4 redundancy clean up - DT
+ * 			0.0.3 added field duration
  *          0.0.2 removed local variable StringBuilder
  **/
 public class Reservation extends AbstractDocument {
@@ -19,20 +20,11 @@ public class Reservation extends AbstractDocument {
 
 	private Date createdAt;
 
-	private Integer reservationId;
-
 	private Date time;
 
 	private Integer duration;
 
 	// getter and setter
-	public Integer getReservationId() {
-		return reservationId;
-	}
-
-	public void setReservationId(Integer reservationId) {
-		this.reservationId = reservationId;
-	}
 
 	public User getReservedBy() {
 		return reservedBy;

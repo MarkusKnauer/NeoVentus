@@ -15,8 +15,8 @@ import java.util.logging.Logger;
 /**
  * REST controller for entity Order
  *
- * @author Julian Beck
- * @version 0.0.1
+ * @author Julian Beck, Dennis Thanner
+ * @version 0.0.2 redundancy clean up - DT
  */
 @RestController
 @RequestMapping("/api/order")
@@ -42,7 +42,7 @@ public class OrderItemController {
 	@RequestMapping(value = "/{orderNumber}", method = RequestMethod.GET)
 	public OrderItem listOrder(HttpServletResponse response, @PathVariable String orderNumber) {
 		try {
-			return orderRepository.findByOrderID(new Integer(orderNumber));
+			return orderRepository.findOne(orderNumber);
 		} catch(Exception e) {
 			LOGGER.warning("Error searching order by orderNumber " + orderNumber + ": " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -65,7 +65,7 @@ public class OrderItemController {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 			} else {
 				orderRepository.save(dto);
-				LOGGER.info("Saving order to database: " + dto.getOrderID());
+				LOGGER.info("Saving order to database: " + dto.getId());
 			}
 		} catch(Exception e) {
 			LOGGER.warning("Error inserting order to database: " + e.getMessage());
@@ -89,7 +89,7 @@ public class OrderItemController {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 			} else {
 				orderRepository.save(dto);
-				LOGGER.info("Update order to database: " + dto.getOrderID());
+				LOGGER.info("Update order to database: " + dto.getId());
 			}
 		} catch (Exception e) {
 			LOGGER.warning("Error updating order to database: " + e.getMessage());

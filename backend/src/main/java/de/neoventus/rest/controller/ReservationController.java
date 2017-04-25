@@ -16,8 +16,8 @@ import java.util.logging.Logger;
 /**
  * REST controller for entity reservation
  *
- * @author Tim Heidelbach
- * @version 0.0.1
+ * @author Tim Heidelbach, Dennis Thanner
+ * @version 0.0.2 redundancy clean up - DT
  */
 
 @RestController
@@ -40,9 +40,9 @@ public class ReservationController {
 	 * @return the reservation entity
 	 */
 	@RequestMapping(value = "/{reservationId}", method = RequestMethod.GET)
-	public Reservation getReservationById(HttpServletResponse response, @PathVariable Integer reservationId) {
+	public Reservation getReservationById(HttpServletResponse response, @PathVariable String reservationId) {
 		try {
-			return reservationRepository.findByReservationId(reservationId);
+			return reservationRepository.findOne(reservationId);
 		} catch (DataAccessException e) {
 			LOGGER.warning("Error searching reservation with id " + reservationId + ": " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

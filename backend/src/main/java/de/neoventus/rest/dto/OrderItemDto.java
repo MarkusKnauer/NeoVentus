@@ -4,12 +4,14 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * @author Julian
- * @version 0.0.2 added variable state - DS
+ * @author Julian Beck, Dominik Streif, Dennis Thanner
+ * @version 0.0.3 redundancy clean up - DT
+ * 			0.0.2 added variable state - DS
  * 			0.0.1
  **/
 public class OrderItemDto implements Serializable {
 
+	private String id;
 
 	private Integer deskNumber;
 
@@ -18,10 +20,6 @@ public class OrderItemDto implements Serializable {
 
 	@NotNull
 	private Integer menuItemNumber;
-
-	private Integer reservationNumber;
-
-	private Integer orderID;
 
 	private String guestWish;
 
@@ -39,14 +37,13 @@ public class OrderItemDto implements Serializable {
 	}
 
 	// getter and setter
-	public Integer getReservation() {return reservationNumber;}
 
-	public void setReservation(Integer reservation) {this.reservationNumber = reservation;}
+	public String getId() {
+		return id;
+	}
 
-	public Integer getOrderID() {return orderID;}
-
-	public void setOrderID(Integer orderID) {
-		this.orderID = orderID;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public Integer getDeskNumber() {

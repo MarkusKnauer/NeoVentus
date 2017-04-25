@@ -11,9 +11,10 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
- * @author Julian Beck, Markus Knauer
- * @version 0.0.2 Insert Method save(MenuDto) MK
- * 0.0.1 created JB
+ * @author Julian Beck, Markus Knauer, Dennis Thanner
+ * @version 0.0.3 added null support for menu category, redundancy clean up - DT
+ * 			0.0.2 Insert Method save(MenuDto) MK
+ * 			0.0.1 created JB
  **/
 public class MenuItemRepositoryImpl implements NVMenuItemRepository {
 
@@ -58,8 +59,8 @@ public class MenuItemRepositoryImpl implements NVMenuItemRepository {
         } else {
             item = new MenuItem();
         }
-		item.setCategory(MenuItemCategory.valueOf(dto.getCategory()));
-        item.setCurrency(dto.getCurrency());
+		item.setCategory(dto.getCategory() != null ? MenuItemCategory.valueOf(dto.getCategory()) : null);
+		item.setCurrency(dto.getCurrency());
         item.setDescription(dto.getDescription());
         item.setMediaUrl(dto.getMediaUrl());
         item.setMenuItemID(dto.getMenuItemID());
@@ -67,7 +68,6 @@ public class MenuItemRepositoryImpl implements NVMenuItemRepository {
         item.setNotices(dto.getNotices());
         item.setNumber(dto.getNumber());
         item.setPrice(dto.getPrice());
-        // todo item.setId(dto.getMenuItemID(), wird das benötigt?
 
         mongoTemplate.save(item);
     }

@@ -7,24 +7,10 @@ import org.springframework.stereotype.Repository;
 
 /**
  * @author Dennis Thanner, Tim Heidelbach
- * @version 0.0.2
+ * @version 0.0.3 redundancy clean up - DT
  **/
 @Repository
 public interface ReservationRepository extends CrudRepository<Reservation, String>, NVReservationRepository {
 
-    /**
-     * find reservation by ID
-     *
-     * @param reservationId reservationID to search for
-     * @return Reservation
-     */
-    Reservation findByReservationId(Integer reservationId);
-
-    /**
-     * find reservation with max reservationId
-     *
-     * @return Reservation
-     */
-    Reservation findFirstByOrderByReservationIdDesc();
 
 }

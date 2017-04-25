@@ -9,12 +9,13 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * testing the reservation repository methods
  *
- * @author Tim Heidelbach
- * @version 0.0.1
+ * @author Tim Heidelbach, Dennis Thanner
+ * @version 0.0.2 redundancy clean up - DT
  */
 public class ReservationRepositoryTest extends AbstractTest {
 
@@ -34,30 +35,13 @@ public class ReservationRepositoryTest extends AbstractTest {
 	}
 
 	private Desk getDesk() {
-		if (desk == null) {
+		if(desk == null) {
 			desk = new Desk();
 			desk.setNumber(999);
 
 			deskRepository.save(getDesk());
 		}
 		return desk;
-	}
-
-	/**
-	 * Test the reservation search by reservationId
-	 */
-	@Test
-	public void testSearchById() {
-
-		Reservation reservation1 = new Reservation();
-		reservation1.setTime(new Date());
-		reservation1.setDesk(getDesk());
-		reservation1.setReservationId(999);
-		reservationRepository.save(reservation1);
-
-		Reservation reservation2 = reservationRepository.findByReservationId(reservation1.getReservationId());
-
-		Assert.assertEquals(reservation1.getId(), reservation2.getId());
 	}
 
 	/**
@@ -73,31 +57,10 @@ public class ReservationRepositoryTest extends AbstractTest {
 
 		reservationRepository.save(dto);
 
-		Reservation newestReservation = reservationRepository.findFirstByOrderByReservationIdDesc();
+		List<Reservation> reservationList = (List<Reservation>) reservationRepository.findAll();
 
-		Assert.assertEquals(dto.getTime(), newestReservation.getTime());
-	}
-
-	/**
-	 * Test if auto incremented reservationId works
-	 */
-	@Test
-	public void testBeforeSaveEvent() {
-
-		int reservatoinId = 999;
-
-		Reservation reservation1 = new Reservation();
-		reservation1.setReservationId(999);
-		reservation1.setDesk(getDesk());
-		reservation1.setTime(new Date());
-		reservationRepository.save(reservation1);
-
-		Reservation reservation2 = new Reservation();
-		reservation2.setDesk(getDesk());
-		reservation2.setTime(new Date());
-		reservationRepository.save(reservation2);
-
-		Assert.assertTrue(reservation2.getReservationId() == ++reservatoinId);
+		Assert.assertNotNull(reservationList);
+		Assert.assertTrue(reservationList.size() == 1);
 	}
 
 
