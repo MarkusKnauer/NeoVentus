@@ -7,7 +7,8 @@ import java.util.List;
 
 /**
  * @author Dennis Thanner, Julian Beck, Tim Heidelbach
- * @version 0.0.5 changed menuItemId to number DT
+ * @version 0.0.6 new variable category - JB
+ * 			0.0.5 changed menuItemId to number DT
  *          0.0.4 removed local variable StringBuilder
  *          0.0.3 code clean up
  *          0.0.2 added full constructor, currency and print currency method
@@ -29,13 +30,17 @@ public class MenuItem extends AbstractDocument {
 
 	private String currency;
 
+	// 25.04.2017 - new  variable category
+	private MenuItemCategory category;
+
 	// constructor
 	public MenuItem() {
 		this.notices = new ArrayList<>();
 	}
 
-	public MenuItem(String name, Double price, String currency, String description, String mediaUrl,
+	public MenuItem(MenuItemCategory category, String name, Double price, String currency, String description, String mediaUrl,
 					List<String> notices) {
+		this.category = category;
 		this.name = name;
 		this.price = price;
 		this.currency = currency;
@@ -57,6 +62,11 @@ public class MenuItem extends AbstractDocument {
 	}
 
 	// getter and setter
+
+
+	public MenuItemCategory getCategory() {return category;}
+
+	public void setCategory(MenuItemCategory category) {this.category = category;}
 
 	public Integer getMenuItemID() {
 		return number;

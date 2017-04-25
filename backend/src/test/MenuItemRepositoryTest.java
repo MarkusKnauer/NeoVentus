@@ -1,4 +1,5 @@
 import de.neoventus.persistence.entity.MenuItem;
+import de.neoventus.persistence.entity.MenuItemCategory;
 import de.neoventus.persistence.repository.MenuItemRepository;
 import de.neoventus.rest.dto.MenuDto;
 import org.junit.After;
@@ -62,7 +63,7 @@ public class MenuItemRepositoryTest extends AbstractTest {
         menuItemRepository.save(u2);
 
 
-        MenuItem u = new MenuItem("test", 12.02, "EUR", "Testdescr", "Testmedia", new ArrayList<>());
+        MenuItem u = new MenuItem(MenuItemCategory.APPETIZER,"test", 12.02, "EUR", "Testdescr", "Testmedia", new ArrayList<>());
 
         u = menuItemRepository.save(u);
 

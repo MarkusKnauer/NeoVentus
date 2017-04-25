@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Markus Knauer
- * @version 0.0.1
+ * @author Markus Knauer, Julian Beck
+ * @version 0.0.2 new varibale category - JB
+ *          0.0.1 created by - MK
  */
 public class MenuDto implements Serializable {
 
@@ -28,12 +29,20 @@ public class MenuDto implements Serializable {
 
     private String currency;
 
+    private String category;
+
+
     // constructor
     public MenuDto(){}
 
     // getter and setter
 
-    public Integer getMenuItemID() {
+
+	public String getCategory() {return category;}
+
+	public void setCategory(String category) {this.category = category;}
+
+	public Integer getMenuItemID() {
         return number;
     }
 
