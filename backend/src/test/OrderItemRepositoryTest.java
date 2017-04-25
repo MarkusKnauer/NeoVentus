@@ -60,7 +60,7 @@ public class OrderItemRepositoryTest extends AbstractTest {
 		getMenuItem();
 		getUser();
 
-		OrderItemDto dto = new OrderItemDto(1,1,1,"");
+		OrderItemDto dto = new OrderItemDto(1, 1, 1, "", "");
 
 
 		orderItemRepository.save(dto);
