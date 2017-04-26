@@ -2,10 +2,14 @@ package de.neoventus.rest.dto;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Julian Beck, Dominik Streif, Dennis Thanner
- * @version 0.0.3 redundancy clean up - DT
+ * @version 0.0.4 multiple state conditions - DS
+ * 			0.0.3 redundancy clean up - DT
  * 			0.0.2 added variable state - DS
  * 			0.0.1
  **/
@@ -24,9 +28,14 @@ public class OrderItemDto implements Serializable {
 
 	private String guestWish;
 
-	private String state;
+	private List<String> state;
+
+	private List<Long> stateTime;
 
 	public OrderItemDto() {
+		state = new ArrayList<String>();
+		stateTime = new ArrayList<Long>();
+
 	}
 
 	public OrderItemDto(Integer user, Integer desk, Integer menuItem, String guestwish, String state) {
@@ -34,6 +43,8 @@ public class OrderItemDto implements Serializable {
 		setDeskNumber(desk);
 		setGuestWish(guestwish);
 		setMenuItemNumber(menuItem);
+		this.state = new ArrayList<String>();
+		stateTime = new ArrayList<Long>();
 		setState(state);
 	}
 
@@ -76,11 +87,15 @@ public class OrderItemDto implements Serializable {
 	}
 
 	public String getState() {
-		return state;
+
+		return state.size() != 0 ? state.get(state.size() - 1) : null;
 	}
 
 	public void setState(String state) {
-		this.state = state;
+
+		this.state.add(state);
+		Date d = new Date();
+		stateTime.add(d.getTime());
 	}
 
 }
