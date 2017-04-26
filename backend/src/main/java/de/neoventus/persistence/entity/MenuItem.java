@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Dennis Thanner, Julian Beck, Tim Heidelbach
- * @version 0.0.6 new variable category - JB
+ * @author Dennis Thanner, Julian Beck, Tim Heidelbach, Markus Knauer
+ * @version 0.0.7 new variable sideDish - MK
+ * 			0.0.6 new variable category - JB
  * 			0.0.5 changed menuItemId to number DT
  *          0.0.4 removed local variable StringBuilder
  *          0.0.3 code clean up
@@ -32,6 +33,8 @@ public class MenuItem extends AbstractDocument {
 
 	// 25.04.2017 - new  variable category
 	private MenuItemCategory category;
+
+    private SideDish sideDish;
 
 	// constructor
 	public MenuItem() {
@@ -131,6 +134,10 @@ public class MenuItem extends AbstractDocument {
 	public void setNumber(Integer number) {
 		this.number = number;
 	}
+
+    public void setSideDish(SideDish sideDish) {
+        this.sideDish = sideDish;
+    }
 
 	@Override
 	public String toString() {
