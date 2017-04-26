@@ -42,7 +42,9 @@ Ziel diese Projektes ist es, in einem anerkannten Softwareengineering-Prozess, e
        * ```curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -```
        * ```sudo apt-get install -y nodejs```
     * ```sudo npm install -g ionic cordova``` im Terminal ausführen
-    * Zum Starten der App aus dem Terminal in /frontend wechseln und ```ionic serve``` eingeben
+    * Zum Starten der App aus dem Terminal in /frontend wechseln und 
+        * ```npm install``` und
+        * ```ionic serve``` eingeben
 
 
 ### Coding Guide Lines ###
