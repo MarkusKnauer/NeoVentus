@@ -6,13 +6,12 @@ import java.util.List;
 
 /**
  * @author Dennis Thanner, Tim Heidelbach
- * @version 0.0.2 removed local variable StringBuilder
+ * @version 0.0.3 removed member billingID
+ *          0.0.2 removed local variable StringBuilder
  **/
 public class Billing extends AbstractDocument {
 
     private Date billedAt;
-
-    private Integer billingID;
 
     private Double totalPaid;
 
@@ -25,14 +24,6 @@ public class Billing extends AbstractDocument {
     }
 
     // getter and setter
-
-    public Integer getBillingID() {
-        return billingID;
-    }
-
-    public void setBillingID(Integer billingID) {
-        this.billingID = billingID;
-    }
 
     public Date getBilledAt() {
         return billedAt;

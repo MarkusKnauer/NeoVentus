@@ -13,6 +13,9 @@ public class BillingItem {
 
     private double price;
 
+	public BillingItem() {
+	}
+
     public BillingItem(OrderItem item, double price) {
         this.item = item;
         this.price = price;
