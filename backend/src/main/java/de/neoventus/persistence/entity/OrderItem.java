@@ -2,9 +2,14 @@ package de.neoventus.persistence.entity;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /**
  * @author Dennis Thanner, Tim Heidelbach
- * @version 0.0.4 redundancy clean up - DT
+ * @version 0.0.5 multiple state conditions - DS
+ *          0.0.4 redundancy clean up - DT
  * 			0.0.3 added variable state - DS
  *          0.0.2 removed local variable StringBuilder
  **/
@@ -21,17 +26,23 @@ public class OrderItem extends AbstractDocument {
 
     private String guestWish;
 
-    private String state;
+	private List<String> state;
+
+	private List<Long> stateTime;
 
     public OrderItem() {
-    }
+		state = new ArrayList<String>();
+		stateTime = new ArrayList<Long>();
+	}
 
     public OrderItem(User user, Desk desk, MenuItem menuItem, String guestwish, String state) {
         setWaiter(user);
         setDesk(desk);
         setGuestWish(guestwish);
         setItem(menuItem);
-        setState(state);
+		this.state = new ArrayList<String>();
+		stateTime = new ArrayList<Long>();
+		setState(state);
     }
 
     // getter and setter
@@ -69,12 +80,14 @@ public class OrderItem extends AbstractDocument {
     }
 
     public String getState() {
-        return state;
-    }
+		return state.size() != 0 ? state.get(state.size() - 1) : null;
+	}
 
     public void setState(String state) {
-        this.state = state;
-    }
+		this.state.add(state);
+		Date d = new Date();
+		stateTime.add(d.getTime());
+	}
 
     @Override
     public String toString() {
