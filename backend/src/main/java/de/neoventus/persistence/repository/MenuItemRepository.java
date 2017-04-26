@@ -35,4 +35,11 @@ public interface MenuItemRepository extends CrudRepository<MenuItem, String>, NV
 	 * @return menuItem
 	 */
 	MenuItem findFirstByOrderByNumberDesc();
+
+	/**
+	 * @deprecated DANGER! lifecycle event to set number id might not work with this method
+	 */
+	@Deprecated
+	@Override
+	<S extends MenuItem> Iterable<S> save(Iterable<S> entities);
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * @author Dennis Thanner
- * @version 0.0.1
+ * @version 0.0.2 deprecated bulk save
  **/
 @Repository
 public interface DeskRepository extends CrudRepository<Desk, String>, NVDeskRepository {
@@ -26,4 +26,10 @@ public interface DeskRepository extends CrudRepository<Desk, String>, NVDeskRepo
 	 */
 	Desk findFirstByOrderByNumberDesc();
 
+	/**
+	 * @deprecated DANGER! lifecycle event to set desk number might not work with this method
+	 */
+	@Deprecated
+	@Override
+	<S extends Desk> Iterable<S> save(Iterable<S> entities);
 }

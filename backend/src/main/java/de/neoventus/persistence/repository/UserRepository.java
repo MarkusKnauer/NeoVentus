@@ -7,7 +7,8 @@ import org.springframework.stereotype.Repository;
 
 /**
  * @author Dennis Thanner, Julian Beck
- * @version 0.0.3 added findFirstByOrOrderByUserIdDesc DT
+ * @version 0.0.4 deprecated bulk save
+ *          0.0.3 added findFirstByOrOrderByUserIdDesc DT
  *          0.0.2 Add findByUserId JB
  *          0.0.1 Creation of repository DT
  **/
@@ -38,4 +39,10 @@ public interface UserRepository extends CrudRepository<User, String>, NVUserRepo
 	 */
 	User findFirstByOrderByWorkerIdDesc();
 
+	/**
+	 * @deprecated DANGER! lifecycle event to set worker id might not work with this method
+	 */
+	@Deprecated
+	@Override
+	<S extends User> Iterable<S> save(Iterable<S> entities);
 }
