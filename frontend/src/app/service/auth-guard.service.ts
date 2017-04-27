@@ -42,4 +42,12 @@ export class AuthGuardService {
     return this.userDetails.authorities.indexOf(role) != -1;
   }
 
+  /**
+   * determine if user is logged in
+   * @returns {boolean}
+   */
+  public isAuthenticated() {
+    return this.userDetails != null;
+  }
+
 }

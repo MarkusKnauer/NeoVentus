@@ -21,10 +21,21 @@ export class LoginPage {
 
   }
 
+  /**
+   * prevent login in screen to show up in browser if user is authenticated
+   */
+  ionViewWillEnter() {
+    this.navCtrl.setRoot(DeskOverviewPage)
+  }
+
+  /**
+   * login user
+   * redirect to DeskOverviewPage if successful
+   */
   public login() {
     this.userService.login(this.username, this.password).then(() => {
       // redirect to desk overview
-      this.navCtrl.push(DeskOverviewPage);
+      this.navCtrl.setRoot(DeskOverviewPage)
     }).catch(() => {
       console.debug("Failed to login");
     })

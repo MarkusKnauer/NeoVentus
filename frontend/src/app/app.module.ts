@@ -21,7 +21,13 @@ import {DeskOverviewPage} from '../pages/desk-overview/desk-overview';
   imports: [
     HttpModule,
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp, {}, {
+      links: [
+        // browser support links
+        {component: LoginPage, name: "Login", segment: "login"},
+        {component: DeskOverviewPage, name: "Desk Overview", segment: "desks"}
+      ]
+    })
   ],
   bootstrap: [IonicApp],
   entryComponents: [
