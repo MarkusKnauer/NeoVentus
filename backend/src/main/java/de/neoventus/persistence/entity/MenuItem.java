@@ -35,7 +35,8 @@ public class MenuItem extends AbstractDocument {
 	@DBRef
 	private MenuItemCategory category;
 
-    private SideDish sideDish;
+	@DBRef
+	private SideDish sideDish;
 
 	// constructor
 	public MenuItem() {
