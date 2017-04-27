@@ -2,12 +2,15 @@ import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
 
 /**
- * service for role based access management
+ * service for role based access
+ *
+ * @author Dennis Thanner
+ * @version 0.0.2 minor bug fix
  */
 @Injectable()
 export class AuthGuardService {
 
-  private userDetails;
+  private userDetails = null;
 
   constructor(private http: Http) {
   }
@@ -17,11 +20,13 @@ export class AuthGuardService {
    * @returns {Subscription}
    */
   public loadUserDetails() {
-    return this.http.get("/api/user").subscribe(data => {
-      this.userDetails = data;
+    return this.http.get("/api/user").subscribe(resp => {
+      this.userDetails = resp.json();
+      // flatten auth array
       this.userDetails.authorities = this.userDetails.authorities.map(auth => {
         return auth.authority
       });
+      console.debug(this.userDetails);
     })
   }
 

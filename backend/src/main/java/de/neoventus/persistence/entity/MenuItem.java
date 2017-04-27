@@ -1,6 +1,7 @@
 package de.neoventus.persistence.entity;
 
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,8 @@ public class MenuItem extends AbstractDocument {
 	// 25.04.2017 - new  variable category
 	private MenuItemCategory category;
 
-    private SideDish sideDish;
+	@DBRef
+	private SideDish sideDish;
 
 	// constructor
 	public MenuItem() {
