@@ -1,7 +1,6 @@
 package de.neoventus.persistence.repository.advanced.impl;
 
 import de.neoventus.persistence.entity.MenuItem;
-import de.neoventus.persistence.entity.MenuItemCategory;
 import de.neoventus.persistence.repository.MenuItemCategoryRepository;
 import de.neoventus.persistence.repository.advanced.NVMenuItemRepository;
 import de.neoventus.rest.dto.MenuDto;
@@ -12,7 +11,8 @@ import java.util.logging.Logger;
 
 /**
  * @author Julian Beck, Markus Knauer, Dennis Thanner
- * @version 0.0.4 moved set default menu to init
+ * @version 0.0.5 new Categories
+ * 			0.0.4 moved set default menu to init
  *          0.0.3 added null support for menu category, redundancy clean up - DT
  *          0.0.2 Insert Method save(MenuDto) MK
  *          0.0.1 created JB
@@ -34,7 +34,7 @@ public class MenuItemRepositoryImpl implements NVMenuItemRepository {
 		} else {
 			item = new MenuItem();
 		}
-		item.setCategory(dto.getCategory() != null ? convertIntoCategory(dto.getCategory()) : null);
+		item.setCategory(dto.getCategory() != null ? menuItemCategoryRepository.findByName(dto.getCategory()) : null);
 		item.setCurrency(dto.getCurrency());
 		item.setDescription(dto.getDescription());
 		item.setMediaUrl(dto.getMediaUrl());
@@ -44,32 +44,6 @@ public class MenuItemRepositoryImpl implements NVMenuItemRepository {
 		item.setPrice(dto.getPrice());
 
 		mongoTemplate.save(item);
-	}
-
-	//
-	public MenuItemCategory convertIntoCategory(String value){
-		MenuItemCategory category = menuItemCategoryRepository.findByName("category");
-		if(category != null) {
-			int size = value.length();
-			String tmp ="";
-			char c;
-			for (int i = 0; i < size; i++){
-				c = value.charAt(i);
-				if(c == 'L') {
-					c = value.charAt(++i);
-					while (c != 'L' && i < size) {
-						c = value.charAt(i);
-						tmp += c;
-						i++;
-					}
-					if (category.getSubcategory() != null && !category.getSubcategory().isEmpty()&& category.getSubcategory().size()>=Integer.parseInt(tmp) ) {
-						category = category.getSubcategory().get(Integer.parseInt(tmp));
-					}
-					tmp = "";
-				}
-			}
-		}
-		return category;
 	}
 
 	@Autowired

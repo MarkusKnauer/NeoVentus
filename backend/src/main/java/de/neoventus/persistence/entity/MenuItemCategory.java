@@ -24,13 +24,22 @@ public class MenuItemCategory extends AbstractDocument {
 	private MenuItemCategory parent;
 
 
-	public MenuItemCategory(){}
-
-	public MenuItemCategory(String name, ArrayList<MenuItemCategory> subcategory, MenuItemCategory parent) {
-		this.name = name;
-		this.subcategory = subcategory;
-		this.parent = parent;
+	public MenuItemCategory(){
+		this.subcategory = new ArrayList<MenuItemCategory>();
+		this.parent = null;
 	}
+
+	public MenuItemCategory(String name) {
+		this.name = name;
+		this.subcategory = new ArrayList<MenuItemCategory>();
+		this.parent = null;
+	}
+
+
+	public void addSubcategory(MenuItemCategory cat){
+		getSubcategory().add(cat);
+	}
+
 
 	// Setter / Getter
 	public String getName() {
@@ -55,5 +64,6 @@ public class MenuItemCategory extends AbstractDocument {
 
 	public void setParent(MenuItemCategory parent) {
 		this.parent = parent;
+
 	}
 }

@@ -154,94 +154,37 @@ class DefaultDemoDataIntoDB {
 	}
 
 
+	private MenuItemCategory addCategory(String name, MenuItemCategory parent){
+		MenuItemCategory child = new MenuItemCategory(name);
+		child.setParent(parent);
+		return child;
+	}
+
 	private void generateMenuCategories(){
 		LOGGER.info("Generate menu Items");
-		MenuItemCategory category = new MenuItemCategory("Categories", new ArrayList<MenuItemCategory>(), null);
-		MenuItemCategory parent;
 		ArrayList<MenuItemCategory> tmp = new ArrayList<MenuItemCategory>();
 
-		// Appetizer
-		parent = category;
-		category = new MenuItemCategory("Appetizer", new ArrayList<MenuItemCategory>(), parent );
-		tmp = parent.getSubcategory();
-		tmp.add(category);
-		parent.setSubcategory(tmp);
-			//Warm-Appetizer
-			parent = category;
-			category = new MenuItemCategory("Warm_Appetizer", new ArrayList<MenuItemCategory>(), parent );
-			tmp = parent.getSubcategory();
-			tmp.add(category);
-			parent.setSubcategory(tmp);
+		tmp.add(addCategory("root",null));
+			tmp.add(addCategory("Appetizer",tmp.get(0)));
+			tmp.add(addCategory("Main_Dish",tmp.get(0)));
+			tmp.add(addCategory("Dessert",tmp.get(0)));
+			tmp.add(addCategory("Drinks",tmp.get(0)));
+				//2nd level
+				tmp.add(addCategory("Warm_Appetizer",tmp.get(1)));
+				tmp.add(addCategory("Cold_Appetizer",tmp.get(1)));
+				//main Dish
+				tmp.add(addCategory("Fish",tmp.get(2)));
+				tmp.add(addCategory("Meat",tmp.get(2)));
+				tmp.add(addCategory("Vegetarian",tmp.get(2)));
+				//Drinks
+				tmp.add(addCategory("Alc-free",tmp.get(4)));
+				tmp.add(addCategory("Beer",tmp.get(4)));
+				tmp.add(addCategory("Wine",tmp.get(4)));
+				tmp.add(addCategory("HotDrinks",tmp.get(4)));
+				tmp.add(addCategory("Firewater",tmp.get(4)));
 
-			//Cold-Appetizer
-			category = new MenuItemCategory("Cold_Appetizer", new ArrayList<MenuItemCategory>(), parent );
-			tmp = parent.getSubcategory();
-			tmp.add(category);
-			parent.setSubcategory(tmp);
 
-		// Main-Dish
-		parent = category.getParent().getParent();
-		category = new MenuItemCategory("Main_Dish", new ArrayList<MenuItemCategory>(), parent );
-		tmp = parent.getSubcategory();
-		tmp.add(category);
-		parent.setSubcategory(tmp);
-			//Fish-Dish
-			parent = category;
-			category = new MenuItemCategory("Fish", new ArrayList<MenuItemCategory>(), parent );
-			tmp = parent.getSubcategory();
-			tmp.add(category);
-			parent.setSubcategory(tmp);
-
-			//Meat
-			category = new MenuItemCategory("Meat", new ArrayList<MenuItemCategory>(), parent );
-			tmp = parent.getSubcategory();
-			tmp.add(category);
-			parent.setSubcategory(tmp);
-
-			//Plants
-			category = new MenuItemCategory("Vegetarian", new ArrayList<MenuItemCategory>(), parent );
-			tmp = parent.getSubcategory();
-			tmp.add(category);
-			parent.setSubcategory(tmp);
-		// Dessert
-		parent = category.getParent().getParent();
-		category = new MenuItemCategory("Dessert", new ArrayList<MenuItemCategory>(), parent );
-		tmp = parent.getSubcategory();
-		tmp.add(category);
-		parent.setSubcategory(tmp);
-		// Drinks
-		parent = category.getParent();
-		category = new MenuItemCategory("Drinks", new ArrayList<MenuItemCategory>(), parent );
-		tmp = parent.getSubcategory();
-		tmp.add(category);
-		parent.setSubcategory(tmp);
-			//Non-alk
-			parent = category;
-			category = new MenuItemCategory("Alc-free", new ArrayList<MenuItemCategory>(), parent );
-			tmp = parent.getSubcategory();
-			tmp.add(category);
-			parent.setSubcategory(tmp);
-
-			//Beer
-			category = new MenuItemCategory("Beer", new ArrayList<MenuItemCategory>(), parent );
-			tmp = parent.getSubcategory();
-			tmp.add(category);
-			parent.setSubcategory(tmp);
-
-			//Firewater
-			category = new MenuItemCategory("Highpercentage", new ArrayList<MenuItemCategory>(), parent );
-			tmp = parent.getSubcategory();
-			tmp.add(category);
-			parent.setSubcategory(tmp);
-
-			//Hot Drinks
-			category = new MenuItemCategory("HotDrinks", new ArrayList<MenuItemCategory>(), parent );
-			tmp = parent.getSubcategory();
-			tmp.add(category);
-			parent.setSubcategory(tmp);
-			while(parent.getParent() != null) parent = parent.getParent();
-
-		menuItemCategoryRepository.save(parent);
+		for(MenuItemCategory parent: tmp)menuItemCategoryRepository.save(parent);
 
 	}
 
