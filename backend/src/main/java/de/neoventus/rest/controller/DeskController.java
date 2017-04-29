@@ -4,6 +4,7 @@ import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.repository.DeskRepository;
 import de.neoventus.rest.dto.DeskDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +16,10 @@ import java.util.logging.Logger;
 /**
  * REST controller for entity Desk
  *
- * @author Dominik Streif, Markus Knauer
- * @version 0.0.2 edited Logger to DeskController MK
- * 0.0.1 DS
+ * @author Dominik Streif, Markus Knauer, Tim Heidelbach
+ * @version 0.0.3 added getAllDesks
+ *          0.0.2 edited Logger to DeskController MK
+ *          0.0.1 DS
  */
 
 
@@ -31,6 +33,23 @@ public class DeskController {
 	@Autowired
 	public DeskController(DeskRepository deskRepository) {
 		this.deskRepository = deskRepository;
+	}
+
+	/**
+	 * controller method to list all desks
+	 *
+	 * @param response the response
+	 * @return all desks
+	 */
+	@RequestMapping(method = RequestMethod.GET)
+	public Iterable<Desk> getAllDesks(HttpServletResponse response) {
+		try {
+			return deskRepository.findAll();
+		} catch (DataAccessException e) {
+			LOGGER.warning("Error searching for all desks: " + e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return null;
+		}
 	}
 
 	/**

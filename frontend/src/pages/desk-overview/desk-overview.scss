@@ -1,0 +1,68 @@
+$primary-color-bright: #F9FAFB;
+$primary-color-dark: #F2F2F2;
+$primary-color-darker: #DBDBDB;
+$color-critical: rgba(255, 100, 100, 0.95);
+$color-alright: rgba(100, 225, 100, 0.95);
+
+.grid-tables {
+
+  ion-col {
+
+    div.desk {
+
+      background-color: $primary-color-bright;
+      border: 1px solid #ddd;
+      border-radius: 2px;
+      text-align: center;
+      width: 110px;
+      height: 110px;
+
+      transition: box-shadow 0.9s;
+
+      h1 {
+        background: $primary-color-dark;
+        border-bottom: 1px solid #ddd;
+        width: 100%;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        margin-top: 0;
+      }
+
+      h1.critical {
+        background: $color-critical;
+      }
+
+      h1.alright {
+        background: $color-alright;
+      }
+
+      h1.default {
+        background: $primary-color-dark;
+      }
+
+      .desk-details {
+
+        padding-left: 10px;
+        padding-right: 10px;
+
+        span.important {
+          font-weight: bold;
+        }
+      }
+    }
+
+    div.desk:hover {
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+    }
+
+    div.desk:active {
+      background: $primary-color-dark;
+      transform: scale(0.9);
+      > h1 {
+        background: $primary-color-darker;
+      }
+    }
+
+  }
+
+}

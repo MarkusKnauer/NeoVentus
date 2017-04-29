@@ -1,1 +1,52 @@
-<h1>Test Tisch Übersicht</h1>
+<ion-header>
+
+  <ion-toolbar>
+
+    <ion-title>Tischübersicht</ion-title>
+    <ion-buttons start>
+
+      <button ion-button icon-only color="royal" (click)='toggleView()'>
+        <ion-icon name="reorder"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-grid class="grid-tables">
+    <ion-row justify-content-center>
+
+      <ion-col *ngFor="let desk of desks" (click)="deskSelected(desk)" col-auto>
+        <div class="desk">
+
+          <!--
+          <h1 [ngClass]="{'critical': (desk.updated > 30)}">
+            {{desk.number}}
+          </h1>
+          <div class="desk-details" *ngIf="desk.inUse">
+            Updated<br/><span class="important">{{desk.updated}}</span> min ago
+          </div>
+          -->
+
+          <h1>
+            {{desk.number}}
+          </h1>
+          <div class="desk-details">
+            <span class="important">{{desk.seats}}</span> Plätze
+          </div>
+
+        </div>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
+
+<ion-footer>
+  <!--
+  TODO insert footer with navigation drawer
+  -->
+</ion-footer>
