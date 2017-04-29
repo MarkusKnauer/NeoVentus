@@ -3,7 +3,6 @@ import de.neoventus.persistence.entity.MenuItemCategory;
 import de.neoventus.persistence.repository.MenuItemCategoryRepository;
 import de.neoventus.persistence.repository.MenuItemRepository;
 import de.neoventus.rest.dto.MenuDto;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,25 +62,32 @@ public class MenuItemRepositoryTest extends AbstractTest {
      */
     @Test
     public void testBeforeSaveEvent() {
+        menuItemRepository.deleteAll();
+     //   menuItemCategoryRepository.deleteAll();
         MenuItem u2 = new MenuItem();
-        MenuItemCategory cat = new MenuItemCategory("Testcat");
 
+        u2.setName("askd");
         u2.setNumber(1);
         menuItemRepository.save(u2);
 
+        menuItemRepository.deleteAll();
+        MenuItem u = new MenuItem("test", 12.02, "EUR", "Testdescr", "Testmedia", new ArrayList<>());
+        u.setNumber(40);
+        menuItemRepository.save(u);
+
+        //Assert.assertTrue(u.getMenuItemID() == 2);
+
+    }
+    private MenuItemCategory getCategory(){
+        MenuItemCategory cat = new MenuItemCategory("Testcat");
         menuItemCategoryRepository.save(cat);
-       MenuItem u = new MenuItem(cat,"test", 12.02, "EUR", "Testdescr", "Testmedia", new ArrayList<>());
-
-        u = menuItemRepository.save(u);
-
-        Assert.assertTrue(u.getMenuItemID() == 2);
-
+        return cat;
     }
 
     /**
      * clear the data written
      */
-    @After
+    //@After
     public void deleteAll() {
         menuItemRepository.deleteAll();
         menuItemCategoryRepository.deleteAll();
