@@ -64,11 +64,13 @@ public class MenuItemRepositoryTest extends AbstractTest {
     @Test
     public void testBeforeSaveEvent() {
         MenuItem u2 = new MenuItem();
+        MenuItemCategory cat = new MenuItemCategory("Testcat");
+
         u2.setNumber(1);
         menuItemRepository.save(u2);
 
-
-       MenuItem u = new MenuItem(new MenuItemCategory("Testcat"),"test", 12.02, "EUR", "Testdescr", "Testmedia", new ArrayList<>());
+        menuItemCategoryRepository.save(cat);
+       MenuItem u = new MenuItem(cat,"test", 12.02, "EUR", "Testdescr", "Testmedia", new ArrayList<>());
 
         u = menuItemRepository.save(u);
 

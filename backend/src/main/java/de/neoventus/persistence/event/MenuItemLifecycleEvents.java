@@ -27,7 +27,7 @@ public class MenuItemLifecycleEvents extends AbstractMongoEventListener<MenuItem
 		if(menuItem.getNumber() == null) {
 			MenuItem max = menuItemRepository.findFirstByOrderByNumberDesc();
 
-			if( (max.getNumber()==null)) {
+			if( max ==null || (max.getNumber()==null)) {
 				menuItem.setNumber(1);
 			} else {
 				menuItem.setNumber(max.getNumber() + 1);

@@ -15,14 +15,14 @@ public class MenuItemCategoryDto extends AbstractDocument {
 	@Indexed(unique = true)
 	private String name;
 
-	private String path;
+	private String parent;
 
 
 	public MenuItemCategoryDto(){}
 
-	public MenuItemCategoryDto(String name, String path) {
+	public MenuItemCategoryDto(String name, String parent) {
 		this.name = name;
-		this.path = path;
+		this.parent = parent;
 	}
 
 	// Setter / Getter
@@ -34,11 +34,11 @@ public class MenuItemCategoryDto extends AbstractDocument {
 		this.name = name;
 	}
 
-	public String getPath() {
-		return path;
+	public String getParent() {
+		return parent;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public void setParent(String parent) {
+		this.parent = parent;
 	}
 }
