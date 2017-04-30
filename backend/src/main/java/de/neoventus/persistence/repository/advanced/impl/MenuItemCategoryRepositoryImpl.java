@@ -35,6 +35,9 @@ public class MenuItemCategoryRepositoryImpl implements NVMenuItemCategoryReposit
 			item = new MenuItemCategory();
 		}
 
+		item.setParent( menuItemCategoryRepository.findByName(dto.getParent()));
+		item.setName(dto.getName());
+		mongoTemplate.save(item);
 	}
 
 

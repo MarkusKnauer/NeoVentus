@@ -1,7 +1,7 @@
 package de.neoventus.rest.dto;
 
-import de.neoventus.persistence.entity.AbstractDocument;
-import org.springframework.data.mongodb.core.index.Indexed;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * Menu Categories
@@ -10,9 +10,13 @@ import org.springframework.data.mongodb.core.index.Indexed;
  * @version 0.0.1 created categories for Menu
  *
  */
-public class MenuItemCategoryDto extends AbstractDocument {
+public class MenuItemCategoryDto implements Serializable {
 
-	@Indexed(unique = true)
+	private String id;
+
+
+
+	@NotNull
 	private String name;
 
 	private String parent;
@@ -26,6 +30,13 @@ public class MenuItemCategoryDto extends AbstractDocument {
 	}
 
 	// Setter / Getter
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 	public String getName() {
 		return name;
 	}

@@ -2,12 +2,16 @@
  * Created by julian on 28.04.2017.
  */
 
+import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.entity.MenuItemCategory;
 import de.neoventus.persistence.repository.MenuItemCategoryRepository;
+import de.neoventus.persistence.repository.MenuItemRepository;
+import de.neoventus.rest.dto.MenuItemCategoryDto;
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
+import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
 
 /**
  * @author: Julian Beck
@@ -17,6 +21,9 @@ import java.util.ArrayList;
 public class MenuItemCategoryRepositoryTest extends AbstractTest {
 	@Autowired
 	private MenuItemCategoryRepository menuItemCategoryRepository;
+
+	@Autowired
+	private MenuItemRepository menuItemRepository;
 
 	@Test
 	public void testTier(){
@@ -41,38 +48,85 @@ public class MenuItemCategoryRepositoryTest extends AbstractTest {
 
 
 	}
-	private MenuItemCategory addCategory(String name, MenuItemCategory parent){
-		MenuItemCategory child = new MenuItemCategory(name);
-		child.setParent(parent);
-		return child;
-	}
-	@Test
-	public void testdata(){
-		menuItemCategoryRepository.deleteAll();
-		ArrayList<MenuItemCategory> tmp = new ArrayList<MenuItemCategory>();
 
-		tmp.add(addCategory("root",null));
-		tmp.add(addCategory("Appetizer",tmp.get(0)));
-		tmp.add(addCategory("Main_Dish",tmp.get(0)));
-		tmp.add(addCategory("Dessert",tmp.get(0)));
-		tmp.add(addCategory("Drinks",tmp.get(0)));
-		//2nd level
-		tmp.add(addCategory("Warm_Appetizer",tmp.get(1)));
-		tmp.add(addCategory("Cold_Appetizer",tmp.get(1)));
-		//main Dish
-		tmp.add(addCategory("Fish",tmp.get(2)));
-		tmp.add(addCategory("Meat",tmp.get(2)));
-		tmp.add(addCategory("Vegetarian",tmp.get(2)));
-		//Drinks
-		tmp.add(addCategory("Alc-free",tmp.get(4)));
-		tmp.add(addCategory("Beer",tmp.get(4)));
-		tmp.add(addCategory("Wine",tmp.get(4)));
-		tmp.add(addCategory("HotDrinks",tmp.get(4)));
-		tmp.add(addCategory("Firewater",tmp.get(4)));
-		for (MenuItemCategory cat: tmp) menuItemCategoryRepository.save(cat);
+	@Test
+	public void testSearchByName() {
+		MenuItemCategory u = new MenuItemCategory();
+		u.setName("Test 1");
+		menuItemCategoryRepository.save(u);
+
+		u = menuItemCategoryRepository.findByName("Test 1");
+
+		Assert.assertNotNull(u);
+
+		Assert.assertTrue(u.getName().equals("Test 1"));
 	}
-	//@After
+
+	/**
+	 * test the custom implementation method for saving menuItems by dto
+	 *
+	 * @see de.neoventus.persistence.repository.advanced.impl.MenuItemCategoryRepositoryImpl#save(MenuItemCategoryDto)
+	 */
+	@Test
+	public void testSaveByDto() {
+		MenuItemCategoryDto dto = new MenuItemCategoryDto();
+		dto.setName("test");
+
+		menuItemCategoryRepository.save(dto);
+
+		MenuItemCategory u = menuItemCategoryRepository.findByName("test");
+
+		Assert.assertNotNull(u);
+	}
+
+	/**
+	 * test if the specified before save event works
+	 *
+	 * @see de.neoventus.persistence.event.MenuItemCategoryLifecycleEvents#onAfterSave(AfterSaveEvent)
+	 */
+	@Test
+	public void testAfterSaveEvent() {
+
+		MenuItemCategory u2 = new MenuItemCategory();
+
+		u2.setName("root1");
+
+		menuItemCategoryRepository.save(u2);
+
+		MenuItemCategory u = new MenuItemCategory();
+
+		u.setName("Layer1");
+		u.setParent(u2);
+		u = menuItemCategoryRepository.save(u);
+
+		Assert.assertTrue(u2.getSubcategory().contains(u));
+
+	}
+
+	@Test
+	public void testAnchorCategoryInMenuItem(){
+		MenuItemCategory u2 = new MenuItemCategory();
+
+		u2.setName("root1");
+
+		menuItemCategoryRepository.save(u2);
+
+		MenuItem u = new MenuItem();
+		u.setName("Test 1");
+		u.setCategory(u2);
+		menuItemRepository.save(u);
+
+		u = menuItemRepository.findByName("Test 1");
+
+		Assert.assertNotNull(u);
+
+		Assert.assertTrue(u.getCategory().getName().equals("root1"));
+	}
+
+
+	@After
 	public void deleteAll() {
 		menuItemCategoryRepository.deleteAll();
+		menuItemRepository.deleteAll();
 	}
 }

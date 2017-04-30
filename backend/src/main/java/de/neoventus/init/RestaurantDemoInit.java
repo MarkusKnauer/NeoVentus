@@ -64,6 +64,7 @@ public class RestaurantDemoInit {
         userRepository.deleteAll();
         orderItemRepository.deleteAll();
         reservationRepository.deleteAll();
+        menuItemCategoryRepository.deleteAll();
 
     }
 

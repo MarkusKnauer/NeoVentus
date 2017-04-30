@@ -11,7 +11,8 @@ import java.util.logging.Logger;
 
 /**
  * @author Dennis Thanner, Julian Beck, Markus Knauer, Tim Heidelbach
- * @version 0.0.5 added random order items init - DT
+ * @version 0.0.6 add menuItem Category bsp-data-generator -JB
+ * 			0.0.5 added random order items init - DT
  *          0.0.4 changed to new repositories
  *          0.0.3 Indirectly insert, Update, delete on DB (Class InsertUpdateDelete) +
  *          and repository access in ControlEntityObjects- JB
@@ -62,27 +63,27 @@ class DefaultDemoDataIntoDB {
 	 */
 	private void generateMenuItems() {
 		LOGGER.info("Init demo menu item data");
-		MenuItemCategory category = menuItemCategoryRepository.findByName("categories");
+		generateMenuCategories();
 		MenuItem[] menu = {
-				new MenuItem(category.getSubcategory().get(1).getSubcategory().get(1), "kleiner Salat", 4.80, "EUR", "kalte Vorspeise", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(1).getSubcategory().get(2), "Bärlauchcremesuppe mit Räucherlachs", 4.80, "EUR", "warme Vorspeise", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(2).getSubcategory().get(1), "Lachsfilet", 14.60, "EUR", "mit Tagliatelle und Tomaten", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(2).getSubcategory().get(1), "Salatteller", 13.80, "EUR", "mit gebratenem Zanderfilet", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(2).getSubcategory().get(2), "Pasta Bolognese", 11.90, "EUR", "mit Tomaten und Parmesan", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(2).getSubcategory().get(2), "Schweinerückensteak", 13.90, "EUR", "mit Pfefferrahmsauce und Kartoffel Wedges", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(2).getSubcategory().get(3), "Hausgemachte Kartoffel Gnocchi", 11.80, "EUR", "Gnocchi mit mediterranem Gemüse, Fetakäse, Rucola & Parmesan", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(2).getSubcategory().get(3), "Hausgemachte Käsespätzle", 11.60, "EUR", "mit Beilagensalat", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(3).getSubcategory().get(1), "Drei Kugeln Eis", 6.10, "EUR", "mit Sahne", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(4).getSubcategory().get(1), "Spezi", 2.10, "EUR", "0,20l", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(4).getSubcategory().get(1), "Ginger Ale", 2.20, "EUR", "0,20l", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(4).getSubcategory().get(2), "Warsteiner", 2.00, "EUR", "0.25l", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(4).getSubcategory().get(2), "Guinness", 3.00, "EUR", "0.30l", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(4).getSubcategory().get(3), "Cabernet Sauvignon", 3.90, "EUR", "0.20l", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(4).getSubcategory().get(3), "Pinot Grigio", 3.90, "EUR", "0.20l", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(4).getSubcategory().get(4), "Jägermeister", 2.00, "EUR", "5cl", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(4).getSubcategory().get(4), "Sambuca", 3.90, "EUR", "5cl", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(4).getSubcategory().get(5), "Tasse Kaffee", 1.50, "EUR", "mit Milch, Zucker", "", new ArrayList<>()),
-				new MenuItem(category.getSubcategory().get(4).getSubcategory().get(5), "Heiße Schokolade", 2.10, "EUR", "mit Sahne", "", new ArrayList<>())
+				new MenuItem(menuItemCategoryRepository.findByName("Warm_Appetizer"), "kleiner Salat", 4.80, "EUR", "kalte Vorspeise", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Cold_Appetizer"), "Bärlauchcremesuppe mit Räucherlachs", 4.80, "EUR", "warme Vorspeise", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Fish"), "Lachsfilet", 14.60, "EUR", "mit Tagliatelle und Tomaten", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Fish"), "Salatteller", 13.80, "EUR", "mit gebratenem Zanderfilet", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Meat"), "Pasta Bolognese", 11.90, "EUR", "mit Tomaten und Parmesan", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Meat"), "Schweinerückensteak", 13.90, "EUR", "mit Pfefferrahmsauce und Kartoffel Wedges", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Vegetarian"), "Hausgemachte Kartoffel Gnocchi", 11.80, "EUR", "Gnocchi mit mediterranem Gemüse, Fetakäse, Rucola & Parmesan", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Vegetarian"), "Hausgemachte Käsespätzle", 11.60, "EUR", "mit Beilagensalat", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Dessert"), "Drei Kugeln Eis", 6.10, "EUR", "mit Sahne", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Alc-free"), "Spezi", 2.10, "EUR", "0,20l", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Alc-free"), "Ginger Ale", 2.20, "EUR", "0,20l", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Beer"), "Warsteiner", 2.00, "EUR", "0.25l", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Beer"), "Guinness", 3.00, "EUR", "0.30l", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Wine"), "Cabernet Sauvignon", 3.90, "EUR", "0.20l", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Wine"), "Pinot Grigio", 3.90, "EUR", "0.20l", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Fire-Water"), "Jägermeister", 2.00, "EUR", "5cl", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Fire-Water"), "Sambuca", 3.90, "EUR", "5cl", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Hot Drinks"), "Tasse Kaffee", 1.50, "EUR", "mit Milch, Zucker", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Hot Drinks"), "Heiße Schokolade", 2.10, "EUR", "mit Sahne", "", new ArrayList<>())
 		};
 		for(MenuItem m : menu) this.menuItems.add(menuItemRepository.save(m));
 	}
@@ -152,14 +153,7 @@ class DefaultDemoDataIntoDB {
 		orderItemRepository.save(orderItems);
 		LOGGER.info("Finished creating random orders");
 	}
-
-
-	private MenuItemCategory addCategory(String name, MenuItemCategory parent){
-		MenuItemCategory child = new MenuItemCategory(name);
-		child.setParent(parent);
-		return child;
-	}
-
+// ------------- START Semantic group: MenuCategory -------------------------
 	private void generateMenuCategories(){
 		LOGGER.info("Generate menu Items");
 		ArrayList<MenuItemCategory> tmp = new ArrayList<MenuItemCategory>();
@@ -187,6 +181,12 @@ class DefaultDemoDataIntoDB {
 		for(MenuItemCategory parent: tmp)menuItemCategoryRepository.save(parent);
 
 	}
-
+	// Subfunction for generateMenuCategories
+	private MenuItemCategory addCategory(String name, MenuItemCategory parent){
+		MenuItemCategory child = new MenuItemCategory(name);
+		child.setParent(parent);
+		return child;
+	}
+// -------------END OF Semantic group: MenuCategory -------------------------
 
 }

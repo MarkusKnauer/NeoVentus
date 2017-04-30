@@ -43,17 +43,6 @@ public class MenuItem extends AbstractDocument {
 		this.notices = new ArrayList<>();
 	}
 
-	public MenuItem(String name, Double price, String currency, String description, String mediaUrl,
-					List<String> notices) {
-		this.name = name;
-		this.price = price;
-		this.currency = currency;
-		this.description = description;
-		this.mediaUrl = mediaUrl;
-		this.notices = notices;
-	}
-
-
 	public MenuItem(MenuItemCategory category, String name, Double price, String currency, String description, String mediaUrl,
 					List<String> notices) {
 		this.category = category;
