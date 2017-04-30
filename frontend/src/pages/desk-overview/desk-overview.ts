@@ -1,10 +1,12 @@
 import {Component} from "@angular/core";
 import {NavController} from "ionic-angular";
 import {DeskService} from "../../app/service/desk.service";
+import {AuthGuardService} from "../../app/service/auth-guard.service";
+import {LoginPage} from "../login/login";
 
 /**
- * @author Tim Heidelbach
- * @version 0.0.1
+ * @author Tim Heidelbach, Dennis Thanner
+ * @version 0.0.2 added authGuard - DT
  */
 @Component({
   templateUrl: "desk-overview.html",
@@ -14,7 +16,7 @@ export class DeskOverviewPage {
 
   public desks: any;
 
-  constructor(private navCtrl: NavController, private deskService: DeskService) {
+  constructor(private navCtrl: NavController, private deskService: DeskService, private authGuard: AuthGuardService) {
     this.loadDesks();
   }
 
@@ -25,6 +27,12 @@ export class DeskOverviewPage {
           this.desks = data;
         }
       )
+  }
+
+  ionViewWillEnter() {
+    if (!this.authGuard.hasAnyRole(["CEO", "SERVICE"])) {
+      this.navCtrl.setRoot(LoginPage);
+    }
   }
 
   deskSelected(desk) {
