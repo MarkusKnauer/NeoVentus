@@ -1,11 +1,13 @@
-import {Component} from '@angular/core';
-import {NavController} from 'ionic-angular';
-import {UserService} from '../../app/service/user.service';
-import {DeskOverviewPage} from '../desk-overview/desk-overview';
+import {Component} from "@angular/core";
+import {NavController, ToastController} from "ionic-angular";
+import {UserService} from "../../app/service/user.service";
+import {DeskOverviewPage} from "../desk-overview/desk-overview";
+import {AuthGuardService} from "../../app/service/auth-guard.service";
 
 /**
  * @author Dennis Thanner
- * @version 0.0.2 added redirect to deskoverview
+ * @version 0.0.3 added login feedback + bug fix - DT
+ * 0.0.2 added redirect to deskoverview
  */
 @Component({
   selector: 'page-login',
@@ -17,7 +19,8 @@ export class LoginPage {
 
   private password: string;
 
-  constructor(public navCtrl: NavController, private userService: UserService) {
+  constructor(public navCtrl: NavController, private userService: UserService, private authGuard: AuthGuardService,
+              private toastCtrl: ToastController) {
 
   }
 
@@ -25,7 +28,9 @@ export class LoginPage {
    * prevent login in screen to show up in browser if user is authenticated
    */
   ionViewWillEnter() {
-    this.navCtrl.setRoot(DeskOverviewPage)
+    if (this.authGuard.isAuthenticated()) {
+      this.navCtrl.setRoot(DeskOverviewPage)
+    }
   }
 
   /**
@@ -38,6 +43,12 @@ export class LoginPage {
       this.navCtrl.setRoot(DeskOverviewPage)
     }).catch(() => {
       console.debug("Failed to login");
+      let infoToast = this.toastCtrl.create({
+        message: "Invalid login",
+        duration: 3000,
+        position: "bottom"
+      });
+      infoToast.present();
     })
   }
 
