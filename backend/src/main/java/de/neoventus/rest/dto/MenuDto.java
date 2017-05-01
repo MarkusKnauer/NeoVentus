@@ -32,6 +32,7 @@ public class MenuDto implements Serializable {
 
     private String category;
 
+    private String sideDish;
 
     // constructor
     public MenuDto(){}
@@ -39,7 +40,15 @@ public class MenuDto implements Serializable {
     // getter and setter
 
 
-	public String getCategory() {return category;}
+    public String getSideDish() {
+        return sideDish;
+    }
+
+    public void setSideDish(String sideDish) {
+        this.sideDish = sideDish;
+    }
+
+    public String getCategory() {return category;}
 
 	public void setCategory(String category) {this.category = category;}
 

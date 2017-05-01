@@ -41,6 +41,7 @@ public class MenuItem extends AbstractDocument {
 	// constructor
 	public MenuItem() {
 		this.notices = new ArrayList<>();
+		sideDish = null;
 	}
 
 	public MenuItem(MenuItemCategory category, String name, Double price, String currency, String description, String mediaUrl,
@@ -52,6 +53,8 @@ public class MenuItem extends AbstractDocument {
 		this.description = description;
 		this.mediaUrl = mediaUrl;
 		this.notices = notices;
+		sideDish = null;
+
 	}
 
 	/**
@@ -87,6 +90,7 @@ public class MenuItem extends AbstractDocument {
 
 	public void setName(String name) {
 		this.name = name;
+//		sideDish.setSideDishName(name);
 	}
 
 	public Double getPrice() {
@@ -140,6 +144,8 @@ public class MenuItem extends AbstractDocument {
     public void setSideDish(SideDish sideDish) {
         this.sideDish = sideDish;
     }
+
+    public SideDish getSideDish(){ return sideDish;}
 
 	@Override
 	public String toString() {

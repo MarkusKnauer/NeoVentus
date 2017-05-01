@@ -1,7 +1,10 @@
 package de.neoventus.persistence.repository.advanced.impl;
 
 import de.neoventus.persistence.entity.MenuItem;
+import de.neoventus.persistence.entity.SideDish;
 import de.neoventus.persistence.repository.MenuItemCategoryRepository;
+import de.neoventus.persistence.repository.MenuItemRepository;
+import de.neoventus.persistence.repository.SideDishRepository;
 import de.neoventus.persistence.repository.advanced.NVMenuItemRepository;
 import de.neoventus.rest.dto.MenuDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,12 @@ public class MenuItemRepositoryImpl implements NVMenuItemRepository {
 	@Autowired
 	private MenuItemCategoryRepository menuItemCategoryRepository;
 
+	@Autowired
+	private SideDishRepository sideDishRepository;
+
+	@Autowired
+	private MenuItemRepository menuItemRepository;
+
 	@Override
 	public void save(MenuDto dto) {
 		MenuItem item;
@@ -42,7 +51,9 @@ public class MenuItemRepositoryImpl implements NVMenuItemRepository {
 		item.setNotices(dto.getNotices());
 		item.setNumber(dto.getNumber());
 		item.setPrice(dto.getPrice());
-		item.setSideDish(null);
+
+		item.setSideDish(dto.getSideDish() != null ? sideDishRepository.findBySideDishName(dto.getSideDish()) : new SideDish(dto.getName()));
+
 
 		mongoTemplate.save(item);
 	}

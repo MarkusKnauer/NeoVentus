@@ -1,9 +1,12 @@
 package de.neoventus.persistence.event;
 
 import de.neoventus.persistence.entity.MenuItem;
+import de.neoventus.persistence.entity.SideDish;
 import de.neoventus.persistence.repository.MenuItemRepository;
+import de.neoventus.persistence.repository.SideDishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
+import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.stereotype.Component;
 
@@ -17,11 +20,18 @@ import org.springframework.stereotype.Component;
 public class MenuItemLifecycleEvents extends AbstractMongoEventListener<MenuItem> {
 
 	private MenuItemRepository menuItemRepository;
-
+	private SideDishRepository sideDishRepository;
 	@Override
 	public void onBeforeConvert(BeforeConvertEvent<MenuItem> event) {
 		// automatically increment set userId
 		MenuItem menuItem = event.getSource();
+
+		if(menuItem.getSideDish() == null){
+			SideDish dish = new SideDish(menuItem.getName());
+			dish.setActualMenuItem(null);
+			sideDishRepository.save(dish);
+			menuItem.setSideDish(dish);
+		}
 
 		// only set number if not exists yet
 		if(menuItem.getNumber() == null) {
@@ -35,8 +45,22 @@ public class MenuItemLifecycleEvents extends AbstractMongoEventListener<MenuItem
 		}
 	}
 
+	@Override
+	public void onAfterSave(AfterSaveEvent<MenuItem> event){
+		MenuItem menuItem = event.getSource();
+		SideDish dish = menuItem.getSideDish();
+		dish.setActualMenuItem(menuItem);
+		sideDishRepository.save(dish);
+	}
+
+
+
 	@Autowired
 	public void setMenuItemRepository(MenuItemRepository menuItemRepository) {
 		this.menuItemRepository = menuItemRepository;
+	}
+	@Autowired
+	public void setSideDishRepository(SideDishRepository sideDishRepository) {
+		this.sideDishRepository = sideDishRepository;
 	}
 }
