@@ -14,8 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
 
 /**
- * @author: Julian Beck
- * @version: 0.0.1
+ * @author: Julian Beck, Markus Knauer
+ * @version: 0.0.2 edited (deleted tree structure) MK
+ * 			0.0.1 crated by JB
  * @description:
  **/
 public class SideDishRepositoryTest extends AbstractTest {
@@ -40,20 +41,16 @@ public class SideDishRepositoryTest extends AbstractTest {
 		u.setName("Menu2");
 		menuItemRepository.save(u);
 		SideDish sideDish = u.getSideDish();
-		sideDish.addParentalMeal(u2.getSideDish());
-		// sideDish.addParentalMeal(u2);
 		sideDishRepository.save(sideDish);
 		MenuItem u3 = new MenuItem();
 		u3.setName("Kuchen");
 		menuItemRepository.save(u3);
 		SideDish d = u3.getSideDish();
-		d.addParentalMeal(u2.getSideDish());
 		sideDishRepository.save(d);
 
 
 		Assert.assertNotNull(u);
 
-		Assert.assertTrue(sideDish.getLastParentMeal().equals(u2));
 
 
 	}
@@ -70,14 +67,11 @@ public class SideDishRepositoryTest extends AbstractTest {
 		u.setName("Menu2");
 		menuItemRepository.save(u);
 		SideDish sideDish = u.getSideDish();
-		sideDish.addParentalMeal(u2.getSideDish());
-		// sideDish.addParentalMeal(u2);
 		sideDishRepository.save(sideDish);
 		MenuItem u3 = new MenuItem();
 		u3.setName("Kuchen");
 		menuItemRepository.save(u3);
 		SideDish d = u3.getSideDish();
-		d.addParentalMeal(u2.getSideDish());
 		sideDishRepository.save(d);
 
 
@@ -87,7 +81,7 @@ public class SideDishRepositoryTest extends AbstractTest {
 
 		Assert.assertNotNull(d);
 
-		Assert.assertTrue(d.getSideDishName().equals("Kuchen"));
+		Assert.assertTrue(d.getName().equals("Kuchen"));
 	}
 
 	@Test
@@ -108,8 +102,8 @@ public class SideDishRepositoryTest extends AbstractTest {
 		u.setName("Menu2");
 		menuItemRepository.save(u);
 
-		d.addParentalMeal(u.getSideDish());
-		sideDishRepository.save(u.getSideDish());
+		d.addSideDish(u);
+		sideDishRepository.save(d);
 		// sideDish.addParentalMeal(u2);
 		//sideDishRepository.save(d);
 	}
@@ -140,23 +134,6 @@ public class SideDishRepositoryTest extends AbstractTest {
 	 *
 	 * @see de.neoventus.persistence.event.MenuItemCategoryLifecycleEvents#onAfterSave(AfterSaveEvent)
 	 */
-	@Test
-	public void testAfterSaveEvent() {
-
-		SideDish u2 = new SideDish("Spice Girls - Wannabe");
-
-
-		sideDishRepository.save(u2);
-
-		SideDish u = new SideDish( "404 Not Found, man");
-
-		u.addParentalMeal(u2);
-		u = sideDishRepository.save(u);
-
-		Assert.assertTrue(u2.getSubMeal().contains(u));
-
-	}
-
 
 
 	//@After

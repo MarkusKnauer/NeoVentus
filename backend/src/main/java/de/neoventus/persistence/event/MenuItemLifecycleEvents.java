@@ -28,7 +28,7 @@ public class MenuItemLifecycleEvents extends AbstractMongoEventListener<MenuItem
 
 		if(menuItem.getSideDish() == null){
 			SideDish dish = new SideDish(menuItem.getName());
-			dish.setActualMenuItem(null);
+			dish.addSideDish(null);
 			sideDishRepository.save(dish);
 			menuItem.setSideDish(dish);
 		}
@@ -49,7 +49,7 @@ public class MenuItemLifecycleEvents extends AbstractMongoEventListener<MenuItem
 	public void onAfterSave(AfterSaveEvent<MenuItem> event){
 		MenuItem menuItem = event.getSource();
 		SideDish dish = menuItem.getSideDish();
-		dish.setActualMenuItem(menuItem);
+		dish.addSideDish(menuItem);
 		sideDishRepository.save(dish);
 	}
 

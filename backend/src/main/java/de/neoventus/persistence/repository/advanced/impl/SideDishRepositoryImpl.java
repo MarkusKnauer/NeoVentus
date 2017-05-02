@@ -14,9 +14,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import java.util.logging.Logger;
 
 /**
- * @author: Julian Beck
- * @version: 0.0.1
- * @description:
+ * @author: Julian Beck, Markus Knauer
+ * @version: 0.0.2 edited (removed tree) MK
+ * 			0.0.1 created by JB
+ *
  **/
 public class SideDishRepositoryImpl implements NVSideDishRepository {
 	private final static Logger LOGGER = Logger.getLogger(SideDishRepositoryImpl.class.getName());
@@ -39,24 +40,14 @@ public class SideDishRepositoryImpl implements NVSideDishRepository {
 			item = new SideDish();
 		}
 
-		item.setSideDishName(dto.getNameDish());
-		SideDish find;
+		item.setName(dto.getNameDish());
 		MenuItem menuItem;
 
-		if(dto.getTargetMenuItem()!= null){
-
-			find = sideDishRepository.findBySideDishName(dto.getTargetMenuItem());
-			if(find != null){
-				item.addParentalMeal(find);
-			}else{
-
-			}
-		}
 
 		if(dto.getMenuItemName() != null){
 			menuItem = menuItemRepository.findByName(dto.getMenuItemName());
 			if(menuItem != null){
-				item.setActualMenuItem(menuItem);
+				item.addSideDish(menuItem);
 			}
 
 		}

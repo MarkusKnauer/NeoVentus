@@ -100,14 +100,12 @@ public class MenuItemRepositoryTest extends AbstractTest {
         MenuItem u = new MenuItem(getCategory(),"test", 12.02, "EUR", "Testdescr", "Testmedia", new ArrayList<>());
         menuItemRepository.save(u);
         SideDish sideDish = u.getSideDish();
-        sideDish.addParentalMeal(u2.getSideDish());
        // sideDish.addParentalMeal(u2);
         sideDishRepository.save(sideDish);
         MenuItem u3 = new MenuItem();
         u3.setName("Kuchen");
         menuItemRepository.save(u3);
         SideDish d = u3.getSideDish();
-        d.addParentalMeal(u2.getSideDish());
         sideDishRepository.save(d);
 
 
