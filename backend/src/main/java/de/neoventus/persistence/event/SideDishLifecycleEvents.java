@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 		public void onBeforeConvert(BeforeConvertEvent<SideDish> event){
 			SideDish max = event.getSource();
 			if (max != null){
-				if (sideDishRepository.findBySideDishName(max.getName()) != null) {
+				if (sideDishRepository.findByName(max.getName()) != null) {
 
 				}
 			}

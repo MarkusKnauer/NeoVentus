@@ -76,7 +76,7 @@ public class SideDishRepositoryTest extends AbstractTest {
 
 
 
-		d = sideDishRepository.findBySideDishName("Kuchen");
+		d = sideDishRepository.findByName("Kuchen");
 
 
 		Assert.assertNotNull(d);
@@ -124,7 +124,7 @@ public class SideDishRepositoryTest extends AbstractTest {
 
 
 		sideDishRepository.save(dto);
-		SideDish bigO = sideDishRepository.findBySideDishName("Ehh Macarena");
+		SideDish bigO = sideDishRepository.findByName("Ehh Macarena");
 
 		Assert.assertNotNull(bigO);
 	}

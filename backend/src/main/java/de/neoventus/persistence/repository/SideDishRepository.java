@@ -12,9 +12,9 @@ public interface SideDishRepository extends CrudRepository<SideDish, String>, NV
 	/**
 	 * find sidDish by name
 	 *
-	 * @param sideDishName name to search for
+	 * @param name name to search for
 	 * @return SideDish
 	 */
-	SideDish findBySideDishName(String sideDishName);
+	SideDish findByName(String name);
 
 }

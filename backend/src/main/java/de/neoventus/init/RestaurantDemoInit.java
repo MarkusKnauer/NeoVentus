@@ -30,10 +30,12 @@ public class RestaurantDemoInit {
     private final ReservationRepository reservationRepository;
     private final BillingRepository billingRepository;
     private final MenuItemCategoryRepository menuItemCategoryRepository;
+    private final SideDishRepository sideDishRepository;
+
     @Autowired
     public RestaurantDemoInit(DeskRepository deskRepository, UserRepository userRepository,
                               OrderItemRepository orderItemRepository, MenuItemRepository menuItemRepository,MenuItemCategoryRepository menuItemCategoryRepository,
-                              ReservationRepository reservationRepository, BillingRepository billingRepository) {
+                              ReservationRepository reservationRepository, BillingRepository billingRepository, SideDishRepository sideDishRepository) {
 
         this.billingRepository = billingRepository;
         this.reservationRepository = reservationRepository;
@@ -42,6 +44,7 @@ public class RestaurantDemoInit {
         this.orderItemRepository = orderItemRepository;
         this.menuItemRepository = menuItemRepository;
         this.menuItemCategoryRepository = menuItemCategoryRepository;
+        this.sideDishRepository =sideDishRepository;
     }
 
     /**
@@ -52,7 +55,7 @@ public class RestaurantDemoInit {
     @PostConstruct
     public void initialize() {
         clearData();
-        new DefaultDemoDataIntoDB(deskRepository, userRepository, menuItemRepository, menuItemCategoryRepository, orderItemRepository, reservationRepository,billingRepository);
+        new DefaultDemoDataIntoDB(deskRepository, userRepository, menuItemRepository, menuItemCategoryRepository, orderItemRepository, reservationRepository,billingRepository,sideDishRepository);
 	}
 
     /**
@@ -65,6 +68,7 @@ public class RestaurantDemoInit {
         orderItemRepository.deleteAll();
         reservationRepository.deleteAll();
         menuItemCategoryRepository.deleteAll();
+        sideDishRepository.deleteAll();
 
     }
 

@@ -1,6 +1,8 @@
 package de.neoventus.persistence.entity;
 
 
+import org.springframework.data.mongodb.core.index.Indexed;
+
 import java.util.ArrayList;
 
 /**
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 
 public class SideDish extends AbstractDocument {
 
+    @Indexed
     private String name;
 
     private ArrayList<MenuItem> sideDish;

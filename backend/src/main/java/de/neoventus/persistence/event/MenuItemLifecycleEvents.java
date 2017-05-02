@@ -1,7 +1,6 @@
 package de.neoventus.persistence.event;
 
 import de.neoventus.persistence.entity.MenuItem;
-import de.neoventus.persistence.entity.SideDish;
 import de.neoventus.persistence.repository.MenuItemRepository;
 import de.neoventus.persistence.repository.SideDishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +26,10 @@ public class MenuItemLifecycleEvents extends AbstractMongoEventListener<MenuItem
 		MenuItem menuItem = event.getSource();
 
 		if(menuItem.getSideDish() == null){
-			SideDish dish = new SideDish(menuItem.getName());
-			dish.addSideDish(null);
-			sideDishRepository.save(dish);
-			menuItem.setSideDish(dish);
+		//	SideDish dish = new SideDish(menuItem.getName());
+		//	dish.addSideDish(null);
+			//sideDishRepository.save(dish);
+		//	menuItem.setSideDish(dish);
 		}
 
 		// only set number if not exists yet
@@ -47,10 +46,10 @@ public class MenuItemLifecycleEvents extends AbstractMongoEventListener<MenuItem
 
 	@Override
 	public void onAfterSave(AfterSaveEvent<MenuItem> event){
-		MenuItem menuItem = event.getSource();
-		SideDish dish = menuItem.getSideDish();
-		dish.addSideDish(menuItem);
-		sideDishRepository.save(dish);
+	//	MenuItem menuItem = event.getSource();
+	//	SideDish dish = menuItem.getSideDish();
+	//	dish.addSideDish(menuItem);
+	//	sideDishRepository.save(dish);
 	}
 
 

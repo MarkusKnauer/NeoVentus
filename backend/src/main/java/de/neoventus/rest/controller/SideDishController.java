@@ -39,7 +39,7 @@ public class SideDishController {
 	@RequestMapping(value = "/{sideDish}", method = RequestMethod.GET)
 	public SideDish listMenuItem(HttpServletResponse response, @PathVariable String sideDish) {
 		try {
-			return sideDishRepository.findBySideDishName(sideDish);
+			return sideDishRepository.findByName(sideDish);
 		} catch(Exception e) {
 			LOGGER.warning("Error searching sideDish with name " + sideDish + ": " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

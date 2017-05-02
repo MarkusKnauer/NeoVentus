@@ -31,7 +31,9 @@ class DefaultDemoDataIntoDB {
 	private OrderItemRepository orderItemRepository;
 	private BillingRepository billingRepository;
 	private ReservationRepository reservationRepository;
-    private SideDishRepository sideDishRepository;
+	private SideDishRepository sideDishRepository;
+
+
 
 	// init documents saved for class based access
 	private List<Desk> desks;
@@ -40,7 +42,7 @@ class DefaultDemoDataIntoDB {
 
 	public DefaultDemoDataIntoDB(DeskRepository deskRepository, UserRepository userRepository,
 								 MenuItemRepository menuItemRepository, MenuItemCategoryRepository menuItemCategoryRepository, OrderItemRepository orderItemRepository,
-								 ReservationRepository reservationRepository, BillingRepository billingRepository) {
+								 ReservationRepository reservationRepository, BillingRepository billingRepository,SideDishRepository sideDishRepository) {
 
 		this.menuItemRepository = menuItemRepository;
 		this.menuItemCategoryRepository = menuItemCategoryRepository;
@@ -49,6 +51,7 @@ class DefaultDemoDataIntoDB {
 		this.billingRepository = billingRepository;
 		this.reservationRepository = reservationRepository;
 		this.orderItemRepository = orderItemRepository;
+		this.sideDishRepository = sideDishRepository;
 		this.desks = new ArrayList<>();
 		this.menuItems = new ArrayList<>();
 		this.users = new ArrayList<>();
@@ -162,7 +165,9 @@ class DefaultDemoDataIntoDB {
 
     private void generateSideDish() {
         LOGGER.info("Creating Sidedishes");
+//        sideDishRepository.deleteAll();
         SideDish sideDish = new SideDish("Salatbeilagen");
+		this.sideDishRepository.save(sideDish);
         sideDish.addSideDish(menuItemRepository.findByName("kleiner Salat"));
         sideDish.addSideDish(menuItemRepository.findByName("Salatteller"));
         this.sideDishRepository.save(sideDish);
