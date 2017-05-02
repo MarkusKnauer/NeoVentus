@@ -29,7 +29,7 @@ public class SideDish extends AbstractDocument {
 
     public SideDish(String name) {
         this.name = name;
-        sideDish = new ArrayList<>();
+        sideDish = null;//new ArrayList<MenuItem>();
     }
 
 

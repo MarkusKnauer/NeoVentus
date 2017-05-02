@@ -31,6 +31,8 @@ public class SideDishRepositoryTest extends AbstractTest {
 
 	@Test
 	public void testSideDish(){
+		// Unit Test for old- Version of SideDish
+
 		deleteAll();
 		MenuItem u2 = new MenuItem();
 
@@ -57,6 +59,8 @@ public class SideDishRepositoryTest extends AbstractTest {
 
 	@Test
 	public void testSearchByName() {
+		// Unit Test for old- Version of SideDish
+
 		deleteAll();
 		MenuItem u2 = new MenuItem();
 
@@ -86,6 +90,8 @@ public class SideDishRepositoryTest extends AbstractTest {
 
 	@Test
 	public void pseudoMenuItem(){
+		// Unit Test for old- Version of SideDish
+		
 		deleteAll();
 		MenuItem u2 = new MenuItem();
 
