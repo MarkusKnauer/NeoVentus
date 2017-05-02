@@ -6,7 +6,8 @@ import {LoginPage} from "../login/login";
 
 /**
  * @author Tim Heidelbach, Dennis Thanner
- * @version 0.0.2 added authGuard - DT
+ * @version 0.0.3 button toggles between grid- and list view
+ *          0.0.2 added authGuard - DT
  */
 @Component({
   templateUrl: "desk-overview.html",
@@ -15,6 +16,7 @@ import {LoginPage} from "../login/login";
 export class DeskOverviewPage {
 
   public desks: any;
+  private tileView = true;
 
   constructor(private navCtrl: NavController, private deskService: DeskService, private authGuard: AuthGuardService) {
     this.loadDesks();
@@ -41,7 +43,9 @@ export class DeskOverviewPage {
 
   toggleView() {
     // TODO: toggle between grid and list view
-    alert("ein sehr mächtiger Button");
+    // alert("ein sehr mächtiger Button");
+    this.tileView ? this.tileView = false : this.tileView = true;
+    console.log("tileView: " + this.tileView);
   }
 
 }
