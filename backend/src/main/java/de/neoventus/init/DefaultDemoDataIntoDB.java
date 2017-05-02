@@ -11,7 +11,8 @@ import java.util.logging.Logger;
 
 /**
  * @author Dennis Thanner, Julian Beck, Markus Knauer, Tim Heidelbach
- * @version 0.0.6 add menuItem Category bsp-data-generator -JB
+ * @version 0.0.7 add SideDish bsp-data - MK
+ * 			0.0.6 add menuItem Category bsp-data-generator -JB
  * 			0.0.5 added random order items init - DT
  *          0.0.4 changed to new repositories
  *          0.0.3 Indirectly insert, Update, delete on DB (Class InsertUpdateDelete) +
@@ -30,6 +31,7 @@ class DefaultDemoDataIntoDB {
 	private OrderItemRepository orderItemRepository;
 	private BillingRepository billingRepository;
 	private ReservationRepository reservationRepository;
+    private SideDishRepository sideDishRepository;
 
 	// init documents saved for class based access
 	private List<Desk> desks;
@@ -56,7 +58,8 @@ class DefaultDemoDataIntoDB {
 		generateUser();
 		updateUserDesk();
 		generateOrderItem();
-	}
+        generateSideDish();
+    }
 
 	/**
 	 * add specified demo menu items to database
@@ -153,6 +156,26 @@ class DefaultDemoDataIntoDB {
 		orderItemRepository.save(orderItems);
 		LOGGER.info("Finished creating random orders");
 	}
+
+
+    // Generate SideDishes
+
+    private void generateSideDish() {
+        LOGGER.info("Creating Sidedishes");
+        SideDish sideDish = new SideDish("Salatbeilagen");
+        sideDish.addSideDish(menuItemRepository.findByName("kleiner Salat"));
+        sideDish.addSideDish(menuItemRepository.findByName("Salatteller"));
+        this.sideDishRepository.save(sideDish);
+
+        MenuItem m = menuItemRepository.findByName("Lachsfilet");
+        m.setSideDish(sideDish);
+        menuItemRepository.save(m);
+        m = menuItemRepository.findByName("Pasta Bolognese");
+        m.setSideDish(sideDish);
+        menuItemRepository.save(m);
+
+    }
+
 // ------------- START Semantic group: MenuCategory -------------------------
 	private void generateMenuCategories(){
 		LOGGER.info("Generate menu Items");

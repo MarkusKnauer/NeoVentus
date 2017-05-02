@@ -1,7 +1,5 @@
 package de.neoventus.persistence.entity;
 
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.ArrayList;
 
@@ -9,121 +7,46 @@ import java.util.ArrayList;
  * A MenuItem could have a list of possible side dishes. For example, to a hamburger you can have wedges or a salat etc.
  *
  * @author Markus Knauer
- * @version 0.0.2 add Three SideDish refs,
+ * @version 0.0.3 undo Three SideDish refs MK
+ *          0.0.2 add Three SideDish refs JB
  *          0.0.1 Creation - MK
  */
 
-// Sides set: Sides could be directly connected to MenuItem OR Semantic Sides could be build e.q. salad-group (Ceasar, tomatato, potato,
-// Danger !! Use method addParentalMeal NOT addSubMeal before save()
-// Logic:   Schnitzel with french frites (ParentMeal with SubMeal) --> ParentMeal set automaticly his sub
-//          Insert french frites is part of Schnitzel doesn't work --> Sub can't set dom
-
-
 public class SideDish extends AbstractDocument {
 
-    private int number;
+    private String name;
 
-    @Indexed
-    private String sideDishName;
+    private ArrayList<MenuItem> sideDish;
 
-    @DBRef
-    private MenuItem actualMenuItem;
-
-    @DBRef
-    private ArrayList<SideDish> subMeal;
-
-    @DBRef
-    private ArrayList<SideDish> parentMeal;
-
+    //constructor
 
     public SideDish(){
-        subMeal = null;
-        parentMeal = null;
+        sideDish = new ArrayList<>();
     }
 
-    public SideDish(String name){
-        sideDishName = name;
-        subMeal =null;
-        parentMeal = null;
-    }
-    public SideDish(MenuItem menuItem){
-        actualMenuItem = menuItem;
-        subMeal = null;
-        parentMeal = null;
-    }
-
-    public SideDish(int number) {
-        this.number = number;
-        subMeal = new ArrayList<SideDish>();
-        parentMeal = new ArrayList<SideDish>();
+    public SideDish(String name) {
+        this.name = name;
+        sideDish = new ArrayList<>();
     }
 
 
-    //Danger!! Doesn't work for adding new sides (BUT used as a subroutine in other cases)
-   public void addsubMeal(SideDish sideDish){
-        if(getSubMeal() == null) setSubMeal(new ArrayList<SideDish>());
-        getSubMeal().add(sideDish);
-   }
-
-    public void addParentalMeal(SideDish sidedish){
-        if(getParentMeal() == null) setParentMeal(new ArrayList<SideDish>());
-        getParentMeal().add(sidedish);
+    // getter, setter
+    public String getName() {
+        return name;
     }
 
-
-    public SideDish getLastSubMeal(){
-        return getSubMeal().get(getSubMeal().size()-1);
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public SideDish getLastParentMeal(){
-       return getParentMeal().get(getParentMeal().size()-1);
+    public ArrayList<MenuItem> getSideDish() {
+        return sideDish;
     }
 
-
-    public SideDish getSubMealTree(SideDish sidedish){
-       for(SideDish m : getSubMeal()){
-            if(sidedish.equals(m)) return m;
-       }
-       return null;
-    }
-    // Set multiple sideDishes
-
-
-    public int getNumber() {
-        return number;
+    public void addSideDish(MenuItem menuItem) {
+        sideDish.add(menuItem);
     }
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
+    //todo SideDish examples have to be inialized and linked to the menuitems - MK
 
-    public String getSideDishName() {
-        return sideDishName;
-    }
-
-    public void setSideDishName(String sideDishName) {
-        this.sideDishName = sideDishName;
-    }
-
-    public MenuItem getActualMenuItem() {
-        return actualMenuItem;
-    }
-
-    public void setActualMenuItem(MenuItem actualMenuItem) {
-        this.actualMenuItem = actualMenuItem;
-    }
-
-    public ArrayList<SideDish> getSubMeal() {
-        return subMeal;
-    }
-
-    public void setSubMeal(ArrayList<SideDish> subMeal) {
-        this.subMeal = subMeal;
-    }
-
-    public ArrayList<SideDish> getParentMeal() {return parentMeal;}
-
-    public void setParentMeal(ArrayList<SideDish> parentMeal) {
-        this.parentMeal = parentMeal;
-    }
 }
