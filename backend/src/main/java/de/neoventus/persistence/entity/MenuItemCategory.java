@@ -10,7 +10,6 @@ import java.util.ArrayList;
  *
  * @author Julian Beck
  * @version 0.0.1 created categories for Menu
- *
  */
 public class MenuItemCategory extends AbstractDocument {
 
@@ -24,7 +23,7 @@ public class MenuItemCategory extends AbstractDocument {
 	private MenuItemCategory parent;
 
 
-	public MenuItemCategory(){
+	public MenuItemCategory() {
 		this.subcategory = new ArrayList<MenuItemCategory>();
 		this.parent = null;
 	}
@@ -36,7 +35,7 @@ public class MenuItemCategory extends AbstractDocument {
 	}
 
 
-	public void addSubcategory(MenuItemCategory cat){
+	public void addSubcategory(MenuItemCategory cat) {
 		getSubcategory().add(cat);
 	}
 

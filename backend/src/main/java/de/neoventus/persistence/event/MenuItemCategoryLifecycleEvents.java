@@ -1,6 +1,4 @@
-package de.neoventus.persistence.event;/**
- * Created by julian on 28.04.2017.
- */
+package de.neoventus.persistence.event;
 
 import de.neoventus.persistence.entity.MenuItemCategory;
 import de.neoventus.persistence.repository.MenuItemCategoryRepository;
@@ -9,37 +7,48 @@ import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventLis
 import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 /**
- * @author: Julian Beck
- * @version: 0.0.1
- * @description:
+ * @author Julian Beck, Dennis Thanner
+ * @version 0.0.2 improved after save event to stop recursion - DT
  **/
+@Component
+public class MenuItemCategoryLifecycleEvents extends AbstractMongoEventListener<MenuItemCategory> {
 
-	@Component
-	public class MenuItemCategoryLifecycleEvents extends AbstractMongoEventListener<MenuItemCategory> {
+	private MenuItemCategoryRepository menuItemRepositoryCategory;
 
-		private MenuItemCategoryRepository menuItemRepositoryCategory;
+	@Override
+	public void onAfterSave(AfterSaveEvent<MenuItemCategory> event) {
+		MenuItemCategory current = event.getSource();
+		MenuItemCategory newParent = current.getParent();
+		MenuItemCategory oldParent = menuItemRepositoryCategory.findBySubcategoryContaining(current);
 
-		@Override
-		public void onAfterSave(AfterSaveEvent<MenuItemCategory> event){
-			MenuItemCategory max = event.getSource();
-			if(max.getParent() != null) {
-				MenuItemCategory parent = max.getParent();
-
-				// Break for Recur.
-				if(!parent.getSubcategory().contains(max)){
-					parent.addSubcategory(max);
-					menuItemRepositoryCategory.save(parent);
-				}
-
+		// update old parent
+		if (oldParent != null) {
+			if (!oldParent.equals(newParent)) {
+				oldParent.getSubcategory().remove(current);
+				menuItemRepositoryCategory.save(oldParent);
 			}
-
 		}
 
-
-		@Autowired
-		public void setMenuItemRepository(MenuItemCategoryRepository menuItemRepositoryCategory) {
-			this.menuItemRepositoryCategory = menuItemRepositoryCategory;
+		// update new parent
+		if (newParent != null) {
+			if (newParent.getSubcategory() == null) {
+				newParent.setSubcategory(new ArrayList<>());
+			}
+			if (!newParent.getSubcategory().contains(current)) {
+				newParent.getSubcategory().add(current);
+				menuItemRepositoryCategory.save(newParent);
+			}
 		}
+
+	}
+
+
+	@Autowired
+	public void setMenuItemRepository(MenuItemCategoryRepository menuItemRepositoryCategory) {
+		this.menuItemRepositoryCategory = menuItemRepositoryCategory;
+	}
 
 }
