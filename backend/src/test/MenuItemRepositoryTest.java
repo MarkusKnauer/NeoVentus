@@ -1,6 +1,5 @@
 import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.entity.MenuItemCategory;
-import de.neoventus.persistence.entity.SideDish;
 import de.neoventus.persistence.repository.MenuItemCategoryRepository;
 import de.neoventus.persistence.repository.MenuItemRepository;
 import de.neoventus.persistence.repository.SideDishRepository;
@@ -89,30 +88,31 @@ public class MenuItemRepositoryTest extends AbstractTest {
         return cat;
     }
 
-    @Test
-    public void testSideDish(){
-
-        // Unit Test for old- Version of SideDish
-
-        deleteAll();
-        MenuItem u2 = new MenuItem();
-
-        u2.setName("Menu");
-        u2.setNumber(1);
-        menuItemRepository.save(u2);
-        MenuItem u = new MenuItem(getCategory(),"test", 12.02, "EUR", "Testdescr", "Testmedia", new ArrayList<>());
-        menuItemRepository.save(u);
-        SideDish sideDish = u.getSideDish();
-       // sideDish.addParentalMeal(u2);
-        sideDishRepository.save(sideDish);
-        MenuItem u3 = new MenuItem();
-        u3.setName("Kuchen");
-        menuItemRepository.save(u3);
-        SideDish d = u3.getSideDish();
-        sideDishRepository.save(d);
-
-
-    }
+//    FIXME ASAP Duplcciate???
+//    @Test
+//    public void testSideDish(){
+//
+//        // Unit Test for old- Version of SideDish
+//
+//        deleteAll();
+//        MenuItem u2 = new MenuItem();
+//
+//        u2.setName("Menu");
+//        u2.setNumber(1);
+//        menuItemRepository.save(u2);
+//        MenuItem u = new MenuItem(getCategory(),"test", 12.02, "EUR", "Testdescr", "Testmedia", new ArrayList<>());
+//        menuItemRepository.save(u);
+//        SideDish sideDish = u.getSideDish();
+//       // sideDish.addParentalMeal(u2);
+//        sideDishRepository.save(sideDish);
+//        MenuItem u3 = new MenuItem();
+//        u3.setName("Kuchen");
+//        menuItemRepository.save(u3);
+//        SideDish d = u3.getSideDish();
+//        sideDishRepository.save(d);
+//
+//
+//    }
 
 
 

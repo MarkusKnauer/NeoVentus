@@ -150,7 +150,7 @@ class DefaultDemoDataIntoDB {
 	private void generateOrderItem() {
 		LOGGER.info("Creating random orders");
 		List<OrderItem> orderItems = new ArrayList<>();
-		for(int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 50; i++) {
 			orderItems.add(new OrderItem(this.users.get((int) (Math.random() * this.users.size())),
 					this.desks.get((int) (Math.random() * this.desks.size())),
 					this.menuItems.get((int) (Math.random() * this.menuItems.size())), "", "aufgegeben"));
