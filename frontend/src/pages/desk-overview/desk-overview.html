@@ -1,6 +1,6 @@
 <ion-header>
 
-  <ion-toolbar>
+  <ion-toolbar color="primary">
 
     <ion-title>Tischübersicht</ion-title>
     <ion-buttons start>
@@ -25,11 +25,14 @@
       <ion-col *ngFor="let desk of desks" (click)="deskSelected(desk)" col-auto>
         <div class="desk">
 
-          <h1>
+          <h1 [ngClass]="{unused: desk.status == 0, default: desk.status == 1, danger: desk.status == 2}">
             {{desk.number}}
           </h1>
           <div class="desk-details">
-            <span class="important">{{desk.seats}}</span> Plätze
+            <!--
+              TODO: Display some useful details
+              <span class="important">{{desk.seats}}</span> Plätze
+            -->
           </div>
 
         </div>
@@ -45,14 +48,17 @@
       <ion-item *ngFor="let desk of desks" (click)="deskSelected(desk)" col-auto>
 
         <ion-avatar item-left>
-          <h1>{{desk.number}}</h1>
+          <h1 [ngClass]="{unused: desk.status == 0, default: desk.status == 1, danger: desk.status == 2}">
+            {{desk.number}}
+          </h1>
         </ion-avatar>
-        <h2>
-          Tisch {{desk.number}}
-        </h2>
+
+        <h2 *ngIf="!desk.price == 0"><span class="important">{{desk.price}}</span>€</h2>
         <h3>
-          {{desk.seats}} Plätze
+          <span class="important">{{desk.waiter}}</span>
+          <span class="right">{{desk.reservation}}</span>
         </h3>
+
 
       </ion-item>
 
@@ -63,4 +69,12 @@
 </ion-content>
 
 <ion-footer>
+
+  <ion-toolbar color="primary" *ngIf="!tileView" name="list">
+    <ion-item color="primary">
+      <ion-label>Nur zugewiesene Tische anzeigen</ion-label>
+      <ion-toggle checked={{myDesksOnly}} (click)="toggleMyDesksOnly()" color="dark"></ion-toggle>
+    </ion-item>
+  </ion-toolbar>
+
 </ion-footer>

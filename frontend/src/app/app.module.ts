@@ -12,12 +12,14 @@ import {UserService} from "./service/user.service";
 import {AuthGuardService} from "./service/auth-guard.service";
 import {DeskOverviewPage} from "../pages/desk-overview/desk-overview";
 import {DeskService} from "./service/desk.service";
+import {DeskPage} from "../pages/desk/desk";
 
 @NgModule({
   declarations: [
     MyApp,
     LoginPage,
-    DeskOverviewPage
+    DeskOverviewPage,
+    DeskPage
   ],
   imports: [
     HttpModule,
@@ -34,7 +36,8 @@ import {DeskService} from "./service/desk.service";
   entryComponents: [
     MyApp,
     LoginPage,
-    DeskOverviewPage
+    DeskOverviewPage,
+    DeskPage
   ],
   providers: [
     StatusBar,

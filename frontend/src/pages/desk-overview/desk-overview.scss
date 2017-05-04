@@ -1,26 +1,17 @@
-$primary-color-bright: #F9FAFB;
-$primary-color-dark: #F2F2F2;
-$primary-color-darker: #DBDBDB;
-$color-critical: rgba(255, 100, 100, 0.95);
-$color-alright: rgba(100, 225, 100, 0.95);
-
 .grid-tables {
-
   padding-top: 10px;
 
   div.desk {
-
-    background-color: $primary-color-bright;
+    background-color: color($colors, light);
     border: 1px solid #ddd;
     border-radius: 2px;
     text-align: center;
     width: 110px;
     height: 110px;
-
     transition: box-shadow 0.5s;
 
     h1 {
-      background: $primary-color-dark;
+      background: color($colors, light2);
       border-bottom: 1px solid #ddd;
       width: 100%;
       padding-top: 10px;
@@ -28,26 +19,9 @@ $color-alright: rgba(100, 225, 100, 0.95);
       margin-top: 0;
     }
 
-    h1.critical {
-      background: $color-critical;
-    }
-
-    h1.alright {
-      background: $color-alright;
-    }
-
-    h1.default {
-      background: $primary-color-dark;
-    }
-
     .desk-details {
-
       padding-left: 10px;
       padding-right: 10px;
-
-      span.important {
-        font-weight: bold;
-      }
     }
   }
 
@@ -56,36 +30,47 @@ $color-alright: rgba(100, 225, 100, 0.95);
   }
 
   div.desk:active {
-    background: $primary-color-dark;
+    background: color($colors, light2);
     transform: scale(0.9);
+
     > h1 {
-      background: $primary-color-darker;
+      background: color($colors, light3);
     }
   }
+}
 
+span.important {
+  font-weight: bold;
+}
+
+span.right {
+  float: right;
 }
 
 .list-tables {
 
   h1 {
     text-align: center;
-    border: 2px solid $primary-color-darker;
-    background: $primary-color-dark;
+    border: 2px solid color($colors, light3);
+    background: color($colors, light2);
     border-radius: 50px;
-    display: inline-block;
     padding: 2px;
     height: 40px;
     width: 40px;
     min-width: 16px;
     transition: box-shadow 0.5s;
+
+    display: table-cell;
+    vertical-align: middle;
   }
 
   ion-item:hover {
-    background: $primary-color-bright;
+    background: color($colors, light);
   }
 
   ion-item:active {
-    background: $primary-color-dark;
+    background: color($colors, light3);
+
     h1 {
       transform: scale(0.9);
     }
@@ -94,5 +79,16 @@ $color-alright: rgba(100, 225, 100, 0.95);
   ion-item:hover h1 {
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
   }
+}
 
+h1.danger {
+  background: color($colors, danger-background) !important;
+}
+
+h1.default {
+  background: color($colors, light2) !important;
+}
+
+h1.unused {
+  background: color($colors, secondary-background) !important;
 }
