@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController} from "ionic-angular";
+import {ActionSheetController, NavController} from "ionic-angular";
 import {DeskService} from "../../app/service/desk.service";
 import {AuthGuardService} from "../../app/service/auth-guard.service";
 import {LoginPage} from "../login/login";
@@ -18,7 +18,8 @@ export class DeskOverviewPage {
   public desks: any;
   private tileView = true;
 
-  constructor(private navCtrl: NavController, private deskService: DeskService, private authGuard: AuthGuardService) {
+  constructor(private navCtrl: NavController, private deskService: DeskService, private authGuard: AuthGuardService,
+              public actionSheetCtrl: ActionSheetController) {
     this.loadDesks();
   }
 
@@ -38,7 +39,32 @@ export class DeskOverviewPage {
   }
 
   deskSelected(desk) {
-    alert("you clicked desk " + desk.number);
+
+    let actionSheet = this.actionSheetCtrl.create({
+      //title: 'Modify your album',
+      buttons: [
+        {
+          text: 'Bestellung aufnehmen',
+          role: 'destructive',
+          handler: () => {
+            console.log('Destructive clicked');
+          }
+        },{
+          text: 'Bestellung ändern',
+          handler: () => {
+            console.log('Archive clicked');
+          }
+        },{
+          text: 'Rechnung',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    actionSheet.present();
+
   }
 
   toggleView() {
