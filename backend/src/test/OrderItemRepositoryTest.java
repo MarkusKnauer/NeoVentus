@@ -46,7 +46,7 @@ public class OrderItemRepositoryTest extends AbstractTest {
 		getMenuItem();
 		getUser();
 
-		OrderItemDto dto = new OrderItemDto(1, 1, 1, "", "");
+		OrderItemDto dto = new OrderItemDto(1, 1, 1, "");
 
 
 		orderItemRepository.save(dto);
@@ -54,6 +54,24 @@ public class OrderItemRepositoryTest extends AbstractTest {
 		List<OrderItem> o = (List<OrderItem>) orderItemRepository.findAll();
 		Assert.assertNotNull(o);
 		Assert.assertTrue(o.size() == 1);
+	}
+
+	@Test
+	public void testSaveByDtoChangingState() {
+		getDesk();
+		getMenuItem();
+		getUser();
+
+		OrderItemDto dto = new OrderItemDto(1, 1, 1, "Test");
+
+		orderItemRepository.save(dto);
+		// change state
+		dto.setState(OrderItemState.FINISHED);
+		orderItemRepository.save(dto);
+
+		List<OrderItem> o = (List<OrderItem>) orderItemRepository.findByState(OrderItemState.FINISHED);
+
+		Assert.assertTrue(o.get(o.size() - 1).getGuestWish().equals("Test"));
 	}
 
 	private Desk getDesk2() {

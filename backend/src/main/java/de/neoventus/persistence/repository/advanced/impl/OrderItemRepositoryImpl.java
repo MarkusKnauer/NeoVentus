@@ -9,7 +9,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 /**
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.3 redundancy clean up - DT
+ * @version 0.0.4 state with enum - DS
+ * 			0.0.3 redundancy clean up - DT
  * 			0.0.2 added variable state - DS
  *          0.0.1
  **/
@@ -35,7 +36,7 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 		o.setItem(dto.getMenuItemNumber() != null ? menuItemRepository.findByNumber(dto.getMenuItemNumber()) : null);
 		o.setWaiter(dto.getWaiter() != null ? userRepository.findByWorkerId(dto.getWaiter()) : null);
 		o.setGuestWish(dto.getGuestWish() != null ? dto.getGuestWish() : "");
-		o.setState(dto.getState() != null ? dto.getState() : "");
+		o.setState(dto.getState());
 
 
 		mongoTemplate.save(o);
