@@ -1,5 +1,6 @@
 package de.neoventus.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
@@ -9,7 +10,8 @@ import java.util.ArrayList;
  * Menu Categories
  *
  * @author Julian Beck
- * @version 0.0.1 created categories for Menu
+ * @version 0.0.2 added @JsonIgnore for variable parent - DS
+ * 			0.0.1 created categories for Menu
  */
 public class MenuItemCategory extends AbstractDocument {
 
@@ -19,6 +21,7 @@ public class MenuItemCategory extends AbstractDocument {
 	@DBRef
 	private ArrayList<MenuItemCategory> subcategory;
 
+	@JsonIgnore
 	@DBRef
 	private MenuItemCategory parent;
 
