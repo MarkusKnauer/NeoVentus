@@ -1,5 +1,5 @@
-import {Component} from "@angular/core";
-import {ModalController, NavController} from "ionic-angular";
+import {Component, ViewChild} from "@angular/core";
+import {Content, ModalController, NavController} from "ionic-angular";
 import {DeskService} from "../../app/service/desk.service";
 import {AuthGuardService} from "../../app/service/auth-guard.service";
 import {LoginPage} from "../login/login";
@@ -18,7 +18,7 @@ import {DeskPage} from "../desk/desk";
 export class DeskOverviewPage {
 
   public desks: any;
-  private tileView = false; // must be false on startup to make footer-toolbar shrink ion-content
+  private tileView = true;
   private myDesksOnly = false;
 
   constructor(private navCtrl: NavController, private deskService: DeskService, private authGuard: AuthGuardService,
@@ -60,8 +60,10 @@ export class DeskOverviewPage {
     modal.present();
   }
 
+  @ViewChild(Content) content: Content;
   toggleView() {
     this.tileView ? this.tileView = false : this.tileView = true;
+    this.content.resize(); // lets ion-content respect footer height after grid/list toggle
   }
 
   toggleMyDesksOnly() {
