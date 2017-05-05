@@ -3,7 +3,7 @@
  */
 
 import {Component} from "@angular/core";
-import {NavController} from "ionic-angular";
+import {NavController, NavParams, ViewController} from "ionic-angular";
 /**
  * @author Tim Heidelbach
  * @version 0.0.0
@@ -13,6 +13,13 @@ import {NavController} from "ionic-angular";
 })
 export class DeskPage {
 
-  constructor(private navCtrl: NavController) {
+  private number;
+
+  constructor(private navCtrl: NavController, public viewCtrl: ViewController, public params: NavParams) {
+    this.number = this.params.get('number');
+  }
+
+  dismiss() {
+    this.viewCtrl.dismiss();
   }
 }

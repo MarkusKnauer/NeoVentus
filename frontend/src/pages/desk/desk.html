@@ -1,3 +1,20 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      Tisch {{number}}
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <span ion-text color="white" showWhen="ios">Cancel</span>
+        <ion-icon name="md-close" showWhen="android,windows,landscape,portrait"></ion-icon>
+        <!-- portrait not working -->
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content>
-  <h1>Ein sehr mächtiger Tisch</h1>
+  <div class="table-detail">
+    Some Text
+  </div>
 </ion-content>

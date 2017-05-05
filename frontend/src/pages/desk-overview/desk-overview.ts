@@ -56,8 +56,7 @@ export class DeskOverviewPage {
   }
 
   deskSelected(desk) {
-    console.log(desk.number + " clicked");
-    let modal = this.modalCtrl.create(DeskPage);
+    let modal = this.modalCtrl.create(DeskPage, desk);
     modal.present();
   }
 
