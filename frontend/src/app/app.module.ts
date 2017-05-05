@@ -12,12 +12,15 @@ import {UserService} from "./service/user.service";
 import {AuthGuardService} from "./service/auth-guard.service";
 import {DeskOverviewPage} from "../pages/desk-overview/desk-overview";
 import {DeskService} from "./service/desk.service";
+import {ShowOrdersPage} from "../pages/showOrders/showOrders";
+import {ShowOrdersService} from "./service/showOrders.service";
 
 @NgModule({
   declarations: [
     MyApp,
     LoginPage,
-    DeskOverviewPage
+    DeskOverviewPage,
+    ShowOrdersPage
   ],
   imports: [
     HttpModule,
@@ -26,7 +29,8 @@ import {DeskService} from "./service/desk.service";
       links: [
         // browser support links
         {component: LoginPage, name: "Login", segment: "login"},
-        {component: DeskOverviewPage, name: "Desk Overview", segment: "desks"}
+        {component: DeskOverviewPage, name: "Desk Overview", segment: "desks"},
+        {component: ShowOrdersPage, name: "ShowOrders", segment: "orders"}
       ]
     })
   ],
@@ -34,7 +38,8 @@ import {DeskService} from "./service/desk.service";
   entryComponents: [
     MyApp,
     LoginPage,
-    DeskOverviewPage
+    DeskOverviewPage,
+    ShowOrdersPage
   ],
   providers: [
     StatusBar,
@@ -42,7 +47,8 @@ import {DeskService} from "./service/desk.service";
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthGuardService,
     UserService,
-    DeskService
+    DeskService,
+    ShowOrdersService
   ]
 })
 export class AppModule {

@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Bestellübersicht für Tisch {{deskNumber}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-item-group>
+    <ion-item-divider color="light">
+      <ion-item *ngFor="let order of showOrders">
+
+        Gericht: {{order.item.name}} | Preis: {{order.item.price}}{{order.item.currency}}
+
+
+      </ion-item>
+
+
+    </ion-item-divider>
+  </ion-item-group>
+
+</ion-content>

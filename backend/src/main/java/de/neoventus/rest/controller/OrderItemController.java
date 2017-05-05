@@ -1,15 +1,19 @@
 package de.neoventus.rest.controller;
 
+import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.entity.OrderItem;
+import de.neoventus.persistence.repository.DeskRepository;
 import de.neoventus.persistence.repository.OrderItemRepository;
 import de.neoventus.rest.dto.OrderItemDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -25,11 +29,58 @@ public class OrderItemController {
 	private final static Logger LOGGER = Logger.getLogger(OrderItemController.class.getName());
 
 	private final OrderItemRepository orderRepository;
+	private DeskRepository deskRepository;
+
 
 	@Autowired
 	public OrderItemController(OrderItemRepository orderRepository) {
 		this.orderRepository = orderRepository;
 	}
+
+	/**
+	 * controller method to list all orderItems
+	 *
+	 * @param response the response
+	 * @return all orders
+	 */
+	@RequestMapping(method = RequestMethod.GET)
+	public Iterable<OrderItem> getAllOrders(HttpServletResponse response) {
+		try {
+			return orderRepository.findAll();
+		} catch (DataAccessException e) {
+			LOGGER.warning("Error searching for all orders: " + e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return null;
+		}
+	}
+
+	/**
+	 * controller method to list order details
+	 *
+	 * @param response
+	 * @param deskNumber
+	 * @return
+	 */
+	@RequestMapping(value = "/{deskNumber}", method = RequestMethod.GET)
+	public Iterable<OrderItem> listOrderDesk(HttpServletResponse response, @PathVariable String deskNumber) {
+		try {
+			LOGGER.info("THIS IS BACKEND - OrderController: DeskNumber: "+deskNumber);
+			Desk desk =deskRepository.findByNumber(Integer.parseInt(deskNumber));
+			List<OrderItem> list =orderRepository.findAllOrderItemByDeskIdOrderByItemId(desk.getId());
+
+			for(OrderItem o: list) LOGGER.info("THIS IS BACKEND - OrderController: List: "+ o.getId());
+			return list;
+
+		} catch(Exception e) {
+			LOGGER.warning("Error searching order by deskNumber " + deskNumber + ": " + e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return null;
+		}
+	}
+
+
+
+
 
 
 	/**
@@ -39,6 +90,7 @@ public class OrderItemController {
 	 * @param orderNumber
 	 * @return
 	 */
+	/*
 	@RequestMapping(value = "/{orderNumber}", method = RequestMethod.GET)
 	public OrderItem listOrder(HttpServletResponse response, @PathVariable String orderNumber) {
 		try {
@@ -49,7 +101,7 @@ public class OrderItemController {
 			return null;
 		}
 	}
-
+	*/
 	/**
 	 * controller method for inserting OrderItem
 	 *
@@ -113,5 +165,11 @@ public class OrderItemController {
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
 	}
+
+	@Autowired
+	public void setDeskRepository(DeskRepository deskRepository) {
+		this.deskRepository = deskRepository;
+	}
+
 
 }

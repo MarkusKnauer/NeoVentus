@@ -187,23 +187,23 @@ class DefaultDemoDataIntoDB {
 		ArrayList<MenuItemCategory> tmp = new ArrayList<MenuItemCategory>();
 
 		tmp.add(addCategory("root",null));
-			tmp.add(addCategory("Appetizer",tmp.get(0)));
-			tmp.add(addCategory("Main_Dish",tmp.get(0)));
-			tmp.add(addCategory("Dessert",tmp.get(0)));
-			tmp.add(addCategory("Drinks",tmp.get(0)));
+			tmp.add(addCategory("Vorspeise",tmp.get(0)));
+			tmp.add(addCategory("Hauptspeise",tmp.get(0)));
+			tmp.add(addCategory("Nachspeise",tmp.get(0)));
+			tmp.add(addCategory("Getränke",tmp.get(0)));
 				//2nd level
-				tmp.add(addCategory("Warm_Appetizer",tmp.get(1)));
-				tmp.add(addCategory("Cold_Appetizer",tmp.get(1)));
+				tmp.add(addCategory("Warme Vorspeise",tmp.get(1)));
+				tmp.add(addCategory("Kalte Vorspeise",tmp.get(1)));
 				//main Dish
-				tmp.add(addCategory("Fish",tmp.get(2)));
-				tmp.add(addCategory("Meat",tmp.get(2)));
-				tmp.add(addCategory("Vegetarian",tmp.get(2)));
+				tmp.add(addCategory("Fischgerichte",tmp.get(2)));
+				tmp.add(addCategory("Fleischgerichte",tmp.get(2)));
+				tmp.add(addCategory("Vegetarische Gerichte",tmp.get(2)));
 				//Drinks
-				tmp.add(addCategory("Alc-free",tmp.get(4)));
-				tmp.add(addCategory("Beer",tmp.get(4)));
-				tmp.add(addCategory("Wine",tmp.get(4)));
-				tmp.add(addCategory("HotDrinks",tmp.get(4)));
-				tmp.add(addCategory("Firewater",tmp.get(4)));
+				tmp.add(addCategory("Alkoholfreie Getränke",tmp.get(4)));
+				tmp.add(addCategory("Bier",tmp.get(4)));
+				tmp.add(addCategory("Wein",tmp.get(4)));
+				tmp.add(addCategory("Heiße Getränke",tmp.get(4)));
+				tmp.add(addCategory("Spirituosen",tmp.get(4)));
 
 
 		for(MenuItemCategory parent: tmp)menuItemCategoryRepository.save(parent);

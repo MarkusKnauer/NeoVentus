@@ -3,6 +3,7 @@ import {NavController} from "ionic-angular";
 import {DeskService} from "../../app/service/desk.service";
 import {AuthGuardService} from "../../app/service/auth-guard.service";
 import {LoginPage} from "../login/login";
+import {ShowOrdersPage} from "../showOrders/showOrders";
 
 /**
  * @author Tim Heidelbach, Dennis Thanner
@@ -38,7 +39,8 @@ export class DeskOverviewPage {
   }
 
   deskSelected(desk) {
-    alert("you clicked desk " + desk.number);
+    //alert("you clicked desk " + desk.number);
+    this.navCtrl.push(ShowOrdersPage, {deskNumber: desk.number.toString()})
   }
 
   toggleView() {
