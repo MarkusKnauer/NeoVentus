@@ -8,6 +8,7 @@ import {ShiftsPage} from "../pages/shiftsPage/shiftsPage";
 import {MessagePage} from "../pages/messagePage/messagePage";
 import {Invoices} from "../pages/invoices/invoices";
 import {Settings} from "../pages/settings/settings";
+import {DeskOverviewPage} from "../pages/desk-overview/desk-overview";
 
 
 @Component({
@@ -28,10 +29,11 @@ export class MyApp {
     });
     //todo: Link the pages (MK):
     this.pages = [
+      {title: 'Home', component: DeskOverviewPage},
       {title: 'Schicht', component: ShiftsPage},
       {title: 'Nachrichten', component: MessagePage},
       {title: 'Rechnungen', component: Invoices},
-      {title: 'Einstellungen', component: Settings}
+      {title: 'Einstellungen', component: Settings},
     ];
   }
 
@@ -41,6 +43,7 @@ export class MyApp {
 
 
   }
+
 
 }
 
