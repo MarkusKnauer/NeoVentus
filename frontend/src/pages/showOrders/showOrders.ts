@@ -19,8 +19,13 @@ import {DeskOverviewPage} from "../desk-overview/desk-overview";
 export class ShowOrdersPage {
 
   public showOrders: any;
-  public deskNumber: any;  constructor(public navParams: NavParams, private navCtrl: NavController, private showOrderService: ShowOrdersService, private authGuard: AuthGuardService) {
+  public deskNumber: any;
+  public categoryString: string;
+  public menuItemCounter: number;
+
+  constructor(public navParams: NavParams, private navCtrl: NavController, private showOrderService: ShowOrdersService, private authGuard: AuthGuardService) {
     this.deskNumber = navParams.get("deskNumber");
+    this.categoryString = "";
     if (this.deskNumber != null){
       this.loadOrders();
     } else{
@@ -36,6 +41,22 @@ export class ShowOrdersPage {
         }
       );
     console.log("THIS IS FRONTEND - Received Order data"+ this.showOrders)
+  }
+
+  checkCategory(cat: string){
+    console.log("THIS IS FRONTEND - Received Order cat"+ cat + " CategoryString: "+ this.categoryString);
+    // if orderItem is a new Category
+      if (cat !== this.categoryString){
+        this.categoryString = cat;
+        return true;
+      } else {
+        this.categoryString = cat;
+        return false;
+      }
+  }
+  getFullAmountDesk(){
+
+
   }
 
 

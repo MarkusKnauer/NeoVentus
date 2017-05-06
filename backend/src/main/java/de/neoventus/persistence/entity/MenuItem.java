@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author Dennis Thanner, Julian Beck, Tim Heidelbach, Markus Knauer
  * @version 0.0.7 new variable sideDish - MK
- * 			0.0.6 new variable category - JB
+ * 			0.0.6 new variable menuItemCategory - JB
  * 			0.0.5 changed menuItemId to number DT
  *          0.0.4 removed local variable StringBuilder
  *          0.0.3 code clean up
@@ -33,7 +33,7 @@ public class MenuItem extends AbstractDocument {
 	private String currency;
 
 	@DBRef
-	private MenuItemCategory category;
+	private MenuItemCategory menuItemCategory;
 
 	@DBRef
 	private SideDish sideDish;
@@ -44,9 +44,9 @@ public class MenuItem extends AbstractDocument {
 		sideDish = null;
 	}
 
-	public MenuItem(MenuItemCategory category, String name, Double price, String currency, String description, String mediaUrl,
+	public MenuItem(MenuItemCategory menuItemCategory, String name, Double price, String currency, String description, String mediaUrl,
 					List<String> notices) {
-		this.category = category;
+		this.menuItemCategory = menuItemCategory;
 		this.name = name;
 		this.price = price;
 		this.currency = currency;
@@ -72,9 +72,9 @@ public class MenuItem extends AbstractDocument {
 	// getter and setter
 
 
-	public MenuItemCategory getCategory() {return category;}
+	public MenuItemCategory getMenuItemCategory() {return menuItemCategory;}
 
-	public void setCategory(MenuItemCategory category) {this.category = category;}
+	public void setMenuItemCategory(MenuItemCategory menuItemCategory) {this.menuItemCategory = menuItemCategory;}
 
 	public Integer getMenuItemID() {
 		return number;

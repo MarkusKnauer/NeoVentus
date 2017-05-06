@@ -1,22 +1,21 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>Bestellübersicht für Tisch {{deskNumber}}</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
-
-  <ion-item-group>
-    <ion-item-divider color="light">
-      <ion-item *ngFor="let order of showOrders">
-
-        Gericht: {{order.item.name}} | Preis: {{order.item.price}}{{order.item.currency}}
-
-
-      </ion-item>
-
-
+<ion-list>
+  <ion-item-group *ngFor="let order of showOrders">
+    <ion-item-divider color="light" *ngIf= "checkCategory(order.item.menuItemCategory.name)">
+      <span class="important">{{order.item.menuItemCategory.name}}</span>
     </ion-item-divider>
+    <ion-item>
+      {{order.item.name}}
+      <span class="right">
+        Preis: {{order.item.price}} {{order.item.currency}}
+      </span>
+    </ion-item>
   </ion-item-group>
-
+</ion-list>
 </ion-content>

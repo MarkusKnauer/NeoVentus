@@ -113,14 +113,14 @@ public class MenuItemCategoryRepositoryTest extends AbstractTest {
 
 		MenuItem u = new MenuItem();
 		u.setName("Test 1");
-		u.setCategory(u2);
+		u.setMenuItemCategory(u2);
 		menuItemRepository.save(u);
 
 		u = menuItemRepository.findByName("Test 1");
 
 		Assert.assertNotNull(u);
 
-		Assert.assertTrue(u.getCategory().getName().equals("root1"));
+		Assert.assertTrue(u.getMenuItemCategory().getName().equals("root1"));
 	}
 
 

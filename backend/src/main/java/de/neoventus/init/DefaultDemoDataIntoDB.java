@@ -71,25 +71,25 @@ class DefaultDemoDataIntoDB {
 		LOGGER.info("Init demo menu item data");
 		generateMenuCategories();
 		MenuItem[] menu = {
-				new MenuItem(menuItemCategoryRepository.findByName("Warm_Appetizer"), "kleiner Salat", 4.80, "EUR", "kalte Vorspeise", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Cold_Appetizer"), "Bärlauchcremesuppe mit Räucherlachs", 4.80, "EUR", "warme Vorspeise", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Fish"), "Lachsfilet", 14.60, "EUR", "mit Tagliatelle und Tomaten", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Fish"), "Salatteller", 13.80, "EUR", "mit gebratenem Zanderfilet", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Meat"), "Pasta Bolognese", 11.90, "EUR", "mit Tomaten und Parmesan", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Meat"), "Schweinerückensteak", 13.90, "EUR", "mit Pfefferrahmsauce und Kartoffel Wedges", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Vegetarian"), "Hausgemachte Kartoffel Gnocchi", 11.80, "EUR", "Gnocchi mit mediterranem Gemüse, Fetakäse, Rucola & Parmesan", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Vegetarian"), "Hausgemachte Käsespätzle", 11.60, "EUR", "mit Beilagensalat", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Dessert"), "Drei Kugeln Eis", 6.10, "EUR", "mit Sahne", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Alc-free"), "Spezi", 2.10, "EUR", "0,20l", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Alc-free"), "Ginger Ale", 2.20, "EUR", "0,20l", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Beer"), "Warsteiner", 2.00, "EUR", "0.25l", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Beer"), "Guinness", 3.00, "EUR", "0.30l", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Wine"), "Cabernet Sauvignon", 3.90, "EUR", "0.20l", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Wine"), "Pinot Grigio", 3.90, "EUR", "0.20l", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Fire-Water"), "Jägermeister", 2.00, "EUR", "5cl", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Fire-Water"), "Sambuca", 3.90, "EUR", "5cl", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Hot Drinks"), "Tasse Kaffee", 1.50, "EUR", "mit Milch, Zucker", "", new ArrayList<>()),
-				new MenuItem(menuItemCategoryRepository.findByName("Hot Drinks"), "Heiße Schokolade", 2.10, "EUR", "mit Sahne", "", new ArrayList<>())
+				new MenuItem(menuItemCategoryRepository.findByName("Warme Vorspeise"), "kleiner Salat", 4.80, "EUR", "kalte Vorspeise", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Kalte Vorspeise"), "Bärlauchcremesuppe mit Räucherlachs", 4.80, "EUR", "warme Vorspeise", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Fischgerichte"), "Lachsfilet", 14.60, "EUR", "mit Tagliatelle und Tomaten", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Fischgerichte"), "Salatteller", 13.80, "EUR", "mit gebratenem Zanderfilet", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Fleischgerichte"), "Pasta Bolognese", 11.90, "EUR", "mit Tomaten und Parmesan", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Fleischgerichte"), "Schweinerückensteak", 13.90, "EUR", "mit Pfefferrahmsauce und Kartoffel Wedges", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Vegetarische Gerichte"), "Hausgemachte Kartoffel Gnocchi", 11.80, "EUR", "Gnocchi mit mediterranem Gemüse, Fetakäse, Rucola & Parmesan", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Vegetarische Gerichte"), "Hausgemachte Käsespätzle", 11.60, "EUR", "mit Beilagensalat", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Nachspeise"), "Drei Kugeln Eis", 6.10, "EUR", "mit Sahne", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Alkoholfreie Getränke"), "Spezi", 2.10, "EUR", "0,20l", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Alkoholfreie Getränke"), "Ginger Ale", 2.20, "EUR", "0,20l", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Bier"), "Warsteiner", 2.00, "EUR", "0.25l", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Bier"), "Guinness", 3.00, "EUR", "0.30l", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Wein"), "Cabernet Sauvignon", 3.90, "EUR", "0.20l", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Wein"), "Pinot Grigio", 3.90, "EUR", "0.20l", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Spirituosen"), "Jägermeister", 2.00, "EUR", "5cl", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Spirituosen"), "Sambuca", 3.90, "EUR", "5cl", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Heiße Getränke"), "Tasse Kaffee", 1.50, "EUR", "mit Milch, Zucker", "", new ArrayList<>()),
+				new MenuItem(menuItemCategoryRepository.findByName("Heiße Getränke"), "Heiße Schokolade", 2.10, "EUR", "mit Sahne", "", new ArrayList<>())
 		};
 		for(MenuItem m : menu) this.menuItems.add(menuItemRepository.save(m));
 	}

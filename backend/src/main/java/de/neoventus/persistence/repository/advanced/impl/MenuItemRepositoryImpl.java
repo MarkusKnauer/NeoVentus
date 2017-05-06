@@ -42,7 +42,7 @@ public class MenuItemRepositoryImpl implements NVMenuItemRepository {
 		} else {
 			item = new MenuItem();
 		}
-		item.setCategory(dto.getCategory() != null ? menuItemCategoryRepository.findByName(dto.getCategory()) : null);
+		item.setMenuItemCategory(dto.getCategory() != null ? menuItemCategoryRepository.findByName(dto.getCategory()) : null);
 		item.setCurrency(dto.getCurrency());
 		item.setDescription(dto.getDescription());
 		item.setMediaUrl(dto.getMediaUrl());
