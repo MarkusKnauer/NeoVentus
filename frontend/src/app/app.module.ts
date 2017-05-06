@@ -21,7 +21,7 @@ import {DeskPage} from "../pages/desk/desk";
     MyApp,
     LoginPage,
     DeskOverviewPage,
-    DeskPage
+    DeskPage,
     DeskOverviewPage,
     ShowOrdersPage
   ],
@@ -42,7 +42,7 @@ import {DeskPage} from "../pages/desk/desk";
     MyApp,
     LoginPage,
     DeskOverviewPage,
-    DeskPage
+    DeskPage,
     DeskOverviewPage,
     ShowOrdersPage
   ],
