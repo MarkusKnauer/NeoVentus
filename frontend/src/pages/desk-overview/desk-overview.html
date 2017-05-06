@@ -3,13 +3,18 @@
   <ion-toolbar color="primary">
 
     <ion-title>Tischübersicht</ion-title>
-    <ion-buttons start>
 
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-buttons end>
       <button ion-button icon-only color="royal" (click)='toggleView()'>
         <ion-icon *ngIf="tileView" name="list"></ion-icon>
         <ion-icon *ngIf="!tileView" name="grid"></ion-icon>
       </button>
     </ion-buttons>
+
   </ion-toolbar>
 
 </ion-header>

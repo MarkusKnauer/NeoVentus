@@ -4,7 +4,6 @@ import {IonicApp, IonicErrorHandler, IonicModule} from "ionic-angular";
 import {SplashScreen} from "@ionic-native/splash-screen";
 import {StatusBar} from "@ionic-native/status-bar";
 import {HttpModule} from "@angular/http";
-import {StompService} from "ng2-stomp-service";
 import "rxjs/Rx";
 
 import {MyApp} from "./app.component";
@@ -16,7 +15,11 @@ import {DeskService} from "./service/desk.service";
 import {ShowOrdersPage} from "../pages/showOrders/showOrders";
 import {ShowOrdersService} from "./service/showOrders.service";
 import {DeskPage} from "../pages/desk/desk";
-import {OrderSocketService} from "./service/order-socket-service";
+import {ShiftsPage} from "../pages/shiftsPage/shiftsPage";
+import {MessagePage} from "../pages/messagePage/messagePage";
+import {Invoices} from "../pages/invoices/invoices";
+import {Settings} from "../pages/settings/settings";
+
 
 @NgModule({
   declarations: [
@@ -24,7 +27,11 @@ import {OrderSocketService} from "./service/order-socket-service";
     LoginPage,
     DeskOverviewPage,
     DeskPage,
-    ShowOrdersPage
+    ShowOrdersPage,
+    ShiftsPage,
+    MessagePage,
+    Invoices,
+    Settings
   ],
   imports: [
     HttpModule,
@@ -44,18 +51,20 @@ import {OrderSocketService} from "./service/order-socket-service";
     LoginPage,
     DeskOverviewPage,
     DeskPage,
-    ShowOrdersPage
+    ShowOrdersPage,
+    ShiftsPage,
+    MessagePage,
+    Invoices,
+    Settings
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    StompService,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthGuardService,
     UserService,
     DeskService,
-    ShowOrdersService,
-    OrderSocketService
+    ShowOrdersService
   ]
 })
 export class AppModule {
