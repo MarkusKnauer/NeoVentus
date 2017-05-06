@@ -15,6 +15,11 @@ import {DeskService} from "./service/desk.service";
 import {ShowOrdersPage} from "../pages/showOrders/showOrders";
 import {ShowOrdersService} from "./service/showOrders.service";
 import {DeskPage} from "../pages/desk/desk";
+import {ShiftsPage} from "../pages/shiftsPage/shiftsPage";
+import {MessagePage} from "../pages/messagePage/messagePage";
+import {Invoices} from "../pages/invoices/invoices";
+import {Settings} from "../pages/settings/settings";
+
 
 @NgModule({
   declarations: [
@@ -23,7 +28,11 @@ import {DeskPage} from "../pages/desk/desk";
     DeskOverviewPage,
     DeskPage,
     DeskOverviewPage,
-    ShowOrdersPage
+    ShowOrdersPage,
+    ShiftsPage,
+    MessagePage,
+    Invoices,
+    Settings
   ],
   imports: [
     HttpModule,
@@ -44,7 +53,11 @@ import {DeskPage} from "../pages/desk/desk";
     DeskOverviewPage,
     DeskPage,
     DeskOverviewPage,
-    ShowOrdersPage
+    ShowOrdersPage,
+    ShiftsPage,
+    MessagePage,
+    Invoices,
+    Settings
   ],
   providers: [
     StatusBar,
