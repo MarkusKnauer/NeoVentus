@@ -14,11 +14,14 @@ import {DeskOverviewPage} from "../pages/desk-overview/desk-overview";
 import {DeskService} from "./service/desk.service";
 import {ShowOrdersPage} from "../pages/showOrders/showOrders";
 import {ShowOrdersService} from "./service/showOrders.service";
+import {DeskPage} from "../pages/desk/desk";
 
 @NgModule({
   declarations: [
     MyApp,
     LoginPage,
+    DeskOverviewPage,
+    DeskPage
     DeskOverviewPage,
     ShowOrdersPage
   ],
@@ -38,6 +41,8 @@ import {ShowOrdersService} from "./service/showOrders.service";
   entryComponents: [
     MyApp,
     LoginPage,
+    DeskOverviewPage,
+    DeskPage
     DeskOverviewPage,
     ShowOrdersPage
   ],

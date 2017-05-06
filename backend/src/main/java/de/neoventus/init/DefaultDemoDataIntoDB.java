@@ -153,7 +153,7 @@ class DefaultDemoDataIntoDB {
 		for (int i = 0; i < 50; i++) {
 			orderItems.add(new OrderItem(this.users.get((int) (Math.random() * this.users.size())),
 					this.desks.get((int) (Math.random() * this.desks.size())),
-					this.menuItems.get((int) (Math.random() * this.menuItems.size())), "", "aufgegeben"));
+				this.menuItems.get((int) (Math.random() * this.menuItems.size())), ""));
 		}
 
 		orderItemRepository.save(orderItems);

@@ -8,7 +8,8 @@ import java.util.List;
 
 /**
  * @author Dennis Thanner, Tim Heidelbach
- * @version 0.0.5 multiple state conditions - DS
+ * @version 0.0.6 state with enum - DS
+ * 			0.0.5 multiple state conditions - DS
  *          0.0.4 redundancy clean up - DT
  * 			0.0.3 added variable state - DS
  *          0.0.2 removed local variable StringBuilder
@@ -26,24 +27,25 @@ public class OrderItem extends AbstractDocument {
 
     private String guestWish;
 
-	private List<String> state;
+	private List<OrderItemState> state;
 
 	private List<Long> stateTime;
 
     public OrderItem() {
-		state = new ArrayList<String>();
+		state = new ArrayList<OrderItemState>();
 		stateTime = new ArrayList<Long>();
+		setState(OrderItemState.NEW);
 	}
 
-    public OrderItem(User user, Desk desk, MenuItem menuItem, String guestwish, String state) {
-        setWaiter(user);
+	public OrderItem(User user, Desk desk, MenuItem menuItem, String guestwish) {
+		setWaiter(user);
         setDesk(desk);
         setGuestWish(guestwish);
         setItem(menuItem);
-		this.state = new ArrayList<String>();
+		this.state = new ArrayList<OrderItemState>();
 		stateTime = new ArrayList<Long>();
-		setState(state);
-    }
+		setState(OrderItemState.NEW);
+	}
 
     // getter and setter
 
@@ -79,14 +81,16 @@ public class OrderItem extends AbstractDocument {
         this.guestWish = guestWish;
     }
 
-    public String getState() {
+	public OrderItemState getState() {
 		return state.size() != 0 ? state.get(state.size() - 1) : null;
 	}
 
-    public void setState(String state) {
-		this.state.add(state);
-		Date d = new Date();
-		stateTime.add(d.getTime());
+	public void setState(OrderItemState state) {
+		if (this.state.size() == 0 || !getState().equals(state)) {
+			this.state.add(state);
+			Date d = new Date();
+			stateTime.add(d.getTime());
+		}
 	}
 
     @Override

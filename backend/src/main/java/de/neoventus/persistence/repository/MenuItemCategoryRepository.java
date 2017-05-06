@@ -5,7 +5,8 @@ import de.neoventus.persistence.repository.advanced.NVMenuItemCategoryRepository
 import org.springframework.data.repository.CrudRepository;
 
 /**
- * Created by julian on 27.04.2017.
+ * @author Julian Beck, Dennis Thanner
+ * @version 0.0.2 added findByChildrenContaining - DT
  */
 public interface MenuItemCategoryRepository extends CrudRepository<MenuItemCategory, String>, NVMenuItemCategoryRepository {
 
@@ -16,5 +17,13 @@ public interface MenuItemCategoryRepository extends CrudRepository<MenuItemCateg
 	 * @return MenuItemCategory
 	 */
 	MenuItemCategory findByName(String name);
+
+	/**
+	 * find category by child it has
+	 *
+	 * @param menuItemCategory
+	 * @return
+	 */
+	MenuItemCategory findBySubcategoryContaining(MenuItemCategory menuItemCategory);
 
 }
