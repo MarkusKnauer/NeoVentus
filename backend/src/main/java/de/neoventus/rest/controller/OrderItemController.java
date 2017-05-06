@@ -37,9 +37,10 @@ public class OrderItemController {
 
 
 	@Autowired
-	public OrderItemController(OrderItemRepository orderRepository, SimpMessagingTemplate simpMessagingTemplate) {
+	public OrderItemController(OrderItemRepository orderRepository, SimpMessagingTemplate simpMessagingTemplate, DeskRepository deskRepository) {
 		this.orderRepository = orderRepository;
 		this.simpMessagingTemplate = simpMessagingTemplate;
+		this.deskRepository = deskRepository;
 	}
 
 	/**

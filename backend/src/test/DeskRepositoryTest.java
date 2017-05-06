@@ -11,7 +11,8 @@ import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
  * testing the desk repository methods
  *
  * @author Dominik Streif, Dennis Thanner
- * @version 0.0.2 extended before save event test - DT
+ * @version 0.0.3 added find by number test
+ *          0.0.2 extended before save event test - DT
  */
 public class DeskRepositoryTest extends AbstractTest {
 
@@ -76,6 +77,24 @@ public class DeskRepositoryTest extends AbstractTest {
 
 		Assert.assertTrue(d.getNumber() == 4712);
 
+	}
+
+	/**
+	 * testing findByNumber method
+	 */
+	@Test
+	public void findByNumber() {
+		Desk d = new Desk();
+		deskRepository.save(d);
+
+		Desk r = deskRepository.findByNumber(1);
+		Assert.assertNotNull(r);
+
+		d = new Desk();
+		deskRepository.save(d);
+
+		r = deskRepository.findByNumber(2);
+		Assert.assertNotNull(r);
 	}
 
 	/**
