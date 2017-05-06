@@ -4,6 +4,7 @@ import {IonicApp, IonicErrorHandler, IonicModule} from "ionic-angular";
 import {SplashScreen} from "@ionic-native/splash-screen";
 import {StatusBar} from "@ionic-native/status-bar";
 import {HttpModule} from "@angular/http";
+import {StompService} from "ng2-stomp-service";
 import "rxjs/Rx";
 
 import {MyApp} from "./app.component";
@@ -15,14 +16,14 @@ import {DeskService} from "./service/desk.service";
 import {ShowOrdersPage} from "../pages/showOrders/showOrders";
 import {ShowOrdersService} from "./service/showOrders.service";
 import {DeskPage} from "../pages/desk/desk";
+import {OrderSocketService} from "./service/order-socket-service";
 
 @NgModule({
   declarations: [
     MyApp,
     LoginPage,
     DeskOverviewPage,
-    DeskPage
-    DeskOverviewPage,
+    DeskPage,
     ShowOrdersPage
   ],
   imports: [
@@ -42,18 +43,19 @@ import {DeskPage} from "../pages/desk/desk";
     MyApp,
     LoginPage,
     DeskOverviewPage,
-    DeskPage
-    DeskOverviewPage,
+    DeskPage,
     ShowOrdersPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
+    StompService,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthGuardService,
     UserService,
     DeskService,
-    ShowOrdersService
+    ShowOrdersService,
+    OrderSocketService
   ]
 })
 export class AppModule {

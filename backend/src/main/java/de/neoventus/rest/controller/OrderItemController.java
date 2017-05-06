@@ -2,12 +2,14 @@ package de.neoventus.rest.controller;
 
 import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.entity.OrderItem;
+import de.neoventus.persistence.entity.OrderItemState;
 import de.neoventus.persistence.repository.DeskRepository;
 import de.neoventus.persistence.repository.OrderItemRepository;
 import de.neoventus.rest.dto.OrderItemDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +22,8 @@ import java.util.logging.Logger;
  * REST controller for entity Order
  *
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.2 redundancy clean up - DT
+ * @version 0.0.3 added socket support - DT
+ *          0.0.2 redundancy clean up - DT
  */
 @RestController
 @RequestMapping("/api/order")
@@ -30,11 +33,13 @@ public class OrderItemController {
 
 	private final OrderItemRepository orderRepository;
 	private DeskRepository deskRepository;
+	private SimpMessagingTemplate simpMessagingTemplate;
 
 
 	@Autowired
-	public OrderItemController(OrderItemRepository orderRepository) {
+	public OrderItemController(OrderItemRepository orderRepository, SimpMessagingTemplate simpMessagingTemplate) {
 		this.orderRepository = orderRepository;
+		this.simpMessagingTemplate = simpMessagingTemplate;
 	}
 
 	/**
@@ -64,14 +69,14 @@ public class OrderItemController {
 	@RequestMapping(value = "/{deskNumber}", method = RequestMethod.GET)
 	public Iterable<OrderItem> listOrderDesk(HttpServletResponse response, @PathVariable String deskNumber) {
 		try {
-			LOGGER.info("THIS IS BACKEND - OrderController: DeskNumber: "+deskNumber);
-			Desk desk =deskRepository.findByNumber(Integer.parseInt(deskNumber));
-			List<OrderItem> list =orderRepository.findAllOrderItemByDeskIdOrderByItemId(desk.getId());
+			LOGGER.info("THIS IS BACKEND - OrderController: DeskNumber: " + deskNumber);
+			Desk desk = deskRepository.findByNumber(Integer.parseInt(deskNumber));
+			List<OrderItem> list = orderRepository.findAllOrderItemByDeskIdOrderByItemId(desk.getId());
 
-			for(OrderItem o: list) LOGGER.info("THIS IS BACKEND - OrderController: List: "+ o.getId());
+			for (OrderItem o : list) LOGGER.info("THIS IS BACKEND - OrderController: List: " + o.getId());
 			return list;
 
-		} catch(Exception e) {
+		} catch (Exception e) {
 			LOGGER.warning("Error searching order by deskNumber " + deskNumber + ": " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return null;
@@ -79,17 +84,13 @@ public class OrderItemController {
 	}
 
 
-
-
-
-
-	/**
-	 * controller method to list order details
-	 *
-	 * @param response
-	 * @param orderNumber
-	 * @return
-	 */
+//	/**
+//	 * controller method to list order details
+//	 *
+//	 * @param response
+//	 * @param orderNumber
+//	 * @return
+//	 */
 	/*
 	@RequestMapping(value = "/{orderNumber}", method = RequestMethod.GET)
 	public OrderItem listOrder(HttpServletResponse response, @PathVariable String orderNumber) {
@@ -102,6 +103,7 @@ public class OrderItemController {
 		}
 	}
 	*/
+
 	/**
 	 * controller method for inserting OrderItem
 	 *
@@ -118,12 +120,12 @@ public class OrderItemController {
 			} else {
 				orderRepository.save(dto);
 				LOGGER.info("Saving order to database: " + dto.getId());
+				updateSocket();
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			LOGGER.warning("Error inserting order to database: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
-
 	}
 
 	/**
@@ -142,12 +144,12 @@ public class OrderItemController {
 			} else {
 				orderRepository.save(dto);
 				LOGGER.info("Update order to database: " + dto.getId());
+				updateSocket();
 			}
 		} catch (Exception e) {
 			LOGGER.warning("Error updating order to database: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
-
 	}
 
 
@@ -166,10 +168,11 @@ public class OrderItemController {
 		}
 	}
 
-	@Autowired
-	public void setDeskRepository(DeskRepository deskRepository) {
-		this.deskRepository = deskRepository;
+	/**
+	 * method to send open orders to socket
+	 */
+	private void updateSocket() {
+		this.simpMessagingTemplate.convertAndSend("/topic/order", this.orderRepository.findByState(OrderItemState.NEW));
 	}
-
 
 }

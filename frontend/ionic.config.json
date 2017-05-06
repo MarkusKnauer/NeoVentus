@@ -11,6 +11,10 @@
     {
       "path": "/auth",
       "proxyUrl": "http://localhost:8080/"
+    },
+    {
+      "path": "/socket",
+      "proxyUrl": "http://localhost:8080/"
     }
   ]
 }
