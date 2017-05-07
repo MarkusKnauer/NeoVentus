@@ -1,3 +1,5 @@
+package testing.repository;
+
 import de.neoventus.persistence.entity.Permission;
 import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.repository.UserRepository;
@@ -7,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
+import testing.AbstractTest;
 
 /**
  * testing the user repository methods

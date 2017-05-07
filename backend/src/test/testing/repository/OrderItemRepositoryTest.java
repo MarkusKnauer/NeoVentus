@@ -1,3 +1,5 @@
+package testing.repository;
+
 import de.neoventus.persistence.entity.*;
 import de.neoventus.persistence.repository.DeskRepository;
 import de.neoventus.persistence.repository.MenuItemRepository;
@@ -8,6 +10,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import testing.AbstractTest;
 
 import java.util.List;
 
@@ -29,10 +32,9 @@ public class OrderItemRepositoryTest extends AbstractTest {
 	private UserRepository userRepository;
 
 	private Desk desk = null;
-	private MenuItem menuItem= null;
-	private User user= null;
-	private Reservation reservation= null;
-
+	private MenuItem menuItem = null;
+	private User user = null;
+	private Reservation reservation = null;
 
 
 	/**
@@ -83,6 +85,7 @@ public class OrderItemRepositoryTest extends AbstractTest {
 		}
 		return desk;
 	}
+
 	private User getUser2() {
 		if (user == null) {
 			user = new User();
@@ -92,6 +95,7 @@ public class OrderItemRepositoryTest extends AbstractTest {
 		}
 		return user;
 	}
+
 	private MenuItem getMenuItem2() {
 		if (menuItem == null) {
 			menuItem = new MenuItem();
@@ -111,6 +115,7 @@ public class OrderItemRepositoryTest extends AbstractTest {
 		}
 		return desk;
 	}
+
 	private User getUser() {
 		if (user == null) {
 			user = new User();
@@ -120,6 +125,7 @@ public class OrderItemRepositoryTest extends AbstractTest {
 		}
 		return user;
 	}
+
 	private MenuItem getMenuItem() {
 		if (menuItem == null) {
 			menuItem = new MenuItem();
@@ -129,6 +135,7 @@ public class OrderItemRepositoryTest extends AbstractTest {
 		}
 		return menuItem;
 	}
+
 	/**
 	 * clear the data written
 	 */

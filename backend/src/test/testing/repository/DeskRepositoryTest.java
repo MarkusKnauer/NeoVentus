@@ -1,3 +1,5 @@
+package testing.repository;
+
 import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.repository.DeskRepository;
 import de.neoventus.rest.dto.DeskDto;
@@ -6,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
+import testing.AbstractTest;
 
 /**
  * testing the desk repository methods

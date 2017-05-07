@@ -1,9 +1,12 @@
+package testing.rest;
+
 import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.repository.UserRepository;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import testing.AbstractTest;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,7 +34,7 @@ public class AuthenticationTest extends AbstractTest {
 		userRepository.save(u);
 
 		this.mockMvc.perform(formLogin().user("Test").password("test"))
-				.andExpect(status().isOk());
+			.andExpect(status().isOk());
 
 	}
 
