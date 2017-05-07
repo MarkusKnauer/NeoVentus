@@ -5,7 +5,7 @@ import {Http} from "@angular/http";
  * handling requests to the backend belonging the orders
  *
  * @author Julian Beck
- * @version 0.0.2
+ * @version 0.0.1
  */
 @Injectable()
 export class ShowOrdersService {
@@ -21,14 +21,14 @@ export class ShowOrdersService {
    *
    * @returns {Observable<Response>}
    */
-  public listOrderDesk(deskNumber: number) {
+  public listOrderDesk(deskNumber: string) {
       return new Promise(resolve => {
        this.http.get("/api/order/"+deskNumber.toString())
        .map(res => res.json())
        .subscribe(order => {
           this.orderData = order;
-          console.log("THIS IS FRONTEND - Received Order data-service: DeskNumber"+ deskNumber);
-          console.log("THIS IS FRONTEND - Received Order data-service: Orders "+ this.orderData);
+         console.log("ShowOrdersService - Received Order data-service: DeskNumber" + deskNumber);
+         console.log("ShowOrdersService - Received Order data-service: Orders " + this.orderData);
           resolve(this.orderData);
         });
       });

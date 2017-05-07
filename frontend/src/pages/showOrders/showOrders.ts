@@ -40,10 +40,10 @@ export class ShowOrdersPage {
     this.showOrderService.listOrderDesk("?deskNumber="+this.deskNumber.toString())
       .then(
        orderData => {
-          this.showOrders = orderData;
+         this.showOrders = orderData;
+         console.log("ShowOrdersPage - Received Order data" + this.showOrders);
         }
       );
-    console.log("THIS IS FRONTEND - Received Order data"+ this.showOrders);
   }
 
 
@@ -53,18 +53,17 @@ export class ShowOrdersPage {
       .then(
         orderData => {
           this.menuId = orderData;
+          console.log("ShowOrdersPage - Received Order data" + this.menuId);
+          return this.menuId.length;
         }
       );
-    console.log("THIS IS FRONTEND - Received Order data"+ this.menuId);
-    return this.menuId.length;
-
   }
 
 
 
 
   checkCategory(cat: string){
-    console.log("THIS IS FRONTEND - Received Order cat"+ cat + " CategoryString: "+ this.categoryString);
+    console.log("ShowOrdersPage - Received Order cat" + cat + " CategoryString: " + this.categoryString);
     // if orderItem is a new Category
       if (cat !== this.categoryString){
         this.categoryString = cat;
@@ -75,16 +74,10 @@ export class ShowOrdersPage {
       }
   }
 
-
-  toggleView() {
-    // TODO: toggle between grid and list view
-    alert("ein sehr mächtiger Button");
-  }
-
 // Fancy Loading circle
   presentLoadingDefault() {
     let loading = this.loadingCtrl.create({
-      content: 'Bestellungen werden geladen  Das Tagesangebot ist: Shrimps mit Reis'
+      content: 'Bestellungen werden geladen.'
     });
 
     loading.present();

@@ -44,9 +44,23 @@ export class DeskOverviewPage {
   }
 
   loadDeskOrderDetails(desk: any) {
-    this.orderService.listOrderDesk(desk.number).then(
-      order => {
-        desk.waiter = order[0].waiter.username;
+    this.orderService.listOrderDesk("?deskNumber=" + desk.number.toString()).then(
+      orders => {
+
+        var waiters = new Set<string>();
+        let strwaiters: string = "";
+
+        let orders_: any = orders;
+        for (let order of orders_) {
+          waiters.add(order.waiter);
+        }
+
+        for (let waiter of Array.from(waiters.values())) {
+          strwaiters += waiter + ", ";
+        }
+        desk.waiter = strwaiters.substring(0, strwaiters.length - 2);
+
+        // TODO get price sum
       }
     )
   }
