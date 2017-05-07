@@ -1,4 +1,4 @@
-/**
+package testing.repository; /**
  * Created by julian on 28.04.2017.
  */
 
@@ -12,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
+import testing.AbstractTest;
 
 /**
  * @author: Julian Beck
@@ -26,7 +27,7 @@ public class MenuItemCategoryRepositoryTest extends AbstractTest {
 	private MenuItemRepository menuItemRepository;
 
 	@Test
-	public void testTier(){
+	public void testTier() {
 		menuItemCategoryRepository.deleteAll();
 		MenuItemCategory category1 = new MenuItemCategory();
 		MenuItemCategory category2 = new MenuItemCategory();
@@ -104,7 +105,7 @@ public class MenuItemCategoryRepositoryTest extends AbstractTest {
 	}
 
 	@Test
-	public void testAnchorCategoryInMenuItem(){
+	public void testAnchorCategoryInMenuItem() {
 		MenuItemCategory u2 = new MenuItemCategory();
 
 		u2.setName("root1");

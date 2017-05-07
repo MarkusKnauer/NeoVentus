@@ -33,9 +33,9 @@ public interface OrderItemRepository extends CrudRepository<OrderItem, String>, 
 	 * @return OrderItem
 	 */
 
-	List<OrderItem> findAllOrderItemByDeskIdOrderByItemId(String id);
+	List<OrderItem> findAllOrderItemByDeskIdOrderByItemMenuItemCategoryId(String id);
 
-
+	List<OrderItem> findAllOrderItemByItemIdAndDesk(String id,Desk desk);
 
 	/**
 	 * find all OrderItems by state

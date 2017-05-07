@@ -1,3 +1,5 @@
+package testing;
+
 import de.neoventus.Application;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -16,7 +18,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
  * basic test class
  *
  * @author Dennis Thanner
- * @version 0.0.3 added delete indexes method for compability
+ * @version 0.0.3 added delete indexes method for compatibility
  *          0.0.2 added mock mvc
  **/
 @RunWith(SpringRunner.class)
@@ -37,9 +39,9 @@ public abstract class AbstractTest {
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders
-				.webAppContextSetup(this.wac)
-				.apply(springSecurity())
-				.build();
+			.webAppContextSetup(this.wac)
+			.apply(springSecurity())
+			.build();
 
 
 		// delete indexes

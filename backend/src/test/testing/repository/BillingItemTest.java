@@ -1,3 +1,5 @@
+package testing.repository;
+
 import de.neoventus.persistence.entity.BillingItem;
 import de.neoventus.persistence.repository.BillingItemRepository;
 import de.neoventus.rest.dto.BillingItemDto;
@@ -5,6 +7,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import testing.AbstractTest;
 
 /**
  * Testing the billing item repository methods

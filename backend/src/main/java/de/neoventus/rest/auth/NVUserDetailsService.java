@@ -19,10 +19,12 @@ import java.util.List;
  * and role based access management-
  *
  * @author Dennis Thanner
- * @version 0.0.1
+ * @version 0.0.2 added spring role prefix support
  **/
 @Service
 public class NVUserDetailsService implements UserDetailsService {
+
+	private static String springRolePrefix = "ROLE_";
 
 	@Autowired
 	private UserRepository userRepository;
@@ -37,7 +39,7 @@ public class NVUserDetailsService implements UserDetailsService {
 
 		List<GrantedAuthority> authorityList = new ArrayList<>();
 		for(Permission p : u.getPermissions()) {
-			authorityList.add(new SimpleGrantedAuthority(p.name()));
+			authorityList.add(new SimpleGrantedAuthority(springRolePrefix + p.name()));
 		}
 
 		return new org.springframework.security.core.userdetails.User(

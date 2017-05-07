@@ -1,6 +1,11 @@
 /**
  * Created by julian on 28.04.2017.
- */
+ *
+ * @author: Julian Beck, Markus Knauer
+ * @version: 0.0.2 edited (deleted tree structure) MK
+ * 0.0.1 crated by JB
+ * @description:
+ **/
 
 /**
  * @author: Julian Beck, Markus Knauer

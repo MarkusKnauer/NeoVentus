@@ -1,3 +1,5 @@
+package testing.repository;
+
 import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.entity.Reservation;
 import de.neoventus.persistence.repository.DeskRepository;
@@ -7,6 +9,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import testing.AbstractTest;
 
 import java.util.Date;
 import java.util.List;
@@ -35,7 +38,7 @@ public class ReservationRepositoryTest extends AbstractTest {
 	}
 
 	private Desk getDesk() {
-		if(desk == null) {
+		if (desk == null) {
 			desk = new Desk();
 			desk.setNumber(999);
 

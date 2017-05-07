@@ -52,7 +52,7 @@ export class DeskOverviewPage {
   }
 
   ionViewWillEnter() {
-    if (!this.authGuard.hasAnyRole(["CEO", "SERVICE"])) {
+    if (!this.authGuard.hasAnyRole(["ROLE_CEO", "ROLE_SERVICE"])) {
       this.navCtrl.setRoot(LoginPage);
     }
   }

@@ -40,7 +40,7 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	public Principal listUser(HttpServletResponse response, Principal principal) {
+	public Principal getUserPrincipal(HttpServletResponse response, Principal principal) {
 		return principal;
 	}
 
