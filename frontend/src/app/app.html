@@ -1,18 +1,30 @@
 <ion-menu [content]="content">
+
+  <!-- Header, activate if necessary
   <ion-header>
     <ion-toolbar>
       <ion-title>Menu</ion-title>
     </ion-toolbar>
   </ion-header>
+  -->
 
   <ion-content>
+    <div class="spacer" style="width: 251.2px; height: 13px;"></div>
+    <div class="profile-image">
+      <a style="display:block;" menuClose (click)="openPage(profilepage)">
+        <img src="../../resources/icon.png" style="display: block; width: 60%; margin-left: auto; margin-right: auto;">
+      </a>
+    </div>
+    <h3 id="menu-heading1" style="font-weight: 300; text-align: center;">CEO Walter</h3>
+    <div class="spacer" style="width: 251.2px; height: 12px;"></div>
 
     <ion-list>
-      <ion-img width="180" heigth="180" src="../../resources/test.png">Bild!</ion-img>
-      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
+      <button menuClose ion-item detail-none *ngFor="let p of pages" (click)="openPage(p)">
+        <ion-icon name="home" item-left></ion-icon>
+        <!-- todo: Give each iteam his one icon, like *ngif="p.iconName=home" name="home (MK)-->
         {{p.title}}
       </button>
-      <button ion-button (click)="openPage">Logout</button>
+      <button ion-button (click)="logout()">Logout</button>
 
     </ion-list>
   </ion-content>

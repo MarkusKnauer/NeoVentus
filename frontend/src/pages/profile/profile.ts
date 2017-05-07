@@ -7,12 +7,10 @@ import {NavController} from "ionic-angular";
  */
 
 @Component({
-  selector: 'page-message',
-  templateUrl: 'messagePage.html'
+  selector: 'page-profile',
+  templateUrl: 'profile.html'
 })
-export class MessagePage {
-
-  public iconName = "home";
+export class ProfilePage {
 
   constructor(public navCtrl: NavController) {
 

@@ -19,6 +19,7 @@ import {ShiftsPage} from "../pages/shiftsPage/shiftsPage";
 import {MessagePage} from "../pages/messagePage/messagePage";
 import {Invoices} from "../pages/invoices/invoices";
 import {Settings} from "../pages/settings/settings";
+import {ProfilePage} from "../pages/profile/profile";
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import {Settings} from "../pages/settings/settings";
     ShiftsPage,
     MessagePage,
     Invoices,
-    Settings
+    Settings,
+    ProfilePage
   ],
   imports: [
     HttpModule,
@@ -55,7 +57,8 @@ import {Settings} from "../pages/settings/settings";
     ShiftsPage,
     MessagePage,
     Invoices,
-    Settings
+    Settings,
+    ProfilePage
   ],
   providers: [
     StatusBar,
