@@ -9,8 +9,13 @@ import {MessagePage} from "../pages/messagePage/messagePage";
 import {Invoices} from "../pages/invoices/invoices";
 import {Settings} from "../pages/settings/settings";
 import {DeskOverviewPage} from "../pages/desk-overview/desk-overview";
+import {ProfilePage} from "../pages/profile/profile";
 
-
+/**
+ * @author Dennis Thanner, Markus Knauer
+ * @version 0.0.2 edited side-menu fuction
+ *          0.0.1 created by DT
+ */
 @Component({
   templateUrl: 'app.html'
 })
@@ -19,6 +24,7 @@ export class MyApp {
   rootPage: any = LoginPage;
 
   pages: Array<{ title: string, component: any }>;
+  profilepage: any;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
@@ -27,7 +33,7 @@ export class MyApp {
       statusBar.styleDefault();
       splashScreen.hide();
     });
-    //todo: Link the pages (MK):
+    //todo: write logout fuction (MK)
     this.pages = [
       {title: 'Home', component: DeskOverviewPage},
       {title: 'Schicht', component: ShiftsPage},
@@ -35,6 +41,8 @@ export class MyApp {
       {title: 'Rechnungen', component: Invoices},
       {title: 'Einstellungen', component: Settings},
     ];
+
+    this.profilepage = {title: "Profile", component: ProfilePage};
   }
 
   openPage(page) {
