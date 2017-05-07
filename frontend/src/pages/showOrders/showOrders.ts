@@ -2,7 +2,7 @@
  * Created by julian on 03.05.2017.
  */
 import {Component} from "@angular/core";
-import {NavController, NavParams} from "ionic-angular";
+import {LoadingController, NavController, NavParams} from "ionic-angular";
 import {ShowOrdersService} from "../../app/service/showOrders.service";
 import {AuthGuardService} from "../../app/service/auth-guard.service";
 import {DeskOverviewPage} from "../desk-overview/desk-overview";
@@ -23,11 +23,13 @@ export class ShowOrdersPage {
   public categoryString: string;
   public menuItemCounter: number;
 
-  constructor(public navParams: NavParams, private navCtrl: NavController, private showOrderService: ShowOrdersService, private authGuard: AuthGuardService) {
+  constructor(public navParams: NavParams, private navCtrl: NavController, private showOrderService: ShowOrdersService, private authGuard: AuthGuardService,public loadingCtrl: LoadingController) {
     this.deskNumber = navParams.get("deskNumber");
     this.categoryString = "";
+    this.menuItemCounter = 1;
     if (this.deskNumber != null){
       this.loadOrders();
+      this.presentLoadingDefault();
     } else{
       this.navCtrl.push(DeskOverviewPage);
     }
@@ -40,7 +42,7 @@ export class ShowOrdersPage {
           this.showOrders = orderData;
         }
       );
-    console.log("THIS IS FRONTEND - Received Order data"+ this.showOrders)
+    console.log("THIS IS FRONTEND - Received Order data"+ this.showOrders);
   }
 
   checkCategory(cat: string){
@@ -54,9 +56,10 @@ export class ShowOrdersPage {
         return false;
       }
   }
-  getFullAmountDesk(){
-
-
+  getFullAmountDesk(cash: number){
+      this.menuItemCounter += cash;
+    console.log("Full amount cash mash: "+ this.menuItemCounter);
+    return cash;
   }
 
 
@@ -65,5 +68,20 @@ export class ShowOrdersPage {
     // TODO: toggle between grid and list view
     alert("ein sehr mächtiger Button");
   }
+
+// Fancy Loading circle
+  presentLoadingDefault() {
+    let loading = this.loadingCtrl.create({
+      content: 'Bestellungen werden geladen  Das Tagesangebot ist: Shrimps mit Reis'
+    });
+
+    loading.present();
+
+    setTimeout(() => {
+      loading.dismiss();
+    }, 5000);
+  }
+
+
 
 }
