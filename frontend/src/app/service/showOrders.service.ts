@@ -1,12 +1,11 @@
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
-import {Observable} from "rxjs/Observable";
 
 /**
  * handling requests to the backend belonging the orders
  *
  * @author Julian Beck
- * @version 0.0.1
+ * @version 0.0.2
  */
 @Injectable()
 export class ShowOrdersService {
@@ -22,7 +21,7 @@ export class ShowOrdersService {
    *
    * @returns {Observable<Response>}
    */
-  public listOrderDesk(deskNumber: string) {
+  public listOrderDesk(deskNumber: number) {
       return new Promise(resolve => {
        this.http.get("/api/order/"+deskNumber.toString())
        .map(res => res.json())
