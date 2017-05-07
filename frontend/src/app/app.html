@@ -20,7 +20,8 @@
 
     <ion-list>
       <button menuClose ion-item detail-none *ngFor="let p of pages" (click)="openPage(p)">
-        <ion-icon name="home" item-left></ion-icon> <!--*ngif="p.iconName=home" name="home-->
+        <ion-icon name="home" item-left></ion-icon>
+        <!-- todo: Give each iteam his one icon, like *ngif="p.iconName=home" name="home (MK)-->
         {{p.title}}
       </button>
       <button ion-button (click)="logout()">Logout</button>
