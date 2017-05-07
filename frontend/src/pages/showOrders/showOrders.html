@@ -7,13 +7,13 @@
 <ion-content>
 <ion-list>
   <ion-item-group *ngFor="let order of showOrders">
-    <ion-item-divider color="light" *ngIf= "checkCategory(order.item.menuItemCategory.name)">
-      <span class="important">{{order.item.menuItemCategory.name}}</span>
+    <ion-item-divider color="light" *ngIf= "checkCategory(order.category)">
+      <span class="important">{{order.category}}</span>
     </ion-item-divider>
     <ion-item>
-      {{order.item.name}}
+     Anzahl: {{order.menuItemCounter}}  x  {{order.menuItem}}
       <span class="right">
-        Preis: {{order.item.price}} {{order.item.currency}}
+        Preis: {{order.price}}
       </span>
     </ion-item>
   </ion-item-group>

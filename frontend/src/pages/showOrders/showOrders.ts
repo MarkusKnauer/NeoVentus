@@ -10,7 +10,8 @@ import {DeskOverviewPage} from "../desk-overview/desk-overview";
 
 /**
  * @author Julian beck
- * @version 0.0.1 created showorders.ts - JB
+ * @version 0.0.2 "Name-value-pair"- compatibility
+ *          0.0.1 created showorders.ts - JB
  */
 @Component({
   templateUrl: "showOrders.html",
@@ -19,14 +20,14 @@ import {DeskOverviewPage} from "../desk-overview/desk-overview";
 export class ShowOrdersPage {
 
   public showOrders: any;
+  public menuId: any;
   public deskNumber: any;
   public categoryString: string;
-  public menuItemCounter: number;
+
 
   constructor(public navParams: NavParams, private navCtrl: NavController, private showOrderService: ShowOrdersService, private authGuard: AuthGuardService,public loadingCtrl: LoadingController) {
     this.deskNumber = navParams.get("deskNumber");
     this.categoryString = "";
-    this.menuItemCounter = 1;
     if (this.deskNumber != null){
       this.loadOrders();
       this.presentLoadingDefault();
@@ -36,7 +37,7 @@ export class ShowOrdersPage {
   }
 
   loadOrders() {
-    this.showOrderService.listOrderDesk(this.deskNumber)
+    this.showOrderService.listOrderDesk("?deskNumber="+this.deskNumber.toString())
       .then(
        orderData => {
           this.showOrders = orderData;
@@ -44,6 +45,23 @@ export class ShowOrdersPage {
       );
     console.log("THIS IS FRONTEND - Received Order data"+ this.showOrders);
   }
+
+
+  // search for menuId with desknumber
+  loadMenu(menuId:string) {
+    this.showOrderService.listOrderDesk("?deskNumber="+this.deskNumber.toString()+"&menuId="+menuId)
+      .then(
+        orderData => {
+          this.menuId = orderData;
+        }
+      );
+    console.log("THIS IS FRONTEND - Received Order data"+ this.menuId);
+    return this.menuId.length;
+
+  }
+
+
+
 
   checkCategory(cat: string){
     console.log("THIS IS FRONTEND - Received Order cat"+ cat + " CategoryString: "+ this.categoryString);
@@ -56,12 +74,6 @@ export class ShowOrdersPage {
         return false;
       }
   }
-  getFullAmountDesk(cash: number){
-      this.menuItemCounter += cash;
-    console.log("Full amount cash mash: "+ this.menuItemCounter);
-    return cash;
-  }
-
 
 
   toggleView() {
