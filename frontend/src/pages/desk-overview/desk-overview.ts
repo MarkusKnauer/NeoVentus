@@ -1,52 +1,68 @@
 import {Component, ViewChild} from "@angular/core";
-import {Content, ModalController, NavController} from "ionic-angular";
+import {Content, NavController} from "ionic-angular";
 import {DeskService} from "../../app/service/desk.service";
 import {AuthGuardService} from "../../app/service/auth-guard.service";
 import {LoginPage} from "../login/login";
 import {ShowOrdersPage} from "../showOrders/showOrders";
+import {ShowOrdersService} from "../../app/service/showOrders.service";
 
 /**
  * @author Tim Heidelbach, Dennis Thanner
- * @version 0.0.4 adapted design to mockup
+ * @version 0.0.5 added waiter name
+ *          0.0.4 adapted design to mockup
  *          0.0.3 button toggles between grid- and list view
  *          0.0.2 added authGuard - DT
  */
 @Component({
   templateUrl: "desk-overview.html",
-  providers: [DeskService]
+  providers: [DeskService, ShowOrdersService]
 })
 export class DeskOverviewPage {
 
-  public desks: any;
+  private desks: any;
+
   private tileView = true;
   private myDesksOnly = false;
 
-  constructor(private navCtrl: NavController, private deskService: DeskService, private authGuard: AuthGuardService,
-              public modalCtrl: ModalController) {
+  constructor(private navCtrl: NavController,
+              private deskService: DeskService,
+              private orderService: ShowOrdersService,
+              private authGuard: AuthGuardService) {
+
     this.loadDesks();
   }
 
   loadDesks() {
-    this.deskService.getAllDesks()
-      .then(data => {
-        this.desks = data;
-
-        // TODO get real data instead
+    this.deskService.getAllDesks().then(
+      desks => {
+        this.desks = desks;
         for (let desk of this.desks) {
-          desk.price = 13.37;
-          desk.waiter = "Knut Kessel";
-          desk.reservation = "18:15 - 20:00  (Müller)";
-          desk.status = 1;
+          this.loadDeskOrderDetails(desk);
         }
-        this.desks[1].status = 2;
-        this.desks[8].status = 0;
-        this.desks[9].status = 0;
-        this.desks[8].price = 0;
-        this.desks[9].price = 0;
-        this.desks[8].waiter = "";
-        this.desks[9].waiter = "";
-        this.desks[9].reservation = "";
-      })
+      }
+    )
+  }
+
+  loadDeskOrderDetails(desk: any) {
+    this.orderService.listOrders("?deskNumber=" + desk.number.toString()).then(
+      orders => {
+
+        var waiters = new Set<string>();
+        let strwaiters: string = "";
+
+        let orders_: any = orders;
+        for (let order of orders_) {
+          waiters.add(order.waiter);
+        }
+
+        for (let waiter of Array.from(waiters.values())) {
+          strwaiters += waiter + ", ";
+        }
+        desk.waiter = strwaiters.substring(0, strwaiters.length - 2);
+
+        // TODO get price sum
+      }
+    )
   }
 
   ionViewWillEnter() {
@@ -56,7 +72,6 @@ export class DeskOverviewPage {
   }
 
   deskSelected(desk) {
-    // this.modalCtrl.create(DeskPage, desk).present();
     this.navCtrl.push(ShowOrdersPage, {deskNumber: desk.number.toString()})
   }
 

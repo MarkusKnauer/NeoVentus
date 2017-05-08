@@ -1,6 +1,5 @@
 package de.neoventus.rest.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.entity.OrderItem;
 import de.neoventus.persistence.entity.OrderItemOutput;
@@ -26,7 +25,8 @@ import java.util.logging.Logger;
  * REST controller for entity Order
  *
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.3 added socket support - DT
+ * @version 0.0.4 Name-Value-Pair for GET and OrderitemOutput for specific frontend-data
+ * 			0.0.3 added socket support - DT
  *          0.0.2 redundancy clean up - DT
  */
 @RestController
@@ -36,7 +36,6 @@ public class OrderItemController {
 	private final static Logger LOGGER = Logger.getLogger(OrderItemController.class.getName());
 
 	private final OrderItemRepository orderRepository;
-	private OrderItemRepository tmpRespo;
 	private DeskRepository deskRepository;
 	private SimpMessagingTemplate simpMessagingTemplate;
 
@@ -49,54 +48,32 @@ public class OrderItemController {
 	}
 
 	/**
-	 * controller method to list all orderItems
-	 *
-	 * @param response the response
-	 * @return all orders
-	 */
-	/*@RequestMapping(method = RequestMethod.GET)
-	public Iterable<OrderItem> getAllOrders(HttpServletResponse response) {
-		try {
-			return orderRepository.findAll();
-		} catch (DataAccessException e) {
-			LOGGER.warning("Error searching for all orders: " + e.getMessage());
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			return null;
-		}
-	}
-*/
-	/**
 	 * controller method to list order details
-	 *  Build own Json-String with ObjectMapper
+	 *
 	 *
 	 * Ready for "Namen-Wert-Paar"
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	public String listOrderDesk(@RequestParam Map<String, String> queryParameters,
+	public List<?> listOrders(@RequestParam Map<String, String> queryParameters,
 											 @RequestParam MultiValueMap<String, String> multiMap) {
 		try {
-			LOGGER.info("THIS IS BACKEND - OrderController: DeskNumber: " + 1);
-			LOGGER.info(String.valueOf(queryParameters));
-			ObjectMapper mapper = new ObjectMapper();
-
+			LOGGER.info("THIS IS BACKEND - OrderController: Params " + String.valueOf(queryParameters));
 			List<OrderItem> list = null;
 			List<OrderItemOutput> output = new ArrayList<OrderItemOutput>();
 			Desk desk =null;
-			String deskString= "deskNumber";
 
 			// Check if Params are available
 			if (!multiMap.isEmpty()){
 
 				//Check "Namen-Wert-Paar"
 				if (multiMap.containsKey("deskNumber") && multiMap.size()==1){
-					LOGGER.info(String.valueOf(queryParameters.get("deskNumber")));
-					LOGGER.info(String.valueOf(multiMap.getFirst("deskNumber")));
-				// Select OrderItems by Desk,Item and Category
-					deskString = multiMap.getFirst(deskString);
-					desk = deskRepository.findByNumber(Integer.parseInt(deskString));
+					LOGGER.info("THIS IS BACKEND - OrderControll: Key deskNumber: "+String.valueOf(queryParameters.get("deskNumber")));
+					// pre-Selection
+					// Select OrderItems by Desk,Item and Category
+					desk = deskRepository.findByNumber(Integer.parseInt(multiMap.getFirst("deskNumber")));
 					list = orderRepository.findAllOrderItemByDeskIdOrderByItemMenuItemCategoryId(desk.getId());
 
-				//Build Object structure for JSON
+					// todo Refactoring - Build Object structure for JSON
 					OrderItemOutput tmp;
 
 					Integer counter = 0;
@@ -104,7 +81,7 @@ public class OrderItemController {
 						counter = 1;
 						tmp = new OrderItemOutput();
 						tmp.addOrderItemIds(list.get(i).getId());
-						tmp.setDesk(deskString);
+						tmp.setDesk(multiMap.getFirst("deskNumber"));
 						tmp.setWaiter(list.get(i).getWaiter().getUsername());
 						tmp.setCategory(list.get(i).getItem().getMenuItemCategory().getName());
 						tmp.setGuestWish(list.get(i).getGuestWish());
@@ -123,17 +100,11 @@ public class OrderItemController {
 						i = j-1;
 						output.add(tmp);
 					}
+					// Spring is great, you can write all what you want in Json automaticly
+					return output;
 				}
-
-				// some other "Namen-Wert-Paar"
-				if(multiMap.containsKey("menuId")){
-					desk = deskRepository.findByNumber(Integer.parseInt(multiMap.getFirst("deskNumber")));
-					list= orderRepository.findAllOrderItemByItemIdAndDesk(queryParameters.get("menuId"),desk);
-					LOGGER.info("MenuId-value: "+ queryParameters.get("menuId"));
-				}
-
-			// Build JSON and return String
-				return mapper.writeValueAsString(output);
+				// You could return something else, look over the rainbow (List<?>)
+				return null;
 			} else {
 				throw new Exception();
 			}
@@ -146,48 +117,6 @@ public class OrderItemController {
 		}
 
 	}
-
-	/**
-	 * controller method to list order details
-	 *
-	 * @param response
-	 * @param menuId, deskNumber
-	 * @return
-	 */
-	@RequestMapping(value = "/deskNumber={deskNumber}/{menuId}", method = RequestMethod.GET)
-	public Iterable<OrderItem> listOrderMenuDesk(HttpServletResponse response, @PathVariable String menuId,String deskNumber) {
-		try {
-			LOGGER.info("THIS IS BACKEND - OrderController: DeskNumber & menuId: " + deskNumber);
-			Desk desk = deskRepository.findByNumber(Integer.parseInt(deskNumber));
-			List<OrderItem> list = orderRepository.findAllOrderItemByItemIdAndDesk(menuId,desk);
-			for (OrderItem o : list) LOGGER.info("THIS IS BACKEND - OrderController: List: " + o.getId());
-			return list;
-
-		} catch (Exception e) {
-			LOGGER.warning("Error searching order by deskNumber " + deskNumber + ": " + e.getMessage());
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			return null;
-		}
-	}
-//	/**
-//	 * controller method to list order details
-//	 *
-//	 * @param response
-//	 * @param orderNumber
-//	 * @return
-//	 */
-	/*
-	@RequestMapping(value = "/{orderNumber}", method = RequestMethod.GET)
-	public OrderItem listOrder(HttpServletResponse response, @PathVariable String orderNumber) {
-		try {
-			return orderRepository.findOne(orderNumber);
-		} catch(Exception e) {
-			LOGGER.warning("Error searching order by orderNumber " + orderNumber + ": " + e.getMessage());
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			return null;
-		}
-	}
-	*/
 
 	/**
 	 * controller method for inserting OrderItem

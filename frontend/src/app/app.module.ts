@@ -14,7 +14,6 @@ import {DeskOverviewPage} from "../pages/desk-overview/desk-overview";
 import {DeskService} from "./service/desk.service";
 import {ShowOrdersPage} from "../pages/showOrders/showOrders";
 import {ShowOrdersService} from "./service/showOrders.service";
-import {DeskPage} from "../pages/desk/desk";
 import {ShiftsPage} from "../pages/shiftsPage/shiftsPage";
 import {MessagePage} from "../pages/messagePage/messagePage";
 import {Invoices} from "../pages/invoices/invoices";
@@ -27,7 +26,6 @@ import {ProfilePage} from "../pages/profile/profile";
     MyApp,
     LoginPage,
     DeskOverviewPage,
-    DeskPage,
     ShowOrdersPage,
     ShiftsPage,
     MessagePage,
@@ -52,7 +50,6 @@ import {ProfilePage} from "../pages/profile/profile";
     MyApp,
     LoginPage,
     DeskOverviewPage,
-    DeskPage,
     ShowOrdersPage,
     ShiftsPage,
     MessagePage,
