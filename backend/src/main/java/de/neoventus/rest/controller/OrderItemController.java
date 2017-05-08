@@ -118,6 +118,35 @@ public class OrderItemController {
 
 	}
 
+
+	/**
+	 * controller method to list all orders
+	 *
+	 * @param response
+	 * @param state
+	 * @return
+	 */
+	@GetMapping("/all/{state}")
+	public Iterable<OrderItem> listAllOrders(HttpServletResponse response, @PathVariable OrderItemState state) {
+		try {
+			Iterable<OrderItem> list = orderRepository.findAll();
+			ArrayList<OrderItem> tmp = new ArrayList<OrderItem>();
+			// get only the orderItems with the correct state
+			for (OrderItem item : list) {
+				if (item.getCurrentState().equals(state)) {
+					tmp.add(item);
+				}
+			}
+			list = tmp;
+			return list;
+
+		} catch (Exception e) {
+			LOGGER.warning("Error getting all orders: " + e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return null;
+		}
+	}
+
 	/**
 	 * controller method for inserting OrderItem
 	 *

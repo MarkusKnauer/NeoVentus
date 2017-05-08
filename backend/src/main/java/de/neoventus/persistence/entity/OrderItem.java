@@ -81,16 +81,24 @@ public class OrderItem extends AbstractDocument {
         this.guestWish = guestWish;
     }
 
-	public OrderItemState getState() {
-		return state.size() != 0 ? state.get(state.size() - 1) : null;
+	public List<OrderItemState> getState() {
+		return state;
+	}
+
+	public List<Long> getStateTime() {
+		return stateTime;
 	}
 
 	public void setState(OrderItemState state) {
-		if (this.state.size() == 0 || !getState().equals(state)) {
+		if (this.state.size() == 0 || !getCurrentState().equals(state)) {
 			this.state.add(state);
 			Date d = new Date();
 			stateTime.add(d.getTime());
 		}
+	}
+
+	public OrderItemState getCurrentState() {
+		return state.size() != 0 ? state.get(state.size() - 1) : null;
 	}
 
     @Override
