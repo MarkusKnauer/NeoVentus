@@ -8,7 +8,8 @@ import {ShowOrdersService} from "../../app/service/showOrders.service";
 
 /**
  * @author Tim Heidelbach, Dennis Thanner
- * @version 0.0.5 added waiter name
+ * @version 0.0.6 rbma changes - DT
+ *          0.0.5 added waiter name
  *          0.0.4 adapted design to mockup
  *          0.0.3 button toggles between grid- and list view
  *          0.0.2 added authGuard - DT
@@ -65,10 +66,17 @@ export class DeskOverviewPage {
     )
   }
 
+  /**
+   * view life cycle method
+   *
+   * RBMA
+   */
   ionViewWillEnter() {
-    if (!this.authGuard.hasAnyRole(["ROLE_CEO", "ROLE_SERVICE"])) {
+    this.authGuard.hasAnyRole(["ROLE_CEO", "ROLE_SERVICE"]).then(() => {
+    }, () => {
+      console.debug("RBMA - Access denied!");
       this.navCtrl.setRoot(LoginPage);
-    }
+    });
   }
 
   deskSelected(desk) {
@@ -76,6 +84,7 @@ export class DeskOverviewPage {
   }
 
   @ViewChild(Content) content: Content;
+
   toggleView() {
     this.tileView ? this.tileView = false : this.tileView = true;
     this.content.resize(); // lets ion-content respect footer height after grid/list toggle

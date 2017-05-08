@@ -5,7 +5,8 @@ import {Http, Response} from "@angular/http";
  * service for role based access
  *
  * @author Dennis Thanner
- * @version 0.0.4 minor isAuthenticated() bug fix
+ * @version 0.0.5 promise bug fix
+ *          0.0.4 minor isAuthenticated() bug fix
  *          0.0.3 added async support to isAuthenticated and hasRole, added hasAnyRole
  *          0.0.2 minor bug fix
  */
@@ -14,7 +15,7 @@ export class AuthGuardService {
 
   private userDetails = null;
 
-  private userDetailsResolved: Promise<Response>;
+  private userDetailPromise: Promise<Response>;
 
   constructor(private http: Http) {
   }
@@ -24,15 +25,16 @@ export class AuthGuardService {
    * @returns {Subscription}
    */
   public loadUserDetails() {
-    this.userDetailsResolved = this.http.get("/api/user").toPromise();
-    this.userDetailsResolved.then(resp => {
+    this.userDetailPromise = this.http.get("/api/user").toPromise();
+    this.userDetailPromise.then(resp => {
       this.userDetails = resp.json();
       // flatten auth array
       this.userDetails.authorities = this.userDetails.authorities.map(auth => {
         return auth.authority
       });
       console.debug(this.userDetails);
-    })
+    }).catch(err => {
+    });
   }
 
   /**
@@ -42,11 +44,11 @@ export class AuthGuardService {
    * @returns {boolean}
    */
   public hasRole(role: string): Promise<boolean> | boolean {
-    console.debug("Checking for role: ", role, this.userDetails, this.userDetailsResolved);
+    console.debug("Checking for role: ", role, this.userDetails, this.userDetailPromise);
 
-    if (!this.userDetailsResolved)
-      return false;
-    return this.userDetailsResolved.then(() => {
+    if (!this.userDetailPromise)
+      return Promise.reject(false);
+    return this.userDetailPromise.then(() => {
       return this.userDetails.authorities.indexOf(role) != -1;
     });
 
@@ -59,15 +61,16 @@ export class AuthGuardService {
    * @returns {boolean}
    */
   public hasAnyRole(roles: string[]) {
-    console.debug("Checking for role: ", roles, this.userDetails, this.userDetailsResolved);
+    console.debug("Checking for role: ", roles, this.userDetails, this.userDetailPromise);
 
-    if (!this.userDetailsResolved)
-      return false;
-    return this.userDetailsResolved.then(() => {
+    if (!this.userDetailPromise)
+      return Promise.reject(false);
+    return this.userDetailPromise.then(() => {
       let hasRole = false;
       for (let role of roles) {
         hasRole = hasRole || this.userDetails.authorities.indexOf(role) != -1;
       }
+      console.debug("HasAnyRole Result", hasRole);
       return hasRole;
     });
   }
@@ -77,9 +80,9 @@ export class AuthGuardService {
    * @returns {boolean}
    */
   public isAuthenticated() {
-    return this.userDetailsResolved == null ? false : this.userDetailsResolved.then(() => {
-      return this.userDetails != null;
-    });
+    if (this.userDetailPromise == null)
+      return Promise.reject(false);
+    return this.userDetailPromise;
   }
 
 }

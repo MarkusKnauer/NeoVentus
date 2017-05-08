@@ -6,8 +6,9 @@ import {AuthGuardService} from "../../app/service/auth-guard.service";
 
 /**
  * @author Dennis Thanner
- * @version 0.0.3 added login feedback + bug fix - DT
- * 0.0.2 added redirect to deskoverview
+ * @version 0.0.4 rbma changes - DT
+ *          0.0.3 added login feedback + bug fix - DT
+ *          0.0.2 added redirect to deskoverview - DT
  */
 @Component({
   selector: 'page-login',
@@ -28,9 +29,12 @@ export class LoginPage {
    * prevent login in screen to show up in browser if user is authenticated
    */
   ionViewWillEnter() {
-    if (this.authGuard.isAuthenticated()) {
+    this.authGuard.isAuthenticated().then(() => {
+      console.debug("User already authenticated");
       this.navCtrl.setRoot(DeskOverviewPage)
-    }
+    }, () => {
+    });
+
   }
 
   /**
