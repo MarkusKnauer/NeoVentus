@@ -36,7 +36,7 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 		o.setItem(dto.getMenuItemNumber() != null ? menuItemRepository.findByNumber(dto.getMenuItemNumber()) : null);
 		o.setWaiter(dto.getWaiter() != null ? userRepository.findByWorkerId(dto.getWaiter()) : null);
 		o.setGuestWish(dto.getGuestWish() != null ? dto.getGuestWish() : "");
-		o.setState(dto.getState());
+		o.setState(dto.getCurrentState());
 
 
 		mongoTemplate.save(o);
