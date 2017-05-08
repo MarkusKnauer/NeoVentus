@@ -44,7 +44,7 @@ export class DeskOverviewPage {
   }
 
   loadDeskOrderDetails(desk: any) {
-    this.orderService.listOrderDesk("?deskNumber=" + desk.number.toString()).then(
+    this.orderService.listOrders("?deskNumber=" + desk.number.toString()).then(
       orders => {
 
         var waiters = new Set<string>();
