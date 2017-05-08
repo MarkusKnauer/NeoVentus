@@ -10,10 +10,12 @@ import {Invoices} from "../pages/invoices/invoices";
 import {Settings} from "../pages/settings/settings";
 import {DeskOverviewPage} from "../pages/desk-overview/desk-overview";
 import {ProfilePage} from "../pages/profile/profile";
+import {AuthGuardService} from "./service/auth-guard.service";
 
 /**
  * @author Dennis Thanner, Markus Knauer
- * @version 0.0.2 edited side-menu fuction
+ * @version 0.0.3 added userDetail loading on app start
+ *          0.0.2 edited side-menu fuction
  *          0.0.1 created by DT
  */
 @Component({
@@ -26,7 +28,7 @@ export class MyApp {
   pages: Array<{ title: string, component: any }>;
   profilepage: any;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, authGuard: AuthGuardService) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -41,6 +43,8 @@ export class MyApp {
       {title: 'Rechnungen', component: Invoices},
       {title: 'Einstellungen', component: Settings},
     ];
+
+    authGuard.loadUserDetails();
 
     this.profilepage = {title: "Profile", component: ProfilePage};
   }

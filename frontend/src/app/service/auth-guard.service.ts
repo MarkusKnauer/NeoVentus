@@ -5,8 +5,9 @@ import {Http, Response} from "@angular/http";
  * service for role based access
  *
  * @author Dennis Thanner
- * @version 0.0.3 added async support to isAuthenticated and hasRole, added hasAnyRole
- * 0.0.2 minor bug fix
+ * @version 0.0.4 minor isAuthenticated() bug fix
+ *          0.0.3 added async support to isAuthenticated and hasRole, added hasAnyRole
+ *          0.0.2 minor bug fix
  */
 @Injectable()
 export class AuthGuardService {
@@ -76,7 +77,7 @@ export class AuthGuardService {
    * @returns {boolean}
    */
   public isAuthenticated() {
-    return this.userDetailsResolved.then(() => {
+    return this.userDetailsResolved == null ? false : this.userDetailsResolved.then(() => {
       return this.userDetails != null;
     });
   }
