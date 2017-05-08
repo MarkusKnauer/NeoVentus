@@ -37,7 +37,7 @@ export class ShowOrdersPage {
   }
 
   loadOrders() {
-    this.showOrderService.listOrderDesk("?deskNumber="+this.deskNumber.toString())
+    this.showOrderService.listOrders("?deskNumber="+this.deskNumber.toString())
       .then(
        orderData => {
           this.showOrders = orderData;
@@ -45,23 +45,6 @@ export class ShowOrdersPage {
       );
     console.log("THIS IS FRONTEND - Received Order data"+ this.showOrders);
   }
-
-
-  // search for menuId with desknumber
-  loadMenu(menuId:string) {
-    this.showOrderService.listOrderDesk("?deskNumber="+this.deskNumber.toString()+"&menuId="+menuId)
-      .then(
-        orderData => {
-          this.menuId = orderData;
-        }
-      );
-    console.log("THIS IS FRONTEND - Received Order data"+ this.menuId);
-    return this.menuId.length;
-
-  }
-
-
-
 
   checkCategory(cat: string){
     console.log("THIS IS FRONTEND - Received Order cat"+ cat + " CategoryString: "+ this.categoryString);

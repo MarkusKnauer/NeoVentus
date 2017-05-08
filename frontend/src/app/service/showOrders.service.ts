@@ -22,13 +22,13 @@ export class ShowOrdersService {
    *
    * @returns {Observable<Response>}
    */
-  public listOrderDesk(deskNumber: string) {
+  public listOrders(paramString: string) {
       return new Promise(resolve => {
-       this.http.get("/api/order/"+deskNumber.toString())
+       this.http.get("/api/order"+paramString.toString())
        .map(res => res.json())
        .subscribe(order => {
           this.orderData = order;
-          console.log("THIS IS FRONTEND - Received Order data-service: DeskNumber"+ deskNumber);
+          console.log("THIS IS FRONTEND - Received Order data-service: DeskNumber"+ paramString);
           console.log("THIS IS FRONTEND - Received Order data-service: Orders "+ this.orderData);
           resolve(this.orderData);
         });
