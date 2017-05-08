@@ -8,6 +8,7 @@ import {ShiftsPage} from "../pages/shiftsPage/shiftsPage";
 import {MessagePage} from "../pages/messagePage/messagePage";
 import {Invoices} from "../pages/invoices/invoices";
 import {Settings} from "../pages/settings/settings";
+import {KitchenOverviewPage} from "../pages/kitchen-overview/kitchen-overview"
 import {DeskOverviewPage} from "../pages/desk-overview/desk-overview";
 import {ProfilePage} from "../pages/profile/profile";
 import {AuthGuardService} from "./service/auth-guard.service";
@@ -41,7 +42,8 @@ export class MyApp {
       {title: 'Schicht', component: ShiftsPage},
       {title: 'Nachrichten', component: MessagePage},
       {title: 'Rechnungen', component: Invoices},
-      {title: 'Einstellungen', component: Settings},
+      {title: 'Küche', component: KitchenOverviewPage},
+      {title: 'Einstellungen', component: Settings}
     ];
 
     authGuard.loadUserDetails();

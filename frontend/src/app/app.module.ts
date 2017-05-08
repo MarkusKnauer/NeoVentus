@@ -14,6 +14,8 @@ import {DeskOverviewPage} from "../pages/desk-overview/desk-overview";
 import {DeskService} from "./service/desk.service";
 import {ShowOrdersPage} from "../pages/showOrders/showOrders";
 import {ShowOrdersService} from "./service/showOrders.service";
+import {DeskPage} from "../pages/desk/desk";
+import {KitchenOverviewPage} from "../pages/kitchen-overview/kitchen-overview";
 import {ShiftsPage} from "../pages/shiftsPage/shiftsPage";
 import {MessagePage} from "../pages/messagePage/messagePage";
 import {Invoices} from "../pages/invoices/invoices";
@@ -31,7 +33,8 @@ import {ProfilePage} from "../pages/profile/profile";
     MessagePage,
     Invoices,
     Settings,
-    ProfilePage
+    ProfilePage,
+    KitchenOverviewPage
   ],
   imports: [
     HttpModule,
@@ -41,7 +44,8 @@ import {ProfilePage} from "../pages/profile/profile";
         // browser support links
         {component: LoginPage, name: "Login", segment: "login"},
         {component: DeskOverviewPage, name: "Desk Overview", segment: "desks"},
-        {component: ShowOrdersPage, name: "ShowOrders", segment: "orders"}
+        {component: ShowOrdersPage, name: "ShowOrders", segment: "orders"},
+        {component: KitchenOverviewPage, name: "Kitchen Overview", segment: "kitchen"}
       ]
     })
   ],
@@ -55,7 +59,8 @@ import {ProfilePage} from "../pages/profile/profile";
     MessagePage,
     Invoices,
     Settings,
-    ProfilePage
+    ProfilePage,
+    KitchenOverviewPage
   ],
   providers: [
     StatusBar,
@@ -64,7 +69,8 @@ import {ProfilePage} from "../pages/profile/profile";
     AuthGuardService,
     UserService,
     DeskService,
-    ShowOrdersService
+    ShowOrdersService,
+    KitchenOverviewPage
   ]
 })
 export class AppModule {

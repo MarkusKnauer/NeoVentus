@@ -1,0 +1,26 @@
+ion-card-header {
+  background: color($colors, primary);
+}
+
+ion-grid.grid-card {
+  width: 85%;
+  float: left;
+}
+
+.overview {
+  background: lightgray;
+  width: 15%;
+  float: left;
+
+  h2 {
+    text-align: center;
+  }
+  ion-list {
+    background: lightgray;
+  }
+  ion-item {
+    background-color: transparent;
+  }
+}
+
+
