@@ -29,6 +29,7 @@ export class SideMenuComponent {
 
   pages: Array<{ title: string, component: any, icon: string }>;
   profilepage: any;
+  activepage: any;
 
   constructor(private userService: UserService, private events: Events) {
 
@@ -44,11 +45,13 @@ export class SideMenuComponent {
 
 
     this.profilepage = {title: "Profile", component: ProfilePage};
+    this.activepage = this.pages[0];
   }
 
   openPage(page) {
     // Reset the content nav to have just this page
     this.events.publish('Open-Menu-Page', page.component)
+    this.activepage = page;
   }
 
   logout() {
@@ -59,6 +62,9 @@ export class SideMenuComponent {
     })
   }
 
+  checkActive(page) {
+    return page == this.activepage;
+  }
 
 }
 
