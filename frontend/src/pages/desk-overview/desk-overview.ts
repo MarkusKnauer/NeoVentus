@@ -33,13 +33,12 @@ export class DeskOverviewPage {
 
     this.deskService.getAllDesks().then(
       desks => {
-        // this.desks = desks;
-        let desks_: any = desks;
-        for (let desk of desks_) {
+        for (let desk of desks) {
           this.loadDeskOrderDetails(desk);
         }
       });
   }
+
 
   loadDeskOrderDetails(desk: any) {
     this.orderService.getOrdersByDesk(desk.number).then(
@@ -48,8 +47,7 @@ export class DeskOverviewPage {
         let waiters = new Set<string>();
         let strwaiters: string = "";
 
-        let orders_: any = orders;
-        for (let order of orders_) {
+        for (let order of orders) {
           waiters.add(order.waiter);
         }
 

@@ -1,6 +1,5 @@
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
-import {Observable} from "rxjs/Observable";
 import {CachingService} from "./caching.service";
 
 /**
@@ -23,7 +22,7 @@ export class OrderService extends CachingService {
    * @returns {Observable<Response>}
    */
   public getOrdersByDesk(desknumber: number) {
-    return new Promise(resolve => {
+    return new Promise<any>(resolve => {
       this.http.get("/api/order?deskNumber=" + desknumber.toString())
         .map(res => res.json())
         .subscribe(order => {
@@ -41,20 +40,13 @@ export class OrderService extends CachingService {
    */
   public getAllOrderItemsByState(state) {
 
-    return new Promise<{}>(resolve => {
-      // We're using Angular HTTP provider to request the data,
-      // then on the response, it'll map the JSON data to a parsed JS object.
-      // Next, we process the data and resolve the promise with the new data.
-      this.http.get("/api/order/all/" + state)
-        .map(res => res.json())
-        .subscribe(data => {
-          // we've got back the raw data, now generate the core schedule data
-          // and save the data for later reference
-          this.saveToCache("orders_state_" + state, data);
-          resolve(data);
-        });
+    let req = this.http.get("/api/order/all/" + state);
+    req.map(resp => resp.json()).subscribe((data) => {
+      this.saveToCache("orders_state_" + state, data);
+    }, (err) => {
+      console.debug("Error loading category tree", err);
     });
-
+    return req.toPromise();
   }
 
 }

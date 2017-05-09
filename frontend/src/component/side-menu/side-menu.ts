@@ -2,7 +2,7 @@ import {Component, Input, ViewChild} from "@angular/core";
 import {Events, Nav} from "ionic-angular";
 import {DeskOverviewPage} from "../../pages/desk-overview/desk-overview";
 import {ShiftsPage} from "../../pages/shifts/shifts";
-import {MessagePage} from "../../pages/messages/messagePage";
+import {MessagePage} from "../../pages/messages/message";
 import {InvoicesPage} from "../../pages/invoices/invoices";
 import {KitchenOverviewPage} from "../../pages/kitchen-overview/kitchen-overview";
 import {SettingsPage} from "../../pages/settings/settings";
