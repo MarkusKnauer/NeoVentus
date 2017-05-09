@@ -16,8 +16,7 @@ import {OrderService} from "../../service/order.service";
  *          0.0.2 added authGuard - DT
  */
 @Component({
-  templateUrl: "desk-overview.html",
-  providers: [DeskService, OrderService]
+  templateUrl: "desk-overview.html"
 })
 export class DeskOverviewPage {
 

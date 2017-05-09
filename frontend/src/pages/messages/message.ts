@@ -5,10 +5,9 @@ import {NavController} from "ionic-angular";
  * @author Markus Knauer
  * @version 0.0.1
  */
-
 @Component({
   selector: 'page-message',
-  templateUrl: 'messagePage.html'
+  templateUrl: 'message.html'
 })
 export class MessagePage {
 
