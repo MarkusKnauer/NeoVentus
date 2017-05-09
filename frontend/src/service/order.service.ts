@@ -1,44 +1,41 @@
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
 import {Observable} from "rxjs/Observable";
+import {CachingService} from "./caching.service";
 
 /**
  * handling requests to the backend belonging the orders
  *
  * @author Julian Beck
- * @version 0.0.1
+ * @version 0.0.2
  */
 @Injectable()
-export class OrderService {
-
-  orderData:any;
-
-  private orderItems;
+export class OrderService extends CachingService {
 
   constructor(private http: Http) {
-    this.orderData = [];
+    super();
     this.http = http;
   }
 
   /**
+   * Gets all orders by desk number
    *
    * @returns {Observable<Response>}
    */
-  public listOrders(paramString: string) {
-      return new Promise(resolve => {
-       this.http.get("/api/order"+paramString.toString())
-       .map(res => res.json())
-       .subscribe(order => {
-          this.orderData = order;
-          console.log("ShowOrdersService - Received Order data-service: Params"+ paramString);
-          console.log("ShowOrdersService - Received Order data-service: Orders "+ this.orderData);
-          resolve(this.orderData);
+  public getOrdersByDesk(desknumber: number) {
+    return new Promise(resolve => {
+      this.http.get("/api/order?deskNumber=" + desknumber.toString())
+        .map(res => res.json())
+        .subscribe(order => {
+          this.saveToCache("orders_desk" + desknumber.toString(), order);
+          resolve(order);
         });
-      });
+    });
   }
 
-
   /**
+   * Gets all orders by state
+   *
    * @param state
    * @returns {Observable<Response>}
    */
@@ -53,12 +50,11 @@ export class OrderService {
         .subscribe(data => {
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
-          this.orderItems = data;
-          resolve(this.orderItems);
+          this.saveToCache("orders_state_" + state, data);
+          resolve(data);
         });
     });
 
   }
-
 
 }

@@ -36,5 +36,4 @@ export class DeskService extends CachingService {
     });
 
   }
-
 }

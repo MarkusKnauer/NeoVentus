@@ -23,21 +23,29 @@ export class DeskOverviewPage {
 
   private tileView = true;
   private myDesksOnly = false;
+  // private desks: any;
 
   constructor(private navCtrl: NavController,
               private deskService: DeskService,
               private orderService: OrderService,
               private authGuard: AuthGuardService) {
 
-    this.deskService.getAllDesks();
-    //todo fix desk details and store them to cache
+
+    this.deskService.getAllDesks().then(
+      desks => {
+        // this.desks = desks;
+        let desks_: any = desks;
+        for (let desk of desks_) {
+          this.loadDeskOrderDetails(desk);
+        }
+      });
   }
 
   loadDeskOrderDetails(desk: any) {
-    this.orderService.listOrders("?deskNumber=" + desk.number.toString()).then(
+    this.orderService.getOrdersByDesk(desk.number).then(
       orders => {
 
-        var waiters = new Set<string>();
+        let waiters = new Set<string>();
         let strwaiters: string = "";
 
         let orders_: any = orders;
@@ -49,6 +57,7 @@ export class DeskOverviewPage {
           strwaiters += waiter + ", ";
         }
         desk.waiter = strwaiters.substring(0, strwaiters.length - 2);
+        this.deskService.cache['desks'].waiter = desk.waiter;
 
         // TODO get price sum
       }

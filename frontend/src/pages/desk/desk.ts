@@ -34,13 +34,12 @@ export class DeskPage {
   }
 
   loadOrders() {
-    this.showOrderService.listOrders("?deskNumber="+this.deskNumber.toString())
-      .then(
-       orderData => {
-         this.showOrders = orderData;
-         console.log("ShowOrdersPage - Received Order data" + this.showOrders);
-        }
-      );
+    this.showOrderService.getOrdersByDesk(this.deskNumber).then(
+      orderData => {
+        this.showOrders = orderData;
+        console.log("ShowOrdersPage - Received Order data" + this.showOrders);
+      }
+    );
   }
 
   checkCategory(cat: string){
