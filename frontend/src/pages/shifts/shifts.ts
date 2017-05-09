@@ -8,7 +8,7 @@ import {NavController} from "ionic-angular";
 
 @Component({
   selector: 'shifts-message',
-  templateUrl: 'shiftsPage.html'
+  templateUrl: 'shifts.html'
 })
 export class ShiftsPage {
 

@@ -1,8 +1,8 @@
 import {Component} from "@angular/core";
 import {NavController, ToastController} from "ionic-angular";
-import {UserService} from "../../app/service/user.service";
+import {UserService} from "../../service/user.service";
 import {DeskOverviewPage} from "../desk-overview/desk-overview";
-import {AuthGuardService} from "../../app/service/auth-guard.service";
+import {AuthGuardService} from "../../service/auth-guard.service";
 
 /**
  * @author Dennis Thanner

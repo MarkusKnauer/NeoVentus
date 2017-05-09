@@ -10,7 +10,7 @@ import {NavController} from "ionic-angular";
   selector: 'settings-message',
   templateUrl: 'settings.html'
 })
-export class Settings {
+export class SettingsPage {
 
   constructor(public navCtrl: NavController) {
 

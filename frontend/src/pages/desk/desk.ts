@@ -1,10 +1,7 @@
-/**
- * Created by julian on 03.05.2017.
- */
 import {Component} from "@angular/core";
 import {LoadingController, NavController, NavParams} from "ionic-angular";
-import {ShowOrdersService} from "../../app/service/showOrders.service";
-import {AuthGuardService} from "../../app/service/auth-guard.service";
+import {OrderService} from "../../service/order.service";
+import {AuthGuardService} from "../../service/auth-guard.service";
 import {DeskOverviewPage} from "../desk-overview/desk-overview";
 
 
@@ -13,11 +10,11 @@ import {DeskOverviewPage} from "../desk-overview/desk-overview";
  * @version 0.0.2 "Name-value-pair"- compatibility
  *          0.0.1 created showorders.ts - JB
  */
+
 @Component({
-  templateUrl: "showOrders.html",
-  providers: [ShowOrdersService]
+  templateUrl: "desk.html",
 })
-export class ShowOrdersPage {
+export class DeskPage {
 
   public showOrders: any;
   public menuId: any;
@@ -25,7 +22,7 @@ export class ShowOrdersPage {
   public categoryString: string;
 
 
-  constructor(public navParams: NavParams, private navCtrl: NavController, private showOrderService: ShowOrdersService, private authGuard: AuthGuardService,public loadingCtrl: LoadingController) {
+  constructor(public navParams: NavParams, private navCtrl: NavController, private showOrderService: OrderService, private authGuard: AuthGuardService, public loadingCtrl: LoadingController) {
     this.deskNumber = navParams.get("deskNumber");
     this.categoryString = "";
     if (this.deskNumber != null){

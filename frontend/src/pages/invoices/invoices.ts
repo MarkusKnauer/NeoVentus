@@ -10,7 +10,7 @@ import {NavController} from "ionic-angular";
   selector: 'page-invoice',
   templateUrl: 'invoices.html'
 })
-export class Invoices {
+export class InvoicesPage {
 
   constructor(public navCtrl: NavController) {
 

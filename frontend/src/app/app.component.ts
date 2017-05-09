@@ -2,16 +2,16 @@ import {Component, ViewChild} from "@angular/core";
 import {Nav, Platform} from "ionic-angular";
 import {StatusBar} from "@ionic-native/status-bar";
 import {SplashScreen} from "@ionic-native/splash-screen";
-
 import {LoginPage} from "../pages/login/login";
-import {ShiftsPage} from "../pages/shiftsPage/shiftsPage";
-import {MessagePage} from "../pages/messagePage/messagePage";
-import {Invoices} from "../pages/invoices/invoices";
-import {Settings} from "../pages/settings/settings";
-import {KitchenOverviewPage} from "../pages/kitchen-overview/kitchen-overview";
 import {DeskOverviewPage} from "../pages/desk-overview/desk-overview";
+import {AuthGuardService} from "../service/auth-guard.service";
+import {ShiftsPage} from "../pages/shifts/shifts";
+import {MessagePage} from "../pages/messages/messagePage";
+import {InvoicesPage} from "../pages/invoices/invoices";
+import {KitchenOverviewPage} from "../pages/kitchen-overview/kitchen-overview";
+import {SettingsPage} from "../pages/settings/settings";
 import {ProfilePage} from "../pages/profile/profile";
-import {AuthGuardService} from "./service/auth-guard.service";
+
 
 /**
  * @author Dennis Thanner, Markus Knauer
@@ -41,9 +41,9 @@ export class MyApp {
       {title: 'Home', component: DeskOverviewPage, icon: 'home'},
       {title: 'Schicht', component: ShiftsPage, icon: 'clock'},
       {title: 'Nachrichten', component: MessagePage, icon: 'chatboxes'},
-      {title: 'Rechnungen', component: Invoices, icon: 'calculator'},
+      {title: 'Rechnungen', component: InvoicesPage, icon: 'calculator'},
       {title: 'Küche', component: KitchenOverviewPage, icon: 'bonfire'},
-      {title: 'Einstellungen', component: Settings, icon: 'settings'}
+      {title: 'Einstellungen', component: SettingsPage, icon: 'settings'}
     ];
 
     authGuard.loadUserDetails();
@@ -54,8 +54,6 @@ export class MyApp {
   openPage(page) {
     // Reset the content nav to have just this page
     this.nav.setRoot(page.component);
-
-
   }
 
 

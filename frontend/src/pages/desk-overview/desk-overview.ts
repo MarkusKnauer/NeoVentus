@@ -1,10 +1,10 @@
 import {Component, ViewChild} from "@angular/core";
 import {Content, NavController} from "ionic-angular";
-import {DeskService} from "../../app/service/desk.service";
-import {AuthGuardService} from "../../app/service/auth-guard.service";
+import {DeskService} from "../../service/desk.service";
+import {AuthGuardService} from "../../service/auth-guard.service";
 import {LoginPage} from "../login/login";
-import {ShowOrdersPage} from "../showOrders/showOrders";
-import {ShowOrdersService} from "../../app/service/showOrders.service";
+import {DeskPage} from "../desk/desk";
+import {OrderService} from "../../service/order.service";
 
 /**
  * @author Tim Heidelbach, Dennis Thanner
@@ -16,7 +16,7 @@ import {ShowOrdersService} from "../../app/service/showOrders.service";
  */
 @Component({
   templateUrl: "desk-overview.html",
-  providers: [DeskService, ShowOrdersService]
+  providers: [DeskService, OrderService]
 })
 export class DeskOverviewPage {
 
@@ -27,7 +27,7 @@ export class DeskOverviewPage {
 
   constructor(private navCtrl: NavController,
               private deskService: DeskService,
-              private orderService: ShowOrdersService,
+              private orderService: OrderService,
               private authGuard: AuthGuardService) {
 
     this.loadDesks();
@@ -72,7 +72,7 @@ export class DeskOverviewPage {
    * RBMA
    */
   ionViewWillEnter() {
-    this.authGuard.hasAnyRole(["ROLE_CEO", "ROLE_SERVICE"]).then(() => {
+    this.authGuard.hasAnyRolePromise(["ROLE_CEO", "ROLE_SERVICE"]).then(() => {
     }, () => {
       console.debug("RBMA - Access denied!");
       this.navCtrl.setRoot(LoginPage);
@@ -80,7 +80,7 @@ export class DeskOverviewPage {
   }
 
   deskSelected(desk) {
-    this.navCtrl.push(ShowOrdersPage, {deskNumber: desk.number.toString()})
+    this.navCtrl.push(DeskPage, {deskNumber: desk.number.toString()})
   }
 
   @ViewChild(Content) content: Content;

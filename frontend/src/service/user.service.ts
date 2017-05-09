@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
-import {AuthGuardService} from './auth-guard.service';
+import {Injectable} from "@angular/core";
+import {Http} from "@angular/http";
+import {AuthGuardService} from "./auth-guard.service";
 
 /**
  * handling requests to the backend belonging the user

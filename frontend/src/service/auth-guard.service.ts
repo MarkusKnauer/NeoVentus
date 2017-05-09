@@ -5,10 +5,11 @@ import {Http, Response} from "@angular/http";
  * service for role based access
  *
  * @author Dennis Thanner
- * @version 0.0.5 promise bug fix
- *          0.0.4 minor isAuthenticated() bug fix
- *          0.0.3 added async support to isAuthenticated and hasRole, added hasAnyRole
- *          0.0.2 minor bug fix
+ * @version 0.0.6 added role check withous promise - DT
+ *          0.0.5 promise bug fix - DT
+ *          0.0.4 minor isAuthenticated() bug fix - DT
+ *          0.0.3 added async support to isAuthenticated and hasRole, added hasAnyRole - DT
+ *          0.0.2 minor bug fix - DT
  */
 @Injectable()
 export class AuthGuardService {
@@ -38,20 +39,47 @@ export class AuthGuardService {
   }
 
   /**
-   * check if role is in principal
+   * check if role is in principal and wait for started request to finish
    *
    * @param role
-   * @returns {boolean}
+   * @returns {Promise}
    */
-  public hasRole(role: string): Promise<boolean> | boolean {
+  public hasRolePromise(role: string): Promise<boolean> {
     console.debug("Checking for role: ", role, this.userDetails, this.userDetailPromise);
 
     if (!this.userDetailPromise)
       return Promise.reject(false);
     return this.userDetailPromise.then(() => {
-      return this.userDetails.authorities.indexOf(role) != -1;
+      return this.hasRole(role);
     });
 
+  }
+
+  /**
+   * check if role is in principal
+   * @param role
+   * @returns {boolean}
+   */
+  public hasRole(role: string): boolean {
+    if (!this.userDetails)
+      return false;
+    return this.userDetails.authorities.indexOf(role) != -1;
+  }
+
+  /**
+   * check if any role is in principal and wait for started request
+   *
+   * @param roles
+   * @returns {Promise}
+   */
+  public hasAnyRolePromise(roles: string[]) {
+    console.debug("Checking for role: ", roles, this.userDetails, this.userDetailPromise);
+
+    if (!this.userDetailPromise)
+      return Promise.reject(false);
+    return this.userDetailPromise.then(() => {
+      return this.hasAnyRole(roles);
+    });
   }
 
   /**
@@ -61,23 +89,18 @@ export class AuthGuardService {
    * @returns {boolean}
    */
   public hasAnyRole(roles: string[]) {
-    console.debug("Checking for role: ", roles, this.userDetails, this.userDetailPromise);
-
-    if (!this.userDetailPromise)
-      return Promise.reject(false);
-    return this.userDetailPromise.then(() => {
-      let hasRole = false;
-      for (let role of roles) {
-        hasRole = hasRole || this.userDetails.authorities.indexOf(role) != -1;
-      }
-      console.debug("HasAnyRole Result", hasRole);
-      return hasRole;
-    });
+    let hasRole = false;
+    for (let role of roles) {
+      hasRole = hasRole || this.userDetails.authorities.indexOf(role) != -1;
+    }
+    console.debug("HasAnyRole Result", hasRole);
+    return hasRole;
   }
+
 
   /**
    * determine if user is logged in
-   * @returns {boolean}
+   * @returns {Promise}
    */
   public isAuthenticated() {
     if (this.userDetailPromise == null)

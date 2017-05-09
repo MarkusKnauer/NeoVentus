@@ -10,7 +10,8 @@ export class OrderSocketService {
 
   private wsConfig = {
     host: "/socket/socket-api",
-    debug: isDevMode()
+    debug: isDevMode(),
+    queue: {}
   };
 
   constructor(private stomp: StompService) {

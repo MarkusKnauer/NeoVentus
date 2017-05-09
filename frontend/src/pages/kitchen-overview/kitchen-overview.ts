@@ -1,8 +1,7 @@
 import {Component} from "@angular/core";
 import {NavController} from "ionic-angular";
-import {AuthGuardService} from "../../app/service/auth-guard.service";
-import {LoginPage} from "../login/login";
-import {OrderItemService} from "../../app/service/orderItem.service";
+import {AuthGuardService} from "../../service/auth-guard.service";
+import {OrderService} from "../../service/order.service";
 
 /**
  * @author Dominik Streif
@@ -12,7 +11,6 @@ import {OrderItemService} from "../../app/service/orderItem.service";
 
 @Component({
   templateUrl: "kitchen-overview.html",
-  providers: [OrderItemService]
 })
 
 export class KitchenOverviewPage {
@@ -23,14 +21,14 @@ export class KitchenOverviewPage {
   //ToDo nach Kategorie filter
   //ToDo Socketverbindung
 
-  constructor(private navCtrl: NavController, private orderItemService: OrderItemService, private authGuard: AuthGuardService) {
+  constructor(private navCtrl: NavController, private orderService: OrderService, private authGuard: AuthGuardService) {
     this.loadOrderItemsGroupedByOrderItem();
     this.loadOrderItemsGroupedByDesk();
   }
 
 
   loadOrderItemsGroupedByOrderItem() {
-    this.orderItemService.getAllOrderItemsByState("NEW")
+    this.orderService.getAllOrderItemsByState("NEW")
       .then(
         data => {
           this.groupByOrderItem(data);
@@ -39,7 +37,7 @@ export class KitchenOverviewPage {
   }
 
   loadOrderItemsGroupedByDesk() {
-    this.orderItemService.getAllOrderItemsByState("NEW")
+    this.orderService.getAllOrderItemsByState("NEW")
       .then(
         data => {
           this.groupByDesk(data);
@@ -55,7 +53,7 @@ export class KitchenOverviewPage {
 
     //iterate through each element of array
     orderItems.forEach(function (val) {
-      var curr = newArray[val.desk.number]
+      var curr = newArray[val.desk.number];
 
       //if array key doesnt exist, init with empty array
       if (!curr) {
@@ -88,7 +86,7 @@ export class KitchenOverviewPage {
     //iterate through each element of array
     orderItemGrouped.forEach(function (val) {
 
-      var curr = newArray[(val.item.name).concat(val.guestWish)]
+      var curr = newArray[(val.item.name).concat(val.guestWish)];
 
       //if array key doesnt exist, init with empty array
       if (!curr) {
