@@ -27,7 +27,7 @@
 
     <ion-row justify-content-center>
 
-      <ion-col *ngFor="let desk of desks" (click)="deskSelected(desk)" col-auto>
+      <ion-col *ngFor="let desk of deskService.cache['desks']" (click)="deskSelected(desk)" col-auto>
         <div class="desk">
 
           <h1 [ngClass]="{unused: desk.status == 0, default: desk.status == 1, danger: desk.status == 2}">
@@ -50,7 +50,7 @@
 
     <ion-list class="list-tables">
 
-      <ion-item *ngFor="let desk of desks" (click)="deskSelected(desk)" col-auto>
+      <ion-item *ngFor="let desk of deskService.cache['desks']" (click)="deskSelected(desk)" col-auto>
 
         <ion-avatar item-left>
           <h1 [ngClass]="{unused: desk.status == 0, default: desk.status == 1, danger: desk.status == 2}">

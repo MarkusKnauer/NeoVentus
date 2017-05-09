@@ -1,18 +1,18 @@
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
+import {CachingService} from "./caching.service";
 
 /**
  * handling requests to the backend belonging the desks
  *
- * @author Tim Heidelbach
- * @version 0.0.1
+ * @author Tim Heidelbach, Dennis Thanner
+ * @version 0.0.2 added caching support - DT
  */
 @Injectable()
-export class DeskService {
-
-  private desks = null;
+export class DeskService extends CachingService {
 
   constructor(private http: Http) {
+    super();
   }
 
   /**
@@ -30,8 +30,8 @@ export class DeskService {
         .subscribe(data => {
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
-          this.desks = data;
-          resolve(this.desks);
+          this.saveToCache("desks", data);
+          resolve(data);
         });
     });
 

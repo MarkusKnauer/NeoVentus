@@ -8,7 +8,8 @@ import {OrderService} from "../../service/order.service";
 
 /**
  * @author Tim Heidelbach, Dennis Thanner
- * @version 0.0.6 rbma changes - DT
+ * @version 0.0.7 added desk cache - DT
+ *          0.0.6 rbma changes - DT
  *          0.0.5 added waiter name
  *          0.0.4 adapted design to mockup
  *          0.0.3 button toggles between grid- and list view
@@ -20,8 +21,6 @@ import {OrderService} from "../../service/order.service";
 })
 export class DeskOverviewPage {
 
-  private desks: any;
-
   private tileView = true;
   private myDesksOnly = false;
 
@@ -30,18 +29,8 @@ export class DeskOverviewPage {
               private orderService: OrderService,
               private authGuard: AuthGuardService) {
 
-    this.loadDesks();
-  }
-
-  loadDesks() {
-    this.deskService.getAllDesks().then(
-      desks => {
-        this.desks = desks;
-        for (let desk of this.desks) {
-          this.loadDeskOrderDetails(desk);
-        }
-      }
-    )
+    this.deskService.getAllDesks();
+    //todo fix desk details and store them to cache
   }
 
   loadDeskOrderDetails(desk: any) {
