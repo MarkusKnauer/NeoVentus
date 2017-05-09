@@ -16,7 +16,7 @@ import {DeskPage} from "../pages/desk/desk";
 import {OrderService} from "../service/order.service";
 import {KitchenOverviewPage} from "../pages/kitchen-overview/kitchen-overview";
 import {ShiftsPage} from "../pages/shifts/shifts";
-import {MessagePage} from "../pages/messages/messagePage";
+import {MessagePage} from "../pages/messages/message";
 import {InvoicesPage} from "../pages/invoices/invoices";
 import {SettingsPage} from "../pages/settings/settings";
 import {ProfilePage} from "../pages/profile/profile";
@@ -45,7 +45,7 @@ import {SideMenuComponent} from "../component/side-menu/side-menu";
         // browser support links
         {component: LoginPage, name: "Login", segment: "login"},
         {component: DeskOverviewPage, name: "Desk Overview", segment: "desks"},
-        {component: DeskPage, name: "ShowOrders", segment: "orders/{number}"},
+        {component: DeskPage, name: "ShowOrders", segment: "orders/:deskNumber"},
         {component: KitchenOverviewPage, name: "Kitchen Overview", segment: "kitchen"}
       ]
     })

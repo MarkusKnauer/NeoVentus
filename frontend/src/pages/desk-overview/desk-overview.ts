@@ -17,6 +17,7 @@ import {OrderService} from "../../service/order.service";
  */
 @Component({
   templateUrl: "desk-overview.html",
+  providers: [DeskService, OrderService]
 })
 export class DeskOverviewPage {
 
