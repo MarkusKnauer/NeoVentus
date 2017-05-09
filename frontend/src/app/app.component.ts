@@ -8,7 +8,7 @@ import {ShiftsPage} from "../pages/shiftsPage/shiftsPage";
 import {MessagePage} from "../pages/messagePage/messagePage";
 import {Invoices} from "../pages/invoices/invoices";
 import {Settings} from "../pages/settings/settings";
-import {KitchenOverviewPage} from "../pages/kitchen-overview/kitchen-overview"
+import {KitchenOverviewPage} from "../pages/kitchen-overview/kitchen-overview";
 import {DeskOverviewPage} from "../pages/desk-overview/desk-overview";
 import {ProfilePage} from "../pages/profile/profile";
 import {AuthGuardService} from "./service/auth-guard.service";
@@ -26,7 +26,7 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
   rootPage: any = LoginPage;
 
-  pages: Array<{ title: string, component: any }>;
+  pages: Array<{ title: string, component: any, icon: string }>;
   profilepage: any;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, authGuard: AuthGuardService) {
@@ -38,12 +38,12 @@ export class MyApp {
     });
     //todo: write logout fuction (MK)
     this.pages = [
-      {title: 'Home', component: DeskOverviewPage},
-      {title: 'Schicht', component: ShiftsPage},
-      {title: 'Nachrichten', component: MessagePage},
-      {title: 'Rechnungen', component: Invoices},
-      {title: 'Küche', component: KitchenOverviewPage},
-      {title: 'Einstellungen', component: Settings}
+      {title: 'Home', component: DeskOverviewPage, icon: 'home'},
+      {title: 'Schicht', component: ShiftsPage, icon: 'clock'},
+      {title: 'Nachrichten', component: MessagePage, icon: 'chatboxes'},
+      {title: 'Rechnungen', component: Invoices, icon: 'calculator'},
+      {title: 'Küche', component: KitchenOverviewPage, icon: 'bonfire'},
+      {title: 'Einstellungen', component: Settings, icon: 'settings'}
     ];
 
     authGuard.loadUserDetails();
