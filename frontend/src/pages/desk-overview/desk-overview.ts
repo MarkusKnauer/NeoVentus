@@ -76,7 +76,6 @@ export class DeskOverviewPage {
 
   toggleView() {
     this.tileView ? this.tileView = false : this.tileView = true;
-    this.content.resize(); // lets ion-content respect footer height after grid/list toggle
   }
 
   toggleMyDesksOnly() {

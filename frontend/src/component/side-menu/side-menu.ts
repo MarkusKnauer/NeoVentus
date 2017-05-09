@@ -35,7 +35,7 @@ export class SideMenuComponent {
 
     //todo: write logout fuction (MK)
     this.pages = [
-      {title: 'Home', component: DeskOverviewPage, icon: 'home'},
+      {title: 'Tischübersicht', component: DeskOverviewPage, icon: 'home'},
       {title: 'Schicht', component: ShiftsPage, icon: 'clock'},
       {title: 'Nachrichten', component: MessagePage, icon: 'chatboxes'},
       {title: 'Rechnungen', component: InvoicesPage, icon: 'calculator'},

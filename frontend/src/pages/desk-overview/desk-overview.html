@@ -1,6 +1,6 @@
 <ion-header>
 
-  <ion-toolbar color="primary">
+  <ion-navbar color="primary">
 
     <ion-title>Tischübersicht</ion-title>
 
@@ -15,7 +15,7 @@
       </button>
     </ion-buttons>
 
-  </ion-toolbar>
+  </ion-navbar>
 
 </ion-header>
 
@@ -75,7 +75,7 @@
 
 <ion-footer>
 
-  <ion-toolbar color="primary" *ngIf="!tileView" name="list">
+  <ion-toolbar color="primary">
     <ion-item color="primary">
       <ion-label>Nur zugewiesene Tische anzeigen</ion-label>
       <ion-toggle checked={{myDesksOnly}} (click)="toggleMyDesksOnly()" color="dark"></ion-toggle>
