@@ -20,6 +20,7 @@ import {MessagePage} from "../pages/messages/messagePage";
 import {InvoicesPage} from "../pages/invoices/invoices";
 import {SettingsPage} from "../pages/settings/settings";
 import {ProfilePage} from "../pages/profile/profile";
+import {SideMenuComponent} from "../component/side-menu/side-menu";
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import {ProfilePage} from "../pages/profile/profile";
     InvoicesPage,
     SettingsPage,
     ProfilePage,
-    KitchenOverviewPage
+    KitchenOverviewPage,
+    SideMenuComponent
   ],
   imports: [
     HttpModule,

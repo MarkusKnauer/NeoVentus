@@ -27,4 +27,9 @@ export class UserService {
     })
   }
 
+  public logout() {
+    console.debug("Logout should be successfull")
+    return this.http.post("/auth/logout", {});
+  }
+
 }
