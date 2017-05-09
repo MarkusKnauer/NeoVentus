@@ -2,11 +2,15 @@ package de.neoventus.persistence.repository;
 
 import de.neoventus.persistence.entity.MenuItemCategory;
 import de.neoventus.persistence.repository.advanced.NVMenuItemCategoryRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+
+import java.util.List;
 
 /**
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.2 added findByChildrenContaining - DT
+ * @version 0.0.3 added getRootElements - D
+ *          0.0.2 added findByChildrenContaining - DT
  */
 public interface MenuItemCategoryRepository extends CrudRepository<MenuItemCategory, String>, NVMenuItemCategoryRepository {
 
@@ -25,5 +29,13 @@ public interface MenuItemCategoryRepository extends CrudRepository<MenuItemCateg
 	 * @return
 	 */
 	MenuItemCategory findBySubcategoryContaining(MenuItemCategory menuItemCategory);
+
+	/**
+	 * find all root categories to display tree
+	 *
+	 * @return
+	 */
+	@Query("{parent: null}")
+	List<MenuItemCategory> getRootElements();
 
 }

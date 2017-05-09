@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * @author: Julian Beck
- * @version: 0.0.1
- * @description:
+ * @author Julian Beck, Dennis Thanner
+ * @version 0.0.2 added list complete category tree - DT
  **/
 
 @RestController
-@RequestMapping("/api/menuItemCategory")
+@RequestMapping("/api/menu-category")
 public class MenuItemCategoryController {
 
 	private static final Logger LOGGER = Logger.getLogger(MenuItemCategoryController.class.getName());
@@ -27,21 +27,22 @@ public class MenuItemCategoryController {
 	private final MenuItemCategoryRepository menuItemCategoryRepository;
 
 	@Autowired
-	public MenuItemCategoryController (MenuItemCategoryRepository menuItemCategoryRepository){ this.menuItemCategoryRepository = menuItemCategoryRepository;}
+	public MenuItemCategoryController(MenuItemCategoryRepository menuItemCategoryRepository) {
+		this.menuItemCategoryRepository = menuItemCategoryRepository;
+	}
+
 
 	/**
-	 * controller method to list menuItemCategory details
+	 * list menu category tree
 	 *
 	 * @param response
-	 * @param menuItemCategory
 	 * @return
 	 */
-	@RequestMapping(value = "/{menuItemCategory}", method = RequestMethod.GET)
-	public MenuItemCategory listMenuItem(HttpServletResponse response, @PathVariable String menuItemCategory) {
+	@RequestMapping(value = "/tree", method = RequestMethod.GET)
+	public List<MenuItemCategory> listMenuItemCatgoryTree(HttpServletResponse response) {
 		try {
-			return menuItemCategoryRepository.findByName(menuItemCategory);
-		} catch(Exception e) {
-			LOGGER.warning("Error searching menuItemCategory with name " + menuItemCategory + ": " + e.getMessage());
+			return this.menuItemCategoryRepository.getRootElements();
+		} catch (Exception e) {
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return null;
 		}
@@ -65,7 +66,7 @@ public class MenuItemCategoryController {
 				menuItemCategoryRepository.save(dto);
 				LOGGER.info("Saving MenuItemCategory to database: " + dto.getId());
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			LOGGER.warning("Error inserting menuItemCategory to database: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
