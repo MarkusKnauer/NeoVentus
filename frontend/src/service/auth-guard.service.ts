@@ -14,7 +14,7 @@ import {Http, Response} from "@angular/http";
 @Injectable()
 export class AuthGuardService {
 
-  private userDetails = null;
+  private _userDetails = null;
 
   private userDetailPromise: Promise<Response>;
 
@@ -28,12 +28,12 @@ export class AuthGuardService {
   public loadUserDetails() {
     this.userDetailPromise = this.http.get("/api/user").toPromise();
     this.userDetailPromise.then(resp => {
-      this.userDetails = resp.json();
+      this._userDetails = resp.json();
       // flatten auth array
-      this.userDetails.authorities = this.userDetails.authorities.map(auth => {
+      this._userDetails.authorities = this._userDetails.authorities.map(auth => {
         return auth.authority
       });
-      console.debug(this.userDetails);
+      console.debug(this._userDetails);
     }).catch(err => {
     });
   }
@@ -45,7 +45,7 @@ export class AuthGuardService {
    * @returns {Promise}
    */
   public hasRolePromise(role: string): Promise<boolean> {
-    console.debug("Checking for role: ", role, this.userDetails, this.userDetailPromise);
+    console.debug("Checking for role: ", role, this._userDetails, this.userDetailPromise);
 
     if (!this.userDetailPromise)
       return Promise.reject(false);
@@ -61,9 +61,9 @@ export class AuthGuardService {
    * @returns {boolean}
    */
   public hasRole(role: string): boolean {
-    if (!this.userDetails)
+    if (!this._userDetails)
       return false;
-    return this.userDetails.authorities.indexOf(role) != -1;
+    return this._userDetails.authorities.indexOf(role) != -1;
   }
 
   /**
@@ -73,7 +73,7 @@ export class AuthGuardService {
    * @returns {Promise}
    */
   public hasAnyRolePromise(roles: string[]) {
-    console.debug("Checking for role: ", roles, this.userDetails, this.userDetailPromise);
+    console.debug("Checking for role: ", roles, this._userDetails, this.userDetailPromise);
 
     if (!this.userDetailPromise)
       return Promise.reject(false);
@@ -91,7 +91,7 @@ export class AuthGuardService {
   public hasAnyRole(roles: string[]) {
     let hasRole = false;
     for (let role of roles) {
-      hasRole = hasRole || this.userDetails.authorities.indexOf(role) != -1;
+      hasRole = hasRole || this._userDetails.authorities.indexOf(role) != -1;
     }
     console.debug("HasAnyRole Result", hasRole);
     return hasRole;
@@ -108,4 +108,12 @@ export class AuthGuardService {
     return this.userDetailPromise;
   }
 
+
+  get userDetails(): any {
+    return this._userDetails;
+  }
+
+  set userDetails(value: any) {
+    this._userDetails = value;
+  }
 }

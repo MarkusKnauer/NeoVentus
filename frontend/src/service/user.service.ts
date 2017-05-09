@@ -28,7 +28,8 @@ export class UserService {
   }
 
   public logout() {
-    console.debug("Logout should be successfull")
+    console.debug("Logout should be successfull");
+    this.authGuard.userDetails = null;
     return this.http.post("/auth/logout", {});
   }
 
