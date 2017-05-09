@@ -17,19 +17,16 @@ import {OrderService} from "../../service/order.service";
  */
 @Component({
   templateUrl: "desk-overview.html",
-  providers: [DeskService, OrderService]
 })
 export class DeskOverviewPage {
 
   private tileView = true;
   private myDesksOnly = false;
-  // private desks: any;
 
   constructor(private navCtrl: NavController,
               private deskService: DeskService,
               private orderService: OrderService,
               private authGuard: AuthGuardService) {
-
 
     this.deskService.getAllDesks().then(
       desks => {
@@ -38,7 +35,6 @@ export class DeskOverviewPage {
         }
       });
   }
-
 
   loadDeskOrderDetails(desk: any) {
     this.orderService.getOrdersByDesk(desk.number).then(
