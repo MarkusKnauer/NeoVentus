@@ -67,6 +67,18 @@ export class AuthGuardService {
   }
 
   /**
+   * set the value of _userDetails
+   * @param value
+   */
+
+  public seteverythinnull() {
+    this._userDetails = null;
+    this.userDetailPromise = null;
+    this.userDetails = null;
+
+  }
+
+  /**
    * check if any role is in principal and wait for started request
    *
    * @param roles

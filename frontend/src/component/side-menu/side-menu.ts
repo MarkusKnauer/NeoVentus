@@ -55,7 +55,7 @@ export class SideMenuComponent {
   }
 
   logout() {
-    this.userService.logout().toPromise().then(() => {
+    this.userService.logout().then(() => {
       this.events.publish('Open-Menu-Page', LoginPage)
     }, (err) => {
       console.debug(err)
