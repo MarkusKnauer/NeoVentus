@@ -21,6 +21,8 @@ import {InvoicesPage} from "../pages/invoices/invoices";
 import {SettingsPage} from "../pages/settings/settings";
 import {ProfilePage} from "../pages/profile/profile";
 import {SideMenuComponent} from "../component/side-menu/side-menu";
+import {OrderSelectModalComponent} from "../component/order-select-modal/order-select-modal";
+import {MenuCategoryService} from "../service/menu-category.service";
 
 
 @NgModule({
@@ -35,7 +37,8 @@ import {SideMenuComponent} from "../component/side-menu/side-menu";
     SettingsPage,
     ProfilePage,
     KitchenOverviewPage,
-    SideMenuComponent
+    SideMenuComponent,
+    OrderSelectModalComponent
   ],
   imports: [
     HttpModule,
@@ -61,7 +64,8 @@ import {SideMenuComponent} from "../component/side-menu/side-menu";
     InvoicesPage,
     SettingsPage,
     ProfilePage,
-    KitchenOverviewPage
+    KitchenOverviewPage,
+    OrderSelectModalComponent
   ],
   providers: [
     StatusBar,
@@ -71,7 +75,7 @@ import {SideMenuComponent} from "../component/side-menu/side-menu";
     UserService,
     DeskService,
     OrderService,
-    KitchenOverviewPage
+    MenuCategoryService
   ]
 })
 export class AppModule {

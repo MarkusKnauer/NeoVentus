@@ -1,8 +1,9 @@
 import {Component} from "@angular/core";
-import {LoadingController, NavController, NavParams} from "ionic-angular";
+import {LoadingController, ModalController, NavController, NavParams} from "ionic-angular";
 import {OrderService} from "../../service/order.service";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {DeskOverviewPage} from "../desk-overview/desk-overview";
+import {OrderSelectModalComponent} from "../../component/order-select-modal/order-select-modal";
 
 
 /**
@@ -22,12 +23,13 @@ export class DeskPage {
   public categoryString: string;
 
 
-  constructor(public navParams: NavParams, private navCtrl: NavController, private showOrderService: OrderService, private authGuard: AuthGuardService, public loadingCtrl: LoadingController) {
+  constructor(public navParams: NavParams, private navCtrl: NavController, private showOrderService: OrderService,
+              private authGuard: AuthGuardService, public loadingCtrl: LoadingController, private modalCtrl: ModalController) {
     this.deskNumber = navParams.get("deskNumber");
     this.categoryString = "";
     if (this.deskNumber != null){
       this.loadOrders();
-      this.presentLoadingDefault();
+      // this.presentLoadingDefault();
     } else{
       this.navCtrl.push(DeskOverviewPage);
     }
@@ -52,6 +54,11 @@ export class DeskPage {
         this.categoryString = cat;
         return false;
       }
+  }
+
+  openOrderSelectModal() {
+    let modal = this.modalCtrl.create(OrderSelectModalComponent);
+    modal.present();
   }
 
 // Fancy Loading circle

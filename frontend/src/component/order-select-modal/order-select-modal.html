@@ -1,0 +1,16 @@
+<ion-header>
+  <button ion-button icon-only (click)="dismiss()">
+    <ion-icon name="close"></ion-icon>
+  </button>
+</ion-header>
+<ion-content>
+  <ion-slides pager>
+    <ion-slide>
+      <h2>Favoriten</h2>
+    </ion-slide>
+    <ion-slide *ngFor="let cat of menuCategoryService.cache['tree']">
+      {{cat.name}}
+    </ion-slide>
+  </ion-slides>
+
+</ion-content>
