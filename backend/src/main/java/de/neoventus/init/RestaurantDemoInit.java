@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  *          0.0.2 added users - JB
  */
 @Component
-@Profile("default")
+@Profile({"default", "local"})
 public class RestaurantDemoInit {
 
     private final static Logger LOGGER = Logger.getLogger(RestaurantDemoInit.class.getName());
@@ -57,7 +57,7 @@ public class RestaurantDemoInit {
      *
      * @see PostConstruct
      */
-//    @PostConstruct
+	@PostConstruct
 	public void initialize() {
 		clearIndexes();
 		clearData();

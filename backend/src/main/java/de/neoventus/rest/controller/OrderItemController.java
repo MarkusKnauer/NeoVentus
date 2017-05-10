@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -23,9 +22,10 @@ import java.util.logging.Logger;
  * REST controller for entity Order
  *
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.5 No key-Value-pairs and refactor GET-Method
- * 			0.0.4 Name-Value-Pair for GET and OrderitemOutput for specific frontend-data
- * 			0.0.3 added socket support - DT
+ * @version 0.0.6 added finish and cancel methods, removed socket update to event listener - DT
+ *          0.0.5 No key-Value-pairs and refactor GET-Method
+ *          0.0.4 Name-Value-Pair for GET and OrderitemOutput for specific frontend-data
+ *          0.0.3 added socket support - DT
  *          0.0.2 redundancy clean up - DT
  */
 @RestController
@@ -48,11 +48,11 @@ public class OrderItemController {
 
 	/**
 	 * controller method to list order details
-	 *
-	 *
+	 * <p>
+	 * <p>
 	 * What is Love? Baby, Value has no Key, has no Key, no more...
 	 */
-	@RequestMapping(value = "/{deskNumber}",method = RequestMethod.GET)
+	@RequestMapping(value = "/{deskNumber}", method = RequestMethod.GET)
 	public List<OrderItemOutputDto> listOrders(HttpServletResponse response, @PathVariable Integer deskNumber) {
 		try {
 			LOGGER.info("THIS IS BACKEND - OrderController: Params " + deskNumber);
@@ -110,7 +110,6 @@ public class OrderItemController {
 			} else {
 				orderRepository.save(dto);
 				LOGGER.info("Saving order to database: " + dto.getId());
-				updateSocket();
 			}
 		} catch (Exception e) {
 			LOGGER.warning("Error inserting order to database: " + e.getMessage());
@@ -134,12 +133,59 @@ public class OrderItemController {
 			} else {
 				orderRepository.save(dto);
 				LOGGER.info("Update order to database: " + dto.getId());
-				updateSocket();
 			}
 		} catch (Exception e) {
 			LOGGER.warning("Error updating order to database: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
+	}
+
+	/**
+	 * controller method to mark order as finished
+	 *
+	 * @param response
+	 * @param id
+	 */
+	@RequestMapping(value = "/finish/{id}", method = RequestMethod.PUT)
+	public void finishOrder(HttpServletResponse response, @PathVariable String id) {
+		try {
+			this.updateOrderState(id, OrderItemState.State.FINISHED);
+		} catch (IllegalArgumentException e) {
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+		}
+	}
+
+	/**
+	 * controller method to mark order as canceled
+	 *
+	 * @param response
+	 * @param id
+	 */
+	@RequestMapping(value = "/cancel/{id}", method = RequestMethod.PUT)
+	public void cancelOrder(HttpServletResponse response, @PathVariable String id) {
+		try {
+			this.updateOrderState(id, OrderItemState.State.CANCELED);
+		} catch (IllegalArgumentException e) {
+			response.setStatus(HttpStatus.BAD_REQUEST.value());
+		}
+	}
+
+	/**
+	 * update order to add specific state
+	 *
+	 * @param orderId
+	 * @param state
+	 */
+	private void updateOrderState(String orderId, OrderItemState.State state) throws IllegalArgumentException {
+		OrderItem o = this.orderRepository.findOne(orderId);
+
+		if (o == null) {
+			throw new IllegalArgumentException("Invalid order id");
+		}
+
+		o.addState(OrderItemState.State.FINISHED);
+
+		this.orderRepository.save(o);
 	}
 
 
@@ -156,13 +202,6 @@ public class OrderItemController {
 			LOGGER.warning("Error updating order to database: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
-	}
-
-	/**
-	 * method to send open orders to socket
-	 */
-	private void updateSocket() {
-		this.simpMessagingTemplate.convertAndSend("/topic/order", this.orderRepository.findByBillingIsNullAndStatesStateNotIn(Arrays.asList(OrderItemState.State.FINISHED, OrderItemState.State.CANCELED)));
 	}
 
 }
