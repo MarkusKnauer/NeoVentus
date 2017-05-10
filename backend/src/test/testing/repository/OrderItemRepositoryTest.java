@@ -1,10 +1,7 @@
 package testing.repository;
 
 import de.neoventus.persistence.entity.*;
-import de.neoventus.persistence.repository.DeskRepository;
-import de.neoventus.persistence.repository.MenuItemRepository;
-import de.neoventus.persistence.repository.OrderItemRepository;
-import de.neoventus.persistence.repository.UserRepository;
+import de.neoventus.persistence.repository.*;
 import de.neoventus.rest.dto.OrderItemDto;
 import org.junit.After;
 import org.junit.Assert;
@@ -12,13 +9,16 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import testing.AbstractTest;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * testing the Order repository methods
  *
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.2 redundancy clean up - DT
+ * @version 0.0.3 added findByBillingIsNullAndStatesStateNotIn test
+ *          0.0.2 redundancy clean up - DT
  **/
 public class OrderItemRepositoryTest extends AbstractTest {
 
@@ -30,6 +30,9 @@ public class OrderItemRepositoryTest extends AbstractTest {
 	private DeskRepository deskRepository;
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private BillingRepository billingRepository;
 
 	private Desk desk = null;
 	private MenuItem menuItem = null;
@@ -56,6 +59,45 @@ public class OrderItemRepositoryTest extends AbstractTest {
 		List<OrderItem> o = (List<OrderItem>) orderItemRepository.findAll();
 		Assert.assertNotNull(o);
 		Assert.assertTrue(o.size() == 1);
+	}
+
+	/**
+	 * test the custom query for unpaid orders not in specific states
+	 *
+	 * @see OrderItemRepository#findByBillingIsNullAndStatesStateNotIn(Collection)
+	 */
+	@Test
+	public void testListUnpaidOrders() {
+		OrderItemState.State[] finshedStates = new OrderItemState.State[]{OrderItemState.State.FINISHED, OrderItemState.State.CANCELED};
+
+		OrderItem o = new OrderItem();
+
+		this.orderItemRepository.save(o);
+
+		o = new OrderItem();
+		o.addState(OrderItemState.State.FINISHED);
+
+		this.orderItemRepository.save(o);
+
+		List<OrderItem> result = this.orderItemRepository.findByBillingIsNullAndStatesStateNotIn(Arrays.asList(finshedStates));
+
+		Assert.assertTrue(result.size() == 1);
+
+		// check if a paid order item doesnt affect the result
+
+		o = new OrderItem();
+		o.getStates().clear();
+		o = this.orderItemRepository.save(o);
+
+		Billing billing = new Billing();
+		billing.getItems().add(new BillingItem(o, 1));
+
+		this.billingRepository.save(billing);
+
+		result = this.orderItemRepository.findByBillingIsNullAndStatesStateNotIn(Arrays.asList(finshedStates));
+
+		Assert.assertTrue(result.size() == 1);
+
 	}
 
 
@@ -128,6 +170,7 @@ public class OrderItemRepositoryTest extends AbstractTest {
 		deskRepository.deleteAll();
 		menuItemRepository.deleteAll();
 		userRepository.deleteAll();
+		this.billingRepository.deleteAll();
 	}
 
 }

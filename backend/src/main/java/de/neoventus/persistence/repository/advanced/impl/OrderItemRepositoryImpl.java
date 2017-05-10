@@ -14,9 +14,10 @@ import java.util.List;
 
 /**
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.4 state with enum - DS
- * 			0.0.3 redundancy clean up - DT
- * 			0.0.2 added variable state - DS
+ * @version 0.0.5 orderState refactoring - DT
+ *          0.0.4 state with enum - DS
+ *          0.0.3 redundancy clean up - DT
+ *          0.0.2 added variable state - DS
  *          0.0.1
  **/
 public class OrderItemRepositoryImpl implements NVOrderItemRepository {
@@ -35,7 +36,7 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 	public void save(OrderItemDto dto) {
 		OrderItem o;
 
-		if(dto.getId() != null) {
+		if (dto.getId() != null) {
 			o = mongoTemplate.findById(dto.getId(), OrderItem.class);
 		} else {
 			o = new OrderItem();
@@ -44,8 +45,6 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 		o.setItem(dto.getMenuItemNumber() != null ? menuItemRepository.findByNumber(dto.getMenuItemNumber()) : null);
 		o.setWaiter(dto.getWaiter() != null ? userRepository.findByWorkerId(dto.getWaiter()) : null);
 		o.setGuestWish(dto.getGuestWish() != null ? dto.getGuestWish() : "");
-		o.setState(dto.getCurrentState());
-
 
 		mongoTemplate.save(o);
 
@@ -58,7 +57,7 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 		OrderItemOutputDto tmp;
 		List<OrderItemOutputDto> output = new ArrayList<OrderItemOutputDto>();
 		Integer counter = 0;
-		for(int i = 0; i < list.size();i++){
+		for (int i = 0; i < list.size(); i++) {
 			counter = 1;
 			tmp = new OrderItemOutputDto();
 			tmp.addOrderItemIds(list.get(i).getId());
@@ -70,20 +69,19 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 			tmp.setMenuItemCounter(counter);
 			tmp.setPrice(list.get(i).getItem().getPrice());
 
-			int j = i+1;
-			while( j < list.size() && (list.get(i).getItem().getMenuItemCategory().getName()).equals((list.get(j).getItem().getMenuItemCategory().getName())) )	{
+			int j = i + 1;
+			while (j < list.size() && (list.get(i).getItem().getMenuItemCategory().getName()).equals((list.get(j).getItem().getMenuItemCategory().getName()))) {
 				counter++;
-				tmp.setPrice(tmp.getPrice()+list.get(j).getItem().getPrice());
+				tmp.setPrice(tmp.getPrice() + list.get(j).getItem().getPrice());
 				tmp.setMenuItemCounter(counter);
 				tmp.addOrderItemIds(list.get(j).getId());
 				j++;
 			}
-			i = j-1;
+			i = j - 1;
 			output.add(tmp);
 		}
 		return output;
 	}
-
 
 	//Setter
 

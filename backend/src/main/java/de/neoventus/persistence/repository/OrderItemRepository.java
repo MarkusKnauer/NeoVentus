@@ -1,5 +1,6 @@
 package de.neoventus.persistence.repository;
 
+import de.neoventus.persistence.entity.Billing;
 import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.entity.OrderItem;
 import de.neoventus.persistence.entity.OrderItemState;
@@ -7,11 +8,13 @@ import de.neoventus.persistence.repository.advanced.NVOrderItemRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
  * @author Dennis Thanner
- * @version 0.0.2 redundancy clean up - DT
+ * @version 0.0.3 added findByBilling and listUnpaidOrdersNotInState
+ *          0.0.2 redundancy clean up - DT
  **/
 @Repository
 public interface OrderItemRepository extends CrudRepository<OrderItem, String>, NVOrderItemRepository {
@@ -25,7 +28,6 @@ public interface OrderItemRepository extends CrudRepository<OrderItem, String>, 
 	OrderItem findByDesk(Desk desk);
 
 
-
 	/**
 	 * find orderItem by deskNumber
 	 *
@@ -35,13 +37,18 @@ public interface OrderItemRepository extends CrudRepository<OrderItem, String>, 
 
 	List<OrderItem> findAllOrderItemByDeskIdOrderByItemMenuItemCategoryId(String id);
 
+	/**
+	 * find order item by billing item
+	 *
+	 * @param billing
+	 * @return
+	 */
+	List<OrderItem> findByBilling(Billing billing);
 
 	/**
-	 * find all OrderItems by state
-	 *
-	 * @param state
-	 * @return Iterable<OrderItem>
+	 * @return
 	 */
-	Iterable<OrderItem> findByState(OrderItemState state);
+//	@Query("{billing: null, states.state: {$not : { $in: ?0 }}}")
+	List<OrderItem> findByBillingIsNullAndStatesStateNotIn(Collection<OrderItemState.State> states);
 
 }

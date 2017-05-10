@@ -1,113 +1,136 @@
 package de.neoventus.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
- * @author Dennis Thanner, Tim Heidelbach
- * @version 0.0.6 state with enum - DS
- * 			0.0.5 multiple state conditions - DS
+ * @author Dennis Thanner, Tim Heidelbach, Dominik Streif
+ * @version 0.0.7 refactored state, added billing item - DT
+ *          0.0.6 state with enum - DS
+ *          0.0.5 multiple state conditions - DS
  *          0.0.4 redundancy clean up - DT
- * 			0.0.3 added variable state - DS
+ *          0.0.3 added variable state - DS
  *          0.0.2 removed local variable StringBuilder
  **/
 public class OrderItem extends AbstractDocument {
 
-    @DBRef
-    private Desk desk;
+	@DBRef
+	private Desk desk;
 
-    @DBRef
-    private User waiter;
+	@DBRef
+	private User waiter;
 
-    @DBRef
-    private MenuItem item;
+	@DBRef
+	private MenuItem item;
 
-    private String guestWish;
+	private String guestWish;
 
-	private List<OrderItemState> state;
+	private List<OrderItemState> states;
 
-	private List<Long> stateTime;
+	@DBRef
+	@JsonIgnore
+	private Billing billing;
 
-    public OrderItem() {
-		state = new ArrayList<OrderItemState>();
-		stateTime = new ArrayList<Long>();
-		setState(OrderItemState.NEW);
+	// constructor
+	public OrderItem() {
+		this.states = new ArrayList<>();
+		addState(OrderItemState.State.NEW);
 	}
 
 	public OrderItem(User user, Desk desk, MenuItem menuItem, String guestwish) {
 		setWaiter(user);
-        setDesk(desk);
-        setGuestWish(guestwish);
-        setItem(menuItem);
-		this.state = new ArrayList<OrderItemState>();
-		stateTime = new ArrayList<Long>();
-		setState(OrderItemState.NEW);
+		setDesk(desk);
+		setGuestWish(guestwish);
+		setItem(menuItem);
+		this.states = new ArrayList<>();
+		addState(OrderItemState.State.NEW);
 	}
 
-    // getter and setter
-
-    public Desk getDesk() {
-        return desk;
-    }
-
-    public void setDesk(Desk desk) {
-        this.desk = desk;
-    }
-
-    public User getWaiter() {
-        return waiter;
-    }
-
-    public void setWaiter(User waiter) {
-        this.waiter = waiter;
-    }
-
-    public MenuItem getItem() {
-        return item;
-    }
-
-    public void setItem(MenuItem item) {
-        this.item = item;
-    }
-
-    public String getGuestWish() {
-        return guestWish;
-    }
-
-    public void setGuestWish(String guestWish) {
-        this.guestWish = guestWish;
-    }
-
-	public List<OrderItemState> getState() {
-		return state;
-	}
-
-	public List<Long> getStateTime() {
-		return stateTime;
-	}
-
-	public void setState(OrderItemState state) {
-		if (this.state.size() == 0 || !getCurrentState().equals(state)) {
-			this.state.add(state);
-			Date d = new Date();
-			stateTime.add(d.getTime());
+	/**
+	 * method to add new state
+	 *
+	 * @param state
+	 */
+	public void addState(OrderItemState.State state) {
+		if (this.states.size() == 0 || !getCurrentState().equals(state)) {
+			this.states.add(new OrderItemState(state));
 		}
 	}
 
-	public OrderItemState getCurrentState() {
-		return state.size() != 0 ? state.get(state.size() - 1) : null;
+	/**
+	 * get current state
+	 *
+	 * @return
+	 */
+	public OrderItemState.State getCurrentState() {
+		return this.states.size() != 0 ? this.states.get(this.states.size() - 1).getState() : null;
 	}
 
-    @Override
-    public String toString() {
-        return "OrderItem{" +
-                "Id: " +
-                this.id +
-                ", Item: " +
-                this.item +
-                "}";
-    }
+	// getter and setter
+
+	public Desk getDesk() {
+		return desk;
+	}
+
+	public void setDesk(Desk desk) {
+		this.desk = desk;
+	}
+
+	public User getWaiter() {
+		return waiter;
+	}
+
+	public void setWaiter(User waiter) {
+		this.waiter = waiter;
+	}
+
+	public MenuItem getItem() {
+		return item;
+	}
+
+	public void setItem(MenuItem item) {
+		this.item = item;
+	}
+
+	public String getGuestWish() {
+		return guestWish;
+	}
+
+	public void setGuestWish(String guestWish) {
+		this.guestWish = guestWish;
+	}
+
+	public List<OrderItemState> getStates() {
+		return states;
+	}
+
+	public void setStates(List<OrderItemState> states) {
+		this.states = states;
+	}
+
+	public Billing getBilling() {
+		return billing;
+	}
+
+	/**
+	 * is not explicit set, instead it is set by billingItem event
+	 * only use in
+	 */
+	@Deprecated
+	public void setBilling(Billing billing) {
+		this.billing = billing;
+	}
+
+	@Override
+	public String toString() {
+		return "OrderItem{" +
+			"Id: " +
+			this.id +
+			", Item: " +
+			this.item +
+			"}";
+	}
 }

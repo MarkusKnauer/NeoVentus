@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -161,7 +162,7 @@ public class OrderItemController {
 	 * method to send open orders to socket
 	 */
 	private void updateSocket() {
-		this.simpMessagingTemplate.convertAndSend("/topic/order", this.orderRepository.findByState(OrderItemState.NEW));
+		this.simpMessagingTemplate.convertAndSend("/topic/order", this.orderRepository.findByBillingIsNullAndStatesStateNotIn(Arrays.asList(OrderItemState.State.FINISHED, OrderItemState.State.CANCELED)));
 	}
 
 }

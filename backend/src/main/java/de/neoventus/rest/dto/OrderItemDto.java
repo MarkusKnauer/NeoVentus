@@ -1,20 +1,16 @@
 package de.neoventus.rest.dto;
 
-import de.neoventus.persistence.entity.OrderItemState;
-
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author Julian Beck, Dominik Streif, Dennis Thanner
- * @version 0.0.5 state with enum - DS
- * 			0.0.4 multiple state conditions - DS
- * 			0.0.3 redundancy clean up - DT
- * 			0.0.2 added variable state - DS
- * 			0.0.1
+ * @version 0.0.6 state refactoring - DT
+ *          0.0.5 state with enum - DS
+ *          0.0.4 multiple state conditions - DS
+ *          0.0.3 redundancy clean up - DT
+ *          0.0.2 added variable state - DS
+ *          0.0.1
  **/
 public class OrderItemDto implements Serializable {
 
@@ -31,14 +27,8 @@ public class OrderItemDto implements Serializable {
 
 	private String guestWish;
 
-	private List<OrderItemState> state;
-
-	private List<Long> stateTime;
-
+	// constructors
 	public OrderItemDto() {
-		state = new ArrayList<OrderItemState>();
-		stateTime = new ArrayList<Long>();
-		setState(OrderItemState.NEW);
 	}
 
 	public OrderItemDto(Integer user, Integer desk, Integer menuItem, String guestwish) {
@@ -46,9 +36,6 @@ public class OrderItemDto implements Serializable {
 		setDeskNumber(desk);
 		setGuestWish(guestwish);
 		setMenuItemNumber(menuItem);
-		this.state = new ArrayList<OrderItemState>();
-		stateTime = new ArrayList<Long>();
-		setState(OrderItemState.NEW);
 	}
 
 	// getter and setter
@@ -73,9 +60,13 @@ public class OrderItemDto implements Serializable {
 		return waiter;
 	}
 
-	public void setWaiter(Integer waiter) {this.waiter = waiter;}
+	public void setWaiter(Integer waiter) {
+		this.waiter = waiter;
+	}
 
-	public Integer getMenuItemNumber() {return menuItemNumber;}
+	public Integer getMenuItemNumber() {
+		return menuItemNumber;
+	}
 
 	public void setMenuItemNumber(Integer menuItem) {
 		this.menuItemNumber = menuItem;
@@ -88,26 +79,5 @@ public class OrderItemDto implements Serializable {
 	public void setGuestWish(String guestWish) {
 		this.guestWish = guestWish;
 	}
-
-	public List<OrderItemState> getState() {
-		return state;
-	}
-
-	public List<Long> getStateTime() {
-		return stateTime;
-	}
-
-	public void setState(OrderItemState state) {
-		if (this.state.size() == 0 || !getCurrentState().equals(state)) {
-			this.state.add(state);
-			Date d = new Date();
-			stateTime.add(d.getTime());
-		}
-	}
-
-	public OrderItemState getCurrentState() {
-		return state.size() != 0 ? state.get(state.size() - 1) : null;
-	}
-
 
 }
