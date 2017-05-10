@@ -24,11 +24,14 @@ import {SideMenuComponent} from "../component/side-menu/side-menu";
 import {OrderSelectModalComponent} from "../component/order-select-modal/order-select-modal";
 import {MenuCategoryService} from "../service/menu-category.service";
 import {MenuService} from "../service/menu.service";
+import {CostDecimalPipe} from "../pipe/CostDecimalPipe";
 
 
 @NgModule({
   declarations: [
     MyApp,
+
+    // pages
     LoginPage,
     DeskOverviewPage,
     DeskPage,
@@ -38,8 +41,14 @@ import {MenuService} from "../service/menu.service";
     SettingsPage,
     ProfilePage,
     KitchenOverviewPage,
+
+    // components
     SideMenuComponent,
-    OrderSelectModalComponent
+    OrderSelectModalComponent,
+
+    //pipes
+    CostDecimalPipe
+
   ],
   imports: [
     HttpModule,

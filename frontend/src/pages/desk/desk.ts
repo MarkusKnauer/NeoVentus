@@ -45,7 +45,6 @@ export class DeskPage {
   }
 
   checkCategory(cat: string){
-    console.log("ShowOrdersPage - Received Order cat" + cat + " CategoryString: " + this.categoryString);
     // if orderItem is a new Category
       if (cat !== this.categoryString){
         this.categoryString = cat;

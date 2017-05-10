@@ -71,8 +71,8 @@ class DefaultDemoDataIntoDB {
 		LOGGER.info("Init demo menu item data");
 		generateMenuCategories();
 		MenuItem[] menu = {
-			new MenuItem(menuItemCategoryRepository.findByName("Warme Vorspeise"), "kleiner Salat", 4.80, "EUR", "kalte Vorspeise", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Kalte Vorspeise"), "Bärlauchcremesuppe mit Räucherlachs", 4.80, "EUR", "warme Vorspeise", "", new ArrayList<>()),
+			new MenuItem(menuItemCategoryRepository.findByName("Warme Vorspeise"), "kleiner Salat", 4.80, "EUR", "", "", new ArrayList<>()),
+			new MenuItem(menuItemCategoryRepository.findByName("Kalte Vorspeise"), "Bärlauchcremesuppe mit Räucherlachs", 4.80, "EUR", "", "", new ArrayList<>()),
 			new MenuItem(menuItemCategoryRepository.findByName("Fischgerichte"), "Lachsfilet", 14.60, "EUR", "mit Tagliatelle und Tomaten", "", new ArrayList<>()),
 			new MenuItem(menuItemCategoryRepository.findByName("Fischgerichte"), "Salatteller", 13.80, "EUR", "mit gebratenem Zanderfilet", "", new ArrayList<>()),
 			new MenuItem(menuItemCategoryRepository.findByName("Fleischgerichte"), "Pasta Bolognese", 11.90, "EUR", "mit Tomaten und Parmesan", "", new ArrayList<>()),

@@ -16,9 +16,9 @@
       <span class="important">{{order.category}}</span>
     </ion-item-divider>
     <ion-item>
-     Anzahl: {{order.menuItemCounter}}  x  {{order.menuItem}}
+      {{order.menuItemCounter}} x {{order.menuItem}}
       <span class="right">
-        Preis: {{order.price}}
+        Preis: {{order.price | costDecimal}}
       </span>
     </ion-item>
   </ion-item-group>

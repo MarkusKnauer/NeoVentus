@@ -5,30 +5,37 @@
 </ion-header>
 <ion-content>
   <ion-slides pager>
-    <ion-slide padding>
-      <h2 text-center="">Favoriten</h2>
+    <ion-slide>
+      <h2 text-center>Favoriten</h2>
     </ion-slide>
-    <ion-slide *ngFor="let cat of menuCategoryService.cache['tree']" padding>
-
+    <ion-slide *ngFor="let cat of menuCategoryService.cache['tree']">
       <h2 text-center>{{cat.name}}</h2>
-      <div class="menu-box-list">
-        <div class="menu-box" *ngFor="let menuItem of cat.items">
-          <div class="inner">
-            {{menuItem.name}}
-          </div>
-        </div>
-      </div>
-
-
-      <div *ngFor="let child of cat.subcategory" padding-top="5" padding-bottom>
-        <h3 text-center>{{child.name}}</h3>
-        <div class="menu-box-list">
-          <div class="menu-box" *ngFor="let cMenuItem of child.items">
-            <div class="inner">
-              {{cMenuItem.name}}
+      <ion-grid>
+        <ion-row>
+          <div col-3 *ngFor="let menuItem of cat.items">
+            <div class="menu-box">
+              <div class="inner">
+                {{menuItem.name}} {{menuItem.description}}
+              </div>
             </div>
           </div>
-        </div>
+        </ion-row>
+      </ion-grid>
+
+
+      <div *ngFor="let child of cat.subcategory" padding-bottom>
+        <h3 text-center>{{child.name}}</h3>
+        <ion-grid>
+          <ion-row>
+            <div col-3 *ngFor="let cMenuItem of child.items">
+              <div class="menu-box">
+                <div class="inner">
+                  {{cMenuItem.name}} {{cMenuItem.description}}
+                </div>
+              </div>
+            </div>
+          </ion-row>
+        </ion-grid>
       </div>
     </ion-slide>
   </ion-slides>
