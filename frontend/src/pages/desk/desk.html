@@ -10,20 +10,20 @@
 </ion-header>
 
 <ion-content>
-<ion-list>
-  <ion-item-group *ngFor="let order of showOrders">
-    <ion-item-divider color="light" *ngIf= "checkCategory(order.category)">
-      <span class="important">{{order.category}}</span>
-    </ion-item-divider>
-    <ion-item>
-      {{order.menuItemCounter}} x {{order.menuItem}}
-      <span class="right">
-        Preis: {{order.price | costDecimal}}
+  <ion-list>
+    <div *ngFor="let cat of catGroups">
+      <ion-item-divider color="light" [hidden]="cat.orders.length == 0">
+        <span class="important">{{cat.name}}</span>
+      </ion-item-divider>
+      <ion-item *ngFor="let order of cat.orders">
+        {{ order.menuItemCounter }} x {{ order.menuItem }}
+        <span class="right">
+        {{order.price | costDecimal}}
       </span>
+      </ion-item>
+    </div>
+    <ion-item text-right>
+      Total: {{ getTotalPrice() | costDecimal }}
     </ion-item>
-  </ion-item-group>
-  <ion-item>
-    <!--Gesamtbetrag: {{menuItemCounter}}-->
-  </ion-item>
-</ion-list>
+  </ion-list>
 </ion-content>

@@ -4,11 +4,13 @@ import {OrderService} from "../../service/order.service";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {DeskOverviewPage} from "../desk-overview/desk-overview";
 import {OrderSelectModalComponent} from "../../component/order-select-modal/order-select-modal";
+import {MenuCategoryService} from "../../service/menu-category.service";
 
 
 /**
- * @author Julian beck
- * @version 0.0.2 "Name-value-pair"- compatibility
+ * @author Julian beck, Dennis Thanner
+ * @version 0.0.3 finished grouped order ouput and total- DT
+ *          0.0.2 "Name-value-pair"- compatibility
  *          0.0.1 created showorders.ts - JB
  */
 
@@ -17,44 +19,83 @@ import {OrderSelectModalComponent} from "../../component/order-select-modal/orde
 })
 export class DeskPage {
 
-  public showOrders: any;
-  public menuId: any;
   public deskNumber: any;
-  public categoryString: string;
 
+  private loading;
 
-  constructor(public navParams: NavParams, private navCtrl: NavController, private showOrderService: OrderService,
-              private authGuard: AuthGuardService, public loadingCtrl: LoadingController, private modalCtrl: ModalController) {
+  private catGroups = [];
+
+  constructor(public navParams: NavParams, private navCtrl: NavController, private orderService: OrderService,
+              private authGuard: AuthGuardService, public loadingCtrl: LoadingController, private modalCtrl: ModalController,
+              private menuCategoryService: MenuCategoryService) {
     this.deskNumber = navParams.get("deskNumber");
-    this.categoryString = "";
-    if (this.deskNumber != null){
-      this.loadOrders();
-      // this.presentLoadingDefault();
-    } else{
+    if (this.deskNumber != null) {
+      this.presentLoadingDefault();
+
+      Promise.all([
+        this.menuCategoryService.loadCategoryTree(),
+        this.orderService.getOrdersByDesk(this.deskNumber)
+      ]).then(() => {
+        this.loading.dismissAll();
+        this.initCatGroups();
+      })
+    } else {
       this.navCtrl.push(DeskOverviewPage);
     }
   }
 
-  loadOrders() {
-    this.showOrderService.getOrdersByDesk(this.deskNumber).then(
-      orderData => {
-        this.showOrders = orderData;
-        console.log("ShowOrdersPage - Received Order data" + this.showOrders);
-      }
-    );
+  /**
+   * build root category groups
+   * by getting all child ids
+   */
+  initCatGroups() {
+    for (let cat of this.menuCategoryService.cache["tree"]) {
+      let catIds = this.getChildCategoryIds(cat);
+      catIds.push(cat.id);
+      this.catGroups.push({name: cat.name, orders: this.getOrdersByCat(catIds)});
+    }
+    console.debug("Page Category Groups:", this.catGroups);
   }
 
-  checkCategory(cat: string){
-    // if orderItem is a new Category
-      if (cat !== this.categoryString){
-        this.categoryString = cat;
-        return true;
-      } else {
-        this.categoryString = cat;
-        return false;
-      }
+  /**
+   * traverse menu category tree to get a id array
+   * @param cat
+   */
+  getChildCategoryIds(cat) {
+    return cat.subcategory.map((child) => {
+      return [child.id].join(this.getChildCategoryIds(child));
+    });
   }
 
+  /**
+   * get orders by root category ids with child ids
+   *
+   * @param catIds
+   */
+  getOrdersByCat(catIds) {
+    return this.orderService.cache["orders_desk" + this.deskNumber].filter(el => {
+      return catIds.indexOf(el.category) != -1;
+    });
+  }
+
+  /**
+   * sum desk total order value
+   *
+   * @returns {number}
+   */
+  getTotalPrice(): number {
+    let sum = 0;
+    for (let cat of this.catGroups) {
+      for (let order of cat.orders) {
+        sum += order.price;
+      }
+    }
+    return sum;
+  }
+
+  /**
+   * method to open order select modal
+   */
   openOrderSelectModal() {
     let modal = this.modalCtrl.create(OrderSelectModalComponent);
     modal.present();
@@ -62,17 +103,13 @@ export class DeskPage {
 
 // Fancy Loading circle
   presentLoadingDefault() {
-    let loading = this.loadingCtrl.create({
+    this.loading = this.loadingCtrl.create({
       content: 'Bestellungen werden geladen.'
     });
 
-    loading.present();
-
-    setTimeout(() => {
-      loading.dismiss();
-    }, 5000);
+    this.loading.present();
+    ;
   }
-
 
 
 }

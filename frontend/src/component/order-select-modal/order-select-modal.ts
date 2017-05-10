@@ -14,14 +14,13 @@ import {MenuService} from "../../service/menu.service";
 export class OrderSelectModalComponent {
 
   constructor(private viewCtrl: ViewController, private menuCategoryService: MenuCategoryService, private menuService: MenuService) {
-    if (!menuCategoryService.cache["tree"] || !menuService.cache["all"]) {
-      Promise.all([
-        menuCategoryService.loadCategoryTree(),
-        menuService.getAll()
-      ]).then(() => {
-        this.groupMenuToCategories();
-      }, console.debug)
-    }
+    Promise.all([
+      menuCategoryService.loadCategoryTree(),
+      menuService.getAll()
+    ]).then(() => {
+      this.groupMenuToCategories();
+    }, console.debug)
+
   }
 
   /**

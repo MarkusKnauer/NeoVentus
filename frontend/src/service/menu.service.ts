@@ -7,7 +7,7 @@ import {Http} from "@angular/http";
  * for backend request
  *
  * @author Dennis Thanner
- * @version 0.0.1
+ * @version 0.0.2 prevent menu loading if exists - DT
  */
 @Injectable()
 export class MenuService extends CachingService {
@@ -25,6 +25,10 @@ export class MenuService extends CachingService {
    */
   public getAll() {
     let cKey = "all";
+    if (this.cache[cKey]) {
+      return Promise.resolve(this.cache[cKey]);
+    }
+
     if (!this.reqs[cKey]) {
       this.reqs[cKey] = this.http.get(MenuService.BASE_URL).toPromise();
 

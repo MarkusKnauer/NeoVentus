@@ -63,7 +63,7 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 			tmp.addOrderItemIds(list.get(i).getId());
 			tmp.setDesk(number.toString());
 			tmp.setWaiter(list.get(i).getWaiter().getUsername());
-			tmp.setCategory(list.get(i).getItem().getMenuItemCategory().getName());
+			tmp.setCategory(list.get(i).getItem().getMenuItemCategory().getId());
 			tmp.setGuestWish(list.get(i).getGuestWish());
 			tmp.setMenuItem(list.get(i).getItem().getName());
 			tmp.setMenuItemCounter(counter);
