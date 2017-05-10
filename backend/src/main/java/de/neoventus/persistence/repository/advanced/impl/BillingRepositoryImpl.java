@@ -1,7 +1,9 @@
 package de.neoventus.persistence.repository.advanced.impl;
 
 import de.neoventus.persistence.entity.Billing;
-import de.neoventus.persistence.repository.BillingItemRepository;
+import de.neoventus.persistence.entity.BillingItem;
+import de.neoventus.persistence.entity.OrderItem;
+import de.neoventus.persistence.repository.OrderItemRepository;
 import de.neoventus.persistence.repository.advanced.NVBillingRepository;
 import de.neoventus.rest.dto.BillingDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,23 +12,24 @@ import org.springframework.stereotype.Repository;
 
 /**
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.2 redundancy clean up - DT
+ * @version 0.0.3 billing item refactoring - DT
+ *          0.0.2 redundancy clean up - DT
  **/
 @Repository
 public class BillingRepositoryImpl implements NVBillingRepository {
 
 	private MongoTemplate mongoTemplate;
 
-	private BillingItemRepository billingItemRepository;
-
-	@Autowired
-	private void setBillingItemRepository(BillingItemRepository billingItemRepository) {
-		this.billingItemRepository = billingItemRepository;
-	}
+	private OrderItemRepository orderItemRepository;
 
 	@Autowired
 	private void setMongoTemplate(MongoTemplate mongoTemplate) {
 		this.mongoTemplate = mongoTemplate;
+	}
+
+	@Autowired
+	public void setOrderItemRepository(OrderItemRepository orderItemRepository) {
+		this.orderItemRepository = orderItemRepository;
 	}
 
 	@Override
@@ -42,8 +45,12 @@ public class BillingRepositoryImpl implements NVBillingRepository {
 		billing.setBilledAt(dto.getBilledAt());
 		billing.setTotalPaid(dto.getTotalPaid());
 
-		for (String itemId : dto.getItems()) {
-			billing.getItems().add(billingItemRepository.findOne(itemId));
+		for (String orderId : dto.getItems()) {
+			OrderItem order = this.orderItemRepository.findOne(orderId);
+			billing.getItems().add(new BillingItem(
+				order,
+				order.getItem().getPrice()
+			));
 		}
 
 		billing.getItems().clear();
