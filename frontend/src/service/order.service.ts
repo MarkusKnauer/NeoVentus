@@ -23,7 +23,7 @@ export class OrderService extends CachingService {
    */
   public getOrdersByDesk(desknumber: number) {
     return new Promise<any>(resolve => {
-      this.http.get("/api/order?deskNumber=" + desknumber.toString())
+      this.http.get("/api/order/" + desknumber.toString())
         .map(res => res.json())
         .subscribe(order => {
           this.saveToCache("orders_desk" + desknumber.toString(), order);

@@ -1,4 +1,4 @@
-package de.neoventus.persistence.entity;
+package de.neoventus.rest.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.List;
  * @author Julian Beck
  * @version 0.0.1 JSON-Buildingclass for Order-Overview
  **/
-public class OrderItemOutput {
+public class OrderItemOutputDto {
 
 
     private String desk;
@@ -38,11 +38,11 @@ public class OrderItemOutput {
 
 
 
-	public OrderItemOutput(){
+	public OrderItemOutputDto(){
 		orderItemIds = new ArrayList<String>();
 	}
 
-	public OrderItemOutput(String desk, String waiter, String menuItem, String guestWish, Integer menuItemCounter, Double price, List<String> orderItemIds) {
+	public OrderItemOutputDto(String desk, String waiter, String menuItem, String guestWish, Integer menuItemCounter, Double price, List<String> orderItemIds) {
 		this.desk = desk;
 		this.waiter = waiter;
 		this.menuItem = menuItem;
