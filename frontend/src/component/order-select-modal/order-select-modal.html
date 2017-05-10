@@ -5,11 +5,31 @@
 </ion-header>
 <ion-content>
   <ion-slides pager>
-    <ion-slide>
-      <h2>Favoriten</h2>
+    <ion-slide padding>
+      <h2 text-center="">Favoriten</h2>
     </ion-slide>
-    <ion-slide *ngFor="let cat of menuCategoryService.cache['tree']">
-      {{cat.name}}
+    <ion-slide *ngFor="let cat of menuCategoryService.cache['tree']" padding>
+
+      <h2 text-center>{{cat.name}}</h2>
+      <div class="menu-box-list">
+        <div class="menu-box" *ngFor="let menuItem of cat.items">
+          <div class="inner">
+            {{menuItem.name}}
+          </div>
+        </div>
+      </div>
+
+
+      <div *ngFor="let child of cat.subcategory" padding-top="5" padding-bottom>
+        <h3 text-center>{{child.name}}</h3>
+        <div class="menu-box-list">
+          <div class="menu-box" *ngFor="let cMenuItem of child.items">
+            <div class="inner">
+              {{cMenuItem.name}}
+            </div>
+          </div>
+        </div>
+      </div>
     </ion-slide>
   </ion-slides>
 

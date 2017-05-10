@@ -2,11 +2,19 @@
  * caching service to cache http request results
  *
  * @author Dennis Thanner
- * @version 0.0.1
+ * @version 0.0.2 added request promise caching
  */
 export abstract class CachingService {
 
   private _cache: Object;
+
+  /**
+   * caching request promises to prevent duplicate loading
+   * while req is not resolved yet
+   *
+   * @type {{}}
+   */
+  private _reqs = {};
 
   constructor() {
     this._cache = {};
@@ -31,5 +39,13 @@ export abstract class CachingService {
 
   set cache(value: Object) {
     this._cache = value;
+  }
+
+  get reqs(): {} {
+    return this._reqs;
+  }
+
+  set reqs(value: {}) {
+    this._reqs = value;
   }
 }

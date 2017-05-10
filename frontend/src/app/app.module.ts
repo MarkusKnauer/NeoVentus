@@ -23,6 +23,7 @@ import {ProfilePage} from "../pages/profile/profile";
 import {SideMenuComponent} from "../component/side-menu/side-menu";
 import {OrderSelectModalComponent} from "../component/order-select-modal/order-select-modal";
 import {MenuCategoryService} from "../service/menu-category.service";
+import {MenuService} from "../service/menu.service";
 
 
 @NgModule({
@@ -75,7 +76,8 @@ import {MenuCategoryService} from "../service/menu-category.service";
     UserService,
     DeskService,
     OrderService,
-    MenuCategoryService
+    MenuCategoryService,
+    MenuService
   ]
 })
 export class AppModule {

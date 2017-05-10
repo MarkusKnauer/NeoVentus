@@ -6,7 +6,7 @@ import {Http} from "@angular/http";
  * menu category service
  *
  * @author Dennis Thanner
- * @version 0.0.1
+ * @version 0.0.2 changed loading tree
  */
 @Injectable()
 export class MenuCategoryService extends CachingService {
@@ -17,17 +17,23 @@ export class MenuCategoryService extends CachingService {
     super();
   }
 
+
   /**
    * load menu category tree and return promise
    */
   loadCategoryTree() {
-    let req = this.http.get(MenuCategoryService.BASE_URL + "/tree");
-    req.map(resp => resp.json()).subscribe((data) => {
-      this.saveToCache("tree", data);
-    }, (err) => {
-      console.debug("Error loading category tree", err);
-    });
-    return req.toPromise();
+    if (!this.reqs["tree"]) {
+      this.reqs["tree"] = this.http.get(MenuCategoryService.BASE_URL + "/tree").toPromise();
+      this.reqs["tree"].then((req) => {
+        this.saveToCache("tree", req.json());
+        this.reqs["tree"] = null;
+      }, (err) => {
+        console.debug("Error loading category tree", err);
+        this.reqs["tree"] = null;
+      });
+    }
+
+    return this.reqs["tree"];
   }
 
 }
