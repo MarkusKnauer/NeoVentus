@@ -11,7 +11,8 @@ import java.util.logging.Logger;
 
 /**
  * @author Dennis Thanner, Julian Beck, Markus Knauer, Tim Heidelbach
- * @version 0.0.7 add SideDish bsp-data - MK
+ * @version 0.0.8 menu category fix - DT
+ *          0.0.7 add SideDish bsp-data - MK
  *          0.0.6 add menuItem Category bsp-data-generator -JB
  *          0.0.5 added random order items init - DT
  *          0.0.4 changed to new repositories
@@ -191,21 +192,18 @@ class DefaultDemoDataIntoDB {
 		tmp.add(addCategory("Nachspeise", null));
 		tmp.add(addCategory("Getränke", null));
 		//2nd level
-		tmp.add(addCategory("Warme Vorspeise", tmp.get(1)));
-		tmp.add(addCategory("Kalte Vorspeise", tmp.get(1)));
+		tmp.add(addCategory("Warme Vorspeise", tmp.get(0)));
+		tmp.add(addCategory("Kalte Vorspeise", tmp.get(0)));
 		//main Dish
-		tmp.add(addCategory("Fischgerichte", tmp.get(2)));
-		tmp.add(addCategory("Fleischgerichte", tmp.get(2)));
-		tmp.add(addCategory("Vegetarische Gerichte", tmp.get(2)));
+		tmp.add(addCategory("Fischgerichte", tmp.get(1)));
+		tmp.add(addCategory("Fleischgerichte", tmp.get(1)));
+		tmp.add(addCategory("Vegetarische Gerichte", tmp.get(1)));
 		//Drinks
-		tmp.add(addCategory("Alkoholfreie Getränke", tmp.get(4)));
-		tmp.add(addCategory("Bier", tmp.get(4)));
-		tmp.add(addCategory("Wein", tmp.get(4)));
-		tmp.add(addCategory("Heiße Getränke", tmp.get(4)));
-		tmp.add(addCategory("Spirituosen", tmp.get(4)));
-
-
-		for (MenuItemCategory parent : tmp) menuItemCategoryRepository.save(parent);
+		tmp.add(addCategory("Alkoholfreie Getränke", tmp.get(3)));
+		tmp.add(addCategory("Bier", tmp.get(3)));
+		tmp.add(addCategory("Wein", tmp.get(3)));
+		tmp.add(addCategory("Heiße Getränke", tmp.get(3)));
+		tmp.add(addCategory("Spirituosen", tmp.get(3)));
 
 	}
 
@@ -213,7 +211,7 @@ class DefaultDemoDataIntoDB {
 	private MenuItemCategory addCategory(String name, MenuItemCategory parent) {
 		MenuItemCategory child = new MenuItemCategory(name);
 		child.setParent(parent);
-		return child;
+		return menuItemCategoryRepository.save(child);
 	}
 // -------------END OF Semantic group: MenuCategory -------------------------
 
