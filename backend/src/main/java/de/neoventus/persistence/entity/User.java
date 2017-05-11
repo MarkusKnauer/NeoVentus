@@ -36,9 +36,11 @@ public class User extends AbstractDocument {
 		this.permissions = new ArrayList<>();
 	}
 
-	public User(String username, String password, Permission... permissions) {
+	public User(String username, String firstname, String lastName, String password, Permission... permissions) {
 		this.username = username;
 		this.password = password;
+		this.firstName = firstname;
+		this.lastName = lastName;
 		this.permissions = Arrays.asList(permissions);
 	}
 
