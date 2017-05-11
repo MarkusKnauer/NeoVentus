@@ -44,7 +44,7 @@ export class DeskOverviewPage {
         let strwaiters: string = "";
 
         for (let order of orders) {
-          waiters.add(order.waiter);
+          waiters.add(order.waiter.username);
         }
 
         for (let waiter of Array.from(waiters.values())) {

@@ -1,13 +1,10 @@
 package de.neoventus.persistence.repository.advanced;
 
 import de.neoventus.rest.dto.OrderItemDto;
-import de.neoventus.rest.dto.OrderItemOutputDto;
-
-import java.util.List;
 
 /**
- * @author Julian Beck
- * @version 0.0.1
+ * @author Julian Beck, Dennis Thanner
+ * @version 0.0.2 deleted searchOrderItemOutputDto method - DT
  */
 public interface NVOrderItemRepository {
 
@@ -17,9 +14,6 @@ public interface NVOrderItemRepository {
 	 * @param dto
 	 */
 	void save(OrderItemDto dto);
-
-
-	List<OrderItemOutputDto> searchOrderItemOutputDto(Integer number);
 
 }
 

@@ -5,8 +5,8 @@ import {CachingService} from "./caching.service";
 /**
  * handling requests to the backend belonging the orders
  *
- * @author Julian Beck
- * @version 0.0.2
+ * @author Julian Beck, Dennis Thanner
+ * @version 0.0.3 changed urls
  */
 @Injectable()
 export class OrderService extends CachingService {
@@ -23,7 +23,7 @@ export class OrderService extends CachingService {
    */
   public getOrdersByDesk(desknumber: number) {
     return new Promise<any>(resolve => {
-      this.http.get("/api/order/" + desknumber.toString())
+      this.http.get("/api/order/desk/open/" + desknumber.toString())
         .map(res => res.json())
         .subscribe(order => {
           this.saveToCache("orders_desk" + desknumber.toString(), order);

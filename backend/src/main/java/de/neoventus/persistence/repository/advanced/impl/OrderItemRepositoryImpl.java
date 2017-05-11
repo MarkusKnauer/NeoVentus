@@ -1,20 +1,16 @@
 package de.neoventus.persistence.repository.advanced.impl;
 
-import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.entity.OrderItem;
 import de.neoventus.persistence.repository.*;
 import de.neoventus.persistence.repository.advanced.NVOrderItemRepository;
 import de.neoventus.rest.dto.OrderItemDto;
-import de.neoventus.rest.dto.OrderItemOutputDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.5 orderState refactoring - DT
+ * @version 0.0.6 deleted searchOrderItemOutpuDto - DT
+ *          0.0.5 orderState refactoring - DT
  *          0.0.4 state with enum - DS
  *          0.0.3 redundancy clean up - DT
  *          0.0.2 added variable state - DS
@@ -48,39 +44,6 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 
 		mongoTemplate.save(o);
 
-	}
-
-	@Override
-	public List<OrderItemOutputDto> searchOrderItemOutputDto(Integer number) {
-		Desk desk = deskRepository.findByNumber(number);
-		List<OrderItem> list = orderItemRepository.findAllOrderItemByDeskIdOrderByItemMenuItemCategoryId(desk.getId());
-		OrderItemOutputDto tmp;
-		List<OrderItemOutputDto> output = new ArrayList<OrderItemOutputDto>();
-		Integer counter = 0;
-		for (int i = 0; i < list.size(); i++) {
-			counter = 1;
-			tmp = new OrderItemOutputDto();
-			tmp.addOrderItemIds(list.get(i).getId());
-			tmp.setDesk(number.toString());
-			tmp.setWaiter(list.get(i).getWaiter().getUsername());
-			tmp.setCategory(list.get(i).getItem().getMenuItemCategory().getId());
-			tmp.setGuestWish(list.get(i).getGuestWish());
-			tmp.setMenuItem(list.get(i).getItem().getName());
-			tmp.setMenuItemCounter(counter);
-			tmp.setPrice(list.get(i).getItem().getPrice());
-
-			int j = i + 1;
-			while (j < list.size() && (list.get(i).getItem().getMenuItemCategory().getName()).equals((list.get(j).getItem().getMenuItemCategory().getName()))) {
-				counter++;
-				tmp.setPrice(tmp.getPrice() + list.get(j).getItem().getPrice());
-				tmp.setMenuItemCounter(counter);
-				tmp.addOrderItemIds(list.get(j).getId());
-				j++;
-			}
-			i = j - 1;
-			output.add(tmp);
-		}
-		return output;
 	}
 
 	//Setter
