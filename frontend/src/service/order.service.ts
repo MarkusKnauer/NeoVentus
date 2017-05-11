@@ -22,6 +22,7 @@ export class OrderService extends CachingService {
    * @returns {Observable<Response>}
    */
   public getOrdersByDesk(desknumber: number) {
+
     return new Promise<any>(resolve => {
       this.http.get("/api/order/desk/open/" + desknumber.toString())
         .map(res => res.json())

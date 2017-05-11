@@ -40,5 +40,10 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
     box-shadow: 0px 0px 142px -37px rgba(0, 0, 0, 0.75);
   }
 
+  .activeHighlight {
+    background-color: color($colors, primary);
+    color: color($colors, light);
+  }
+
 }
 
