@@ -123,6 +123,9 @@ class DefaultDemoDataIntoDB {
 		//CEO
 		this.users.add(userRepository.save(new User("Walter", bCryptPasswordEncoder.encode("walter"), Permission.CEO)));
 
+		//CHEF
+		this.users.add(userRepository.save(new User("Tim", bCryptPasswordEncoder.encode("tim"), Permission.CHEF)));
+
 	}
 
 	// DANGER! Here must be Parametres in use for dynamic assignment
