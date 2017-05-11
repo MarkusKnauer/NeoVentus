@@ -2,8 +2,8 @@
   padding-top: 10px;
 
   div.desk {
-    background-color: color($colors, light);
-    border: 1px solid #ddd;
+    background-color: color($colors, light2);
+    border: 1px solid color($colors, light4);
     border-radius: 2px;
     text-align: center;
     width: 110px;
@@ -11,8 +11,8 @@
     transition: box-shadow 0.5s;
 
     h1 {
-      background: color($colors, light2);
-      border-bottom: 1px solid #ddd;
+      background: color($colors, light3);
+      border-bottom: 1px solid color($colors, light4);
       width: 100%;
       padding-top: 10px;
       padding-bottom: 10px;
@@ -30,7 +30,7 @@
   }
 
   div.desk:active {
-    background: color($colors, light2);
+    background: color($colors, light3);
     transform: scale(0.9);
 
     > h1 {
