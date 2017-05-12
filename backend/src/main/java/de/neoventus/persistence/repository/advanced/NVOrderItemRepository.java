@@ -1,13 +1,15 @@
 package de.neoventus.persistence.repository.advanced;
 
+import de.neoventus.persistence.entity.Desk;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.OrderDeskAggregationDto;
 import de.neoventus.rest.dto.OrderItemDto;
-import de.neoventus.rest.dto.OrderItemOutputDto;
 
 import java.util.List;
 
 /**
- * @author Julian Beck
- * @version 0.0.1
+ * @author Julian Beck, Dennis Thanner
+ * @version 0.0.3 - added getGroupedNotPayedOrdersByItemForDesk - DT
+ *          0.0.2 deleted searchOrderItemOutputDto method - DT
  */
 public interface NVOrderItemRepository {
 
@@ -18,8 +20,13 @@ public interface NVOrderItemRepository {
 	 */
 	void save(OrderItemDto dto);
 
-
-	List<OrderItemOutputDto> searchOrderItemOutputDto(Integer number);
+	/**
+	 * list aggregated orders group by item and count them
+	 *
+	 * @param desk
+	 * @return
+	 */
+	List<OrderDeskAggregationDto> getGroupedNotPayedOrdersByItemForDesk(Desk desk);
 
 }
 

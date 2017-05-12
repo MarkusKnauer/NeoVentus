@@ -13,7 +13,8 @@ import java.util.List;
 
 /**
  * @author Dennis Thanner
- * @version 0.0.3 added findByBilling and listUnpaidOrdersNotInState
+ * @version 0.0.4 added findByBillingIsNullAndStatesStateNotInAndDesk - DT
+ *          0.0.3 added findByBilling and findByBillingIsNullAndStatesStateNotIn - DT
  *          0.0.2 redundancy clean up - DT
  **/
 @Repository
@@ -46,9 +47,19 @@ public interface OrderItemRepository extends CrudRepository<OrderItem, String>, 
 	List<OrderItem> findByBilling(Billing billing);
 
 	/**
+	 * list all open orders
+	 *
 	 * @return
 	 */
-//	@Query("{billing: null, states.state: {$not : { $in: ?0 }}}")
 	List<OrderItem> findByBillingIsNullAndStatesStateNotIn(Collection<OrderItemState.State> states);
+
+	/**
+	 * list all open orders by desk
+	 *
+	 * @param states
+	 * @param desk
+	 * @return
+	 */
+	List<OrderItem> findByBillingIsNullAndStatesStateNotInAndDesk(Collection<OrderItemState.State> states, Desk desk);
 
 }

@@ -8,7 +8,8 @@ import {OrderService} from "../../service/order.service";
 
 /**
  * @author Tim Heidelbach, Dennis Thanner
- * @version 0.0.7 added desk cache - DT
+ * @version 0.0.8 toggle my desks
+ *          0.0.7 added desk cache - DT
  *          0.0.6 rbma changes - DT
  *          0.0.5 added waiter name
  *          0.0.4 adapted design to mockup
@@ -22,6 +23,7 @@ export class DeskOverviewPage {
 
   private tileView = true;
   private myDesksOnly = false;
+  private user = null;
 
   constructor(private navCtrl: NavController,
               private deskService: DeskService,
@@ -41,20 +43,42 @@ export class DeskOverviewPage {
       orders => {
 
         let waiters = new Set<string>();
-        let strwaiters: string = "";
+        let strWaiters: string = "";
+        let totalPrice: number = 0;
 
         for (let order of orders) {
-          waiters.add(order.waiter);
+          waiters.add(order.waiter.username); // set to ignore duplicate waiters
+          totalPrice += order.item.price * order.count;
         }
 
-        for (let waiter of Array.from(waiters.values())) {
-          strwaiters += waiter + ", ";
-        }
-        desk.waiter = strwaiters.substring(0, strwaiters.length - 2);
-        this.deskService.cache['desks'].waiter = desk.waiter;
+        var waiterCount: number = 0;
+        waiters.forEach((waiter: string) => {
+          strWaiters += waiter;
+          if (++waiterCount < waiters.size) {
+            strWaiters += ", ";
+          }
+        });
 
-        // TODO get price sum
+        if (strWaiters != "") {
+          desk.waiter = strWaiters
+          this.deskService.cache['desks'].waiter = desk.waiter;
+        }
+
+        if (totalPrice != 0) {
+          desk.price = totalPrice.toFixed(2); // some weird but negligible rounding errors happen here
+          this.deskService.cache['desks'].price = desk.price;
+          this.deskService.cache['desks'].status = 1;
+        } else {
+          desk.status = 0; // desk unused
+          this.deskService.cache['desks'].status = 0;
+        }
+
+        if (waiters.has(this.getUserName())) {
+          desk.mine = true;
+          this.deskService.cache['desks'].mine = true;
+        }
       }
+      // TODO get reservation (status = 2, desk.reservation = 00:00)
     )
   }
 
@@ -81,8 +105,7 @@ export class DeskOverviewPage {
     this.tileView ? this.tileView = false : this.tileView = true;
   }
 
-  toggleMyDesksOnly() {
-    // TODO: exclude other waiters desk
+  toggleMyDesksOnly = function () {
 
     if (this.myDesksOnly) {
       this.myDesksOnly = false;
@@ -93,4 +116,16 @@ export class DeskOverviewPage {
       this.myDesksOnly = true;
     }
   }
+
+  private getUserName() {
+    if (this.user == null) {
+      try {
+        this.user = this.authGuard.userDetails.name;
+      } catch (exception) {
+        console.error("Cannot read username");
+      }
+    }
+    return this.user;
+  }
+
 }

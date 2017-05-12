@@ -9,7 +9,8 @@ import {MenuCategoryService} from "../../service/menu-category.service";
 
 /**
  * @author Julian beck, Dennis Thanner
- * @version 0.0.3 finished grouped order ouput and total- DT
+ * @version 0.0.4 refactored grouped order ouput - DT
+ *          0.0.3 finished grouped order ouput and total - DT
  *          0.0.2 "Name-value-pair"- compatibility
  *          0.0.1 created showorders.ts - JB
  */
@@ -74,9 +75,10 @@ export class DeskPage {
    */
   getOrdersByCat(catIds) {
     return this.orderService.cache["orders_desk" + this.deskNumber].filter(el => {
-      return catIds.indexOf(el.category) != -1;
+      return catIds.indexOf(el.item.menuItemCategory.id) != -1;
     });
   }
+
 
   /**
    * sum desk total order value
@@ -87,7 +89,7 @@ export class DeskPage {
     let sum = 0;
     for (let cat of this.catGroups) {
       for (let order of cat.orders) {
-        sum += order.price;
+        sum += order.item.price * order.count;
       }
     }
     return sum;
@@ -108,7 +110,6 @@ export class DeskPage {
     });
 
     this.loading.present();
-    ;
   }
 
 

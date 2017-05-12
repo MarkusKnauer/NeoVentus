@@ -12,7 +12,8 @@ import org.springframework.stereotype.Repository;
 
 /**
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.3 billing item refactoring - DT
+ * @version 0.0.4 added side dish to price calc - DT
+ *          0.0.3 billing item refactoring - DT
  *          0.0.2 redundancy clean up - DT
  **/
 @Repository
@@ -49,7 +50,7 @@ public class BillingRepositoryImpl implements NVBillingRepository {
 			OrderItem order = this.orderItemRepository.findOne(orderId);
 			billing.getItems().add(new BillingItem(
 				order,
-				order.getItem().getPrice()
+				order.getItem().getPrice() + (order.getSideDish() != null ? order.getSideDish().getPrice() : 0)
 			));
 		}
 

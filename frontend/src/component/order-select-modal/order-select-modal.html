@@ -13,7 +13,8 @@
       <ion-grid>
         <ion-row>
           <div col-3 *ngFor="let menuItem of cat.items">
-            <div class="menu-box">
+            <div class="menu-box" (press)="openDetailModal(menuItem.id)">
+              <ion-badge></ion-badge>
               <div class="inner">
                 {{menuItem.name}} {{menuItem.description}}
               </div>
@@ -22,13 +23,12 @@
         </ion-row>
       </ion-grid>
 
-
       <div *ngFor="let child of cat.subcategory" padding-bottom>
         <h3 text-center>{{child.name}}</h3>
         <ion-grid>
           <ion-row>
             <div col-3 *ngFor="let cMenuItem of child.items">
-              <div class="menu-box">
+              <div class="menu-box" (press)="openDetailModal()">
                 <div class="inner">
                   {{cMenuItem.name}} {{cMenuItem.description}}
                 </div>

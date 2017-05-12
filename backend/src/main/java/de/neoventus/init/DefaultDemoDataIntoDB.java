@@ -6,6 +6,7 @@ import de.neoventus.persistence.repository.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -23,7 +24,9 @@ import java.util.logging.Logger;
 
 class DefaultDemoDataIntoDB {
 
-	private static final int MAX_DESKS = 10;
+	private static final int MAX_DESKS = 20;
+	private static final int MAX_SEATS = 96;
+
 	private final static Logger LOGGER = Logger.getLogger(DefaultDemoDataIntoDB.class.getName());
 	private MenuItemRepository menuItemRepository;
 	private MenuItemCategoryRepository menuItemCategoryRepository;
@@ -99,8 +102,29 @@ class DefaultDemoDataIntoDB {
 	 */
 	private void generateDesks() {
 		LOGGER.info("Init demo restaurant desks");
-		for (int i = 0; i < MAX_DESKS; i++)
-			this.desks.add(deskRepository.save(new Desk((int) (Math.random() * 5) + 3)));
+		// NeoVentus Restaurant graphic
+		this.desks.add(deskRepository.save(new Desk(10)));
+		this.desks.add(deskRepository.save(new Desk(2)));
+		this.desks.add(deskRepository.save(new Desk(2)));
+		this.desks.add(deskRepository.save(new Desk(2)));
+		this.desks.add(deskRepository.save(new Desk(2)));
+		this.desks.add(deskRepository.save(new Desk(2)));
+		this.desks.add(deskRepository.save(new Desk(2)));
+		this.desks.add(deskRepository.save(new Desk(4)));
+		this.desks.add(deskRepository.save(new Desk(4)));
+		this.desks.add(deskRepository.save(new Desk(2)));
+		this.desks.add(deskRepository.save(new Desk(2)));
+		this.desks.add(deskRepository.save(new Desk(2)));
+		this.desks.add(deskRepository.save(new Desk(2)));
+		this.desks.add(deskRepository.save(new Desk(10)));
+		this.desks.add(deskRepository.save(new Desk(4)));
+		this.desks.add(deskRepository.save(new Desk(4)));
+		this.desks.add(deskRepository.save(new Desk(4)));
+		this.desks.add(deskRepository.save(new Desk(4)));
+		this.desks.add(deskRepository.save(new Desk(4)));
+		this.desks.add(deskRepository.save(new Desk(4)));
+		// Bar
+		this.desks.add(deskRepository.save(new Desk(10)));
 	}
 
 	/**
@@ -109,19 +133,28 @@ class DefaultDemoDataIntoDB {
 	private void generateUser() {
 		LOGGER.info("Init demo User");
 		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
+	// todo: Teilzeit/Vollzeit Markierung
 		// generate eight waiters
-		this.users.add(userRepository.save(new User("Karl", bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE)));
-		this.users.add(userRepository.save(new User("Karmen", bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE)));
-		this.users.add(userRepository.save(new User("Konstantin", bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE)));
-		this.users.add(userRepository.save(new User("Kimberley", bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE)));
-		this.users.add(userRepository.save(new User("Katharina", bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE)));
-		this.users.add(userRepository.save(new User("Knut", bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE)));
-		this.users.add(userRepository.save(new User("Kurt", bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE)));
-		this.users.add(userRepository.save(new User("Katja", bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE)));
+		this.users.add(userRepository.save(new User("Karl","Karl","Karlson", bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE)));
+		this.users.add(userRepository.save(new User("Karmen", "Karmen","Kernel",bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE)));
+		this.users.add(userRepository.save(new User("Konsti","Konstantin","Kavos", bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE)));
+		this.users.add(userRepository.save(new User("Kim","Kimberley","Klar", bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE)));
+		this.users.add(userRepository.save(new User("Katha","Katherina","Keller", bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE)));
+		this.users.add(userRepository.save(new User("Knut", "Knut","Knutovic",bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE)));
+		// Teilzeit
+		this.users.add(userRepository.save(new User("Kurt", "Kurt","Kordova",bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE)));
+		this.users.add(userRepository.save(new User("Katja","Katja","Klein", bCryptPasswordEncoder.encode("karlsson"), Permission.SERVICE)));
 
+		// chiefs (or chefs) with 'T' and Tibor is ONLY used for wash the dishes
+		this.users.add(userRepository.save(new User("Tim","Timothy", "Totenworth", bCryptPasswordEncoder.encode("tim"), Permission.CHEF)));
+		this.users.add(userRepository.save(new User("Tibor","Tibor", "Tarnomoglou", bCryptPasswordEncoder.encode("tim"), Permission.CHEF)));
+		this.users.add(userRepository.save(new User("Tami","Tamara","Tanenbaum", bCryptPasswordEncoder.encode("tim"), Permission.CHEF)));
+		this.users.add(userRepository.save(new User("Tati","Tatajana", "Tovonoski", bCryptPasswordEncoder.encode("tim"), Permission.CHEF)));
+		this.users.add(userRepository.save(new User("Tanar","Tanar","Tenkin", bCryptPasswordEncoder.encode("tim"), Permission.CHEF)));
+		// Teilzeit
+		this.users.add(userRepository.save(new User("Tobi","Tobias", "Trottwar", bCryptPasswordEncoder.encode("tim"), Permission.CHEF)));
 		//CEO
-		this.users.add(userRepository.save(new User("Walter", bCryptPasswordEncoder.encode("walter"), Permission.CEO)));
+		this.users.add(userRepository.save(new User("Walter","Walter", "Wald", bCryptPasswordEncoder.encode("walter"), Permission.CEO)));
 
 	}
 
@@ -151,10 +184,29 @@ class DefaultDemoDataIntoDB {
 	private void generateOrderItem() {
 		LOGGER.info("Creating random orders");
 		List<OrderItem> orderItems = new ArrayList<>();
+		List<User> waiter = new ArrayList<User>();
+		List<OrderItemState> states;
+		OrderItemState state;
+		// Only for Waiters
+		users.parallelStream().forEach(user -> {if (user.getPermissions().contains(Permission.SERVICE)) waiter.add(user);});
+
+		OrderItem ord;
 		for (int i = 0; i < 50; i++) {
-			orderItems.add(new OrderItem(this.users.get((int) (Math.random() * this.users.size())),
-				this.desks.get((int) (Math.random() * this.desks.size())),
-				this.menuItems.get((int) (Math.random() * this.menuItems.size())), ""));
+			ord = new OrderItem(
+					waiter.get((int) (Math.random() * waiter.size())),
+					this.desks.get((int) (Math.random() * this.desks.size())),
+					this.menuItems.get((int) (Math.random() * this.menuItems.size())),
+					"");
+			// For BI-Group new Timestemp
+			states = new ArrayList<>();
+			state = new OrderItemState(OrderItemState.State.NEW);
+			Long millitime =System.currentTimeMillis()-((long)(Math.random()* 7200000)-7200000);
+			state.setDate(new Date(millitime));
+			states.add(state);
+			ord.setStates(states);
+
+
+			orderItems.add(ord);
 		}
 
 		orderItemRepository.save(orderItems);

@@ -1,28 +1,29 @@
 package de.neoventus.rest.controller;
 
+import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.entity.OrderItem;
 import de.neoventus.persistence.entity.OrderItemState;
 import de.neoventus.persistence.repository.DeskRepository;
 import de.neoventus.persistence.repository.OrderItemRepository;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.OrderDeskAggregationDto;
 import de.neoventus.rest.dto.OrderItemDto;
-import de.neoventus.rest.dto.OrderItemOutputDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**
  * REST controller for entity Order
  *
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.6 added finish and cancel methods, removed socket update to event listener - DT
+ * @version 0.0.8 corrected GET-Method /all/open - DS
+ * 			0.0.7 url and method refactoring - DT
+ *          0.0.6 added finish and cancel methods, removed socket update to event listener - DT
  *          0.0.5 No key-Value-pairs and refactor GET-Method
  *          0.0.4 Name-Value-Pair for GET and OrderitemOutput for specific frontend-data
  *          0.0.3 added socket support - DT
@@ -36,13 +37,11 @@ public class OrderItemController {
 
 	private final OrderItemRepository orderRepository;
 	private DeskRepository deskRepository;
-	private SimpMessagingTemplate simpMessagingTemplate;
 
 
 	@Autowired
-	public OrderItemController(OrderItemRepository orderRepository, SimpMessagingTemplate simpMessagingTemplate, DeskRepository deskRepository) {
+	public OrderItemController(OrderItemRepository orderRepository, DeskRepository deskRepository) {
 		this.orderRepository = orderRepository;
-		this.simpMessagingTemplate = simpMessagingTemplate;
 		this.deskRepository = deskRepository;
 	}
 
@@ -52,13 +51,19 @@ public class OrderItemController {
 	 * <p>
 	 * What is Love? Baby, Value has no Key, has no Key, no more...
 	 */
-	@RequestMapping(value = "/{deskNumber}", method = RequestMethod.GET)
-	public List<OrderItemOutputDto> listOrders(HttpServletResponse response, @PathVariable Integer deskNumber) {
+	@RequestMapping(value = "/desk/open/{deskNumber:[0-9]*}", method = RequestMethod.GET)
+	public Iterable<OrderDeskAggregationDto> listOrders(HttpServletResponse response, @PathVariable Integer deskNumber) {
 		try {
-			LOGGER.info("THIS IS BACKEND - OrderController: Params " + deskNumber);
-			List<OrderItemOutputDto> output = orderRepository.searchOrderItemOutputDto(deskNumber);
-			return output;
+			Desk desk = this.deskRepository.findByNumber(deskNumber);
+			if (desk == null) {
+				response.setStatus(HttpStatus.BAD_REQUEST.value());
+				return null;
+			}
+			Iterable<OrderDeskAggregationDto> result = this.orderRepository.getGroupedNotPayedOrdersByItemForDesk(desk);
+			LOGGER.info(result.toString());
+			return result;
 		} catch (Exception e) {
+			e.printStackTrace();
 			LOGGER.warning("Error searching order by deskNumber " + 1 + ": " + e.getMessage());
 			//response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return null;
@@ -70,17 +75,17 @@ public class OrderItemController {
 	 * controller method to list all orders
 	 *
 	 * @param response
-	 * @param state
+	 * @param
 	 * @return
 	 */
-	@GetMapping("/all/{state}")
-	public Iterable<OrderItem> listAllOrders(HttpServletResponse response, @PathVariable OrderItemState state) {
+	@GetMapping("/all/open")
+	public Iterable<OrderItem> listAllOpenOrders(HttpServletResponse response) {
 		try {
 			Iterable<OrderItem> list = orderRepository.findAll();
 			ArrayList<OrderItem> tmp = new ArrayList<OrderItem>();
 			// get only the orderItems with the correct state
 			for (OrderItem item : list) {
-				if (item.getCurrentState().equals(state)) {
+				if (item.getCurrentState().equals(OrderItemState.State.NEW)) {
 					tmp.add(item);
 				}
 			}

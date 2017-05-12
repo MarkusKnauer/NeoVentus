@@ -2,6 +2,7 @@ package testing.repository;
 
 import de.neoventus.persistence.entity.*;
 import de.neoventus.persistence.repository.*;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.OrderDeskAggregationDto;
 import de.neoventus.rest.dto.OrderItemDto;
 import org.junit.After;
 import org.junit.Assert;
@@ -12,12 +13,14 @@ import testing.AbstractTest;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * testing the Order repository methods
  *
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.3 added findByBillingIsNullAndStatesStateNotIn test
+ * @version 0.0.4 added testGroupedNotPayedOrdersByItemForDesk - DT
+ *          0.0.3 added findByBillingIsNullAndStatesStateNotIn test - DT
  *          0.0.2 redundancy clean up - DT
  **/
 public class OrderItemRepositoryTest extends AbstractTest {
@@ -100,6 +103,57 @@ public class OrderItemRepositoryTest extends AbstractTest {
 
 	}
 
+	/**
+	 * test custom order aggregation, grouped by menu item
+	 */
+	@Test
+	public void testGroupedNotPayedOrdersByItemForDesk() {
+		MenuItem test = new MenuItem();
+		test.setName("test");
+
+		Desk d = new Desk();
+		d = this.deskRepository.save(d);
+
+		test = this.menuItemRepository.save(test);
+
+		OrderItem o = new OrderItem();
+		o.setItem(test);
+		o.setDesk(d);
+		this.orderItemRepository.save(o);
+
+		o = new OrderItem();
+		o.setDesk(d);
+		o.setItem(test);
+		this.orderItemRepository.save(o);
+
+		List<OrderDeskAggregationDto> result = this.orderItemRepository.getGroupedNotPayedOrdersByItemForDesk(d);
+
+		Assert.assertTrue(result.size() == 1);
+
+		Assert.assertTrue(result.get(0).getCount() == 2);
+
+		Logger.getAnonymousLogger().info(result.get(0).getItem().toString());
+
+		// test that payed item doesn't affect aggregation
+
+		OrderItem payedOrder = new OrderItem();
+		payedOrder.setItem(test);
+		payedOrder.setDesk(d);
+
+		payedOrder = this.orderItemRepository.save(payedOrder);
+
+		Billing billing = new Billing();
+		billing.getItems().add(new BillingItem(payedOrder, 0));
+
+		this.billingRepository.save(billing);
+
+		result = this.orderItemRepository.getGroupedNotPayedOrdersByItemForDesk(d);
+
+		Assert.assertTrue(result.size() == 1);
+
+		Assert.assertTrue(result.get(0).getCount() == 2);
+
+	}
 
 	private Desk getDesk2() {
 		if (desk == null) {

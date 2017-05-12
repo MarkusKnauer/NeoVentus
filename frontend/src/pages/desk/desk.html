@@ -16,9 +16,9 @@
         <span class="important">{{cat.name}}</span>
       </ion-item-divider>
       <ion-item *ngFor="let order of cat.orders">
-        {{ order.menuItemCounter }} x {{ order.menuItem }}
+        {{order.count}} x {{ order.item.name }}
         <span class="right">
-        {{order.price | costDecimal}}
+        {{order.item.price * order.count | costDecimal}}
       </span>
       </ion-item>
     </div>

@@ -1,5 +1,6 @@
 package de.neoventus.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
@@ -20,6 +21,7 @@ public class User extends AbstractDocument {
 
 	@Indexed(unique = true)
 	private String username;
+	@JsonIgnore
 	private String password;
 	private String firstName;
 	private String lastName;
@@ -36,9 +38,11 @@ public class User extends AbstractDocument {
 		this.permissions = new ArrayList<>();
 	}
 
-	public User(String username, String password, Permission... permissions) {
+	public User(String username, String firstname, String lastName, String password, Permission... permissions) {
 		this.username = username;
 		this.password = password;
+		this.firstName = firstname;
+		this.lastName = lastName;
 		this.permissions = Arrays.asList(permissions);
 	}
 

@@ -22,7 +22,7 @@ public class OrderItemState {
 	}
 
 
-	// getter and sett
+	// getter and setter
 
 	public State getState() {
 		return state;
@@ -41,7 +41,6 @@ public class OrderItemState {
 	}
 
 	public enum State {
-		// if the object OrderItem is initialized the state is null, which means the state is new
 		NEW,
 		CANCELED,
 		FINISHED

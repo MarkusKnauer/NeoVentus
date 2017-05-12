@@ -27,21 +27,19 @@
 
     <ion-row justify-content-center>
 
-      <ion-col *ngFor="let desk of deskService.cache['desks']" (click)="deskSelected(desk)" col-auto>
-        <div class="desk">
-
-          <h1 [ngClass]="{unused: desk.status == 0, default: desk.status == 1, danger: desk.status == 2}">
-            {{desk.number}}
-          </h1>
-          <div class="desk-details">
-            <!--
-              TODO: Display some useful details
-              <span class="important">{{desk.seats}}</span> Plätze
-            -->
+      <ng-container *ngFor="let desk of deskService.cache['desks']">
+        <ion-col *ngIf="!myDesksOnly||desk.mine" col-auto (click)="deskSelected(desk)">
+          <div class="desk">
+            <h1 [ngClass]="{unused: desk.status == 0, default: desk.status == 1, danger: desk.status == 2}">
+              {{desk.number}}
+            </h1>
+            <div class="desk-details">
+              <p *ngIf="desk.status == 0">frei</p>
+              <p *ngIf="desk.status == 2">reserviert ab<br/><span class="important">{{desk.reservation}}</span></p>
+            </div>
           </div>
-
-        </div>
-      </ion-col>
+        </ion-col>
+      </ng-container>
 
     </ion-row>
   </ion-grid>
@@ -50,21 +48,27 @@
 
     <ion-list class="list-tables">
 
-      <ion-item *ngFor="let desk of deskService.cache['desks']" (click)="deskSelected(desk)" col-auto>
+      <ng-container *ngFor="let desk of deskService.cache['desks']">
+        <ion-item *ngIf="!myDesksOnly||desk.mine" (click)="deskSelected(desk)">
 
-        <ion-avatar item-left>
-          <h1 [ngClass]="{unused: desk.status == 0, default: desk.status == 1, danger: desk.status == 2}">
-            {{desk.number}}
-          </h1>
-        </ion-avatar>
+          <ion-avatar item-left>
+            <h1 [ngClass]="{unused: desk.status == 0, default: desk.status == 1, danger: desk.status == 2}">
+              {{desk.number}}
+            </h1>
+          </ion-avatar>
 
-        <h2 *ngIf="!desk.price == 0"><span class="important">{{desk.price}}</span>€</h2>
-        <h3>
-          <span class="important">{{desk.waiter}}</span>
-          <span class="right">{{desk.reservation}}</span>
-        </h3>
+          <h2 *ngIf="!desk.price == 0">
+            <span class="important">
+              {{desk.price}}
+            </span>€
+          </h2>
+          <h3>
+            <span>{{desk.waiter}}</span>
+            <span class="right">{{desk.reservation}}</span>
+          </h3>
 
-      </ion-item>
+        </ion-item>
+      </ng-container>
 
     </ion-list>
 
@@ -76,8 +80,9 @@
 
   <ion-toolbar>
     <ion-item>
-      <ion-label>Meine Tische</ion-label>
-      <ion-toggle checked={{myDesksOnly}} (click)="toggleMyDesksOnly()" color="dark"></ion-toggle>
+      <ion-label>Fremde Tische ausblenden</ion-label>
+      <ion-toggle checked={{myDesksOnly}} ngModel="toggleMyDeksOnly()" color="dark" (ionChange)="toggleMyDesksOnly()">
+      </ion-toggle>
     </ion-item>
   </ion-toolbar>
 

@@ -5,7 +5,8 @@ import java.io.Serializable;
 
 /**
  * @author Julian Beck, Dominik Streif, Dennis Thanner
- * @version 0.0.6 state refactoring - DT
+ * @version 0.0.7 added side dish - DT
+ *          0.0.6 state refactoring - DT
  *          0.0.5 state with enum - DS
  *          0.0.4 multiple state conditions - DS
  *          0.0.3 redundancy clean up - DT
@@ -26,6 +27,8 @@ public class OrderItemDto implements Serializable {
 	private Integer menuItemNumber;
 
 	private String guestWish;
+
+	private String sideDishId;
 
 	// constructors
 	public OrderItemDto() {
@@ -80,4 +83,11 @@ public class OrderItemDto implements Serializable {
 		this.guestWish = guestWish;
 	}
 
+	public String getSideDishId() {
+		return sideDishId;
+	}
+
+	public void setSideDishId(String sideDishId) {
+		this.sideDishId = sideDishId;
+	}
 }

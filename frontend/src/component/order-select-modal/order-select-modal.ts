@@ -1,7 +1,8 @@
 import {Component} from "@angular/core";
-import {ViewController} from "ionic-angular";
+import {ModalController, ViewController} from "ionic-angular";
 import {MenuCategoryService} from "../../service/menu-category.service";
 import {MenuService} from "../../service/menu.service";
+import {MenuDetailModalComponent} from "../menu-detail-modal/menu-detail-modal";
 
 /**
  * @author Dennis Thanner
@@ -13,7 +14,8 @@ import {MenuService} from "../../service/menu.service";
 })
 export class OrderSelectModalComponent {
 
-  constructor(private viewCtrl: ViewController, private menuCategoryService: MenuCategoryService, private menuService: MenuService) {
+  constructor(private viewCtrl: ViewController, private menuCategoryService: MenuCategoryService, private menuService: MenuService,
+              private modalCtrl: ModalController) {
     Promise.all([
       menuCategoryService.loadCategoryTree(),
       menuService.getAll()
@@ -45,6 +47,14 @@ export class OrderSelectModalComponent {
     for (let child of cat.subcategory) {
       this.findMenuItems(child);
     }
+  }
+
+  /**
+   * open menu detail modal
+   */
+  openDetailModal(menuId: string) {
+    let menuModal = this.modalCtrl.create(MenuDetailModalComponent, {id: menuId});
+    menuModal.present();
   }
 
   /**
