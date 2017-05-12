@@ -11,19 +11,32 @@
 
 <ion-content>
   <ion-list>
-    <div *ngFor="let cat of catGroups">
+    <ng-container *ngFor="let cat of catGroups">
       <ion-item-divider color="light" [hidden]="cat.orders.length == 0">
         <span class="important">{{cat.name}}</span>
       </ion-item-divider>
       <ion-item *ngFor="let order of cat.orders">
         {{order.count}} x {{ order.item.name }}
+        <span *ngIf="order.sideDish">{{order.sideDish.name}}</span>
         <span class="right">
-        {{order.item.price * order.count | costDecimal}}
+        {{order.item.price * order.count | costDecimal}} €
       </span>
       </ion-item>
-    </div>
+    </ng-container>
+    <ng-container *ngIf="groupedTmpOrders.length">
+      <ion-item-divider color="secondary">
+        <span class="important">Ausstehend</span>
+      </ion-item-divider>
+      <ion-item *ngFor="let tmpOrder of groupedTmpOrders">
+        {{tmpOrder.count}} x {{tmpOrder.item.name}}
+        <span *ngIf="tmpOrder.sideDish">{{tmpOrder.sideDish.name}}</span>
+        <span class="right secondary-text">
+          {{tmpOrder.count * tmpOrder.item.price | costDecimal}} €
+        </span>
+      </ion-item>
+    </ng-container>
     <ion-item text-right>
-      Total: {{ getTotalPrice() | costDecimal }}
+      Total: {{ getTotalPrice() | costDecimal }} €
     </ion-item>
   </ion-list>
 </ion-content>

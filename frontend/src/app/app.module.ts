@@ -26,6 +26,7 @@ import {MenuCategoryService} from "../service/menu-category.service";
 import {MenuService} from "../service/menu.service";
 import {CostDecimalPipe} from "../pipe/CostDecimalPipe";
 import {MenuDetailModalComponent} from "../component/menu-detail-modal/menu-detail-modal";
+import {MenuBoxComponent} from "../component/menu-box/menu-box";
 
 
 @NgModule({
@@ -47,6 +48,7 @@ import {MenuDetailModalComponent} from "../component/menu-detail-modal/menu-deta
     SideMenuComponent,
     OrderSelectModalComponent,
     MenuDetailModalComponent,
+    MenuBoxComponent,
 
     //pipes
     CostDecimalPipe

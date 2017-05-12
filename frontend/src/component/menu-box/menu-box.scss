@@ -1,0 +1,36 @@
+menu-box {
+  .box {
+    border: 1px solid $list-border-color;
+    display: block;
+    white-space: normal;
+    border-radius: 2px;
+    padding-bottom: 60%;
+    position: relative;
+    font-size: 85%;
+    background-color: color($colors, light2);
+
+    .inner {
+      position: absolute;
+      top: 0.25rem;
+      right: 0.25rem;
+      bottom: 0.25rem;
+      left: 0.25rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    ion-badge {
+      top: 0;
+      left: 100%;
+      transform: translate(-50%, -50%);
+      position: absolute;
+    }
+
+    .price-tag {
+      bottom: 0.25rem;
+      right: 0.25rem;
+      position: absolute;
+    }
+  }
+}

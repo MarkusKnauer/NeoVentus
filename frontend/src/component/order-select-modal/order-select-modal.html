@@ -13,12 +13,8 @@
       <ion-grid>
         <ion-row>
           <div col-3 *ngFor="let menuItem of cat.items">
-            <div class="menu-box" (press)="openDetailModal(menuItem.id)">
-              <ion-badge></ion-badge>
-              <div class="inner">
-                {{menuItem.name}} {{menuItem.description}}
-              </div>
-            </div>
+            <menu-box [item]="menuItem" [count]="getTmpOrderCount(menuItem)" (press)="openDetailModal(menuItem.id)"
+                      (click)="addOrder(menuItem)"></menu-box>
           </div>
         </ion-row>
       </ion-grid>
@@ -28,11 +24,9 @@
         <ion-grid>
           <ion-row>
             <div col-3 *ngFor="let cMenuItem of child.items">
-              <div class="menu-box" (press)="openDetailModal()">
-                <div class="inner">
-                  {{cMenuItem.name}} {{cMenuItem.description}}
-                </div>
-              </div>
+              <menu-box [item]="cMenuItem" [count]="getTmpOrderCount(cMenuItem)" (press)="openDetailModal(cMenuItem.id)"
+                        (click)="addOrder(cMenuItem)">
+              </menu-box>
             </div>
           </ion-row>
         </ion-grid>
