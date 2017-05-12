@@ -63,7 +63,7 @@ public class OrderItem extends AbstractDocument {
 	/**
 	 * get current state
 	 *
-	 * @return
+	 * @return state
 	 */
 	public OrderItemState.State getCurrentState() {
 		return this.states.size() != 0 ? this.states.get(this.states.size() - 1).getState() : null;

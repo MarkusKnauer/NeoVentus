@@ -1,7 +1,8 @@
 import {Component} from "@angular/core";
-import {NavController} from "ionic-angular";
+import {NavController, LoadingController} from "ionic-angular";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {OrderService} from "../../service/order.service";
+
 
 /**
  * @author Dominik Streif
@@ -17,34 +18,43 @@ export class KitchenOverviewPage {
 
   public orderItems: any;
   public orderItemsGrouped: any;
+  private loading;
 
-  //ToDo nach Kategorie filter
-  //ToDo Socketverbindung
 
-  constructor(private navCtrl: NavController, private orderService: OrderService, private authGuard: AuthGuardService) {
-    this.loadOrderItemsGroupedByOrderItem();
-    this.loadOrderItemsGroupedByDesk();
+  constructor(private navCtrl: NavController,
+              private orderService: OrderService,
+              private authGuard: AuthGuardService,
+              public loadingCtrl: LoadingController) {
+
+    this.presentLoadingDefault();
+
+    Promise.all([
+      this.loadOrderItemsGroupedByDesk(),
+      this.loadOrderItemsGroupedByOrderItem()
+    ]).then(() => {
+      this.loading.dismissAll();
+    })
+
   }
 
 
   loadOrderItemsGroupedByOrderItem() {
-    this.orderService.getAllOrderItemsByState("NEW")
+    this.orderService.getAllOpenOrderItems()
       .then(
         data => {
-          this.groupByOrderItem(data);
           this.orderItemsGrouped = data;
+          this.groupByOrderItem(this.orderItemsGrouped);
         })
   }
 
   loadOrderItemsGroupedByDesk() {
-    this.orderService.getAllOrderItemsByState("NEW")
+    this.orderService.getAllOpenOrderItems()
       .then(
         data => {
-          this.groupByDesk(data);
           this.orderItems = data;
+          this.groupByDesk(this.orderItems);
         })
   }
-
 
   groupByDesk(orderItems) {
     //new object with keys as desk.number and
@@ -112,4 +122,12 @@ export class KitchenOverviewPage {
 
   }
 
+  // Fancy Loading circle
+  presentLoadingDefault() {
+    this.loading = this.loadingCtrl.create({
+      content: 'Bestellungen werden geladen.'
+    });
+
+    this.loading.present();
+  }
 }

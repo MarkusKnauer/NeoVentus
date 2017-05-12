@@ -6,7 +6,8 @@ import {CachingService} from "./caching.service";
  * handling requests to the backend belonging the orders
  *
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.3 changed urls
+ * @version   0.0.4 changed url for getAllOpenOrderItems - DS
+ *            0.0.3 changed urls
  */
 @Injectable()
 export class OrderService extends CachingService {
@@ -34,20 +35,22 @@ export class OrderService extends CachingService {
   }
 
   /**
-   * Gets all orders by state
+   * Gets all orders by state new
    *
-   * @param state
+   * @param
    * @returns {Observable<Response>}
    */
-  public getAllOrderItemsByState(state) {
+  public getAllOpenOrderItems() {
 
-    let req = this.http.get("/api/order/all/" + state);
-    req.map(resp => resp.json()).subscribe((data) => {
-      this.saveToCache("orders_state_" + state, data);
-    }, (err) => {
-      console.debug("Error loading category tree", err);
+    return new Promise<any>(resolve => {
+      this.http.get("/api/order/all/open")
+        .map(res => res.json())
+        .subscribe(data => {
+          this.saveToCache("open_orders", data);
+          resolve(data);
+        });
     });
-    return req.toPromise();
+
   }
 
 }

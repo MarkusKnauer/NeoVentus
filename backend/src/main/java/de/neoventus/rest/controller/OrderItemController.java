@@ -21,7 +21,8 @@ import java.util.logging.Logger;
  * REST controller for entity Order
  *
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.7 url and method refactoring - DT
+ * @version 0.0.8 corrected GET-Method /all/open - DS
+ * 			0.0.7 url and method refactoring - DT
  *          0.0.6 added finish and cancel methods, removed socket update to event listener - DT
  *          0.0.5 No key-Value-pairs and refactor GET-Method
  *          0.0.4 Name-Value-Pair for GET and OrderitemOutput for specific frontend-data
@@ -74,17 +75,17 @@ public class OrderItemController {
 	 * controller method to list all orders
 	 *
 	 * @param response
-	 * @param state
+	 * @param
 	 * @return
 	 */
-	@GetMapping("/open}")
-	public Iterable<OrderItem> listAllOrders(HttpServletResponse response, @PathVariable OrderItemState state) {
+	@GetMapping("/all/open")
+	public Iterable<OrderItem> listAllOpenOrders(HttpServletResponse response) {
 		try {
 			Iterable<OrderItem> list = orderRepository.findAll();
 			ArrayList<OrderItem> tmp = new ArrayList<OrderItem>();
 			// get only the orderItems with the correct state
 			for (OrderItem item : list) {
-				if (item.getCurrentState().equals(state)) {
+				if (item.getCurrentState().equals(OrderItemState.State.NEW)) {
 					tmp.add(item);
 				}
 			}
