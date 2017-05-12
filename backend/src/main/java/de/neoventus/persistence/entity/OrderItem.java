@@ -8,7 +8,8 @@ import java.util.List;
 
 /**
  * @author Dennis Thanner, Tim Heidelbach, Dominik Streif
- * @version 0.0.7 refactored state, added billing item - DT
+ * @version 0.0.8 added side dish - DT
+ *          0.0.7 refactored state, added billing item - DT
  *          0.0.6 state with enum - DS
  *          0.0.5 multiple state conditions - DS
  *          0.0.4 redundancy clean up - DT
@@ -25,6 +26,9 @@ public class OrderItem extends AbstractDocument {
 
 	@DBRef
 	private MenuItem item;
+
+	@DBRef
+	private MenuItem sideDish;
 
 	private String guestWish;
 
@@ -122,6 +126,14 @@ public class OrderItem extends AbstractDocument {
 	@Deprecated
 	public void setBilling(Billing billing) {
 		this.billing = billing;
+	}
+
+	public MenuItem getSideDish() {
+		return sideDish;
+	}
+
+	public void setSideDish(MenuItem sideDish) {
+		this.sideDish = sideDish;
 	}
 
 	@Override

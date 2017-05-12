@@ -17,7 +17,8 @@ import java.util.List;
 
 /**
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.6 deleted searchOrderItemOutpuDto - DT
+ * @version 0.0.7 added side dish support - DT
+ *          0.0.6 deleted searchOrderItemOutpuDto - DT
  *          0.0.5 orderState refactoring - DT
  *          0.0.4 state with enum - DS
  *          0.0.3 redundancy clean up - DT
@@ -49,6 +50,9 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 		o.setItem(dto.getMenuItemNumber() != null ? menuItemRepository.findByNumber(dto.getMenuItemNumber()) : null);
 		o.setWaiter(dto.getWaiter() != null ? userRepository.findByWorkerId(dto.getWaiter()) : null);
 		o.setGuestWish(dto.getGuestWish() != null ? dto.getGuestWish() : "");
+
+		if (dto.getSideDishId() != null)
+			o.setSideDish(this.menuItemRepository.findOne(dto.getSideDishId()));
 
 		mongoTemplate.save(o);
 
