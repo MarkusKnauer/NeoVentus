@@ -1,11 +1,19 @@
 package de.neoventus.persistence.repository.advanced.impl;
 
+import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.entity.OrderItem;
+import de.neoventus.persistence.entity.OrderItemState;
 import de.neoventus.persistence.repository.*;
 import de.neoventus.persistence.repository.advanced.NVOrderItemRepository;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.OrderDeskAggregationDto;
 import de.neoventus.rest.dto.OrderItemDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
+
+import java.util.List;
 
 /**
  * @author Julian Beck, Dennis Thanner
@@ -43,6 +51,20 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 		o.setGuestWish(dto.getGuestWish() != null ? dto.getGuestWish() : "");
 
 		mongoTemplate.save(o);
+
+	}
+
+	@Override
+	public List<OrderDeskAggregationDto> getGroupedNotPayedOrdersByItemForDesk(Desk desk) {
+		Aggregation agg = Aggregation.newAggregation(
+			Aggregation.match(Criteria.where("billing").is(null).and("desk").is(desk).and("states.state").ne(OrderItemState.State.CANCELED)),
+			Aggregation.group("item").count().as("count").first("waiter").as("waiter"),
+			Aggregation.project("waiter", "count").and("item").previousOperation()
+		);
+
+		AggregationResults<OrderDeskAggregationDto> aggR = this.mongoTemplate.aggregate(agg, OrderItem.class, OrderDeskAggregationDto.class);
+
+		return aggR.getMappedResults();
 
 	}
 

@@ -18,7 +18,7 @@
       <ion-item *ngFor="let order of cat.orders">
         {{order.count}} x {{ order.item.name }}
         <span class="right">
-        {{order.price | costDecimal}}
+        {{order.item.price * order.count | costDecimal}}
       </span>
       </ion-item>
     </div>

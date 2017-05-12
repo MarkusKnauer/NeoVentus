@@ -25,6 +25,7 @@ import {OrderSelectModalComponent} from "../component/order-select-modal/order-s
 import {MenuCategoryService} from "../service/menu-category.service";
 import {MenuService} from "../service/menu.service";
 import {CostDecimalPipe} from "../pipe/CostDecimalPipe";
+import {MenuDetailModalComponent} from "../component/menu-detail-modal/menu-detail-modal";
 
 
 @NgModule({
@@ -45,6 +46,7 @@ import {CostDecimalPipe} from "../pipe/CostDecimalPipe";
     // components
     SideMenuComponent,
     OrderSelectModalComponent,
+    MenuDetailModalComponent,
 
     //pipes
     CostDecimalPipe
@@ -75,7 +77,8 @@ import {CostDecimalPipe} from "../pipe/CostDecimalPipe";
     SettingsPage,
     ProfilePage,
     KitchenOverviewPage,
-    OrderSelectModalComponent
+    OrderSelectModalComponent,
+    MenuDetailModalComponent
   ],
   providers: [
     StatusBar,

@@ -74,38 +74,11 @@ export class DeskPage {
    * @param catIds
    */
   getOrdersByCat(catIds) {
-    return this.getAggregatedOrders().filter(el => {
+    return this.orderService.cache["orders_desk" + this.deskNumber].filter(el => {
       return catIds.indexOf(el.item.menuItemCategory.id) != -1;
     });
   }
 
-  /**
-   * aggregate orders
-   */
-  getAggregatedOrders(): Array<any> {
-    let result = [];
-    let raw = this.orderService.cache["orders_desk" + this.deskNumber];
-    for (let ord of raw) {
-      // prevent duplicate adding
-      if (result.find((el) => {
-          return el.item.id == ord.item.id
-        }) == null) {
-        let tmp = raw.filter((order) => {
-          return order.item.id == ord.item.id;
-        });
-
-        console.debug(tmp);
-        tmp[0].count = tmp.length;
-        tmp[0].price = 0;
-        tmp.forEach(el => {
-          tmp[0].price += el.item.price;
-        });
-
-        result.push(tmp[0])
-      }
-    }
-    return result;
-  }
 
   /**
    * sum desk total order value
@@ -116,7 +89,7 @@ export class DeskPage {
     let sum = 0;
     for (let cat of this.catGroups) {
       for (let order of cat.orders) {
-        sum += order.item.price;
+        sum += order.item.price * order.count;
       }
     }
     return sum;

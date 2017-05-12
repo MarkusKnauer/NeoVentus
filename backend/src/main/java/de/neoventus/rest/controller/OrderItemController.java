@@ -5,6 +5,7 @@ import de.neoventus.persistence.entity.OrderItem;
 import de.neoventus.persistence.entity.OrderItemState;
 import de.neoventus.persistence.repository.DeskRepository;
 import de.neoventus.persistence.repository.OrderItemRepository;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.OrderDeskAggregationDto;
 import de.neoventus.rest.dto.OrderItemDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Logger;
 
 /**
@@ -50,18 +50,17 @@ public class OrderItemController {
 	 * <p>
 	 * What is Love? Baby, Value has no Key, has no Key, no more...
 	 */
-	@RequestMapping(value = "/desk/open/{deskNumber}", method = RequestMethod.GET)
-	public Iterable<OrderItem> listOrders(HttpServletResponse response, @PathVariable Integer deskNumber) {
+	@RequestMapping(value = "/desk/open/{deskNumber:[0-9]*}", method = RequestMethod.GET)
+	public Iterable<OrderDeskAggregationDto> listOrders(HttpServletResponse response, @PathVariable Integer deskNumber) {
 		try {
 			Desk desk = this.deskRepository.findByNumber(deskNumber);
 			if (desk == null) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 				return null;
 			}
-			return this.orderRepository.findByBillingIsNullAndStatesStateNotInAndDesk(
-				Arrays.asList(OrderItemState.State.CANCELED),
-				desk
-			);
+			Iterable<OrderDeskAggregationDto> result = this.orderRepository.getGroupedNotPayedOrdersByItemForDesk(desk);
+			LOGGER.info(result.toString());
+			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOGGER.warning("Error searching order by deskNumber " + 1 + ": " + e.getMessage());

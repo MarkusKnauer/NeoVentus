@@ -48,7 +48,7 @@ export class DeskOverviewPage {
 
         for (let order of orders) {
           waiters.add(order.waiter.username); // set to ignore duplicate waiters
-          totalPrice += order.item.price;
+          totalPrice += order.item.price * order.count;
         }
 
         var waiterCount: number = 0;
