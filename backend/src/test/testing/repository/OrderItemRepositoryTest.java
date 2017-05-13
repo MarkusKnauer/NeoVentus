@@ -19,7 +19,8 @@ import java.util.logging.Logger;
  * testing the Order repository methods
  *
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.4 added testGroupedNotPayedOrdersByItemForDesk - DT
+ * @version 0.0.5 added testGroupedNotPayedOrdersByItemForDeskWithSideDish - DT
+ *          0.0.4 added testGroupedNotPayedOrdersByItemForDesk - DT
  *          0.0.3 added findByBillingIsNullAndStatesStateNotIn test - DT
  *          0.0.2 redundancy clean up - DT
  **/
@@ -153,6 +154,39 @@ public class OrderItemRepositoryTest extends AbstractTest {
 
 		Assert.assertTrue(result.get(0).getCount() == 2);
 
+	}
+
+	/**
+	 * test custom aggregation query with side dishes
+	 */
+	@Test
+	public void testGroupedNotPayedOrdersByItemForDeskWithSideDish() {
+		MenuItem menuItem = new MenuItem();
+		menuItem.setName("Test");
+
+		MenuItem sideDish = new MenuItem();
+		sideDish.setName("Test side Dish");
+
+		menuItem = this.menuItemRepository.save(menuItem);
+		sideDish = this.menuItemRepository.save(sideDish);
+
+		Desk d = new Desk();
+		d = this.deskRepository.save(d);
+
+		OrderItem orderItem = new OrderItem();
+		orderItem.setItem(menuItem);
+		orderItem.setDesk(d);
+		this.orderItemRepository.save(orderItem);
+
+		orderItem = new OrderItem();
+		orderItem.setDesk(d);
+		orderItem.setItem(menuItem);
+		orderItem.setSideDish(sideDish);
+		this.orderItemRepository.save(orderItem);
+
+		List<OrderDeskAggregationDto> result = this.orderItemRepository.getGroupedNotPayedOrdersByItemForDesk(d);
+
+		Assert.assertTrue(result.size() == 2);
 	}
 
 	private Desk getDesk2() {

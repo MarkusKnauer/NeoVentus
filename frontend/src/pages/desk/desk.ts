@@ -5,7 +5,7 @@ import {AuthGuardService} from "../../service/auth-guard.service";
 import {DeskOverviewPage} from "../desk-overview/desk-overview";
 import {OrderSelectModalComponent} from "../../component/order-select-modal/order-select-modal";
 import {MenuCategoryService} from "../../service/menu-category.service";
-import {Order} from "../../model/Order";
+import {Order} from "../../model/order";
 
 
 /**

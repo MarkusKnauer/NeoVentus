@@ -3,7 +3,7 @@ import {ModalController, ViewController} from "ionic-angular";
 import {MenuCategoryService} from "../../service/menu-category.service";
 import {MenuService} from "../../service/menu.service";
 import {MenuDetailModalComponent} from "../menu-detail-modal/menu-detail-modal";
-import {Order} from "../../model/Order";
+import {Order} from "../../model/order";
 
 /**
  * @author Dennis Thanner

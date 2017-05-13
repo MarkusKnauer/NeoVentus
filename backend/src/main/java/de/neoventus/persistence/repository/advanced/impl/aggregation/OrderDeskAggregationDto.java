@@ -9,7 +9,7 @@ import java.io.Serializable;
  * mapping class for aggregation
  *
  * @author Dennis Thanner
- * @version 0.0.1
+ * @version 0.0.2 added sideDish - DT
  */
 public class OrderDeskAggregationDto implements Serializable {
 
@@ -18,6 +18,8 @@ public class OrderDeskAggregationDto implements Serializable {
 	private MenuItem item;
 
 	private int count;
+
+	private MenuItem sideDish;
 
 	// getter and setter
 
@@ -43,5 +45,13 @@ public class OrderDeskAggregationDto implements Serializable {
 
 	public void setCount(int count) {
 		this.count = count;
+	}
+
+	public MenuItem getSideDish() {
+		return sideDish;
+	}
+
+	public void setSideDish(MenuItem sideDish) {
+		this.sideDish = sideDish;
 	}
 }
