@@ -6,7 +6,8 @@ import {OrderService} from "../../service/order.service";
 
 /**
  * @author Dominik Streif
- * @version 0.0.1
+ * @version 0.0.2 added cache support - DS
+ *          0.0.1
  *
  */
 
@@ -17,9 +18,11 @@ import {OrderService} from "../../service/order.service";
 export class KitchenOverviewPage {
 
   public orderItems: any;
-  public orderItemsGrouped: any;
   private loading;
 
+  // ToDo Socket support
+  // ToDo show category and order items
+  // ToDo filter - only meals/drinks
 
   constructor(private navCtrl: NavController,
               private orderService: OrderService,
@@ -39,20 +42,19 @@ export class KitchenOverviewPage {
 
 
   loadOrderItemsGroupedByOrderItem() {
-    this.orderService.getAllOpenOrderItems()
+    this.orderService.getAllOpenOrderItemsGroupedByOrderItem()
       .then(
         data => {
-          this.orderItemsGrouped = data;
-          this.groupByOrderItem(this.orderItemsGrouped);
+          this.groupByOrderItem(data);
         })
   }
 
   loadOrderItemsGroupedByDesk() {
     this.orderService.getAllOpenOrderItems()
       .then(
-        data => {
-          this.orderItems = data;
-          this.groupByDesk(this.orderItems);
+        data2 => {
+          //this.orderItems = data;
+          this.groupByDesk(data2);
         })
   }
 

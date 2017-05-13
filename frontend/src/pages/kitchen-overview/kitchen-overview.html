@@ -15,7 +15,7 @@
 
   <ion-grid class="grid-card">
     <ion-row>
-      <ion-col *ngFor="let ordersPerDesk of orderItems" col-auto>
+      <ion-col *ngFor="let ordersPerDesk of orderService.cache['open_orders_grouped_by_desks']" col-auto>
 
         <ion-card class="order">
 
@@ -38,7 +38,7 @@
   <div class="overview">
     <h2>Gerichte Übersicht</h2>
 
-    <ion-list *ngFor="let item of orderItemsGrouped">
+    <ion-list *ngFor="let item of orderService.cache['open_orders_grouped_by_orderitem']">
       <ion-item>{{item.quantity}} x {{item.orderItem['0'].item.name}} <br>
         {{item.orderItem['0'].guestWish}}
       </ion-item>
