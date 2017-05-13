@@ -57,11 +57,11 @@ public class RestaurantDemoInit {
      *
      * @see PostConstruct
      */
-	// @PostConstruct
+	@PostConstruct
 	public void initialize() {
 		clearIndexes();
 		clearData();
-        new DefaultDemoDataIntoDB(deskRepository, userRepository, menuItemRepository, menuItemCategoryRepository, orderItemRepository, reservationRepository,billingRepository,sideDishRepository);
+        new DefaultDemoDataIntoDB(deskRepository, userRepository, menuItemRepository, menuItemCategoryRepository, orderItemRepository, reservationRepository,billingRepository,sideDishRepository, mongoTemplate);
 	}
 
     /**

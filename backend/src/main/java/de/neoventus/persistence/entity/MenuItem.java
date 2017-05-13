@@ -20,6 +20,8 @@ public class MenuItem extends AbstractDocument {
 	@Indexed(unique = true)
 	private String name;
 
+	private String shortName;
+
 	private Double price;
 
 	private String description;
@@ -44,10 +46,11 @@ public class MenuItem extends AbstractDocument {
 		sideDish = null;
 	}
 
-	public MenuItem(MenuItemCategory menuItemCategory, String name, Double price, String currency, String description, String mediaUrl,
+	public MenuItem(MenuItemCategory menuItemCategory, String name, String shortName, Double price, String currency, String description, String mediaUrl,
 					List<String> notices) {
 		this.menuItemCategory = menuItemCategory;
 		this.name = name;
+		this.shortName = shortName;
 		this.price = price;
 		this.currency = currency;
 		this.description = description;
@@ -71,6 +74,14 @@ public class MenuItem extends AbstractDocument {
 
 	// getter and setter
 
+
+	public String getShortName() {
+		return shortName;
+	}
+
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
+	}
 
 	public MenuItemCategory getMenuItemCategory() {return menuItemCategory;}
 

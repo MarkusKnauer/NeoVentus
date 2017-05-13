@@ -79,7 +79,7 @@ public class MenuItemRepositoryTest extends AbstractTest {
 		u2.setNumber(1);
 		menuItemRepository.save(u2);
 
-		MenuItem u = new MenuItem(getCategory(), "test", 12.02, "EUR", "Testdescr", "Testmedia", new ArrayList<>());
+		MenuItem u = new MenuItem(getCategory(), "test", "tes",12.02, "EUR", "Testdescr", "Testmedia", new ArrayList<>());
 		u = menuItemRepository.save(u);
 
 		Assert.assertTrue(u.getMenuItemID() == 2);
