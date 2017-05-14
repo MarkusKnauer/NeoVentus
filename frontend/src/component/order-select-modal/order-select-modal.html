@@ -1,12 +1,23 @@
 <ion-header>
-  <button ion-button icon-only (click)="dismiss()">
-    <ion-icon name="close"></ion-icon>
-  </button>
+  <ion-buttons end>
+    <button ion-button icon-only text-left (click)="dismiss()">
+      <ion-icon name="checkmark"></ion-icon>
+    </button>
+  </ion-buttons>
 </ion-header>
 <ion-content>
   <ion-slides pager>
+    <!-- todo hide fav slide if no favs exist -->
     <ion-slide>
       <h2 text-center>Favoriten</h2>
+      <ion-grid>
+        <ion-row>
+          <div col-3 *ngFor="let fav of favorites">
+            <menu-box [item]="fav" [count]="getTmpOrderCount(fav)" (press)="openDetailModal(fav.id)"
+                      (click)="addOrder(fav)"></menu-box>
+          </div>
+        </ion-row>
+      </ion-grid>
     </ion-slide>
     <!-- todo fix temporary solution  -->
     <ng-container *ngFor="let cat of menuCategoryService.cache['tree']">

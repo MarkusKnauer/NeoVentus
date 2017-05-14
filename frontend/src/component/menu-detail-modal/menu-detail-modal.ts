@@ -1,8 +1,10 @@
 import {Component} from "@angular/core";
-import {ViewController} from "ionic-angular";
+import {NavParams, ViewController} from "ionic-angular";
+import {MenuService} from "../../service/menu.service";
+import {LocalStorageService} from "../../service/local-storage.service";
 /**
  * @author Dennis Thanner
- * @version 0.0.1
+ * @version 0.0.2 added side dish selection
  */
 
 @Component({
@@ -11,9 +13,21 @@ import {ViewController} from "ionic-angular";
 })
 export class MenuDetailModalComponent {
 
+  private menu;
 
-  constructor(private viewCtrl: ViewController) {
-    console.debug(viewCtrl);
+  private selectedSideDish = {};
+
+  constructor(private viewCtrl: ViewController, private navParams: NavParams, private menuService: MenuService,
+              private _localStorageService: LocalStorageService) {
+    this.menu = this.menuService.cache["all"].find(el => {
+      return el.id == navParams.data.id;
+    });
+    if (this.menu.sideDishGroup) {
+
+      for (let sideDish of this.menu.sideDishGroup.sideDishes) {
+        this.selectedSideDish[sideDish.id] = false;
+      }
+    }
   }
 
   /**
@@ -23,4 +37,13 @@ export class MenuDetailModalComponent {
     this.viewCtrl.dismiss();
   }
 
+  // getter setter
+
+  get localStorageService(): LocalStorageService {
+    return this._localStorageService;
+  }
+
+  set localStorageService(value: LocalStorageService) {
+    this._localStorageService = value;
+  }
 }

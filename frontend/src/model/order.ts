@@ -4,6 +4,7 @@
  * @author Dennis Thanner
  * @version 0.0.1
  */
+// todo add multiple side dish support
 export class Order {
 
   private _item;

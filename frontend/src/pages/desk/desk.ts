@@ -31,10 +31,13 @@ export class DeskPage {
 
   private groupedTmpOrders = [];
 
+  private ordersCacheKey: string;
+
   constructor(public navParams: NavParams, private navCtrl: NavController, private orderService: OrderService,
               private authGuard: AuthGuardService, public loadingCtrl: LoadingController, private modalCtrl: ModalController,
               private menuCategoryService: MenuCategoryService) {
     this.deskNumber = navParams.get("deskNumber");
+    this.ordersCacheKey = "orders_desk" + this.deskNumber;
     if (this.deskNumber != null) {
       this.presentLoadingDefault();
 
@@ -79,7 +82,7 @@ export class DeskPage {
    * @param catIds
    */
   getOrdersByCat(catIds) {
-    return this.orderService.cache["orders_desk" + this.deskNumber].filter(el => {
+    return this.orderService.cache[this.ordersCacheKey].filter(el => {
       return catIds.indexOf(el.item.menuItemCategory.id) != -1;
     });
   }
@@ -110,13 +113,10 @@ export class DeskPage {
    * method to open order select modal
    */
   openOrderSelectModal() {
-    let modal = this.modalCtrl.create(OrderSelectModalComponent);
+    let modal = this.modalCtrl.create(OrderSelectModalComponent, {tmpOrders: this.tmpOrders});
     modal.present();
-    modal.onDidDismiss(data => {
-      if (data) {
-        this.tmpOrders = this.tmpOrders.concat(data);
+    modal.onDidDismiss(() => {
         this.groupedTmpOrders = this.getGroupedTmpOrders();
-      }
     })
   }
 

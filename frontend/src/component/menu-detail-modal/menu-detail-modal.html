@@ -1,4 +1,44 @@
-<ion-content>
-  Zusatz Informationen
-  <button (click)="dismiss()">CLOSE</button>
+<ion-header>
+  <button ion-button icon-only (click)="dismiss()">
+    <ion-icon name="close"></ion-icon>
+  </button>
+  {{menu.name}} - Details
+</ion-header>
+<ion-content padding>
+  <div padding-bottom>
+    <textarea rows="1" placeholder="Kundenwunsch"></textarea>
+  </div>
+  <ng-container *ngIf="menu.sideDishGroup" padding-bottom>
+    Beilagen
+    <ion-list>
+      <ion-item *ngFor="let sideDish of menu.sideDishGroup.sideDishes">
+        <ion-checkbox></ion-checkbox>
+        {{sideDish.name}}
+        <span text-right>{{ sideDish.price | costDecimal}}€</span>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+  <ng-container *ngIf="menu.notices.length" padding-bottom>
+    Informationen
+    <ion-list>
+      <ion-item *ngFor="let info of menu.notices">
+        {{info}}
+      </ion-item>
+    </ion-list>
+  </ng-container>
+
 </ion-content>
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-2>
+        <button ion-button full (click)="localStorageService.saveMenuFavorite(menu.id)">
+          <ion-icon name="heart"></ion-icon>
+        </button>
+      </ion-col>
+      <ion-col col-10>
+        <button ion-button full color="secondary">Hinzufügen</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

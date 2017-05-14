@@ -40,3 +40,21 @@
     </ion-item>
   </ion-list>
 </ion-content>
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-10>
+        <button ion-button full icon-left
+                *ngIf="orderService.cache[ordersCacheKey] != null && orderService.cache[ordersCacheKey].length ">
+          <ion-icon name="cash"></ion-icon>
+          Rechnung
+        </button>
+      </ion-col>
+      <ion-col col-2>
+        <button ion-button full icon-only color="secondary" *ngIf="tmpOrders.length">
+          <ion-icon name="send"></ion-icon>
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

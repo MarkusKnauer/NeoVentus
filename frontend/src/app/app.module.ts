@@ -27,6 +27,8 @@ import {MenuService} from "../service/menu.service";
 import {CostDecimalPipe} from "../pipe/CostDecimalPipe";
 import {MenuDetailModalComponent} from "../component/menu-detail-modal/menu-detail-modal";
 import {MenuBoxComponent} from "../component/menu-box/menu-box";
+import {IonicStorageModule} from "@ionic/storage";
+import {LocalStorageService} from "../service/local-storage.service";
 
 
 @NgModule({
@@ -65,7 +67,8 @@ import {MenuBoxComponent} from "../component/menu-box/menu-box";
         {component: DeskPage, name: "ShowOrders", segment: "orders/:deskNumber"},
         {component: KitchenOverviewPage, name: "Kitchen Overview", segment: "kitchen"}
       ]
-    })
+    }),
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -91,7 +94,8 @@ import {MenuBoxComponent} from "../component/menu-box/menu-box";
     DeskService,
     OrderService,
     MenuCategoryService,
-    MenuService
+    MenuService,
+    LocalStorageService
   ]
 })
 export class AppModule {
