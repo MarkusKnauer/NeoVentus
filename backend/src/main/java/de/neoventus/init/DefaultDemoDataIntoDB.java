@@ -13,7 +13,8 @@ import java.util.logging.Logger;
 
 /**
  * @author Dennis Thanner, Julian Beck, Markus Knauer, Tim Heidelbach
- * @version 0.0.8 menu category fix - DT
+ * @version 0.0.9 corrected spelling mistakes - DS
+ * 			0.0.8 menu category fix - DT
  *          0.0.7 add SideDish bsp-data - MK
  *          0.0.6 add menuItem Category bsp-data-generator -JB
  *          0.0.5 added random order items init - DT
@@ -162,10 +163,10 @@ class DefaultDemoDataIntoDB {
 				// Wein
 					// Weißwein - 5
 			new MenuItem(menuItemCategoryRepository.findByName("Weißwein"), "Cabernet Sauvignon Weiß", "Cabernet Weiß",3.90, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Weinwein"), "Pinot Grigio","Pinot", 3.90, "EUR", "0.20l", "", new ArrayList<>()),
+			new MenuItem(menuItemCategoryRepository.findByName("Weißwein"), "Pinot Grigio", "Pinot", 3.90, "EUR", "0.20l", "", new ArrayList<>()),
 			new MenuItem(menuItemCategoryRepository.findByName("Weißwein"), "Chardonnay","Chardonnay", 4.70, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Weinwein"), "Pinot Grigio des Veneto IGT", "Pinot IGT",4.50, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Weinwein"), "Riesling trocken","Riesling", 4.20, "EUR", "0.20l", "", new ArrayList<>()),
+			new MenuItem(menuItemCategoryRepository.findByName("Weißwein"), "Pinot Grigio des Veneto IGT", "Pinot IGT", 4.50, "EUR", "0.20l", "", new ArrayList<>()),
+			new MenuItem(menuItemCategoryRepository.findByName("Weißwein"), "Riesling trocken", "Riesling", 4.20, "EUR", "0.20l", "", new ArrayList<>()),
 					// Rotwein - 4
 			new MenuItem(menuItemCategoryRepository.findByName("Rotwein"), "Cabernet Sauvignon Rot", "Cabernet Rot",3.90, "EUR", "0.20l", "", new ArrayList<>()),
 			new MenuItem(menuItemCategoryRepository.findByName("Rotwein"), "Casa Solar","Casa", 3.90, "EUR", "0.20l", "", new ArrayList<>()),
@@ -432,7 +433,7 @@ class DefaultDemoDataIntoDB {
 		tmp.add(addCategory("Fleischgerichte", tmp.get(1)));
 		tmp.add(addCategory("Vegetarische Gerichte", tmp.get(1)));
 		//Drinks
-		tmp.add(addCategory("Apperitifs", tmp.get(3)));
+		tmp.add(addCategory("Aperitifs", tmp.get(3)));
 		tmp.add(addCategory("Alkoholfreie Getränke", tmp.get(3)));
 		tmp.add(addCategory("Säfte", tmp.get(3)));
 		tmp.add(addCategory("Saftschorle", tmp.get(3)));
