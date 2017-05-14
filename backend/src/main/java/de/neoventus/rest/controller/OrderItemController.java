@@ -59,9 +59,7 @@ public class OrderItemController {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 				return null;
 			}
-			Iterable<OrderDeskAggregationDto> result = this.orderRepository.getGroupedNotPayedOrdersByItemForDesk(desk);
-			LOGGER.info(result.toString());
-			return result;
+			return this.orderRepository.getGroupedNotPayedOrdersByItemForDesk(desk);
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOGGER.warning("Error searching order by deskNumber " + 1 + ": " + e.getMessage());

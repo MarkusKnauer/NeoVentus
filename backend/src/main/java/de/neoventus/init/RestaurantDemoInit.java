@@ -57,7 +57,7 @@ public class RestaurantDemoInit {
      *
      * @see PostConstruct
      */
-	@PostConstruct
+//	@PostConstruct
 	public void initialize() {
 		clearIndexes();
 		clearData();

@@ -26,7 +26,7 @@
 // FIXME ASAP
 //	@Test
 //	public void testSideDish(){
-//		// Unit Test for old- Version of SideDish
+//		// Unit Test for old- Version of SideDishGroup
 //
 //		deleteAll();
 //		MenuItem u2 = new MenuItem();
@@ -37,12 +37,12 @@
 //		MenuItem u = new MenuItem();
 //		u.setName("Menu2");
 //		menuItemRepository.save(u);
-//		SideDish sideDish = u.getSideDish();
+//		SideDishGroup sideDish = u.getSideDishGroup();
 //		sideDishRepository.save(sideDish);
 //		MenuItem u3 = new MenuItem();
 //		u3.setName("Kuchen");
 //		menuItemRepository.save(u3);
-//		SideDish d = u3.getSideDish();
+//		SideDishGroup d = u3.getSideDishGroup();
 //		sideDishRepository.save(d);
 //
 //
@@ -53,7 +53,7 @@
 //	}
 //	@Test
 //	public void testSearchByName() {
-//		// Unit Test for old- Version of SideDish
+//		// Unit Test for old- Version of SideDishGroup
 //
 //		deleteAll();
 //		MenuItem u2 = new MenuItem();
@@ -64,12 +64,12 @@
 //		MenuItem u = new MenuItem();
 //		u.setName("Menu2");
 //		menuItemRepository.save(u);
-//		SideDish sideDish = u.getSideDish();
+//		SideDishGroup sideDish = u.getSideDishGroup();
 //		sideDishRepository.save(sideDish);
 //		MenuItem u3 = new MenuItem();
 //		u3.setName("Kuchen");
 //		menuItemRepository.save(u3);
-//		SideDish d = u3.getSideDish();
+//		SideDishGroup d = u3.getSideDishGroup();
 //		sideDishRepository.save(d);
 //
 //
@@ -84,7 +84,7 @@
 //
 //	@Test
 //	public void pseudoMenuItem(){
-//		// Unit Test for old- Version of SideDish
+//		// Unit Test for old- Version of SideDishGroup
 //
 //		deleteAll();
 //		MenuItem u2 = new MenuItem();
@@ -95,7 +95,7 @@
 //		MenuItem u3 = new MenuItem();
 //		u3.setName("Kuchen");
 //		menuItemRepository.save(u3);
-//		SideDish d = new SideDish("Salate");
+//		SideDishGroup d = new SideDishGroup("Salate");
 //		sideDishRepository.save(d);
 //
 //		MenuItem u = new MenuItem();
@@ -124,7 +124,7 @@
 //
 //
 //		sideDishRepository.save(dto);
-//		SideDish bigO = sideDishRepository.findByName("Ehh Macarena");
+//		SideDishGroup bigO = sideDishRepository.findByName("Ehh Macarena");
 //
 //		Assert.assertNotNull(bigO);
 //	}

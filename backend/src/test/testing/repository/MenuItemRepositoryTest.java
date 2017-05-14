@@ -96,7 +96,7 @@ public class MenuItemRepositoryTest extends AbstractTest {
 //    @Test
 //    public void testSideDish(){
 //
-//        // Unit Test for old- Version of SideDish
+//        // Unit Test for old- Version of SideDishGroup
 //
 //        deleteAll();
 //        MenuItem u2 = new MenuItem();
@@ -106,13 +106,13 @@ public class MenuItemRepositoryTest extends AbstractTest {
 //        menuItemRepository.save(u2);
 //        MenuItem u = new MenuItem(getCategory(),"test", 12.02, "EUR", "Testdescr", "Testmedia", new ArrayList<>());
 //        menuItemRepository.save(u);
-//        SideDish sideDish = u.getSideDish();
+//        SideDishGroup sideDish = u.getSideDishGroup();
 //       // sideDish.addParentalMeal(u2);
 //        sideDishRepository.save(sideDish);
 //        MenuItem u3 = new MenuItem();
 //        u3.setName("Kuchen");
 //        menuItemRepository.save(u3);
-//        SideDish d = u3.getSideDish();
+//        SideDishGroup d = u3.getSideDishGroup();
 //        sideDishRepository.save(d);
 //
 //

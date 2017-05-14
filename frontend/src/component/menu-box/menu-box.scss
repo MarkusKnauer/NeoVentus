@@ -4,7 +4,7 @@ menu-box {
     display: block;
     white-space: normal;
     border-radius: 2px;
-    padding-bottom: 60%;
+    padding-bottom: 50%;
     position: relative;
     font-size: 85%;
     background-color: color($colors, light2);
@@ -13,11 +13,10 @@ menu-box {
       position: absolute;
       top: 0.25rem;
       right: 0.25rem;
-      bottom: 0.25rem;
+      bottom: 1rem;
       left: 0.25rem;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
     }
 
     ion-badge {

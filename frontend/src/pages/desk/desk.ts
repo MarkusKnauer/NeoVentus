@@ -113,8 +113,10 @@ export class DeskPage {
     let modal = this.modalCtrl.create(OrderSelectModalComponent);
     modal.present();
     modal.onDidDismiss(data => {
-      this.tmpOrders = this.tmpOrders.concat(data);
-      this.groupedTmpOrders = this.getGroupedTmpOrders();
+      if (data) {
+        this.tmpOrders = this.tmpOrders.concat(data);
+        this.groupedTmpOrders = this.getGroupedTmpOrders();
+      }
     })
   }
 

@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * @author Dennis Thanner, Julian Beck, Tim Heidelbach, Markus Knauer
- * @version 0.0.7 new variable sideDish - MK
+ * @version 0.0.7 new variable sideDishGroup - MK
  * 			0.0.6 new variable menuItemCategory - JB
  * 			0.0.5 changed menuItemId to number DT
  *          0.0.4 removed local variable StringBuilder
@@ -38,12 +38,12 @@ public class MenuItem extends AbstractDocument {
 	private MenuItemCategory menuItemCategory;
 
 	@DBRef
-	private SideDish sideDish;
+	private SideDishGroup sideDishGroup;
 
 	// constructor
 	public MenuItem() {
 		this.notices = new ArrayList<>();
-		sideDish = null;
+		sideDishGroup = null;
 	}
 
 	public MenuItem(MenuItemCategory menuItemCategory, String name, String shortName, Double price, String currency, String description, String mediaUrl,
@@ -56,7 +56,7 @@ public class MenuItem extends AbstractDocument {
 		this.description = description;
 		this.mediaUrl = mediaUrl;
 		this.notices = notices;
-		sideDish = null;
+		sideDishGroup = null;
 
 	}
 
@@ -101,7 +101,7 @@ public class MenuItem extends AbstractDocument {
 
 	public void setName(String name) {
 		this.name = name;
-//		sideDish.setSideDishName(name);
+//		sideDishGroup.setSideDishName(name);
 	}
 
 	public Double getPrice() {
@@ -152,11 +152,13 @@ public class MenuItem extends AbstractDocument {
 		this.number = number;
 	}
 
-    public void setSideDish(SideDish sideDish) {
-        this.sideDish = sideDish;
-    }
+	public void setSideDishGroup(SideDishGroup sideDishGroup) {
+		this.sideDishGroup = sideDishGroup;
+	}
 
-    public SideDish getSideDish(){ return sideDish;}
+	public SideDishGroup getSideDishGroup() {
+		return sideDishGroup;
+	}
 
 	@Override
 	public String toString() {

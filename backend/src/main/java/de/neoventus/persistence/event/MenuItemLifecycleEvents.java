@@ -25,11 +25,11 @@ public class MenuItemLifecycleEvents extends AbstractMongoEventListener<MenuItem
 		// automatically increment set userId
 		MenuItem menuItem = event.getSource();
 
-		if(menuItem.getSideDish() == null){
-		//	SideDish dish = new SideDish(menuItem.getName());
+		if (menuItem.getSideDishGroup() == null) {
+			//	SideDishGroup dish = new SideDishGroup(menuItem.getName());
 		//	dish.addSideDish(null);
 			//sideDishRepository.save(dish);
-		//	menuItem.setSideDish(dish);
+			//	menuItem.setSideDishGroup(dish);
 		}
 
 		// only set number if not exists yet
@@ -47,7 +47,7 @@ public class MenuItemLifecycleEvents extends AbstractMongoEventListener<MenuItem
 	@Override
 	public void onAfterSave(AfterSaveEvent<MenuItem> event){
 	//	MenuItem menuItem = event.getSource();
-	//	SideDish dish = menuItem.getSideDish();
+		//	SideDishGroup dish = menuItem.getSideDishGroup();
 	//	dish.addSideDish(menuItem);
 	//	sideDishRepository.save(dish);
 	}

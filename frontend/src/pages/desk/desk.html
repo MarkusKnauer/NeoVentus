@@ -17,7 +17,7 @@
       </ion-item-divider>
       <ion-item *ngFor="let order of cat.orders">
         {{order.count}} x {{ order.item.name }}
-        <span *ngIf="order.sideDish">{{order.sideDish.name}}</span>
+        <span *ngIf="order.sideDishGroup">{{order.sideDishGroup.name}}</span>
         <span class="right">
         {{order.item.price * order.count | costDecimal}} €
       </span>
@@ -29,7 +29,7 @@
       </ion-item-divider>
       <ion-item *ngFor="let tmpOrder of groupedTmpOrders">
         {{tmpOrder.count}} x {{tmpOrder.item.name}}
-        <span *ngIf="tmpOrder.sideDish">{{tmpOrder.sideDish.name}}</span>
+        <span *ngIf="tmpOrder.sideDishGroup">{{tmpOrder.sideDishGroup.name}}</span>
         <span class="right secondary-text">
           {{tmpOrder.count * tmpOrder.item.price | costDecimal}} €
         </span>

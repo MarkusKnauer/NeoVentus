@@ -51,7 +51,7 @@ public class MenuItemRepositoryImpl implements NVMenuItemRepository {
 		item.setNumber(dto.getNumber());
 		item.setPrice(dto.getPrice());
 
-		item.setSideDish(dto.getSideDish() != null ? sideDishRepository.findByName(dto.getSideDish()) : null);
+		item.setSideDishGroup(dto.getSideDish() != null ? sideDishRepository.findByName(dto.getSideDish()) : null);
 
 
 		mongoTemplate.save(item);

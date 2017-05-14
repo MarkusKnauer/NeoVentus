@@ -1,6 +1,6 @@
 package de.neoventus.rest.controller;
 
-import de.neoventus.persistence.entity.SideDish;
+import de.neoventus.persistence.entity.SideDishGroup;
 import de.neoventus.persistence.repository.SideDishRepository;
 import de.neoventus.rest.dto.SideDishDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class SideDishController {
 	 * @return
 	 */
 	@RequestMapping(value = "/{sideDish}", method = RequestMethod.GET)
-	public SideDish listMenuItem(HttpServletResponse response, @PathVariable String sideDish) {
+	public SideDishGroup listMenuItem(HttpServletResponse response, @PathVariable String sideDish) {
 		try {
 			return sideDishRepository.findByName(sideDish);
 		} catch(Exception e) {

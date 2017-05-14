@@ -3,7 +3,7 @@ package de.neoventus.persistence.event;/**
  */
 
 import de.neoventus.persistence.entity.MenuItem;
-import de.neoventus.persistence.entity.SideDish;
+import de.neoventus.persistence.entity.SideDishGroup;
 import de.neoventus.persistence.repository.MenuItemRepository;
 import de.neoventus.persistence.repository.SideDishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +19,15 @@ import org.springframework.stereotype.Component;
  **/
 
 	@Component
-	public class SideDishLifecycleEvents extends AbstractMongoEventListener<SideDish> {
+	public class SideDishLifecycleEvents extends AbstractMongoEventListener<SideDishGroup> {
 
 		private SideDishRepository sideDishRepository;
 		private MenuItemRepository menuItemRepository;
 		private MenuItem menuItem;
 
 		@Override
-		public void onBeforeConvert(BeforeConvertEvent<SideDish> event){
-			SideDish max = event.getSource();
+		public void onBeforeConvert(BeforeConvertEvent<SideDishGroup> event) {
+			SideDishGroup max = event.getSource();
 			if (max != null){
 				if (sideDishRepository.findByName(max.getName()) != null) {
 

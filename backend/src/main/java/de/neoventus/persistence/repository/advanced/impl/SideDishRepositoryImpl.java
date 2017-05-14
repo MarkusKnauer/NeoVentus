@@ -3,7 +3,7 @@ package de.neoventus.persistence.repository.advanced.impl;/**
  */
 
 import de.neoventus.persistence.entity.MenuItem;
-import de.neoventus.persistence.entity.SideDish;
+import de.neoventus.persistence.entity.SideDishGroup;
 import de.neoventus.persistence.repository.MenuItemRepository;
 import de.neoventus.persistence.repository.SideDishRepository;
 import de.neoventus.persistence.repository.advanced.NVSideDishRepository;
@@ -33,11 +33,11 @@ public class SideDishRepositoryImpl implements NVSideDishRepository {
 
 	@Override
 	public void save(SideDishDto dto) {
-		SideDish item;
+		SideDishGroup item;
 		if(dto.getId() != null) {
-			item = mongoTemplate.findById(dto.getId(), SideDish.class);
+			item = mongoTemplate.findById(dto.getId(), SideDishGroup.class);
 		} else {
-			item = new SideDish();
+			item = new SideDishGroup();
 		}
 
 		item.setName(dto.getNameDish());

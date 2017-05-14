@@ -11,28 +11,28 @@ import java.util.ArrayList;
  *
  * @author Markus Knauer, Julian Beck, Dennis Thanner
  * @version 0.0.4 added DBRef - DT
- *          0.0.3 undo Three SideDish refs MK
- *          0.0.2 add Three SideDish refs JB
+ *          0.0.3 undo Three SideDishGroup refs MK
+ *          0.0.2 add Three SideDishGroup refs JB
  *          0.0.1 Creation - MK
  */
 
-public class SideDish extends AbstractDocument {
+public class SideDishGroup extends AbstractDocument {
 
 	@Indexed(unique = true)
 	private String name;
 
 	@DBRef
-	private ArrayList<MenuItem> sideDish;
+	private ArrayList<MenuItem> sideDishes;
 
 	//constructor
 
-	public SideDish() {
-		sideDish = new ArrayList<>();
+	public SideDishGroup() {
+		sideDishes = new ArrayList<>();
 	}
 
-	public SideDish(String name) {
+	public SideDishGroup(String name) {
 		this.name = name;
-		sideDish = new ArrayList<>();
+		sideDishes = new ArrayList<>();
 	}
 
 
@@ -45,14 +45,14 @@ public class SideDish extends AbstractDocument {
 		this.name = name;
 	}
 
-	public ArrayList<MenuItem> getSideDish() {
-		return sideDish;
+	public ArrayList<MenuItem> getSideDishes() {
+		return sideDishes;
 	}
 
 	public void addSideDish(MenuItem menuItem) {
-		sideDish.add(menuItem);
+		sideDishes.add(menuItem);
 	}
 
-	//todo SideDish examples have to be inialized and linked to the menuitems - MK
+	//todo SideDishGroup examples have to be inialized and linked to the menuitems - MK
 
 }

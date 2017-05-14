@@ -13,10 +13,10 @@ import java.util.logging.Logger;
 
 /**
  * @author Dennis Thanner, Julian Beck, Markus Knauer, Tim Heidelbach
- * @version 0.0.A Add Desk-reservation and SideDish Controll by not Selectable - JB
+ * @version 0.0.A Add Desk-reservation and SideDishGroup Controll by not Selectable - JB
  * 			0.0.9 corrected spelling mistakes - DS
  * 			0.0.8 menu category fix - DT
- *          0.0.7 add SideDish bsp-data - MK
+ *          0.0.7 add SideDishGroup bsp-data - MK
  *          0.0.6 add menuItem Category bsp-data-generator -JB
  *          0.0.5 added random order items init - DT
  *          0.0.4 changed to new repositories
@@ -68,7 +68,7 @@ class DefaultDemoDataIntoDB {
 		generateUser(); //No DBREF
 		generateReservation(); // DBRef: User, Desk
 		generateMenuCategories(); // DBRef: MenuItemCategories
-		generateMenuItems(); // DBRef: Category, SideDish
+		generateMenuItems(); // DBRef: Category, SideDishGroup
 		generateSideDish(); // DbRef: MenuItem
 		updateUserDesk();
 		generateOrderItem(); //DBREF: All
@@ -363,10 +363,10 @@ class DefaultDemoDataIntoDB {
 			state.setDate(new Date(millitime));
 			states.add(state);
 
-			// Check if Menuitem has selectable SideDish options
+			// Check if Menuitem has selectable SideDishGroup options
 			sideDishSelektion.add(menu);
-			while (menu.getSideDish() != null) {
-				menu = menu.getSideDish().getSideDish().get((int) (Math.random() * menu.getSideDish().getSideDish().size()));
+			while (menu.getSideDishGroup() != null) {
+				menu = menu.getSideDishGroup().getSideDishes().get((int) (Math.random() * menu.getSideDishGroup().getSideDishes().size()));
 				sideDishSelektion.add(menu);
 			}
 
@@ -382,60 +382,60 @@ class DefaultDemoDataIntoDB {
 	}
 
 
-	// ------------- START Semantic group: SideDish -------------------------
+	// ------------- START Semantic group: SideDishGroup -------------------------
 	private void generateSideDish() {
 		LOGGER.info("Creating Sidedishes");
-		SideDish sideDish;
+		SideDishGroup sideDishGroup;
 		MenuItem menuItem;
 
 		// ----------------------------- Pommes ------------------------------------------------
-		sideDish = saveSideDish("Pommesbeilage", "Mayonaisse", "Ketchup");
-		saveMenuSideDishItem(sideDish, "Chicken Nuggets", "Paniertes Schnitzel", "Großer Pommes-Teller", "Pommes frites", "Schnitzel “Wiener Art”");
+		sideDishGroup = saveSideDish("Pommesbeilage", "Mayonaisse", "Ketchup");
+		saveMenuSideDishItem(sideDishGroup, "Chicken Nuggets", "Paniertes Schnitzel", "Großer Pommes-Teller", "Pommes frites", "Schnitzel “Wiener Art”");
 		// ----------------------------- Eissorten ---------------------------------------------
-		sideDish = saveSideDish("Eissorten", "Vanilleeis", "Schokoladeneis", "Erdbeereis", "Walnußeis", "Zitroneneis");
-		saveMenuSideDishItem(sideDish, "Drei Kugeln Eis", "Chicken Nuggets", "Paniertes Schnitzel", "Großer Pommes-Teller");
+		sideDishGroup = saveSideDish("Eissorten", "Vanilleeis", "Schokoladeneis", "Erdbeereis", "Walnußeis", "Zitroneneis");
+		saveMenuSideDishItem(sideDishGroup, "Drei Kugeln Eis", "Chicken Nuggets", "Paniertes Schnitzel", "Großer Pommes-Teller");
 		// ----------------------------- Kaffee ------------------------------------------------
-		sideDish = saveSideDish("Kaffee", "Kaffeesahne", "Milch");
-		saveMenuSideDishItem(sideDish, "Tasse Kaffee");
+		sideDishGroup = saveSideDish("Kaffee", "Kaffeesahne", "Milch");
+		saveMenuSideDishItem(sideDishGroup, "Tasse Kaffee");
 		// ----------------------------- Sprudel ------------------------------------------------
-		sideDish = saveSideDish("Sprudelwahl", "Saurer Sprudel", "Süßer Sprudel");
-		saveMenuSideDishItem(sideDish, "Rotwein", "Weißwein");
+		sideDishGroup = saveSideDish("Sprudelwahl", "Saurer Sprudel", "Süßer Sprudel");
+		saveMenuSideDishItem(sideDishGroup, "Rotwein", "Weißwein");
 		// ----------------------------- Weinwahl -----------------------------------------------
-		sideDish = saveSideDish("Weinwahl", "Rotwein", "Weißwein");
-		saveMenuSideDishItem(sideDish, "Weinschorle");
+		sideDishGroup = saveSideDish("Weinwahl", "Rotwein", "Weißwein");
+		saveMenuSideDishItem(sideDishGroup, "Weinschorle");
 		// ----------------------------- Apfelstrudel -------------------------------------------
-		sideDish = saveSideDish("Apfelstrudel", "Vanilleeis", "Schlagsahne");
-		saveMenuSideDishItem(sideDish, "warmer hausgemachter Apfelstrudel");
+		sideDishGroup = saveSideDish("Apfelstrudel", "Vanilleeis", "Schlagsahne");
+		saveMenuSideDishItem(sideDishGroup, "warmer hausgemachter Apfelstrudel");
 		// ----------------------------- Tee ----------------------------------------------------
-		sideDish = saveSideDish("Teesorten", "Schwarztee", "Grüntee", "Waldfruchttee", "Pfefferminztee");
-		saveMenuSideDishItem(sideDish, "Glas Tee");
+		sideDishGroup = saveSideDish("Teesorten", "Schwarztee", "Grüntee", "Waldfruchttee", "Pfefferminztee");
+		saveMenuSideDishItem(sideDishGroup, "Glas Tee");
 		// ----------------------------- Spare-Rib ---------------------------------------------
-		sideDish = saveSideDish("Spare Ribs", "Baked Potato", "Pommes frites", "Rösti", "Krokettten", "Country-Kartoffeln", "Butterreis", "Red Beans", "Maiskolben vom Grill", "Frische Champignons", "Frische Sour Cream");
-		saveMenuSideDishItem(sideDish, "Spare Ribs 300g", "Spare Ribs 550g");
+		sideDishGroup = saveSideDish("Spare Ribs", "Baked Potato", "Pommes frites", "Rösti", "Krokettten", "Country-Kartoffeln", "Butterreis", "Red Beans", "Maiskolben vom Grill", "Frische Champignons", "Frische Sour Cream");
+		saveMenuSideDishItem(sideDishGroup, "Spare Ribs 300g", "Spare Ribs 550g");
 		// -------------------------------------------------------------------------------------
 
 	}
 
-	private SideDish saveSideDish(String sidename, String... items) {
-		SideDish sideDish = new SideDish(sidename);
-		this.sideDishRepository.save(sideDish);
+	private SideDishGroup saveSideDish(String sidename, String... items) {
+		SideDishGroup sideDishGroup = new SideDishGroup(sidename);
+		this.sideDishRepository.save(sideDishGroup);
 		for (String i : items) {
-			sideDish.addSideDish(menuItemRepository.findByName(i));
+			sideDishGroup.addSideDish(menuItemRepository.findByName(i));
 		}
-		this.sideDishRepository.save(sideDish);
-		return sideDish;
+		this.sideDishRepository.save(sideDishGroup);
+		return sideDishGroup;
 	}
 
-	private void saveMenuSideDishItem(SideDish sideDish, String... menunames) {
+	private void saveMenuSideDishItem(SideDishGroup sideDishGroup, String... menunames) {
 		MenuItem menuItem;
 		for (String s : menunames) {
 			menuItem = menuItemRepository.findByName(s);
-			menuItem.setSideDish(sideDish);
+			menuItem.setSideDishGroup(sideDishGroup);
 			menuItemRepository.save(menuItem);
 		}
 
 	}
-	// ------------- END OF Semantic group: SideDish ----------------------------
+	// ------------- END OF Semantic group: SideDishGroup ----------------------------
 
 	// ------------- START Semantic group: MenuCategory -------------------------
 	private void generateMenuCategories() {
@@ -446,7 +446,6 @@ class DefaultDemoDataIntoDB {
 		tmp.add(addCategory("Hauptspeise", null));
 		tmp.add(addCategory("Nachspeise", null));
 		tmp.add(addCategory("Getränke", null));
-		tmp.add(addCategory("Kinder Gerichte", null));
 		tmp.add(addCategory("Beilage - Spare Ribs", null));
 		tmp.add(addCategory("Beilage - Std", null));
 		//2nd level
@@ -457,6 +456,7 @@ class DefaultDemoDataIntoDB {
 		tmp.add(addCategory("Fischgerichte", tmp.get(1)));
 		tmp.add(addCategory("Fleischgerichte", tmp.get(1)));
 		tmp.add(addCategory("Vegetarische Gerichte", tmp.get(1)));
+		tmp.add(addCategory("Kinder Gerichte", tmp.get(1)));
 		//Drinks
 		tmp.add(addCategory("Aperitifs", tmp.get(3)));
 		tmp.add(addCategory("Alkoholfreie Getränke", tmp.get(3)));
