@@ -6,7 +6,8 @@ import java.util.Date;
 
 /**
  * @author Dennis Thanner, Tim Heidelbach
- * @version 0.0.4 redundancy clean up - DT
+ * @version 0.0.5 added full constructor - JB
+ * 			0.0.4 redundancy clean up - DT
  * 			0.0.3 added field duration
  *          0.0.2 removed local variable StringBuilder
  **/
@@ -23,6 +24,18 @@ public class Reservation extends AbstractDocument {
 	private Date time;
 
 	private Integer duration;
+
+
+	public Reservation(){}
+
+	public Reservation(User reservedBy, Desk desk, Date createdAt, Date time, Integer duration) {
+		this.reservedBy = reservedBy;
+		this.desk = desk;
+		this.createdAt = createdAt;
+		this.time = time;
+		this.duration = duration;
+	}
+
 
 	// getter and setter
 

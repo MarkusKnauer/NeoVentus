@@ -1,13 +1,17 @@
 package de.neoventus.persistence.repository;
 
 import de.neoventus.persistence.entity.MenuItem;
+import de.neoventus.persistence.entity.MenuItemCategory;
 import de.neoventus.persistence.repository.advanced.NVMenuItemRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author Dennis Thanner, Julian Beck
- * @version 0.0.3 changed menuItemID to number, added findFirstByOrderByNumberDesc
+ * @version 0.0.4 added findAllByMenuItemCategoryIsNot - JB
+ *			0.0.3 changed menuItemID to number, added findFirstByOrderByNumberDesc
  *          0.0.2 added find by menuItemID - JB
  **/
 @Repository
@@ -35,6 +39,14 @@ public interface MenuItemRepository extends CrudRepository<MenuItem, String>, NV
 	 * @return menuItem
 	 */
 	MenuItem findFirstByOrderByNumberDesc();
+
+	/**
+	 * find all without "Beilage"
+	 * @param menuItemList
+	 * @return
+	 */
+	List<MenuItem> findAllByMenuItemCategoryIsNot(MenuItemCategory menuItemList);
+
 
 	/**
 	 * @deprecated DANGER! lifecycle event to set number id might not work with this method
