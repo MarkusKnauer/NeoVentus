@@ -17,7 +17,8 @@ import java.util.List;
 
 /**
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.7 added side dish support in aggregated orders by desk - DT
+ * @version 0.0.8 multiple side dish support - DT
+ *          0.0.7 added side dish support in aggregated orders by desk - DT
  *          0.0.6 deleted searchOrderItemOutpuDto - DT
  *          0.0.5 orderState refactoring - DT
  *          0.0.4 state with enum - DS
@@ -51,8 +52,8 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 		o.setWaiter(dto.getWaiter() != null ? userRepository.findByWorkerId(dto.getWaiter()) : null);
 		o.setGuestWish(dto.getGuestWish() != null ? dto.getGuestWish() : "");
 
-		if (dto.getSideDishId() != null)
-			o.setSideDish(this.menuItemRepository.findOne(dto.getSideDishId()));
+		for (String sideDishId : dto.getSideDishIds())
+			o.getSideDishes().add(this.menuItemRepository.findOne(sideDishId));
 
 		mongoTemplate.save(o);
 
@@ -62,8 +63,8 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 	public List<OrderDeskAggregationDto> getGroupedNotPayedOrdersByItemForDesk(Desk desk) {
 		Aggregation agg = Aggregation.newAggregation(
 			Aggregation.match(Criteria.where("billing").is(null).and("desk").is(desk).and("states.state").ne(OrderItemState.State.CANCELED)),
-			Aggregation.group("item", "sideDish").count().as("count").first("waiter").as("waiter"),
-			Aggregation.project("waiter", "count").and("_id.item").as("item").and("_id.sideDish").as("sideDish")
+			Aggregation.group("item", "sideDishes").count().as("count").first("waiter").as("waiter"),
+			Aggregation.project("waiter", "count").and("_id.item").as("item").and("_id.sideDishes").as("sideDishes")
 		);
 
 		AggregationResults<OrderDeskAggregationDto> aggR = this.mongoTemplate.aggregate(agg, OrderItem.class, OrderDeskAggregationDto.class);

@@ -4,12 +4,15 @@ import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.entity.User;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * mapping class for aggregation
  *
  * @author Dennis Thanner
- * @version 0.0.2 added sideDish - DT
+ * @version 0.0.3 added support for multiple side dishes - DT
+ *          0.0.2 added sideDish - DT
  */
 public class OrderDeskAggregationDto implements Serializable {
 
@@ -19,7 +22,14 @@ public class OrderDeskAggregationDto implements Serializable {
 
 	private int count;
 
-	private MenuItem sideDish;
+	private List<MenuItem> sideDishes;
+
+	// constructor
+
+	public OrderDeskAggregationDto() {
+		this.sideDishes = new ArrayList<>();
+	}
+
 
 	// getter and setter
 
@@ -47,11 +57,12 @@ public class OrderDeskAggregationDto implements Serializable {
 		this.count = count;
 	}
 
-	public MenuItem getSideDish() {
-		return sideDish;
+	public List<MenuItem> getSideDishes() {
+		return sideDishes;
 	}
 
-	public void setSideDish(MenuItem sideDish) {
-		this.sideDish = sideDish;
+	public void setSideDishes(List<MenuItem> sideDishes) {
+		this.sideDishes = sideDishes;
 	}
+
 }

@@ -181,7 +181,7 @@ public class OrderItemRepositoryTest extends AbstractTest {
 		orderItem = new OrderItem();
 		orderItem.setDesk(d);
 		orderItem.setItem(menuItem);
-		orderItem.setSideDish(sideDish);
+		orderItem.setSideDishes(Arrays.asList(sideDish));
 		this.orderItemRepository.save(orderItem);
 
 		List<OrderDeskAggregationDto> result = this.orderItemRepository.getGroupedNotPayedOrdersByItemForDesk(d);

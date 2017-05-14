@@ -2,6 +2,8 @@ package de.neoventus.rest.dto;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Julian Beck, Dominik Streif, Dennis Thanner
@@ -28,10 +30,11 @@ public class OrderItemDto implements Serializable {
 
 	private String guestWish;
 
-	private String sideDishId;
+	private List<String> sideDishIds;
 
 	// constructors
 	public OrderItemDto() {
+		this.sideDishIds = new ArrayList<>();
 	}
 
 	public OrderItemDto(Integer user, Integer desk, Integer menuItem, String guestwish) {
@@ -39,6 +42,7 @@ public class OrderItemDto implements Serializable {
 		setDeskNumber(desk);
 		setGuestWish(guestwish);
 		setMenuItemNumber(menuItem);
+		this.sideDishIds = new ArrayList<>();
 	}
 
 	// getter and setter
@@ -83,11 +87,11 @@ public class OrderItemDto implements Serializable {
 		this.guestWish = guestWish;
 	}
 
-	public String getSideDishId() {
-		return sideDishId;
+	public List<String> getSideDishIds() {
+		return sideDishIds;
 	}
 
-	public void setSideDishId(String sideDishId) {
-		this.sideDishId = sideDishId;
+	public void setSideDishIds(List<String> sideDishIds) {
+		this.sideDishIds = sideDishIds;
 	}
 }

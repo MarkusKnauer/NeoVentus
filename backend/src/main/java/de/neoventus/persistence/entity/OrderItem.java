@@ -8,7 +8,8 @@ import java.util.List;
 
 /**
  * @author Dennis Thanner, Tim Heidelbach, Dominik Streif
- * @version 0.0.8 added side dish - DT
+ * @version 0.0.9 added support for multiple side dishes - DT
+ * 0.0.8 added side dish - DT
  *          0.0.7 refactored state, added billing item - DT
  *          0.0.6 state with enum - DS
  *          0.0.5 multiple state conditions - DS
@@ -28,7 +29,7 @@ public class OrderItem extends AbstractDocument {
 	private MenuItem item;
 
 	@DBRef
-	private MenuItem sideDish;
+	private List<MenuItem> sideDishes;
 
 	private String guestWish;
 
@@ -42,6 +43,7 @@ public class OrderItem extends AbstractDocument {
 	public OrderItem() {
 		this.states = new ArrayList<>();
 		addState(OrderItemState.State.NEW);
+		this.sideDishes = new ArrayList<>();
 	}
 
 	public OrderItem(User user, Desk desk, MenuItem menuItem, String guestwish) {
@@ -51,6 +53,7 @@ public class OrderItem extends AbstractDocument {
 		setItem(menuItem);
 		this.states = new ArrayList<>();
 		addState(OrderItemState.State.NEW);
+		this.sideDishes = new ArrayList<>();
 	}
 
 	/**
@@ -128,12 +131,12 @@ public class OrderItem extends AbstractDocument {
 		this.billing = billing;
 	}
 
-	public MenuItem getSideDish() {
-		return sideDish;
+	public List<MenuItem> getSideDishes() {
+		return sideDishes;
 	}
 
-	public void setSideDish(MenuItem sideDish) {
-		this.sideDish = sideDish;
+	public void setSideDishes(List<MenuItem> sideDishes) {
+		this.sideDishes = sideDishes;
 	}
 
 	@Override
