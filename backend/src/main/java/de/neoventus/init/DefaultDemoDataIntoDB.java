@@ -6,6 +6,13 @@ import de.neoventus.persistence.repository.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +20,8 @@ import java.util.logging.Logger;
 
 /**
  * @author Dennis Thanner, Julian Beck, Markus Knauer, Tim Heidelbach
- * @version 0.0.A Add Desk-reservation and SideDishGroup Controll by not Selectable - JB
+ * @version 0.0.B File import for MenuItem and MenuCategory (Code-reduction) - JB
+ * 			0.0.A Add Desk-reservation and SideDishGroup Controll by not Selectable - JB
  * 			0.0.9 corrected spelling mistakes - DS
  * 			0.0.8 menu category fix - DT
  *          0.0.7 add SideDishGroup bsp-data - MK
@@ -67,7 +75,6 @@ class DefaultDemoDataIntoDB {
 		generateDesks(); // NoDBREF
 		generateUser(); //No DBREF
 		generateReservation(); // DBRef: User, Desk
-		generateMenuCategories(); // DBRef: MenuItemCategories
 		generateMenuItems(); // DBRef: Category, SideDishGroup
 		generateSideDish(); // DbRef: MenuItem
 		updateUserDesk();
@@ -78,170 +85,73 @@ class DefaultDemoDataIntoDB {
 	/**
 	 * add specified demo menu items to database
 	 */
-	private void generateMenuItems() {
+	private void generateMenuItems(){
 		LOGGER.info("Init demo menu item data");
-		MenuItem[] menu = {
-			// Vorspeise
-			// kalte Vorspeise - 2
-			new MenuItem(menuItemCategoryRepository.findByName("Kalte Vorspeise"), "kleiner Salat", "klein S.", 4.80, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Kalte Vorspeise"), "Matjes-Filet", "Matjes", 6.30, "EUR", "in leichter Dillsahne mit Äpfeln, Senfgurken und Zwiebeln dazu eine dampfende Ofenkartoffel", "", new ArrayList<>()),
-			// warme Vorspeise - 2
-			new MenuItem(menuItemCategoryRepository.findByName("Warme Vorspeise"), "Weinbergschnecken", "W-Schneck", 7.40, "EUR", "ein halbes Dutzend, mit würziger Kräuterbutter und Baguette", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Warme Vorspeise"), "Toast “Hawaii”", "T-Hawa", 6.70, "EUR", "gegrillte Ananas mit Hinterschinken und Käse überbacken auf Toast", "", new ArrayList<>()),
-			// Suppen - 4
-			new MenuItem(menuItemCategoryRepository.findByName("Suppen"), "Bärlauchcremesuppe mit Räucherlachs", "Bär-Cre-Su", 4.80, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Suppen"), "Ochsen-Bouillon", "O-Bou", 4.80, "EUR", "mit Fleisch und Leberspätzle", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Suppen"), "Zwiebelsuppe Provence", "Zwie-Pro", 4.60, "EUR", "mit Weißwein und den typischen Kräutern der Provence verfeinert und würzigem Käse im Ofen überbacken", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Suppen"), "Tomaten-Rahmsuppe", "To-Rahm", 4.60, "EUR", "von frischen Tomaten, mit Sahneschaum und Speckcroûtons", "", new ArrayList<>()),
-			// Hauptspeise
-			// Fisch - 2
-			new MenuItem(menuItemCategoryRepository.findByName("Fischgerichte"), "Lachsfilet", "Lachs", 14.60, "EUR", "mit Tagliatelle und Tomaten", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Fischgerichte"), "Zander-Salatteller", "Zander", 13.80, "EUR", "mit gebratenem Zanderfilet", "", new ArrayList<>()),
-			// Fleisch - 8 bzw. 9
-			new MenuItem(menuItemCategoryRepository.findByName("Fleischgerichte"), "Schnitzel “Wiener Art”", "Schnitzel", 10.90, "EUR", "mit Pommes und Salat", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Fleischgerichte"), "Schweinerückensteak", "R-Steak", 14.20, "EUR", "mit Rahmpfeffersauce und Kartoffelrösti", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Fleischgerichte"), "Pasta Bolognese", "Bolo", 11.90, "EUR", "mit Tomaten und Parmesan", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Fleischgerichte"), "Hüftsteak", "H-Steak", 14.70, "EUR", "aus dem besten Stück der Rinderkeule 180g mit knusprig geröstetes Bratkartoffeln und würzige Kräuterbutter", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Fleischgerichte"), "Filetsteak", "F-Steak", 24.90, "EUR", "das zarte Stück vom Rind 200g mit knusprigen Ofenkartoffeln und würzige Kräuterbutter", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Fleischgerichte"), "Putenbruststeak", "P-Steak", 10.20, "EUR", "zart und kalorienarm 200g mit Naturreis und würzige Kräuterbutter", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Fleischgerichte"), "Filet vom Lammrücken", "Lammfilet", 17.20, "EUR", "mariniert in feinem Kräuteröl und auf dem Grill gebraten, mit Kräuterbutter aus der Provence", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Fleischgerichte"), "Spare Ribs 300g", "Spare-300", 9.90, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Fleischgerichte"), "Spare Ribs 550g", "Spare-550", 13.20, "EUR", "", "", new ArrayList<>()),
-			// Vegetarisch - 2
-			new MenuItem(menuItemCategoryRepository.findByName("Vegetarische Gerichte"), "Hausgemachte Kartoffel Gnocchi", "Gnocchi", 12.30, "EUR", "Gnocchi mit mediterranem Gemüse, Fetakäse, Rucola & Parmesan", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Vegetarische Gerichte"), "Hausgemachte Käsespätzle", "K-Spätzle", 9.80, "EUR", "mit grünem Salatteller", "", new ArrayList<>()),
-			// Kindergerichte - 3
-			new MenuItem(menuItemCategoryRepository.findByName("Kinder Gerichte"), "Großer Pommes-Teller", "Kind-Pommes", 3.70, "EUR", "mit Mayo oder Ketchup", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Kinder Gerichte"), "Paniertes Schnitzel", "Kind-Schnitzel", 6.10, "EUR", "mit Pommes Frites", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Kinder Gerichte"), "Chicken Nuggets", "Kind-Nuggets", 5.80, "EUR", "mit Pommes Frites und Mayo oder Ketchup", "", new ArrayList<>()),
-			//Nachspeise - 3
-			new MenuItem(menuItemCategoryRepository.findByName("Nachspeise"), "Drei Kugeln Eis", "Eis", 5.10, "EUR", "nach Wahl mit Sahne", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Nachspeise"), "warmer hausgemachter Apfelstrudel", "Apfelstrudel", 6.20, "EUR", "mit Vanillesoße und einer Kugel Vanilleeis oder Sahne", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Nachspeise"), "Rhabarber-Torte", "Rha-to", 6.80, "EUR", "mit Rosmarinstreusel und cremigem Himbeersorbet", "", new ArrayList<>()),
-			// Getränke
-			// Aperitifs - 6
-			new MenuItem(menuItemCategoryRepository.findByName("Aperitifs"), "Martini rot", "Martin-Rot", 3.50, "EUR", "5cl", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Aperitifs"), "Martini weiß", "Martin-weiß", 3.50, "EUR", "5cl", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Aperitifs"), "Sherry Sandemann, trocken", "Sherry-tro", 3.50, "EUR", "5cl", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Aperitifs"), "Sherry Sandemann, medium", "Sherry-med", 3.50, "EUR", "5cl", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Aperitifs"), "Kir Royal, Prosecco mit Cassis", "Prosecco", 3.50, "EUR", "1,10l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Aperitifs"), "Aperol Sekt", "Aperol", 3.30, "EUR", "1,10l", "", new ArrayList<>()),
-			// Alkoholfrei - 13
-			new MenuItem(menuItemCategoryRepository.findByName("Alkoholfreie Getränke"), "Coca Cola", "Cola", 3.10, "EUR", "0,40l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Alkoholfreie Getränke"), "Coca Cola light", "Cola light", 2.90, "EUR", "0,40l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Alkoholfreie Getränke"), "Fanta Orange", "Fanta", 3.10, "EUR", "0,40l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Alkoholfreie Getränke"), "Cola Mix", "Cola Mix", 2.90, "EUR", "0,40l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Alkoholfreie Getränke"), "Softdrinks klein", "Kle-Soft", 2.50, "EUR", "0,30l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Alkoholfreie Getränke"), "Schweppes Ginger Ale", "Ginger Ale", 2.80, "EUR", "0,20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Alkoholfreie Getränke"), "Schweppes Bitter Lemon", "Bitter Lemon", 2.80, "EUR", "0,20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Alkoholfreie Getränke"), "Bionade Holunder", "Bio-Holunder", 2.70, "EUR", "0,33l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Alkoholfreie Getränke"), "Bionade Ingwer-Orange", "Bio-Ingwer", 2.70, "EUR", "0,33l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Alkoholfreie Getränke"), "Kleines Wasser mit Kohlensäure", "Kle-Wa mit", 2.20, "EUR", "0,25l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Alkoholfreie Getränke"), "Kleines Wasser ohne Kohlensäure", "Kle-Wa ohne", 2.20, "EUR", "0,25l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Alkoholfreie Getränke"), "Großes Wasser mit Kohlensäure", "Gro-Wa mit", 3.10, "EUR", "0,75l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Alkoholfreie Getränke"), "Großes Wasser ohne Kohlensäure", "Gro-Wa ohne", 3.20, "EUR", "0,75l", "", new ArrayList<>()),
-			// Säfte - 4
-			new MenuItem(menuItemCategoryRepository.findByName("Säfte"), "Apfelsaft", "A-Saft", 2.90, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Säfte"), "Orangensaft", "O-Saft", 2.90, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Säfte"), "Multivitaminsaft", "Multi", 2.90, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Säfte"), "Tomatensaft", "T-Saft", 2.90, "EUR", "0.20l", "", new ArrayList<>()),
-			// Saftschorle - 4 Klein / 4 Groß
-			new MenuItem(menuItemCategoryRepository.findByName("Saftschorle"), "Kleines Apfelsaftschorle", "A-Schorle klein", 2.90, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Saftschorle"), "Kleines Orangensaftschorle", "O-Schorle klein", 2.90, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Saftschorle"), "Kleines Multivitaminsaftschorle", "Multi-Schorle klein", 2.90, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Saftschorle"), "Kleines Tomatensaftschorle", "T-Schorle klein", 2.90, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Saftschorle"), "Großes Apfelsaftschorle", "A-Schorle groß", 2.90, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Saftschorle"), "Großes Orangensaftschorle", "O-Schorle groß", 2.90, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Saftschorle"), "Großes Multivitaminsaftschorle", "Multi-Schorle groß", 2.90, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Saftschorle"), "Großes Tomatensaftschorle", "T-Schorle groß", 2.90, "EUR", "0.20l", "", new ArrayList<>()),
-			//Bier - 8
-			new MenuItem(menuItemCategoryRepository.findByName("Bier"), "Jever Fun alkoholfrei", "Jever Fun", 3.10, "EUR", "0.25l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Bier"), "Kleines Warsteiner", "Klein-Warstein", 3.10, "EUR", "0.25l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Bier"), "Großes Warsteiner", "Gro-Warstein", 3.60, "EUR", "0.50l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Bier"), "Bitburger", "Bitburger", 3.10, "EUR", "0.33l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Bier"), "Radler", "Radler", 3.00, "EUR", "0.30l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Bier"), "Guinness", "Guinness", 3.40, "EUR", "0.50l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Bier"), "Ruß", "Ruß", 3.40, "EUR", "0.50l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Bier"), "Cola-Weizen", "Cola-Weizen", 3.40, "EUR", "0.50l", "", new ArrayList<>()),
-			// Wein
-			// Weißwein - 5
-			new MenuItem(menuItemCategoryRepository.findByName("Weißwein"), "Cabernet Sauvignon Weiß", "Cabernet Weiß", 3.90, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Weißwein"), "Pinot Grigio", "Pinot", 3.90, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Weißwein"), "Chardonnay", "Chardonnay", 4.70, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Weißwein"), "Pinot Grigio des Veneto IGT", "Pinot IGT", 4.50, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Weißwein"), "Riesling trocken", "Riesling", 4.20, "EUR", "0.20l", "", new ArrayList<>()),
-			// Rotwein - 4
-			new MenuItem(menuItemCategoryRepository.findByName("Rotwein"), "Cabernet Sauvignon Rot", "Cabernet Rot", 3.90, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Rotwein"), "Casa Solar", "Casa", 3.90, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Rotwein"), "Bordeaux Rouge", "Bordeaux", 4.90, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Rotwein"), "Trollinger mit Lemberger", "Lem-Tro", 4.70, "EUR", "0.20l", "", new ArrayList<>()),
-			// Rosé - 2
-			new MenuItem(menuItemCategoryRepository.findByName("Rose"), "Côtes de Provence Rosé", "Cotes-rose", 4.60, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Rose"), "Talheimer Schlossberg", "Talheimer", 4.80, "EUR", "0.20l", "", new ArrayList<>()),
-			// Weinmixgetränke - 2
-			new MenuItem(menuItemCategoryRepository.findByName("Mixwein"), "Weinschorle", "Weinschorle", 3.10, "EUR", "0.20l", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Mixwein"), "Hugo", "Hugo", 3.90, "EUR", "0.20l", "", new ArrayList<>()),
-			// Schaumwein
-			new MenuItem(menuItemCategoryRepository.findByName("Schaumwein"), "Prosecco 0.75l", "Gro-Prosecco", 21.90, "EUR", "5cl", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Schaumwein"), "Prosecco 0.10l", "Klein-Prosecco", 3.90, "EUR", "5cl", "", new ArrayList<>()),
+		try{
+			// Get File
+			URI uri = DefaultDemoDataIntoDB.class.getResource("menu.txt").toURI();
+			Path p = Paths.get( uri );
+			// builder[] for splitting Csv-divider result
+			String builder[];
+			MenuItemCategory child = null;
+			MenuItem menuItem;
+			// First Lines is without any information (Content: Menukarte)
+			boolean menuCardDataLines = false;
 
-			// Schnaps - 7
-			new MenuItem(menuItemCategoryRepository.findByName("Spirituosen"), "Jägermeister", "Jägi", 2.40, "EUR", "2cl", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Spirituosen"), "Sambuca", "Sambuca", 3.90, "EUR", "2cl", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Spirituosen"), "Tequila Silver", "Tequila", 2.60, "EUR", "2cl", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Spirituosen"), "Malteserkreuz", "Malte", 2.60, "EUR", "2cl", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Spirituosen"), "Williamsbirne", "Willi", 2.70, "EUR", "2cl", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Spirituosen"), "Fernet Branca", "Branca", 2.80, "EUR", "2cl", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Spirituosen"), "Ramazzotti", "Rama", 2.80, "EUR", "2cl", "", new ArrayList<>()),
+			for(String line : Files.readAllLines(p, StandardCharsets.UTF_8)){
 
-			// Heiße Getränke - 7
-			new MenuItem(menuItemCategoryRepository.findByName("Heiße Getränke"), "Tasse Kaffee", "Kaffee", 1.50, "EUR", "mit Milch, Zucker", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Heiße Getränke"), "Cappuccino", "Cappu", 2.10, "EUR", "mit Milchschaum", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Heiße Getränke"), "Latte Macchiato", "Latte", 2.80, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Heiße Getränke"), "Heiße Schokolade", "Schoki", 2.10, "EUR", "mit Schlagsahne", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Heiße Getränke"), "Tasse Espresso", "Espresso", 1.50, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Heiße Getränke"), "Glas Tee", "Tee", 2.10, "EUR", "mit Kandis und Zitrone", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Heiße Getränke"), "Doppelter Espresso", "D-Espersso", 1.50, "EUR", "mit Milch, Zucker", "", new ArrayList<>()),
+				if(menuCardDataLines) {
+					// CSV-divider
+					builder = line.split(";");
 
-			//Beilagen- extra kaufen
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Spare Ribs"), "Baked Potato", "Bei-Potato", 2.90, "EUR", "frische Ofenkartoffel", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Spare Ribs"), "Pommes frites", "Bei-Pommes", 2.70, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Spare Ribs"), "Rösti", "Bei-Rösti", 2.70, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Spare Ribs"), "Kroketten", "Bei-Kroketten", 2.70, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Spare Ribs"), "Country-Kartoffel", "Bei-Country", 2.90, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Spare Ribs"), "Butterreis", "Bei-Butter", 1.70, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Spare Ribs"), "Red Beans", "Bei-redbean", 3.10, "EUR", "kräftige rote Bohnen mit Speck und Zwiebeln", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Spare Ribs"), "Maiskolben vom Grill", "Bei-Kolben", 3.40, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Spare Ribs"), "Frische Champignons", "Bei-Champig", 3.10, "EUR", "mit Rahmsauce", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Spare Ribs"), "Frische Sour Cream", "Bei-Sour", 1.50, "EUR", "", "", new ArrayList<>()),
+					if (builder[0].equals("Category")) {
+						child = new MenuItemCategory(builder[2]);
+						// if Parent-Category exists
+						if (builder[1] != null) {
+							child.setParent(menuItemCategoryRepository.findByName(builder[1]));
+						}
+						menuItemCategoryRepository.save(child);
+					} else {
+						// German decimal-sign to english
+						if (builder[2].contains(",")){
+							builder[2] = builder[2].replace(",", ".");
+						}
+						// Check if description is not available
+						if(builder.length < 5 ){
+							menuItem = new MenuItem(child,
+								builder[0], // Name
+								builder[1], // Short name
+								Double.parseDouble(builder[2]), //Price
+								builder[3], // Currency
+								"", // Description
+								"",
+								new ArrayList<>());
+						}else{
+							menuItem = new MenuItem(child,
+								builder[0], // Name
+								builder[1], // Short name
+								Double.parseDouble(builder[2]), //Price
+								builder[3], // Currency
+								builder[4], // Description
+								"",
+								new ArrayList<>());
+						}
 
-			//Beilagen Standard - Sollen nicht im Menu auftauchen
-			// Beilage für Pommes
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Ketchup", "Ketchup", 0.00, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Mayonaisse", "Mayo", 0.00, "EUR", "", "", new ArrayList<>()),
-			// Dessertzubehör
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Vanilleeis", "Vanilleeis", 0.00, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Schokoladeneis", "Schokoeis", 0.00, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Erdbeereis", "Erdbeereis", 0.00, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Walnußeis", "Walnußeis", 0.00, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Zitroneneis", "Zitroneneis", 0.00, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Schlagsahne", "S-Sahne", 0.00, "EUR", "", "", new ArrayList<>()),
-			// Kaffee
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Kaffeesahne", "K-Sahne", 0.00, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Milch", "Milch", 0.00, "EUR", "", "", new ArrayList<>()),
-			// Mixt Wein
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Rotwein", "R-Wein", 0.00, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Weißwein", "W-Wein", 0.00, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Saurer Sprudel", "Sauer", 0.00, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Süßer Sprudel", "Süßer", 0.00, "EUR", "", "", new ArrayList<>()),
-			// Tees
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Schwarztee", "Schwa-Tee", 0.00, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Grüntee", "Grüntee", 0.00, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Waldfruchttee", "Wald-Tee", 0.00, "EUR", "", "", new ArrayList<>()),
-			new MenuItem(menuItemCategoryRepository.findByName("Beilage - Std"), "Pfefferminztee", "Pfeff-Tee", 0.00, "EUR", "", "", new ArrayList<>()),
+						menuItemRepository.save(menuItem);
+					}
+				} else{
+					menuCardDataLines = true;
+				}
+			}
 
-		};
-		for (MenuItem m : menu) this.menuItems.add(menuItemRepository.save(m));
+		} catch (IOException ioe){
+
+		} catch (URISyntaxException urie){
+
+		}
+
+
+		// for (MenuItem m : menu) this.menuItems.add(menuItemRepository.save(m));
 	}
 
 	/**
@@ -436,54 +346,6 @@ class DefaultDemoDataIntoDB {
 
 	}
 	// ------------- END OF Semantic group: SideDishGroup ----------------------------
-
-	// ------------- START Semantic group: MenuCategory -------------------------
-	private void generateMenuCategories() {
-		LOGGER.info("Generate menu Items");
-		ArrayList<MenuItemCategory> tmp = new ArrayList<MenuItemCategory>();
-
-		tmp.add(addCategory("Vorspeise", null));
-		tmp.add(addCategory("Hauptspeise", null));
-		tmp.add(addCategory("Nachspeise", null));
-		tmp.add(addCategory("Getränke", null));
-		tmp.add(addCategory("Beilage - Spare Ribs", null));
-		tmp.add(addCategory("Beilage - Std", null));
-		//2nd level
-		tmp.add(addCategory("Warme Vorspeise", tmp.get(0)));
-		tmp.add(addCategory("Kalte Vorspeise", tmp.get(0)));
-		tmp.add(addCategory("Suppen", tmp.get(0)));
-		//main Dish
-		tmp.add(addCategory("Fischgerichte", tmp.get(1)));
-		tmp.add(addCategory("Fleischgerichte", tmp.get(1)));
-		tmp.add(addCategory("Vegetarische Gerichte", tmp.get(1)));
-		tmp.add(addCategory("Kinder Gerichte", tmp.get(1)));
-		//Drinks
-		tmp.add(addCategory("Aperitifs", tmp.get(3)));
-		tmp.add(addCategory("Alkoholfreie Getränke", tmp.get(3)));
-		tmp.add(addCategory("Säfte", tmp.get(3)));
-		tmp.add(addCategory("Saftschorle", tmp.get(3)));
-		tmp.add(addCategory("Bier", tmp.get(3)));
-		tmp.add(addCategory("Wein", tmp.get(3)));
-		tmp.add(addCategory("Heiße Getränke", tmp.get(3)));
-		tmp.add(addCategory("Spirituosen", tmp.get(3)));
-
-		// Wine
-		MenuItemCategory cat = menuItemCategoryRepository.findByName("Wein");
-		tmp.add(addCategory("Weißwein", cat));
-		tmp.add(addCategory("Rotwein", cat));
-		tmp.add(addCategory("Rose", cat));
-		tmp.add(addCategory("Mixwein", cat));
-		tmp.add(addCategory("Schaumwein", cat));
-	}
-
-	// Subfunction for generateMenuCategories
-	private MenuItemCategory addCategory(String name, MenuItemCategory parent) {
-		MenuItemCategory child = new MenuItemCategory(name);
-		child.setParent(parent);
-		return menuItemCategoryRepository.save(child);
-	}
-// -------------END OF Semantic group: MenuCategory -------------------------
-
 	public void generateReservation() {
 		LOGGER.info("Generate Reservations");
 		List<Permission> permissions = new ArrayList<Permission>();
