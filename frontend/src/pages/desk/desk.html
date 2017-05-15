@@ -17,10 +17,8 @@
       </ion-item-divider>
       <ion-item *ngFor="let order of cat.orders">
         {{order.count}} x {{ order.item.name }}
-        <span *ngIf="order.sideDishGroup">{{order.sideDishGroup.name}}</span>
-        <span class="right">
-        {{order.item.price * order.count | costDecimal}} €
-      </span>
+        <span class="side-dish" *ngFor="let side of order.sideDishes"> - {{side.name}}</span>
+        <span class="right">{{order.item.price * order.count | costDecimal}} €</span>
       </ion-item>
     </ng-container>
     <ng-container *ngIf="groupedTmpOrders.length">
@@ -29,7 +27,7 @@
       </ion-item-divider>
       <ion-item *ngFor="let tmpOrder of groupedTmpOrders">
         {{tmpOrder.count}} x {{tmpOrder.item.name}}
-        <span *ngIf="tmpOrder.sideDishGroup">{{tmpOrder.sideDishGroup.name}}</span>
+        <span class="side-dish" *ngFor="let side of tmpOrder.sideDishes"> - {{side.name}}</span>
         <span class="right secondary-text">
           {{tmpOrder.count * tmpOrder.item.price | costDecimal}} €
         </span>
@@ -45,7 +43,7 @@
     <ion-row>
       <ion-col col-10>
         <button ion-button full icon-left
-                *ngIf="orderService.cache[ordersCacheKey] != null && orderService.cache[ordersCacheKey].length ">
+                *ngIf="orderService.cache[ordersCacheKey]?.length ">
           <ion-icon name="cash"></ion-icon>
           Rechnung
         </button>

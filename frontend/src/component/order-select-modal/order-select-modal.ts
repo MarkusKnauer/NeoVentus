@@ -8,7 +8,8 @@ import {LocalStorageService} from "../../service/local-storage.service";
 
 /**
  * @author Dennis Thanner
- * @version 0.0.4 added load favorites - DT
+ * @version 0.0.5 finished detail modal and favs support - DT
+ * 0.0.4 added load favorites - DT
  *          0.0.3 added tmp order - DT
  *          0.0.2 added grouping after loading - DT
  */
@@ -20,8 +21,6 @@ export class OrderSelectModalComponent {
 
   private tmpOrders: Array<Order> = [];
 
-  private favorites: Array<any> = [];
-
   constructor(private viewCtrl: ViewController, private menuCategoryService: MenuCategoryService, private menuService: MenuService,
               private modalCtrl: ModalController, private navParams: NavParams, private localStorageService: LocalStorageService,
               private events: Events) {
@@ -31,27 +30,19 @@ export class OrderSelectModalComponent {
       menuService.getAll()
     ]).then(() => {
       this.groupMenuToCategories();
-      this.loadFavorites();
+      this.localStorageService.loadMenuFavoriteIds();
     }, console.debug);
-
-    // subscribe to fav added event to reload favs
-    this.events.subscribe("FAV_ADDED", this.loadFavorites)
 
   }
 
   /**
-   * load favorites from local storage
+   * get menu object by id from cache
+   * @param menuId
    */
-  loadFavorites() {
-    this.localStorageService.getMenuFavoriteIds().then(favIds => {
-      console.debug("fav ids", favIds);
-      if (favIds instanceof Array) {
-        this.favorites = this.menuService.cache["all"].filter(el => {
-          return favIds.indexOf(el.id) > -1;
-        });
-        console.debug(this.favorites)
-      }
-    })
+  getMenuObjectToId(menuId: string) {
+    return this.menuService.cache["all"].find(elem => {
+      return elem.id == menuId;
+    });
   }
 
   /**
@@ -79,13 +70,20 @@ export class OrderSelectModalComponent {
   }
 
   /**
-   * add menu to tmp order
+   * add menu to tmp order or open detail modal
    *
    * @param menu
+   * @param sideDishs
+   * @param wish
    */
-  addOrder(menu, sideDishs, wish) {
-    console.debug("add to tmp orders", menu, this.tmpOrders);
-    this.tmpOrders.push(new Order(menu, sideDishs, wish));
+  addOrder(menu, sideDishes, wish) {
+    if (!menu.sideDishGroup) {
+      console.debug("add to tmp orders", menu, this.tmpOrders);
+      this.tmpOrders.push(new Order(menu, sideDishes, wish));
+    } else {
+      // if menu has side dishes open modal to select them
+      this.openDetailModal(menu.id);
+    }
   }
 
   /**
@@ -94,6 +92,11 @@ export class OrderSelectModalComponent {
   openDetailModal(menuId: string) {
     let menuModal = this.modalCtrl.create(MenuDetailModalComponent, {id: menuId});
     menuModal.present();
+    menuModal.onDidDismiss((data) => {
+      if (data) {
+        this.tmpOrders.push(data);
+      }
+    })
   }
 
   /**

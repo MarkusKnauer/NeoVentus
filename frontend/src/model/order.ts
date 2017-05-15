@@ -2,20 +2,19 @@
  * order model
  *
  * @author Dennis Thanner
- * @version 0.0.1
+ * @version 0.0.2 added multiple side dish support
  */
-// todo add multiple side dish support
 export class Order {
 
   private _item;
 
-  private _sideDish;
+  private _sideDishes: Array<any>;
 
   private _wish: string;
 
-  constructor(item, sideDish, wish: string) {
+  constructor(item, sideDishes, wish: string) {
     this._item = item;
-    this._sideDish = sideDish;
+    this._sideDishes = sideDishes ? sideDishes : [];
     this._wish = wish;
   }
 
@@ -27,12 +26,12 @@ export class Order {
     this._item = value;
   }
 
-  get sideDish() {
-    return this._sideDish;
+  get sideDishes(): Array<any> {
+    return this._sideDishes;
   }
 
-  set sideDish(value) {
-    this._sideDish = value;
+  set sideDishes(value) {
+    this._sideDishes = value;
   }
 
   get wish(): string {

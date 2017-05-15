@@ -102,8 +102,8 @@ export class DeskPage {
     }
     for (let tmpOrder of this.tmpOrders) {
       sum += tmpOrder.item.price;
-      if (tmpOrder.sideDish) {
-        sum += tmpOrder.sideDish.price;
+      for (let sd of tmpOrder.sideDishes) {
+        sum += sd.price;
       }
     }
     return sum;
@@ -129,12 +129,12 @@ export class DeskPage {
     let result = [];
     for (let tmp of this.tmpOrders) {
       let rTmp = result.find(el => {
-        return tmp.item == el.item && tmp.sideDish == el.sideDish;
+        return tmp.item == el.item && tmp.sideDishes == el.sideDishes;
       });
       if (rTmp) {
         rTmp.count += 1;
       } else {
-        result.push({item: tmp.item, sideDish: tmp.sideDish, count: 1});
+        result.push({item: tmp.item, sideDishes: tmp.sideDishes, count: 1});
       }
     }
     console.debug("grouped tmp orders", result);
