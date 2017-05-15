@@ -4,6 +4,7 @@ import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.entity.OrderItem;
 import de.neoventus.persistence.entity.OrderItemState;
 import de.neoventus.persistence.repository.DeskRepository;
+import de.neoventus.persistence.repository.MenuItemCategoryRepository;
 import de.neoventus.persistence.repository.OrderItemRepository;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.OrderDeskAggregationDto;
 import de.neoventus.rest.dto.OrderItemDto;
@@ -15,13 +16,15 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 /**
  * REST controller for entity Order
  *
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.8 corrected GET-Method /all/open - DS
+ * @version 0.0.9 GetMapping /all/open/meals
+ * 			0.0.8 corrected GET-Method /all/open - DS
  * 			0.0.7 url and method refactoring - DT
  *          0.0.6 added finish and cancel methods, removed socket update to event listener - DT
  *          0.0.5 No key-Value-pairs and refactor GET-Method
@@ -37,6 +40,7 @@ public class OrderItemController {
 
 	private final OrderItemRepository orderRepository;
 	private DeskRepository deskRepository;
+	private MenuItemCategoryRepository menuItemCategoryRepository;
 
 
 	@Autowired
@@ -76,18 +80,32 @@ public class OrderItemController {
 	 * @param
 	 * @return
 	 */
-	@GetMapping("/all/open")
+	@GetMapping("/all/open/meals")
 	public Iterable<OrderItem> listAllOpenOrders(HttpServletResponse response) {
 		try {
-			Iterable<OrderItem> list = orderRepository.findAll();
-			ArrayList<OrderItem> tmp = new ArrayList<OrderItem>();
-			// get only the orderItems with the correct state
+			Iterable<OrderItem> list = orderRepository.findByBillingIsNullAndStatesStateNotIn(
+				Arrays.asList(OrderItemState.State.FINISHED, OrderItemState.State.CANCELED)
+			);
+
+			ArrayList<OrderItem> tmp = new ArrayList<>();
 			for (OrderItem item : list) {
-				if (item.getCurrentState().equals(OrderItemState.State.NEW)) {
-					tmp.add(item);
+				String cat = item.getItem().getMenuItemCategory().getName();
+
+				switch (cat) {
+					case "Warme Vorspeise":
+					case "Kalte Vorspeise":
+					case "Suppen":
+					case "Fischgerichte":
+					case "Fleischgerichte":
+					case "Vegetarische Gerichte":
+					case "Kinder Gerichte":
+						tmp.add(item);
 				}
 			}
+
 			list = tmp;
+
+
 			return list;
 
 		} catch (Exception e) {
@@ -95,6 +113,8 @@ public class OrderItemController {
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return null;
 		}
+
+
 	}
 
 	/**

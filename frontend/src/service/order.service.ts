@@ -44,7 +44,7 @@ export class OrderService extends CachingService {
   public getAllOpenOrderItems() {
 
     return new Promise<any>(resolve => {
-      this.http.get("/api/order/all/open")
+      this.http.get("/api/order/all/open/meals")
         .map(res => res.json())
         .subscribe(data => {
           this.saveToCache("open_orders_grouped_by_desks", data);
@@ -63,7 +63,7 @@ export class OrderService extends CachingService {
   public getAllOpenOrderItemsGroupedByOrderItem() {
 
     return new Promise<any>(resolve => {
-      this.http.get("/api/order/all/open")
+      this.http.get("/api/order/all/open/meals")
         .map(res => res.json())
         .subscribe(data => {
           this.saveToCache("open_orders_grouped_by_orderitem", data);

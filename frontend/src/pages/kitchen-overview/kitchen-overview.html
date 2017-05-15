@@ -23,17 +23,31 @@
             <h1 style="color: white">Tisch {{ordersPerDesk.desk}}</h1>
           </ion-card-header>
 
-          <ion-item-group *ngFor="let item of ordersPerDesk['orderItem']">
+          <ion-item-group *ngFor="let cat of ordersPerDesk['categories']">
 
-            <ion-item>{{item.quantity}} x {{item.orderItem['0'].item.name}} <br>
-              {{item.orderItem['0'].guestWish}}
-            </ion-item>
+            <ion-item-divider color="light">
+
+
+              <button ion-button block outline>
+                <a>{{cat.category}}</a>
+                <ion-icon name="checkmark-circle-outline"></ion-icon>
+              </button>
+
+            </ion-item-divider>
+
+            <ng-container *ngFor="let item of cat.itemsPerCat">
+              <ion-item>{{item.quantity}} x {{item.orderItem['0'].item.name}} <br>
+                {{item.orderItem['0'].guestWish}}
+              </ion-item>
+            </ng-container>
+
           </ion-item-group>
         </ion-card>
 
       </ion-col>
     </ion-row>
   </ion-grid>
+
 
   <div class="overview">
     <h2>Gerichte Übersicht</h2>
