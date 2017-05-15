@@ -30,7 +30,7 @@ export class UserService {
   public logout() {
     // console.debug("Logout should be successfull");
     return this.http.post("/auth/logout", {}).toPromise().then(() => {
-      return this.authGuard.seteverythinnull();
+      return this.authGuard.setUserDataNull();
     });
   }
 

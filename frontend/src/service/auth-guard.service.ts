@@ -71,7 +71,7 @@ export class AuthGuardService {
    * @param value
    */
 
-  public seteverythinnull() {
+  public setUserDataNull() {
     this._userDetails = null;
     this.userDetailPromise = null;
     this.userDetails = null;
