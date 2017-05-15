@@ -1,5 +1,20 @@
 ion-card-header {
   background: color($colors, primary);
+  height: 60pt;
+}
+
+ion-item.card_title {
+  padding-top: 0pt;
+  color: white;
+  background: color($colors, primary);
+
+  h1 {
+    color: white;
+  }
+}
+
+button.desk_button {
+  color: white;
 }
 
 ion-grid.grid-card {
@@ -7,20 +22,24 @@ ion-grid.grid-card {
   float: left;
 }
 
+
 .overview {
-  background: lightgray;
+  background: color($colors, light3);
   width: 15%;
+  height: 100%;
   float: left;
 
-  h2 {
-    text-align: center;
-  }
   ion-list {
-    background: lightgray;
+    background: color($colors, light3);
   }
   ion-item {
     background-color: transparent;
   }
 }
+
+h2.overview_header {
+  text-align: center;
+}
+
 
 

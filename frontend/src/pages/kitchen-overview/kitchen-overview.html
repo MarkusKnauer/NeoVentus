@@ -12,48 +12,60 @@
 
 <ion-content class=" cards-bg">
 
-
   <ion-grid class="grid-card">
     <ion-row>
       <ion-col *ngFor="let ordersPerDesk of orderService.cache['open_orders_grouped_by_desks']" col-auto>
 
+        <!-- card for every desk -->
         <ion-card class="order">
 
+          <!-- card header-->
           <ion-card-header class="card_header">
-            <h1 style="color: white">Tisch {{ordersPerDesk.desk}}</h1>
+            <ion-item class="card_title">
+              <h1>Tisch {{ordersPerDesk.desk}}</h1>
+
+              <button class="desk_button" color="ligth" ion-button icon-only item-right clear large
+                      (click)="presentConfirm(ordersPerDesk.desk)">
+                <ion-icon name='checkmark-circle-outline'></ion-icon>
+              </button>
+
+            </ion-item>
           </ion-card-header>
+
 
           <ion-item-group *ngFor="let cat of ordersPerDesk['categories']">
 
-            <ion-item-divider color="light">
-
-
-              <button ion-button block outline>
+            <!-- category -->
+            <ion-item-divider>
+              <button ion-button block outline (click)="presentAlert()">
                 <a>{{cat.category}}</a>
-                <ion-icon name="checkmark-circle-outline"></ion-icon>
-              </button>
 
+                <button color="ligth" ion-button icon-only item-right clear>
+                  <ion-icon name='checkmark-circle-outline'></ion-icon>
+                </button>
+              </button>
             </ion-item-divider>
 
+            <!-- items of every card -->
             <ng-container *ngFor="let item of cat.itemsPerCat">
-              <ion-item>{{item.quantity}} x {{item.orderItem['0'].item.name}} <br>
+              <ion-item>{{item.quantity}} x {{item.orderItem['0'].item.shortName}} <br>
                 {{item.orderItem['0'].guestWish}}
               </ion-item>
             </ng-container>
 
           </ion-item-group>
         </ion-card>
-
       </ion-col>
     </ion-row>
   </ion-grid>
 
 
+  <!--overview of all items on the right side -->
   <div class="overview">
-    <h2>Gerichte Übersicht</h2>
+    <h2 class="overview_header">Gerichte Übersicht</h2>
 
     <ion-list *ngFor="let item of orderService.cache['open_orders_grouped_by_orderitem']">
-      <ion-item>{{item.quantity}} x {{item.orderItem['0'].item.name}} <br>
+      <ion-item>{{item.quantity}} x {{item.orderItem['0'].item.shortName}} <br>
         {{item.orderItem['0'].guestWish}}
       </ion-item>
     </ion-list>

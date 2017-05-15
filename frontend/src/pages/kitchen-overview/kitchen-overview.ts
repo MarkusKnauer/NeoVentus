@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController, LoadingController} from "ionic-angular";
+import {NavController, LoadingController, AlertController} from "ionic-angular";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {OrderService} from "../../service/order.service";
 import {MenuCategoryService} from "../../service/menu-category.service";
@@ -30,7 +30,8 @@ export class KitchenOverviewPage {
               private orderService: OrderService,
               private authGuard: AuthGuardService,
               public loadingCtrl: LoadingController,
-              private menuCategoryService: MenuCategoryService
+              private menuCategoryService: MenuCategoryService,
+              private alertCtrl: AlertController
               //private orderSocketService: OrderSocketService
   ) {
 
@@ -204,4 +205,39 @@ export class KitchenOverviewPage {
 
     this.loading.present();
   }
+
+  presentConfirm(desknumber) {
+    let alert = this.alertCtrl.create({
+      title: 'Wollen Sie alle Gerichte des Tisches ' + desknumber + ' fertigstellen?',
+      buttons: [
+        {
+          text: 'Abbruch',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Fertigstellen',
+          handler: () => {
+            console.log('finished clicked');
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  presentAlert() {
+    let alert = this.alertCtrl.create({
+      //title:
+      subTitle: 'Ein sehr mächtiger Button',
+      //message:
+      buttons: ['OK']
+    });
+    alert.present();
+  }
+
 }
+
+
