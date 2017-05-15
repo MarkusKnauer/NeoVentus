@@ -9,6 +9,7 @@ import {SettingsPage} from "../../pages/settings/settings";
 import {ProfilePage} from "../../pages/profile/profile";
 import {UserService} from "../../service/user.service";
 import {LoginPage} from "../../pages/login/login";
+import {AuthGuardService} from "../../service/auth-guard.service";
 
 /**
  * @author Markus Knauer
@@ -31,18 +32,48 @@ export class SideMenuComponent {
   profilepage: any;
   activepage: any;
 
-  constructor(private userService: UserService, private events: Events) {
+  private user = null;
 
-    //todo: write logout fuction (MK)
-    this.pages = [
-      {title: 'Tischübersicht', component: DeskOverviewPage, icon: 'home'},
-      {title: 'Schicht', component: ShiftsPage, icon: 'clock'},
-      {title: 'Nachrichten', component: MessagePage, icon: 'chatboxes'},
-      {title: 'Rechnungen', component: InvoicesPage, icon: 'calculator'},
-      {title: 'Küche', component: KitchenOverviewPage, icon: 'bonfire'},
-      {title: 'Einstellungen', component: SettingsPage, icon: 'settings'}
-    ];
+  constructor(private userService: UserService,
+              private events: Events,
+              private authGuard: AuthGuardService) {
 
+    //todo: edit permissions MK
+
+    if (this.authGuard.isAuthenticated()) {
+
+      if (this.authGuard.hasRole("ROLE_SERVICE")) {
+
+        this.pages = [
+          {title: 'Tischübersicht', component: DeskOverviewPage, icon: 'home'},
+          {title: 'Schicht', component: ShiftsPage, icon: 'clock'},
+          {title: 'Nachrichten', component: MessagePage, icon: 'chatboxes'},
+          {title: 'Rechnungen', component: InvoicesPage, icon: 'calculator'},
+          {title: 'Einstellungen', component: SettingsPage, icon: 'settings'}
+        ];
+
+
+      } else if (this.authGuard.hasRole("ROLE_CHEF")) {
+
+        this.pages = [
+          {title: 'Nachrichten', component: MessagePage, icon: 'chatboxes'},
+          {title: 'Küche', component: KitchenOverviewPage, icon: 'bonfire'},
+          {title: 'Einstellungen', component: SettingsPage, icon: 'settings'}
+        ];
+
+      } else {
+
+        this.pages = [
+          {title: 'Tischübersicht', component: DeskOverviewPage, icon: 'home'},
+          {title: 'Schicht', component: ShiftsPage, icon: 'clock'},
+          {title: 'Nachrichten', component: MessagePage, icon: 'chatboxes'},
+          {title: 'Rechnungen', component: InvoicesPage, icon: 'calculator'},
+          {title: 'Küche', component: KitchenOverviewPage, icon: 'bonfire'},
+          {title: 'Einstellungen', component: SettingsPage, icon: 'settings'}
+        ];
+
+      }
+    }
 
     this.profilepage = {title: "Profile", component: ProfilePage};
     this.activepage = this.pages[0];
@@ -64,6 +95,17 @@ export class SideMenuComponent {
 
   checkActive(page) {
     return page == this.activepage;
+  }
+
+  getUserName() {
+    if (this.user == null) {
+      try {
+        this.user = this.authGuard.userDetails.name;
+      } catch (exception) {
+        console.error("Cannot read username");
+      }
+    }
+    return this.user;
   }
 
 }
