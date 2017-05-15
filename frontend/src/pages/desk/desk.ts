@@ -6,6 +6,7 @@ import {DeskOverviewPage} from "../desk-overview/desk-overview";
 import {OrderSelectModalComponent} from "../../component/order-select-modal/order-select-modal";
 import {MenuCategoryService} from "../../service/menu-category.service";
 import {Order} from "../../model/order";
+import {Utils} from "../../app/utils";
 
 
 /**
@@ -129,7 +130,7 @@ export class DeskPage {
     let result = [];
     for (let tmp of this.tmpOrders) {
       let rTmp = result.find(el => {
-        return tmp.item == el.item && tmp.sideDishes == el.sideDishes;
+        return tmp.item.id == el.item.id && Utils.arraysEqual(tmp.sideDishes, el.sideDishes);
       });
       if (rTmp) {
         rTmp.count += 1;

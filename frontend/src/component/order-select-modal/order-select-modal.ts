@@ -78,7 +78,6 @@ export class OrderSelectModalComponent {
    */
   addOrder(menu, sideDishes, wish) {
     if (!menu.sideDishGroup) {
-      console.debug("add to tmp orders", menu, this.tmpOrders);
       this.tmpOrders.push(new Order(menu, sideDishes, wish));
     } else {
       // if menu has side dishes open modal to select them
