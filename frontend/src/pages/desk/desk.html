@@ -49,7 +49,7 @@
         </button>
       </ion-col>
       <ion-col col-2>
-        <button ion-button full icon-only color="secondary" *ngIf="tmpOrders.length">
+        <button ion-button full icon-only color="secondary" *ngIf="tmpOrders.length" (click)="submitOrders()">
           <ion-icon name="send"></ion-icon>
         </button>
       </ion-col>

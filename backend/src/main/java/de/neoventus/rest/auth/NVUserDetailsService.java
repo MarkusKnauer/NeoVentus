@@ -19,7 +19,8 @@ import java.util.List;
  * and role based access management-
  *
  * @author Dennis Thanner
- * @version 0.0.2 added spring role prefix support
+ * @version 0.0.3 switched to custom user details impl
+ *          0.0.2 added spring role prefix support
  **/
 @Service
 public class NVUserDetailsService implements UserDetailsService {
@@ -33,19 +34,21 @@ public class NVUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User u = userRepository.findByUsername(username);
 
-		if(u == null) {
+		if (u == null) {
 			throw new UsernameNotFoundException("Invalid username: " + username);
 		}
 
 		List<GrantedAuthority> authorityList = new ArrayList<>();
-		for(Permission p : u.getPermissions()) {
+		for (Permission p : u.getPermissions()) {
 			authorityList.add(new SimpleGrantedAuthority(springRolePrefix + p.name()));
 		}
 
-		return new org.springframework.security.core.userdetails.User(
-				u.getUsername(),
-				u.getPassword(),
-				authorityList
+		return new NVUserDetails(
+			u.getId(),
+			u.getUsername(),
+			u.getPassword(),
+			u.getWorkerId(),
+			authorityList
 		);
 	}
 }
