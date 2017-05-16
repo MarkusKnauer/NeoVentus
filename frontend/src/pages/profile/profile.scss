@@ -6,7 +6,10 @@ ion-header {
 
   color: color($colors, light);
   background-color: color($colors, primary);
-  height: 320px;
+
+  padding-bottom: 20px;
+
+  height: auto;
 
   #username {
     text-align: center;
@@ -14,10 +17,13 @@ ion-header {
   }
 
   #roles {
-    text-align: center;
-    color: color($colors, light2);
-    font-weight: normal;
-    font-size: 20px;
+    h2 {
+      text-align: center;
+      color: color($colors, light2);
+      font-weight: normal;
+      font-size: 20px;
+      margin: 0;
+    }
   }
 
   ion-avatar {
@@ -33,9 +39,9 @@ ion-header {
       border-radius: 50%;
       border: 4px solid $SIDEMENU_TRANSPARENCY;
 
-      -webkit-box-shadow: 0px 0px 142px -37px rgba(0, 0, 0, 0.75);
-      -moz-box-shadow: 0px 0px 142px -37px rgba(0, 0, 0, 0.75);
-      box-shadow: 0px 0px 142px -37px rgba(0, 0, 0, 0.75);
+      -webkit-box-shadow: 0 0 142px -37px rgba(0, 0, 0, 0.75);
+      -moz-box-shadow: 0 0 142px -37px rgba(0, 0, 0, 0.75);
+      box-shadow: 0 0 142px -37px rgba(0, 0, 0, 0.75);
 
       margin: auto;
     }
@@ -50,7 +56,6 @@ ion-header {
 
       ion-note {
         color: color($colors, dark);
-        item-right: true;
         font-weight: bold;
       }
     }

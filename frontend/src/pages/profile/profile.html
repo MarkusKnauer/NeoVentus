@@ -15,7 +15,21 @@
   </ion-avatar>
 
   <h1 id="username">{{username}}</h1>
-  <h2 id="roles">{{userroles}}</h2>
+
+  <ng-container *ngFor="let role of userroles">
+    <div [ngSwitch]="role" id="roles">
+
+      <h2 *ngSwitchCase="'ROLE_ADMIN'">Administrator</h2>
+      <h2 *ngSwitchCase="'ROLE_CEO'">Chief Executive Officer</h2>
+      <h2 *ngSwitchCase="'ROLE_SERVICE'">Bedienung</h2>
+      <h2 *ngSwitchCase="'ROLE_CHEF'">Koch</h2>
+      <h2 *ngSwitchCase="'ROLE_BAR'">Barkeeper</h2>
+
+      <h2 *ngSwitchDefault>{{role}}</h2>
+
+    </div>
+  </ng-container>
+  {{fixDimensions()}}
 
 </ion-header>
 
