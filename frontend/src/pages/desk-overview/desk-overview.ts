@@ -122,7 +122,7 @@ export class DeskOverviewPage {
       try {
         this.user = this.authGuard.userDetails.name;
       } catch (exception) {
-        console.error("Cannot read username");
+        console.error("Desk overview - Cannot read username");
       }
     }
     return this.user;

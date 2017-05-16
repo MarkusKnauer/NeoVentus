@@ -102,7 +102,7 @@ export class SideMenuComponent {
       try {
         this.user = this.authGuard.userDetails.name;
       } catch (exception) {
-        console.error("Cannot read username");
+        console.error("Side menu - Cannot read username");
       }
     }
     return this.user;
