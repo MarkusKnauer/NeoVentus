@@ -1,3 +1,60 @@
-page-home {
+ion-header {
+  background: color($colors, primary);
+}
+
+#profileheader {
+
+  color: color($colors, light);
+  background-color: color($colors, primary);
+  height: 320px;
+
+  #username {
+    text-align: center;
+    font-size: 35px;
+  }
+
+  #roles {
+    text-align: center;
+    color: color($colors, light2);
+    font-weight: normal;
+    font-size: 20px;
+  }
+
+  ion-avatar {
+
+    position: relative;
+
+    img {
+      max-width: 150px;
+      max-height: 150px;
+      width: auto;
+      height: auto;
+
+      border-radius: 50%;
+      border: 4px solid $SIDEMENU_TRANSPARENCY;
+
+      -webkit-box-shadow: 0px 0px 142px -37px rgba(0, 0, 0, 0.75);
+      -moz-box-shadow: 0px 0px 142px -37px rgba(0, 0, 0, 0.75);
+      box-shadow: 0px 0px 142px -37px rgba(0, 0, 0, 0.75);
+
+      margin: auto;
+    }
+  }
+}
+
+#profilecontent {
+
+  ion-list {
+
+    ion-item {
+
+      ion-note {
+        color: color($colors, dark);
+        item-right: true;
+        font-weight: bold;
+      }
+    }
+  }
+
 
 }

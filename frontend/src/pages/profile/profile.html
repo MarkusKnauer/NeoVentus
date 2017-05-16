@@ -1,13 +1,66 @@
-<ion-header>
+<ion-header id="profileheader">
+
   <ion-navbar color="primary">
+
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Profile</ion-title>
+
+    <ion-title>Profil</ion-title>
+
   </ion-navbar>
+
+  <ion-avatar>
+    <img src={{avatar}}>
+  </ion-avatar>
+
+  <h1 id="username">{{username}}</h1>
+  <h2 id="roles">{{userroles}}</h2>
+
 </ion-header>
 
-<ion-content padding>
-  <h3>Profileinstellungen coming soon!</h3>
+<ion-content id="profilecontent">
+
+  <ion-list>
+
+    <ion-list-header>
+      <ion-icon name="logo-usd" item-left></ion-icon>
+      Gewinn
+    </ion-list-header>
+
+    <ion-item>
+      Heute
+      <ion-note item-right>
+        {{profit_today}} €
+      </ion-note>
+    </ion-item>
+
+    <ion-item>
+      Gesamt
+      <ion-note item-right>
+        {{profit_all}} €
+      </ion-note>
+    </ion-item>
+
+    <ion-list-header>
+      <ion-icon name="walk" item-left></ion-icon>
+      Schritte
+    </ion-list-header>
+
+    <ion-item>
+      Heute
+      <ion-note item-right>
+        {{steps_today}}
+      </ion-note>
+    </ion-item>
+
+    <ion-item>
+      Gesamt
+      <ion-note item-right>
+        {{steps_all}}
+      </ion-note>
+    </ion-item>
+
+  </ion-list>
 
 </ion-content>
