@@ -7,11 +7,13 @@ import {OrderSelectModalComponent} from "../../component/order-select-modal/orde
 import {MenuCategoryService} from "../../service/menu-category.service";
 import {Order} from "../../model/order";
 import {Utils} from "../../app/utils";
+import {OrderDto} from "../../model/order-dto";
 
 
 /**
  * @author Julian beck, Dennis Thanner
- * @version 0.0.5 added tmp orders - DT
+ * @version 0.0.6 added submit orders - DT
+ *          0.0.5 added tmp orders - DT
  *          0.0.4 refactored grouped order ouput - DT
  *          0.0.3 finished grouped order ouput and total - DT
  *          0.0.2 "Name-value-pair"- compatibility
@@ -40,7 +42,7 @@ export class DeskPage {
     this.deskNumber = navParams.get("deskNumber");
     this.ordersCacheKey = "orders_desk" + this.deskNumber;
     if (this.deskNumber != null) {
-      this.presentLoadingDefault();
+      this.presentLoadingDefault('Bestellungen werden geladen.');
 
       Promise.all([
         this.menuCategoryService.loadCategoryTree(),
@@ -117,7 +119,7 @@ export class DeskPage {
     let modal = this.modalCtrl.create(OrderSelectModalComponent, {tmpOrders: this.tmpOrders});
     modal.present();
     modal.onDidDismiss(() => {
-        this.groupedTmpOrders = this.getGroupedTmpOrders();
+      this.getGroupedTmpOrders();
     })
   }
 
@@ -139,16 +141,59 @@ export class DeskPage {
       }
     }
     console.debug("grouped tmp orders", result);
+    this.groupedTmpOrders = result;
     return result;
   }
 
-// Fancy Loading circle
-  presentLoadingDefault() {
+
+  /**
+   * show loading popup
+   *
+   * @param info info message to display
+   */
+  presentLoadingDefault(info) {
     this.loading = this.loadingCtrl.create({
-      content: 'Bestellungen werden geladen.'
+      content: info
     });
 
     this.loading.present();
+  }
+
+  /**
+   * send orders to servers
+   */
+  submitOrders() {
+    this.presentLoadingDefault("Bestellungen werden gesendet");
+
+    // send requests
+    let reqs = [];
+    for (let order of this.tmpOrders) {
+      let orderDto = new OrderDto(
+        this.deskNumber,
+        this.authGuard.userDetails.principal.workerId,
+        order.wish,
+        order.sideDishes.map((el) => {
+          return el.id
+        }),
+        order.item.number
+      );
+      let req = this.orderService.insertOrder(orderDto);
+      reqs.push(req);
+      req.subscribe(() => {
+        // successfully inserted order delete from
+        this.tmpOrders.splice(this.tmpOrders.indexOf(order), 1);
+        console.debug(this.tmpOrders);
+      }, (req) => {
+        console.debug("Error inserting order", req)
+      })
+    }
+
+    // all requests finshed
+    Promise.all(reqs).then(() => {
+      this.orderService.getOrdersByDesk(this.deskNumber);
+      this.groupedTmpOrders = [];
+      this.loading.dismissAll();
+    });
   }
 
 
