@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -45,6 +46,24 @@ public class ReservationController {
 			return reservationRepository.findOne(reservationId);
 		} catch (DataAccessException e) {
 			LOGGER.warning("Error searching reservation with id " + reservationId + ": " + e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return null;
+		}
+	}
+
+	/**
+	 * controller method to list reservations desk id
+	 *
+	 * @param response the response
+	 * @param desk     the desk id
+	 * @return the reservation entities
+	 */
+	@RequestMapping(value = "desk/{desk}", method = RequestMethod.GET)
+	public List<Reservation> getReservationsByDesk(HttpServletResponse response, @PathVariable String desk) {
+		try {
+			return reservationRepository.findByDesk(desk);
+		} catch (DataAccessException e) {
+			LOGGER.warning("Error searching reservations for desk " + desk + ": " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return null;
 		}
