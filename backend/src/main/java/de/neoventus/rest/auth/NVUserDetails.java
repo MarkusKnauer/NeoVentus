@@ -20,7 +20,7 @@ public class NVUserDetails implements UserDetails, CredentialsContainer {
 
 	private String password;
 
-	private int workerId;
+	private Integer workerId;
 
 	private boolean accountNonExpired;
 
@@ -34,7 +34,7 @@ public class NVUserDetails implements UserDetails, CredentialsContainer {
 
 	// constructor
 
-	public NVUserDetails(String userId, String username, String password, int workerId, Collection<? extends GrantedAuthority> authorities) {
+	public NVUserDetails(String userId, String username, String password, Integer workerId, Collection<? extends GrantedAuthority> authorities) {
 		this.userId = userId;
 		this.username = username;
 		this.password = password;
@@ -79,11 +79,11 @@ public class NVUserDetails implements UserDetails, CredentialsContainer {
 		this.password = password;
 	}
 
-	public int getWorkerId() {
+	public Integer getWorkerId() {
 		return workerId;
 	}
 
-	public void setWorkerId(int workerId) {
+	public void setWorkerId(Integer workerId) {
 		this.workerId = workerId;
 	}
 
