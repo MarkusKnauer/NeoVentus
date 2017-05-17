@@ -23,9 +23,10 @@ import java.util.logging.Logger;
  * REST controller for entity Order
  *
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.9 GetMapping /all/open/meals
- * 			0.0.8 corrected GET-Method /all/open - DS
- * 			0.0.7 url and method refactoring - DT
+ * @version 0.0.91 added multi batch support for insert and order state - DT
+ *          0.0.9 GetMapping /all/open/meals
+ *          0.0.8 corrected GET-Method /all/open - DS
+ *          0.0.7 url and method refactoring - DT
  *          0.0.6 added finish and cancel methods, removed socket update to event listener - DT
  *          0.0.5 No key-Value-pairs and refactor GET-Method
  *          0.0.4 Name-Value-Pair for GET and OrderitemOutput for specific frontend-data
@@ -120,19 +121,20 @@ public class OrderItemController {
 	/**
 	 * controller method for inserting OrderItem
 	 *
-	 * @param dto
+	 * @param dtos
 	 * @param bindingResult
 	 * @param response
-	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	public void insert(@RequestBody @Valid OrderItemDto dto, BindingResult bindingResult, HttpServletResponse response) {
+	public void insert(@RequestBody @Valid OrderItemDto[] dtos, BindingResult bindingResult, HttpServletResponse response) {
 		try {
 			if (bindingResult.hasErrors()) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 			} else {
-				orderRepository.save(dto);
-				LOGGER.info("Saving order to database: " + dto.getId());
+				for (OrderItemDto dto : dtos) {
+					orderRepository.save(dto);
+					LOGGER.info("Saving order to database: " + dto.getId());
+				}
 			}
 		} catch (Exception e) {
 			LOGGER.warning("Error inserting order to database: " + e.getMessage());
@@ -167,12 +169,12 @@ public class OrderItemController {
 	 * controller method to mark order as finished
 	 *
 	 * @param response
-	 * @param id
+	 * @param ids
 	 */
-	@RequestMapping(value = "/finish/{id}", method = RequestMethod.PUT)
-	public void finishOrder(HttpServletResponse response, @PathVariable String id) {
+	@RequestMapping(value = "/finish/{ids}", method = RequestMethod.PUT)
+	public void finishOrder(HttpServletResponse response, @PathVariable String ids) {
 		try {
-			this.updateOrderState(id, OrderItemState.State.FINISHED);
+			this.updateOrderState(ids, OrderItemState.State.FINISHED);
 		} catch (IllegalArgumentException e) {
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 		}
@@ -182,12 +184,12 @@ public class OrderItemController {
 	 * controller method to mark order as canceled
 	 *
 	 * @param response
-	 * @param id
+	 * @param ids
 	 */
-	@RequestMapping(value = "/cancel/{id}", method = RequestMethod.PUT)
-	public void cancelOrder(HttpServletResponse response, @PathVariable String id) {
+	@RequestMapping(value = "/cancel/{ids}", method = RequestMethod.PUT)
+	public void cancelOrder(HttpServletResponse response, @PathVariable String ids) {
 		try {
-			this.updateOrderState(id, OrderItemState.State.CANCELED);
+			this.updateOrderState(ids, OrderItemState.State.CANCELED);
 		} catch (IllegalArgumentException e) {
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 		}
@@ -196,19 +198,20 @@ public class OrderItemController {
 	/**
 	 * update order to add specific state
 	 *
-	 * @param orderId
+	 * @param orderIds
 	 * @param state
+	 * @throws IllegalArgumentException
 	 */
-	private void updateOrderState(String orderId, OrderItemState.State state) throws IllegalArgumentException {
-		OrderItem o = this.orderRepository.findOne(orderId);
+	private void updateOrderState(String orderIds, OrderItemState.State state) throws IllegalArgumentException {
+		for (String id : orderIds.split(",")) {
+			OrderItem o = this.orderRepository.findOne(id);
 
-		if (o == null) {
-			throw new IllegalArgumentException("Invalid order id");
+			if (o != null) {
+				o.addState(state);
+
+				this.orderRepository.save(o);
+			}
 		}
-
-		o.addState(OrderItemState.State.FINISHED);
-
-		this.orderRepository.save(o);
 	}
 
 

@@ -7,10 +7,10 @@ import {OrderDto} from "../model/order-dto";
  * handling requests to the backend belonging the orders
  *
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.6 added order support to
- * 0.0.5 added caching support for kitchen/bar - DS
- *            0.0.4 changed url for getAllOpenOrderItems - DS
- *            0.0.3 changed urls
+ * @version 0.0.6 added insert batch order support - DT
+ *          0.0.5 added caching support for kitchen/bar - DS
+ *          0.0.4 changed url for getAllOpenOrderItems - DS
+ *          0.0.3 changed urls
  */
 @Injectable()
 export class OrderService extends CachingService {
@@ -47,7 +47,7 @@ export class OrderService extends CachingService {
   public getAllOpenOrderItems() {
 
     return new Promise<any>(resolve => {
-      this.http.get("/api/order/all/open/meals")
+      this.http.get(OrderService.BASE_URL + "/all/open/meals")
         .map(res => res.json())
         .subscribe(data => {
           this.saveToCache("open_orders_grouped_by_desks", data);
@@ -75,14 +75,15 @@ export class OrderService extends CachingService {
 
   }
 
+
   /**
    * send order to server
    *
-   * @param order
    * @returns {Observable<Response>}
+   * @param orders
    */
-  public insertOrder(order: OrderDto) {
-    return this.http.post(OrderService.BASE_URL, order);
+  public insertOrders(orders: Array<OrderDto>) {
+    return this.http.post(OrderService.BASE_URL, orders);
   }
 
 }
