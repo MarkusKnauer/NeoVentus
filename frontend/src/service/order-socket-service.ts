@@ -30,12 +30,13 @@ export class OrderSocketService {
    * subscribe to socket data
    *
    * @param cb callback function executed on data received
+   * @param topic
    */
-  subscribe(cb: Function) {
+  subscribe(topic: string, cb: Function) {
     this.connect().then(() => {
       console.debug("order socket connected");
 
-      this.stomp.subscribe("/topic/order", cb);
+      this.stomp.subscribe(topic, cb);
 
     }).catch((err) => {
       console.debug("Error connecting to socket");

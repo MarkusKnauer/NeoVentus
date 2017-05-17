@@ -1,15 +1,16 @@
 package de.neoventus.persistence.event;
 
 import de.neoventus.persistence.entity.OrderItem;
-import de.neoventus.persistence.entity.OrderItemState;
 import de.neoventus.persistence.repository.OrderItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
+import org.springframework.data.mongodb.core.mapping.event.MongoMappingEvent;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * order lifecycle events
@@ -32,18 +33,25 @@ public class OrderLifecycleEvents extends AbstractMongoEventListener<OrderItem> 
 
 	@Override
 	public void onAfterSave(AfterSaveEvent<OrderItem> event) {
-		this.updateSocket();
+		this.updateSocket(event);
 	}
 
 	/**
 	 * method to send open orders to socket
 	 */
-	private void updateSocket() {
-		this.simpMessagingTemplate.convertAndSend("/topic/order",
-			this.orderItemRepository.findByBillingIsNullAndStatesStateNotIn(
-				Arrays.asList(OrderItemState.State.FINISHED, OrderItemState.State.CANCELED)
-			)
-		);
+	private void updateSocket(MongoMappingEvent<OrderItem> event) {
+		String dest;
+		Map<String, Object> data = new HashMap<>();
+		boolean forKitchen = event.getSource().getItem().getMenuItemCategory().isForKitchen();
+		if (forKitchen) {
+			dest = "/topic/order/kitchen";
+		} else {
+			dest = "/topic/order/bar";
+		}
+		data.put("desks", this.orderItemRepository.getUnfinishedOrdersForCategoriesGroupedByDeskAndOrderItem(forKitchen));
+		data.put("items", this.orderItemRepository.getUnfinishedOrderForCategoriesGroupedByItem(forKitchen));
+
+		this.simpMessagingTemplate.convertAndSend(dest, data);
 	}
 
 }
