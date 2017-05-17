@@ -12,7 +12,8 @@ import {OrderDto} from "../../model/order-dto";
 
 /**
  * @author Julian beck, Dennis Thanner
- * @version 0.0.6 added submit orders - DT
+ * @version 0.0.7 batch request for order submitting -DT
+ *          0.0.6 added submit orders - DT
  *          0.0.5 added tmp orders - DT
  *          0.0.4 refactored grouped order ouput - DT
  *          0.0.3 finished grouped order ouput and total - DT
@@ -165,10 +166,12 @@ export class DeskPage {
   submitOrders() {
     this.presentLoadingDefault("Bestellungen werden gesendet");
 
-    // send requests
-    let reqs = [];
+    let orders = [];
+
+    // build dtos
     for (let order of this.tmpOrders) {
-      let orderDto = new OrderDto(
+      // let orderDto =
+      orders.push(new OrderDto(
         this.deskNumber,
         this.authGuard.userDetails.principal.workerId,
         order.wish,
@@ -176,23 +179,17 @@ export class DeskPage {
           return el.id
         }),
         order.item.number
-      );
-      let req = this.orderService.insertOrder(orderDto);
-      reqs.push(req);
-      req.subscribe(() => {
-        // successfully inserted order delete from
-        this.tmpOrders.splice(this.tmpOrders.indexOf(order), 1);
-        console.debug(this.tmpOrders);
-      }, (req) => {
-        console.debug("Error inserting order", req)
-      })
+      ));
     }
 
-    // all requests finshed
-    Promise.all(reqs).then(() => {
-      this.orderService.getOrdersByDesk(this.deskNumber);
+    // batch insert orders
+    this.orderService.insertOrders(orders).toPromise().then(() => {
+      this.orderService.getOrdersByDesk(this.deskNumber).then(() => {
+        this.initCatGroups();
+        this.loading.dismissAll();
+      });
+      // reset tmp order
       this.groupedTmpOrders = [];
-      this.loading.dismissAll();
     });
   }
 

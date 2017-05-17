@@ -29,6 +29,8 @@ import {MenuDetailModalComponent} from "../component/menu-detail-modal/menu-deta
 import {MenuBoxComponent} from "../component/menu-box/menu-box";
 import {IonicStorageModule} from "@ionic/storage";
 import {LocalStorageService} from "../service/local-storage.service";
+import {OrderSocketService} from "../service/order-socket-service";
+import {StompService} from "ng2-stomp-service";
 
 
 @NgModule({
@@ -89,13 +91,15 @@ import {LocalStorageService} from "../service/local-storage.service";
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    StompService,
     AuthGuardService,
     UserService,
     DeskService,
     OrderService,
     MenuCategoryService,
     MenuService,
-    LocalStorageService
+    LocalStorageService,
+    OrderSocketService
   ]
 })
 export class AppModule {
