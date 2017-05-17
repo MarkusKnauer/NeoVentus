@@ -63,7 +63,7 @@ public class UserRepositoryTest extends AbstractTest {
 		userRepository.save(u2);
 
 
-		User u = new User("test", "test","testson","test", Permission.ADMIN);
+		User u = new User("test", "test","testson","test","Fulltime" ,Permission.ADMIN);
 
 		u = userRepository.save(u);
 

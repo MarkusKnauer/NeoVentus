@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author Dennis Thanner, Tim Heidelbach, Dominik Streif
  * @version 0.0.9 added support for multiple side dishes - DT
- * 0.0.8 added side dish - DT
+ * 			0.0.8 added side dish - DT
  *          0.0.7 refactored state, added billing item - DT
  *          0.0.6 state with enum - DS
  *          0.0.5 multiple state conditions - DS

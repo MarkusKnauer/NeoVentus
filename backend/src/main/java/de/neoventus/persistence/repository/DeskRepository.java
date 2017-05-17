@@ -5,6 +5,8 @@ import de.neoventus.persistence.repository.advanced.NVDeskRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author Dennis Thanner
  * @version 0.0.2 deprecated bulk save
@@ -25,6 +27,13 @@ public interface DeskRepository extends CrudRepository<Desk, String>, NVDeskRepo
 	 * @return desk with max desk number
 	 */
 	Desk findFirstByOrderByNumberDesc();
+
+	/**
+	 * findAll in List
+	 * @return
+	 */
+	List<Desk> findAll();
+
 
 	/**
 	 * @deprecated DANGER! lifecycle event to set desk number might not work with this method

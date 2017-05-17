@@ -50,6 +50,11 @@ public interface UserRepository extends CrudRepository<User, String>, NVUserRepo
 	 */
 	List<User> findAllByPermissionsContaining(List<Permission> permission);
 
+	/**
+	 * findAll in List
+	 * @return
+	 */
+	List<User> findAll();
 
 	/**
 	 * @deprecated DANGER! lifecycle event to set worker id might not work with this method

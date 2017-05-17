@@ -25,6 +25,7 @@ public class MenuItemCategory extends AbstractDocument {
 	@DBRef
 	private MenuItemCategory parent;
 
+	private boolean forKitchen;
 
 	public MenuItemCategory() {
 		this.subcategory = new ArrayList<MenuItemCategory>();
@@ -33,6 +34,12 @@ public class MenuItemCategory extends AbstractDocument {
 
 	public MenuItemCategory(String name) {
 		this.name = name;
+		this.subcategory = new ArrayList<MenuItemCategory>();
+		this.parent = null;
+	}
+	public MenuItemCategory(String name,boolean forKitchen) {
+		this.name = name;
+		this.forKitchen = forKitchen;
 		this.subcategory = new ArrayList<MenuItemCategory>();
 		this.parent = null;
 	}
@@ -46,6 +53,14 @@ public class MenuItemCategory extends AbstractDocument {
 	// Setter / Getter
 	public String getName() {
 		return name;
+	}
+
+	public boolean isForKitchen() {
+		return forKitchen;
+	}
+
+	public void setForKitchen(boolean forKitchen) {
+		this.forKitchen = forKitchen;
 	}
 
 	public void setName(String name) {

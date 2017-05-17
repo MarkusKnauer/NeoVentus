@@ -1,7 +1,6 @@
 package de.neoventus.persistence.repository;
 
 import de.neoventus.persistence.entity.MenuItem;
-import de.neoventus.persistence.entity.MenuItemCategory;
 import de.neoventus.persistence.repository.advanced.NVMenuItemRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -41,11 +40,11 @@ public interface MenuItemRepository extends CrudRepository<MenuItem, String>, NV
 	MenuItem findFirstByOrderByNumberDesc();
 
 	/**
-	 * find all without "Beilage"
-	 * @param menuItemList
+	 * findAll in List
+	 * @param
 	 * @return
 	 */
-	List<MenuItem> findAllByMenuItemCategoryIsNot(MenuItemCategory menuItemList);
+	List<MenuItem> findAll();
 
 
 	/**
