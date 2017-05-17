@@ -39,7 +39,7 @@ public class UploadController {
 	private WriteExcelInDB wexc;
 
 	//Save the uploaded file to this folder
-	private static String UPLOADED_FOLDER = "C://temp//";
+	private static String UPLOADED_FOLDER = "";
 	private final String URL_PATH = "/api/upload";
 	@Autowired
 	public UploadController(MenuItemRepository menuItemRepository, MenuItemCategoryRepository menuItemCategoryRepository, UserRepository userRepository, DeskRepository deskRepository, OrderItemRepository orderItemRepository, BillingRepository billingRepository, ReservationRepository reservationRepository, SideDishRepository sideDishRepository, MongoTemplate mongoTemplate){
