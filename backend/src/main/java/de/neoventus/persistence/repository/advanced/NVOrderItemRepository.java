@@ -5,6 +5,7 @@ import de.neoventus.persistence.repository.advanced.impl.aggregation.OrderDeskAg
 import de.neoventus.rest.dto.OrderItemDto;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Julian Beck, Dennis Thanner
@@ -27,6 +28,20 @@ public interface NVOrderItemRepository {
 	 * @return
 	 */
 	List<OrderDeskAggregationDto> getGroupedNotPayedOrdersByItemForDesk(Desk desk);
+
+	/**
+	 * get unfinished unpaid orders grouped by desk
+	 *
+	 * @param forKitchen@return
+	 */
+	Map<Integer, List<OrderDeskAggregationDto>> getUnfinishedOrdersForCategoriesGroupedByDeskAndOrderItem(boolean forKitchen);
+
+	/**
+	 * get unfinehs unpaid order grouped by item
+	 *
+	 * @param forKitchen@return
+	 */
+	List<OrderDeskAggregationDto> getUnfinishedOrderForCategoriesGroupedByItem(boolean forKitchen);
 
 }
 

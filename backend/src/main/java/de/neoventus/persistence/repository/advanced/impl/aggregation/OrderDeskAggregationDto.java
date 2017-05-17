@@ -1,5 +1,6 @@
 package de.neoventus.persistence.repository.advanced.impl.aggregation;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.entity.User;
 
@@ -11,23 +12,30 @@ import java.util.List;
  * mapping class for aggregation
  *
  * @author Dennis Thanner
- * @version 0.0.3 added support for multiple side dishes - DT
+ * @version 0.0.4 added fields for multi aggregation usage - DT
+ *          0.0.3 added support for multiple side dishes - DT
  *          0.0.2 added sideDish - DT
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderDeskAggregationDto implements Serializable {
 
 	private User waiter;
 
 	private MenuItem item;
 
-	private int count;
+	private Integer count;
 
 	private List<MenuItem> sideDishes;
+
+	private String guestWish;
+
+	private List<String> orderIds;
 
 	// constructor
 
 	public OrderDeskAggregationDto() {
 		this.sideDishes = new ArrayList<>();
+		this.orderIds = new ArrayList<>();
 	}
 
 
@@ -49,11 +57,11 @@ public class OrderDeskAggregationDto implements Serializable {
 		this.item = item;
 	}
 
-	public int getCount() {
+	public Integer getCount() {
 		return count;
 	}
 
-	public void setCount(int count) {
+	public void setCount(Integer count) {
 		this.count = count;
 	}
 
@@ -65,4 +73,19 @@ public class OrderDeskAggregationDto implements Serializable {
 		this.sideDishes = sideDishes;
 	}
 
+	public String getGuestWish() {
+		return guestWish;
+	}
+
+	public void setGuestWish(String guestWish) {
+		this.guestWish = guestWish;
+	}
+
+	public List<String> getOrderIds() {
+		return orderIds;
+	}
+
+	public void setOrderIds(List<String> orderIds) {
+		this.orderIds = orderIds;
+	}
 }

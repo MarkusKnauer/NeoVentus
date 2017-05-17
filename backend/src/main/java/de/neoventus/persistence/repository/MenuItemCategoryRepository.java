@@ -9,7 +9,8 @@ import java.util.List;
 
 /**
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.3 added getRootElements - D
+ * @version 0.0.4 added findByForKitchen - DT
+ *          0.0.3 added getRootElements - DT
  *          0.0.2 added findByChildrenContaining - DT
  */
 public interface MenuItemCategoryRepository extends CrudRepository<MenuItemCategory, String>, NVMenuItemCategoryRepository {
@@ -37,5 +38,13 @@ public interface MenuItemCategoryRepository extends CrudRepository<MenuItemCateg
 	 */
 	@Query("{parent: null}")
 	List<MenuItemCategory> getRootElements();
+
+	/**
+	 * find by boolean
+	 *
+	 * @param forKitchen
+	 * @return
+	 */
+	List<MenuItemCategory> findByForKitchen(boolean forKitchen);
 
 }

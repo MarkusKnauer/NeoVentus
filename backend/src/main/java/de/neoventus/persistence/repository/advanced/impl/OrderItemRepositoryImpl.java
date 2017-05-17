@@ -1,8 +1,6 @@
 package de.neoventus.persistence.repository.advanced.impl;
 
-import de.neoventus.persistence.entity.Desk;
-import de.neoventus.persistence.entity.OrderItem;
-import de.neoventus.persistence.entity.OrderItemState;
+import de.neoventus.persistence.entity.*;
 import de.neoventus.persistence.repository.*;
 import de.neoventus.persistence.repository.advanced.NVOrderItemRepository;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.OrderDeskAggregationDto;
@@ -11,9 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.GroupOperation;
+import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Julian Beck, Dennis Thanner
@@ -37,6 +40,7 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 	private UserRepository userRepository;
 	private ReservationRepository reservationRepository;
 	private BillingRepository billingRepository;
+	private MenuItemCategoryRepository menuItemCategoryRepository;
 
 	@Override
 	public void save(OrderItemDto dto) {
@@ -73,6 +77,58 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 
 	}
 
+	@Override
+	public Map<Integer, List<OrderDeskAggregationDto>> getUnfinishedOrdersForCategoriesGroupedByDeskAndOrderItem(boolean forKitchen) {
+		List<Desk> desks = (List<Desk>) this.deskRepository.findAll();
+		List<MenuItemCategory> categories = this.menuItemCategoryRepository.findByForKitchen(forKitchen);
+		List<MenuItem> itemsInterested = this.menuItemRepository.findAllByMenuItemCategoryIn(categories);
+
+		Map<Integer, List<OrderDeskAggregationDto>> result = new HashMap<>();
+
+		GroupOperation group = Aggregation.group("item", "sideDishes", "guestWish").addToSet("$id").as("orderIds");
+
+		ProjectionOperation projection = Aggregation.project("orderIds").and("_id.item").as("item")
+			.and("_id.sideDishes").as("sideDishes")
+			.and("_id.guestWish").as("guestWish");
+
+		for (Desk d : desks) {
+
+			Aggregation agg = Aggregation.newAggregation(
+				Aggregation.match(Criteria.where("billing").is(null).and("states.state")
+					.nin(Arrays.asList(OrderItemState.State.CANCELED, OrderItemState.State.FINISHED))
+					.and("item").in(itemsInterested).and("desk").is(d)),
+				group,
+				projection
+			);
+
+			AggregationResults<OrderDeskAggregationDto> aggR = this.mongoTemplate.aggregate(agg, OrderItem.class, OrderDeskAggregationDto.class);
+
+			result.put(d.getNumber(), aggR.getMappedResults());
+
+		}
+
+		return result;
+	}
+
+	@Override
+	public List<OrderDeskAggregationDto> getUnfinishedOrderForCategoriesGroupedByItem(boolean forKitchen) {
+		List<MenuItemCategory> categories = this.menuItemCategoryRepository.findByForKitchen(forKitchen);
+		List<MenuItem> itemsInterested = this.menuItemRepository.findAllByMenuItemCategoryIn(categories);
+
+		Aggregation agg = Aggregation.newAggregation(
+			Aggregation.match(Criteria.where("billing").is(null).and("states.state")
+				.nin(Arrays.asList(OrderItemState.State.CANCELED, OrderItemState.State.FINISHED))
+				.and("item").in(itemsInterested)),
+			Aggregation.group("item", "sideDishes", "guestWish").count().as("count"),
+			Aggregation.project("count").and("_id.item").as("item").and("_id.sideDishes").as("sideDishes")
+				.and("_id.guestWish").as("guestWish")
+		);
+
+		AggregationResults<OrderDeskAggregationDto> aggR = this.mongoTemplate.aggregate(agg, OrderItem.class, OrderDeskAggregationDto.class);
+
+		return aggR.getMappedResults();
+	}
+
 	//Setter
 
 	@Autowired
@@ -105,4 +161,9 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 		this.billingRepository = billingRepository;
 	}
 	// Next  Respo Lager (not the Beer)
+
+	@Autowired
+	public void setMenuItemCategoryRepository(MenuItemCategoryRepository menuItemCategoryRepository) {
+		this.menuItemCategoryRepository = menuItemCategoryRepository;
+	}
 }

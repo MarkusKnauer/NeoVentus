@@ -15,15 +15,16 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
  * REST controller for entity Order
  *
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.91 added multi batch support for insert and order state - DT
+ * @version 0.0.92 added aggregated order output by desk and order item, with difference of kitchen and bar - DT
+ *          0.0.91 added multi batch support for insert and order state - DT
  *          0.0.9 GetMapping /all/open/meals
  *          0.0.8 corrected GET-Method /all/open - DS
  *          0.0.7 url and method refactoring - DT
@@ -45,9 +46,11 @@ public class OrderItemController {
 
 
 	@Autowired
-	public OrderItemController(OrderItemRepository orderRepository, DeskRepository deskRepository) {
+	public OrderItemController(OrderItemRepository orderRepository, DeskRepository deskRepository,
+							   MenuItemCategoryRepository menuItemCategoryRepository) {
 		this.orderRepository = orderRepository;
 		this.deskRepository = deskRepository;
+		this.menuItemCategoryRepository = menuItemCategoryRepository;
 	}
 
 	/**
@@ -66,7 +69,6 @@ public class OrderItemController {
 			}
 			return this.orderRepository.getGroupedNotPayedOrdersByItemForDesk(desk);
 		} catch (Exception e) {
-			e.printStackTrace();
 			LOGGER.warning("Error searching order by deskNumber " + 1 + ": " + e.getMessage());
 			//response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return null;
@@ -75,47 +77,39 @@ public class OrderItemController {
 	}
 
 	/**
-	 * controller method to list all orders
+	 * controller method to list all orders grouped by desk and item
 	 *
 	 * @param response
-	 * @param
+	 * @param kitchen
 	 * @return
 	 */
-	@GetMapping("/all/open/meals")
-	public Iterable<OrderItem> listAllOpenOrders(HttpServletResponse response) {
+	@GetMapping("/unfinished/grouped/by-desk")
+	public Map<Integer, List<OrderDeskAggregationDto>> listAllOpenOrdersByDesk(HttpServletResponse response, @RequestParam(defaultValue = "1", required = false) Integer kitchen) {
 		try {
-			Iterable<OrderItem> list = orderRepository.findByBillingIsNullAndStatesStateNotIn(
-				Arrays.asList(OrderItemState.State.FINISHED, OrderItemState.State.CANCELED)
-			);
-
-			ArrayList<OrderItem> tmp = new ArrayList<>();
-			for (OrderItem item : list) {
-				String cat = item.getItem().getMenuItemCategory().getName();
-
-				switch (cat) {
-					case "Warme Vorspeise":
-					case "Kalte Vorspeise":
-					case "Suppen":
-					case "Fischgerichte":
-					case "Fleischgerichte":
-					case "Vegetarische Gerichte":
-					case "Kinder Gerichte":
-						tmp.add(item);
-				}
-			}
-
-			list = tmp;
-
-
-			return list;
-
+			return this.orderRepository.getUnfinishedOrdersForCategoriesGroupedByDeskAndOrderItem(kitchen == 1);
 		} catch (Exception e) {
 			LOGGER.warning("Error getting all orders: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return null;
 		}
+	}
 
-
+	/**
+	 * controller method to list all order grouped by item
+	 *
+	 * @param response
+	 * @param kitchen
+	 * @return
+	 */
+	@GetMapping("/unfinished/grouped/by-item")
+	public List<OrderDeskAggregationDto> listAllOpenOrdersByItem(HttpServletResponse response, @RequestParam(defaultValue = "1", required = false) Integer kitchen) {
+		try {
+			return this.orderRepository.getUnfinishedOrderForCategoriesGroupedByItem(kitchen == 1);
+		} catch (Exception e) {
+			LOGGER.warning("Error getting all orders: " + e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return null;
+		}
 	}
 
 	/**
