@@ -40,18 +40,20 @@ public class OrderLifecycleEvents extends AbstractMongoEventListener<OrderItem> 
 	 * method to send open orders to socket
 	 */
 	private void updateSocket(MongoMappingEvent<OrderItem> event) {
-		String dest;
-		Map<String, Object> data = new HashMap<>();
-		boolean forKitchen = event.getSource().getItem().getMenuItemCategory().isForKitchen();
-		if (forKitchen) {
-			dest = "/topic/order/kitchen";
-		} else {
-			dest = "/topic/order/bar";
-		}
-		data.put("desks", this.orderItemRepository.getUnfinishedOrdersForCategoriesGroupedByDeskAndOrderItem(forKitchen));
-		data.put("items", this.orderItemRepository.getUnfinishedOrderForCategoriesGroupedByItem(forKitchen));
+		if (event.getSource().getItem() != null && event.getSource().getItem().getMenuItemCategory() != null) {
+			String dest;
+			Map<String, Object> data = new HashMap<>();
+			boolean forKitchen = event.getSource().getItem().getMenuItemCategory().isForKitchen();
+			if (forKitchen) {
+				dest = "/topic/order/kitchen";
+			} else {
+				dest = "/topic/order/bar";
+			}
+			data.put("desks", this.orderItemRepository.getUnfinishedOrdersForCategoriesGroupedByDeskAndOrderItem(forKitchen));
+			data.put("items", this.orderItemRepository.getUnfinishedOrderForCategoriesGroupedByItem(forKitchen));
 
-		this.simpMessagingTemplate.convertAndSend(dest, data);
+			this.simpMessagingTemplate.convertAndSend(dest, data);
+		}
 	}
 
 }
