@@ -16,20 +16,17 @@ export class DeskService extends CachingService {
   }
 
   /**
-   *
+   * Gets all desks from cache or database and eventually stores desks in cache
    * @returns {Observable<Response>}
    */
   public getAllDesks() {
 
     if (this.cache["desks"] != null) {
-
-      console.log("DANGER! THIS IS FRONTEND! - using cache for desks");
       return new Promise<any>(resolve => {
         resolve(this.cache["desks"]);
       });
 
     } else {
-
       return new Promise<any>(resolve => {
         this.http.get("/api/desk/")
           .map(res => res.json())
@@ -38,12 +35,6 @@ export class DeskService extends CachingService {
             resolve(data);
           });
       });
-
-      // let req = this.http.get("/api/desk/");
-      // req.map(resp => resp.json()).subscribe((data) => {
-      //   this.saveToCache("desks", data);
-      // });
-      // return req.toPromise();
     }
   }
 }
