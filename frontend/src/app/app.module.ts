@@ -31,6 +31,7 @@ import {IonicStorageModule} from "@ionic/storage";
 import {LocalStorageService} from "../service/local-storage.service";
 import {OrderSocketService} from "../service/order-socket-service";
 import {StompService} from "ng2-stomp-service";
+import {ReservationService} from "../service/reservation.service";
 
 
 @NgModule({
@@ -99,7 +100,8 @@ import {StompService} from "ng2-stomp-service";
     MenuCategoryService,
     MenuService,
     LocalStorageService,
-    OrderSocketService
+    OrderSocketService,
+    ReservationService
   ]
 })
 export class AppModule {

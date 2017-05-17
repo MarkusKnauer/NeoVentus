@@ -5,15 +5,17 @@ import {AuthGuardService} from "../../service/auth-guard.service";
 import {LoginPage} from "../login/login";
 import {DeskPage} from "../desk/desk";
 import {OrderService} from "../../service/order.service";
+import {ReservationService} from "../../service/reservation.service";
 
 /**
  * @author Tim Heidelbach, Dennis Thanner
- * @version 0.0.8 toggle my desks
+ * @version 0.0.9 display today's reservation - TH
+ *          0.0.8 toggle my desks - TH
  *          0.0.7 added desk cache - DT
  *          0.0.6 rbma changes - DT
- *          0.0.5 added waiter name
- *          0.0.4 adapted design to mockup
- *          0.0.3 button toggles between grid- and list view
+ *          0.0.5 added waiter name - TH
+ *          0.0.4 adapted design to mockup - TH
+ *          0.0.3 button toggles between grid- and list view - TH
  *          0.0.2 added authGuard - DT
  */
 @Component({
@@ -28,12 +30,14 @@ export class DeskOverviewPage {
   constructor(private navCtrl: NavController,
               private deskService: DeskService,
               private orderService: OrderService,
-              private authGuard: AuthGuardService) {
+              private authGuard: AuthGuardService,
+              private reservationService: ReservationService) {
 
     this.deskService.getAllDesks().then(
       desks => {
         for (let desk of desks) {
           this.loadDeskOrderDetails(desk);
+          this.loadDeskReservationDetails(desk);
         }
       });
   }
@@ -78,7 +82,36 @@ export class DeskOverviewPage {
           this.deskService.cache['desks'].mine = true;
         }
       }
-      // TODO get reservation (status = 2, desk.reservation = 00:00)
+    )
+  }
+
+  loadDeskReservationDetails(desk: any) {
+    this.reservationService.getReservationsByDesk(desk).then(
+      reservations => {
+
+        var now = new Date();
+        var next = null;
+
+        for (let reservation of reservations) {
+
+          var reservationTime = new Date(reservation.time);
+
+          if (reservationTime > now) { // reservation is in the future
+
+            if (next == null) {
+              next = reservationTime;
+
+            } else if (reservationTime < next) { // reservation is before previous reservation
+              next = reservationTime;
+            }
+          }
+        }
+
+        if (next != null && next.getDay() == now.getDay()) { // desk is reserved today
+          desk.reservation = next;
+          this.deskService.cache['desks'].reservation = desk.reservation;
+        }
+      }
     )
   }
 
