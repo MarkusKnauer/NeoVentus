@@ -85,8 +85,6 @@ export class AuthGuardService {
    * @returns {Promise}
    */
   public hasAnyRolePromise(roles: string[]) {
-    console.debug("Checking for role: ", roles, this._userDetails, this.userDetailPromise);
-
     if (!this.userDetailPromise)
       return Promise.reject(false);
     return this.userDetailPromise.then(() => {
@@ -105,7 +103,6 @@ export class AuthGuardService {
     for (let role of roles) {
       hasRole = hasRole || this._userDetails.authorities.indexOf(role) != -1;
     }
-    console.debug("HasAnyRole Result", hasRole);
     return hasRole;
   }
 
@@ -114,10 +111,14 @@ export class AuthGuardService {
    * determine if user is logged in
    * @returns {Promise}
    */
-  public isAuthenticated() {
+  public isAuthenticatedPromise() {
     if (this.userDetailPromise == null)
       return Promise.reject(false);
     return this.userDetailPromise;
+  }
+
+  public isAuthenticated() {
+    return this.userDetails != null;
   }
 
 

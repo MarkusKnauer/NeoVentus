@@ -29,7 +29,7 @@ export class LoginPage {
    * prevent login in screen to show up in browser if user is authenticated
    */
   ionViewWillEnter() {
-    this.authGuard.isAuthenticated().then(() => {
+    this.authGuard.isAuthenticatedPromise().then(() => {
       console.debug("User already authenticated");
       this.navCtrl.setRoot(DeskOverviewPage)
     }, () => {

@@ -7,11 +7,12 @@
         <img src="../assets/icon/icon.png" style="display: block; width: 60%; margin-left: auto; margin-right: auto;">
       </a>
     </div>
-    <h3 id="menu-heading1" style="font-weight: 300; text-align: center;">{{getUserName()}}</h3>
+    <h1 id="username" style="font-weight: 300; text-align: center;">{{authGuard.userDetails?.name}}</h1>
     <div class="spacer" style="width: 251.2px; height: 12px;"></div>
 
-    <ion-list>
-      <button menuClose ion-item detail-none *ngFor="let p of pages"
+
+    <ion-list *ngIf="authGuard.isAuthenticated()">
+      <button menuClose ion-item detail-none *ngFor="let p of pages" [hidden]="!authGuard.hasAnyRole(p.roles)"
               [class.activeHighlight]="checkActive(p)" (click)="openPage(p)">
         <ion-icon name={{p.icon}} item-left></ion-icon>
         {{p.title}}

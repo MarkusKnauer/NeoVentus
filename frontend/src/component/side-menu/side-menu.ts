@@ -28,11 +28,12 @@ export class SideMenuComponent {
   @Input()
   private appContent: any;
 
-  pages: Array<{ title: string, component: any, icon: string }>;
+  pages: Array<any>;
   profilepage: any;
   activepage: any;
 
   private user = null;
+  private userroles: any = null;
 
   constructor(private userService: UserService,
               private events: Events,
@@ -40,40 +41,28 @@ export class SideMenuComponent {
 
     //todo: edit permissions MK
 
-    if (this.authGuard.isAuthenticated()) {
-
-      if (this.authGuard.hasRole("ROLE_SERVICE")) {
-
-        this.pages = [
-          {title: 'Tischübersicht', component: DeskOverviewPage, icon: 'home'},
-          {title: 'Schicht', component: ShiftsPage, icon: 'clock'},
-          {title: 'Nachrichten', component: MessagePage, icon: 'chatboxes'},
-          {title: 'Rechnungen', component: InvoicesPage, icon: 'calculator'},
-          {title: 'Einstellungen', component: SettingsPage, icon: 'settings'}
-        ];
-
-
-      } else if (this.authGuard.hasRole("ROLE_CHEF")) {
+    this.getUserName();
+    this.getUserRoles();
 
         this.pages = [
-          {title: 'Nachrichten', component: MessagePage, icon: 'chatboxes'},
-          {title: 'Küche', component: KitchenOverviewPage, icon: 'bonfire'},
-          {title: 'Einstellungen', component: SettingsPage, icon: 'settings'}
+          {title: 'Tischübersicht', component: DeskOverviewPage, icon: 'home', roles: ["ROLE_CEO", "ROLE_SERVICE"]},
+          {title: 'Schicht', component: ShiftsPage, icon: 'clock', roles: ["ROLE_CEO", "ROLE_SERVICE"]},
+          {
+            title: 'Nachrichten',
+            component: MessagePage,
+            icon: 'chatboxes',
+            roles: ["ROLE_CEO", "ROLE_SERVICE", "ROLE_CHEF"]
+          },
+          {title: 'Rechnungen', component: InvoicesPage, icon: 'calculator', roles: ["ROLE_CEO", "ROLE_SERVICE"]},
+          {title: 'Küche', component: KitchenOverviewPage, icon: 'bonfire', roles: ["ROLE_CEO", "ROLE_CHEF"]},
+          {
+            title: 'Einstellungen',
+            component: SettingsPage,
+            icon: 'settings',
+            roles: ["ROLE_SERVICE", "ROLE_CEO", "ROLE_CHEF"]
+          }
         ];
 
-      } else {
-
-        this.pages = [
-          {title: 'Tischübersicht', component: DeskOverviewPage, icon: 'home'},
-          {title: 'Schicht', component: ShiftsPage, icon: 'clock'},
-          {title: 'Nachrichten', component: MessagePage, icon: 'chatboxes'},
-          {title: 'Rechnungen', component: InvoicesPage, icon: 'calculator'},
-          {title: 'Küche', component: KitchenOverviewPage, icon: 'bonfire'},
-          {title: 'Einstellungen', component: SettingsPage, icon: 'settings'}
-        ];
-
-      }
-    }
 
     this.profilepage = {title: "Profile", component: ProfilePage};
     this.activepage = this.pages[0];
@@ -87,7 +76,8 @@ export class SideMenuComponent {
 
   logout() {
     this.userService.logout().then(() => {
-      this.events.publish('Open-Menu-Page', LoginPage)
+      this.events.publish('Open-Menu-Page', LoginPage);
+      this.user == null;
     }, (err) => {
       console.debug(err)
     })
@@ -106,6 +96,18 @@ export class SideMenuComponent {
       }
     }
     return this.user;
+  }
+
+  getUserRoles() {
+    if (this.userroles == null) {
+      try {
+        this.userroles = this.authGuard.userDetails.authorities;
+
+      } catch (exception) {
+        console.error("Profile - Cannot read userroles");
+      }
+    }
+    return this.userroles;
   }
 
 }
