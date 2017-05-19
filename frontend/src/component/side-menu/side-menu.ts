@@ -54,7 +54,20 @@ export class SideMenuComponent {
             roles: ["ROLE_CEO", "ROLE_SERVICE", "ROLE_CHEF"]
           },
           {title: 'Rechnungen', component: InvoicesPage, icon: 'calculator', roles: ["ROLE_CEO", "ROLE_SERVICE"]},
-          {title: 'Küche', component: KitchenOverviewPage, icon: 'bonfire', roles: ["ROLE_CEO", "ROLE_CHEF"]},
+          {
+            title: 'Küche',
+            component: KitchenOverviewPage,
+            icon: 'bonfire',
+            roles: ["ROLE_CEO", "ROLE_CHEF"],
+            data: {forKitchen: 1}
+          },
+          {
+            title: 'Bar',
+            component: KitchenOverviewPage,
+            icon: 'bonfire',
+            roles: ["ROLE_CEO", "ROLE_SERVICE"],
+            data: {forKitchen: 0}
+          },
           {
             title: 'Einstellungen',
             component: SettingsPage,
@@ -68,9 +81,9 @@ export class SideMenuComponent {
     this.activepage = this.pages[0];
   }
 
-  openPage(page) {
+  openPage(page, data) {
     // Reset the content nav to have just this page
-    this.events.publish('Open-Menu-Page', page.component)
+    this.events.publish('Open-Menu-Page', {page: page.component, data});
     this.activepage = page;
   }
 

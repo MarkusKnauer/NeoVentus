@@ -13,7 +13,7 @@
 
     <ion-list *ngIf="authGuard.isAuthenticated()">
       <button menuClose ion-item detail-none *ngFor="let p of pages" [hidden]="!authGuard.hasAnyRole(p.roles)"
-              [class.activeHighlight]="checkActive(p)" (click)="openPage(p)">
+              [class.activeHighlight]="checkActive(p)" (click)="openPage(p, p.data)">
         <ion-icon name={{p.icon}} item-left></ion-icon>
         {{p.title}}
       </button>

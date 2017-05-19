@@ -31,8 +31,8 @@ export class MyApp {
     });
 
     authGuard.loadUserDetails();
-    events.subscribe('Open-Menu-Page', (Page) => {
-      this.nav.setRoot(Page);
+    events.subscribe('Open-Menu-Page', (event) => {
+      this.nav.setRoot(event.page, event.data);
     })
   }
 }
