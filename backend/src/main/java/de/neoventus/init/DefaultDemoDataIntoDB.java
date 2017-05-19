@@ -175,7 +175,12 @@ class DefaultDemoDataIntoDB {
 		sideDishGroup = saveSideDish("Spare Ribs", "Baked Potato", "Pommes frites", "Rösti", "Krokettten", "Country-Kartoffeln", "Butterreis", "Red Beans", "Maiskolben vom Grill", "Frische Champignons", "Frische Sour Cream");
 		saveMenuSideDishItem(sideDishGroup, "Spare Ribs 300g", "Spare Ribs 550g");
 		// -------------------------------------------------------------------------------------
-
+		sideDishGroup = saveSideDish("Schorle", "Apfelsaft", "Orangensaft", "Multivitaminsaft", "Tomatensaft");
+		saveMenuSideDishItem(sideDishGroup, "Kleine Schorle", "Große Schorle");
+		// -------------------------------------------------------------------------------------
+		sideDishGroup = saveSideDish("Wein-Schorle", "Cabernet Sauvignon Weiß", "Cabernet Sauvignon Rot");
+		saveMenuSideDishItem(sideDishGroup, "Weinschorle - süß", "Weinschorle - sauer");
+		// -------------------------------------------------------------------------------------
 	}
 
 	private SideDishGroup saveSideDish(String sidename, String... items) {
