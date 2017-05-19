@@ -64,7 +64,7 @@ export class SideMenuComponent {
           {
             title: 'Bar',
             component: KitchenOverviewPage,
-            icon: 'bonfire',
+            icon: 'beer',
             roles: ["ROLE_CEO", "ROLE_BAR"],
             data: {forKitchen: 0}
           },
