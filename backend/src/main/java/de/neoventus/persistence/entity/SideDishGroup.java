@@ -20,6 +20,7 @@ public class SideDishGroup extends AbstractDocument {
 
 	@Indexed(unique = true)
 	private String name;
+	private boolean selectionRequired;
 
 	@DBRef
 	private ArrayList<MenuItem> sideDishes;
@@ -30,8 +31,9 @@ public class SideDishGroup extends AbstractDocument {
 		sideDishes = new ArrayList<>();
 	}
 
-	public SideDishGroup(String name) {
+	public SideDishGroup(String name, Boolean selectionRequired) {
 		this.name = name;
+		this.selectionRequired = selectionRequired;
 		sideDishes = new ArrayList<>();
 	}
 
@@ -43,6 +45,14 @@ public class SideDishGroup extends AbstractDocument {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public boolean isSelectionRequired() {
+		return selectionRequired;
+	}
+
+	public void setSelectionRequired(boolean selectionRequired) {
+		this.selectionRequired = selectionRequired;
 	}
 
 	public ArrayList<MenuItem> getSideDishes() {

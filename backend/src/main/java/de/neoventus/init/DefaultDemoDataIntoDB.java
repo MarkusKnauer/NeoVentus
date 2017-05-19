@@ -172,19 +172,19 @@ class DefaultDemoDataIntoDB {
 		// sideDishGroup = saveSideDish("Teesorten", "Schwarztee", "Grüntee", "Waldfruchttee", "Pfefferminztee");
 		// saveMenuSideDishItem(sideDishGroup, "Glas Tee");
 		// ----------------------------- Spare-Rib ---------------------------------------------
-		sideDishGroup = saveSideDish("Spare Ribs", "Baked Potato", "Pommes frites", "Rösti", "Krokettten", "Country-Kartoffeln", "Butterreis", "Red Beans", "Maiskolben vom Grill", "Frische Champignons", "Frische Sour Cream");
+		sideDishGroup = saveSideDish("Spare Ribs", false, "Baked Potato", "Pommes frites", "Rösti", "Krokettten", "Country-Kartoffeln", "Butterreis", "Red Beans", "Maiskolben vom Grill", "Frische Champignons", "Frische Sour Cream");
 		saveMenuSideDishItem(sideDishGroup, "Spare Ribs 300g", "Spare Ribs 550g");
 		// -------------------------------------------------------------------------------------
-		sideDishGroup = saveSideDish("Schorle", "Apfelsaft", "Orangensaft", "Multivitaminsaft", "Tomatensaft");
+		sideDishGroup = saveSideDish("Schorle", true, "Apfelsaft", "Orangensaft", "Multivitaminsaft", "Tomatensaft");
 		saveMenuSideDishItem(sideDishGroup, "Kleine Schorle", "Große Schorle");
 		// -------------------------------------------------------------------------------------
-		sideDishGroup = saveSideDish("Wein-Schorle", "Cabernet Sauvignon Weiß", "Cabernet Sauvignon Rot");
+		sideDishGroup = saveSideDish("Wein-Schorle", true, "Cabernet Sauvignon Weiß", "Cabernet Sauvignon Rot");
 		saveMenuSideDishItem(sideDishGroup, "Weinschorle - süß", "Weinschorle - sauer");
 		// -------------------------------------------------------------------------------------
 	}
 
-	private SideDishGroup saveSideDish(String sidename, String... items) {
-		SideDishGroup sideDishGroup = new SideDishGroup(sidename);
+	private SideDishGroup saveSideDish(String sidename, Boolean selectionRequired, String... items) {
+		SideDishGroup sideDishGroup = new SideDishGroup(sidename, selectionRequired);
 		this.sideDishRepository.save(sideDishGroup);
 		for (String i : items) {
 			sideDishGroup.addSideDish(menuItemRepository.findByName(i));
@@ -229,7 +229,6 @@ class DefaultDemoDataIntoDB {
 		reservationRepository.save(listReservation);
 
 	}
-
 
 	/**
 	 * clear before regenerate to allow changes
