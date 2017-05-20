@@ -3,32 +3,24 @@ package de.neoventus.init;
 
 import de.neoventus.persistence.entity.*;
 import de.neoventus.persistence.repository.*;
+import de.neoventus.rest.dto.BillingDto;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
  * @author Dennis Thanner, Julian Beck, Markus Knauer, Tim Heidelbach
- * @version 0.0.C Write Default-Data Menu, Menucategories and user are written in 'WriteExcelInDB' from an Excelsheet - JB
- * 			0.0.B File import for MenuItem and MenuCategory (Code-reduction) - JB
- * 			0.0.A Add Desk-reservation and SideDishGroup Controll by not Selectable - JB
- * 			0.0.9 corrected spelling mistakes - DS
- * 			0.0.8 menu category fix - DT
- *          0.0.7 add SideDishGroup bsp-data - MK
- *          0.0.6 add menuItem Category bsp-data-generator -JB
- *          0.0.5 added random order items init - DT
- *          0.0.4 changed to new repositories
- *          0.0.3 Indirectly insert, Update, delete on DB (Class InsertUpdateDelete) +
- *          and repository access in ControlEntityObjects- JB
- *          0.0.2 Refactor default demo data in separate class
  **/
 
 class DefaultDemoDataIntoDB {
 
-	private final static Logger LOGGER = Logger.getLogger(DefaultDemoDataIntoDB.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(DefaultDemoDataIntoDB.class.getName());
+	private static final int DAYS_FOUR = 345600000;
+	private static final int HOURS_TWO = 7200000;
+
 	private MenuItemRepository menuItemRepository;
 	private MenuItemCategoryRepository menuItemCategoryRepository;
 	private UserRepository userRepository;
@@ -44,9 +36,14 @@ class DefaultDemoDataIntoDB {
 	private List<MenuItem> menuItems;
 	private List<User> users;
 
-	public DefaultDemoDataIntoDB(DeskRepository deskRepository, UserRepository userRepository,
+	private Random random;
+	private List<OrderItem> orderItems = null;
+
+	DefaultDemoDataIntoDB(DeskRepository deskRepository, UserRepository userRepository,
 								 MenuItemRepository menuItemRepository, MenuItemCategoryRepository menuItemCategoryRepository, OrderItemRepository orderItemRepository,
 								 ReservationRepository reservationRepository, BillingRepository billingRepository, SideDishRepository sideDishRepository, MongoTemplate mongoTemplate) {
+
+		random = new Random();
 
 		this.menuItemRepository = menuItemRepository;
 		this.menuItemCategoryRepository = menuItemCategoryRepository;
@@ -70,7 +67,14 @@ class DefaultDemoDataIntoDB {
 		generateSideDish(); // DbRef: MenuItem
 		updateUserDesk();
 		generateOrderItem(); //DBREF: All
+		generateBillings();
 
+	}
+
+	private static double round(double value) {
+		BigDecimal bd = new BigDecimal(value);
+		bd = bd.setScale(2, RoundingMode.HALF_UP);
+		return bd.doubleValue();
 	}
 
 	// DANGER! Here must be Parametres in use for dynamic assignment
@@ -99,7 +103,7 @@ class DefaultDemoDataIntoDB {
 	private void generateOrderItem() {
 		LOGGER.info("Creating random orders");
 		List<OrderItem> orderItems = new ArrayList<>();
-		List<User> waiter = new ArrayList<User>();
+		List<User> waiter = new ArrayList<>();
 		List<OrderItemState> states;
 		OrderItemState state;
 		// Only for Waiters
@@ -114,7 +118,7 @@ class DefaultDemoDataIntoDB {
 		Desk desk;
 		User user;
 		for (int i = 0; i < 50; i++) {
-			sideDishSelektion = new ArrayList<MenuItem>();
+			sideDishSelektion = new ArrayList<>();
 			menu = menuItems.get((int) (Math.random() * menuItems.size()));
 			user = waiter.get((int) (Math.random() * waiter.size()));
 			desk = desks.get((int) (Math.random() * desks.size()));
@@ -122,7 +126,7 @@ class DefaultDemoDataIntoDB {
 			// For BI-Group new Timestemp
 			states = new ArrayList<>();
 			state = new OrderItemState(OrderItemState.State.NEW);
-			Long millitime = System.currentTimeMillis() - ((long) (Math.random() * 7200000) - 7200000);
+			Long millitime = System.currentTimeMillis() - ((long) (Math.random() * HOURS_TWO) - HOURS_TWO);
 			state.setDate(new Date(millitime));
 			states.add(state);
 
@@ -143,7 +147,6 @@ class DefaultDemoDataIntoDB {
 		orderItemRepository.save(orderItems);
 		LOGGER.info("Finished creating random orders");
 	}
-
 
 	// ------------- START Semantic group: SideDishGroup -------------------------
 	private void generateSideDish() {
@@ -196,16 +199,22 @@ class DefaultDemoDataIntoDB {
 	private void saveMenuSideDishItem(SideDishGroup sideDishGroup, String... menunames) {
 		MenuItem menuItem;
 		for (String s : menunames) {
-			menuItem = menuItemRepository.findByName(s);
-			menuItem.setSideDishGroup(sideDishGroup);
-			menuItemRepository.save(menuItem);
+			try {
+				menuItem = menuItemRepository.findByName(s);
+				menuItem.setSideDishGroup(sideDishGroup);
+				menuItemRepository.save(menuItem);
+			} catch (NullPointerException e) {
+				LOGGER.warning("NPE when saving menu side dish item");
+				// FIXME: DANGER!! - NPE is thrown when submitting excel sheet.
+			}
 		}
 
 	}
+
 	// ------------- END OF Semantic group: SideDishGroup ----------------------------
-	public void generateReservation() {
+	private void generateReservation() {
 		LOGGER.info("Generate Reservations");
-		List<Permission> permissions = new ArrayList<Permission>();
+		List<Permission> permissions = new ArrayList<>();
 		permissions.add(Permission.ADMIN);
 		permissions.add(Permission.SERVICE);
 		permissions.add(Permission.CEO);
@@ -214,9 +223,9 @@ class DefaultDemoDataIntoDB {
 		Reservation reservation;
 
 		for (int i = 0; i < 20; i++) {
-			Long millitime = System.currentTimeMillis() - ((long) (Math.random() * 7200000) - 7200000);
+			Long millitime = System.currentTimeMillis() - ((long) (Math.random() * HOURS_TWO) - HOURS_TWO);
 			Date createdAt = new Date(millitime);
-			millitime = System.currentTimeMillis() + ((long) (Math.random() * 345600000));//Reservation in the next 4 days
+			millitime = System.currentTimeMillis() + ((long) (Math.random() * DAYS_FOUR));//Reservation in the next 4 days
 			Date time = new Date(millitime);
 			reservation = new Reservation(
 				user.get((int) (Math.random() * user.size())),
@@ -228,6 +237,38 @@ class DefaultDemoDataIntoDB {
 		}
 		reservationRepository.save(listReservation);
 
+	}
+
+	private void generateBillings() {
+
+		double minX = 0.49f;
+		double maxX = 13.37f;
+
+		for (int i = 0; i < 20; i++) {
+
+			Billing billing = new Billing();
+
+			Date billedAt = new Date(System.currentTimeMillis() - ((long) (Math.random() * DAYS_FOUR) - DAYS_FOUR));
+			billing.setBilledAt(billedAt);
+
+			billing.setWaiter(userRepository.findByUsername("Karl"));
+
+			List<BillingItem> billingItems = new ArrayList<>();
+			double totalPaid = 0f;
+			for (int j = 0; j < 3; j++) {
+				BillingItem billingItem = new BillingItem();
+				billingItem.setItem(getRandomOrderItem());
+				Double price = round((maxX - minX) * random.nextDouble() * minX);
+				billingItem.setPrice(price);
+				totalPaid += price;
+				billingItems.add(billingItem);
+			}
+			totalPaid += 2; // gratuity
+			billing.setTotalPaid(totalPaid);
+			billing.setItems(billingItems);
+
+			billingRepository.save(billing);
+		}
 	}
 
 	/**
@@ -247,4 +288,10 @@ class DefaultDemoDataIntoDB {
 		}
 	}
 
+	private OrderItem getRandomOrderItem() {
+		if (orderItems == null) {
+			orderItems = (List<OrderItem>) orderItemRepository.findAll();
+		}
+		return orderItems.get(random.nextInt(orderItems.size()));
+	}
 }
