@@ -254,7 +254,7 @@ export class DeskPage {
         if (orderIds.length) {
           this.orderService.cancleOrders(orderIds).toPromise().then(() => {
             // reload data
-            this.orderService.getOrdersByDesk(this.deskNumber).then(() => {
+            this.orderService.getOrdersByDeskNumber(this.deskNumber).then(() => {
               this.initCatGroups();
             });
           });
