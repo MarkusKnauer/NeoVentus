@@ -3,12 +3,14 @@ package de.neoventus.init;
 
 import de.neoventus.persistence.entity.*;
 import de.neoventus.persistence.repository.*;
-import de.neoventus.rest.dto.BillingDto;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 /**
@@ -179,7 +181,7 @@ class DefaultDemoDataIntoDB {
 		saveMenuSideDishItem(sideDishGroup, "Spare Ribs 300g", "Spare Ribs 550g");
 		// -------------------------------------------------------------------------------------
 		sideDishGroup = saveSideDish("Schorle", true, "Apfelsaft", "Orangensaft", "Multivitaminsaft", "Tomatensaft");
-		saveMenuSideDishItem(sideDishGroup, "Kleine Schorle", "Große Schorle");
+		saveMenuSideDishItem(sideDishGroup, "Kleine Saftschorle", "Große Saftschorle");
 		// -------------------------------------------------------------------------------------
 		sideDishGroup = saveSideDish("Wein-Schorle", true, "Cabernet Sauvignon Weiß", "Cabernet Sauvignon Rot");
 		saveMenuSideDishItem(sideDishGroup, "Weinschorle - süß", "Weinschorle - sauer");
