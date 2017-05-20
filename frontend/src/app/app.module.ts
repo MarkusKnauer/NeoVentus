@@ -33,6 +33,7 @@ import {LocalStorageService} from "../service/local-storage.service";
 import {OrderSocketService} from "../service/order-socket-service";
 import {StompService} from "ng2-stomp-service";
 import {ReservationService} from "../service/reservation.service";
+import {BillingService} from "../service/billing.service";
 
 
 @NgModule({
@@ -103,7 +104,8 @@ import {ReservationService} from "../service/reservation.service";
     MenuService,
     LocalStorageService,
     OrderSocketService,
-    ReservationService
+    ReservationService,
+    BillingService
   ]
 })
 export class AppModule {

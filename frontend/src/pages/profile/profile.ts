@@ -1,6 +1,7 @@
 import {Component, ViewChild} from "@angular/core";
 import {Content, NavController} from "ionic-angular";
 import {AuthGuardService} from "../../service/auth-guard.service";
+import {BillingService} from "../../service/billing.service";
 
 /**
  * @author Markus Knauer, Tim Heidelbach
@@ -16,38 +17,39 @@ export class ProfilePage {
 
   private avatar;
   private username = null;
+  private userId;
   private userroles: any = null;
 
-  private profit_today;
-  private profit_all;
+  private profit_today = 0;
+  private profit_all = 0;
+  private gratitude_today = 0;
+  private gratitude_all = 0;
 
-  private steps_today;
-  private steps_all;
+  private billings: any;
+
+  private today: Date;
 
   @ViewChild(Content) content: Content;
 
-
-  constructor(public navCtrl: NavController, private authGuard: AuthGuardService) {
+  constructor(public navCtrl: NavController,
+              private authGuard: AuthGuardService,
+              private billingService: BillingService) {
 
     // TODO: make avatar dynamic
     this.avatar = "../assets/avatars/default-male.png";
 
+    this.today = new Date();
+
     this.getUserName();
     this.getUserRoles();
-
-    // TODO: get profit data
-    this.profit_today = 50.00;
-    this.profit_all = 20000.00;
-
-    // TODO: get steps data
-    this.steps_today = 500;
-    this.steps_all = 200000;
+    this.getSalesData();
   }
 
   getUserName() {
     if (this.username == null) {
       try {
         this.username = this.authGuard.userDetails.name;
+        this.userId = this.authGuard.userDetails.principal.userId;
       } catch (exception) {
         console.error("Profile - Cannot read username");
       }
@@ -67,6 +69,31 @@ export class ProfilePage {
     return this.userroles;
   }
 
+  getSalesData() {
+
+    this.billingService.getBillingByWaiter(this.userId).then(
+      billings => {
+        this.billings = billings;
+
+        for (let billing of billings) {
+
+          let date = new Date(billing.billedAt);
+
+          let itemsPrice = 0;
+          for (let item of billing.items) {
+            itemsPrice += item.price;
+          }
+
+          this.profit_all += itemsPrice;
+          this.gratitude_all += (billing.totalPaid - itemsPrice);
+
+          if (date.getDay() == this.today.getDay()) {
+            this.profit_today += itemsPrice
+            this.gratitude_today += (billing.totalPaid - itemsPrice);
+          }
+        }
+      });
+  }
 
   fixDimensions() {
     this.content.resize()

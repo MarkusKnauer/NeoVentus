@@ -1,7 +1,6 @@
 package de.neoventus.rest.controller;
 
 import de.neoventus.persistence.entity.Billing;
-import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.repository.BillingRepository;
 import de.neoventus.rest.dto.BillingDto;
 import org.springframework.beans.factory.annotation.Autowired;

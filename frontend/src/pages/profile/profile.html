@@ -45,33 +45,33 @@
     <ion-item>
       Heute
       <ion-note item-right>
-        {{profit_today}} €
+        {{profit_today|costDecimal}} €
       </ion-note>
     </ion-item>
 
     <ion-item>
       Gesamt
       <ion-note item-right>
-        {{profit_all}} €
+        {{profit_all|costDecimal}} €
       </ion-note>
     </ion-item>
 
     <ion-list-header>
-      <ion-icon name="walk" item-left></ion-icon>
-      Schritte
+      <ion-icon name="logo-usd" item-left></ion-icon>
+      Trinkgeld
     </ion-list-header>
 
     <ion-item>
       Heute
       <ion-note item-right>
-        {{steps_today}}
+        {{gratitude_today|costDecimal}}
       </ion-note>
     </ion-item>
 
     <ion-item>
       Gesamt
       <ion-note item-right>
-        {{steps_all}}
+        {{gratitude_all|costDecimal}}
       </ion-note>
     </ion-item>
 

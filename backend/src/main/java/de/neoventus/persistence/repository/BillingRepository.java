@@ -1,8 +1,6 @@
 package de.neoventus.persistence.repository;
 
-import com.sun.deploy.util.Waiter;
 import de.neoventus.persistence.entity.Billing;
-import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.repository.advanced.NVBillingRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
