@@ -41,7 +41,7 @@ export class DeskPage {
 
       Promise.all([
         this.menuCategoryService.loadCategoryTree(),
-        this.orderService.getOrdersByDesk(this.deskNumber)
+        this.orderService.getOrdersByDeskNumber(this.deskNumber)
       ]).then(() => {
         this.loading.dismissAll();
         this.initCatGroups();
@@ -230,7 +230,7 @@ export class DeskPage {
       this.tmpOrders = [];
 
       // reload data
-      this.orderService.getOrdersByDesk(this.deskNumber).then(() => {
+      this.orderService.getOrdersByDeskNumber(this.deskNumber).then(() => {
         this.initCatGroups();
         this.loading.dismissAll();
       });

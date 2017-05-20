@@ -6,7 +6,6 @@ import {CachingService} from "./caching.service";
  * handling requests to the backend belonging the reservation
  *
  * @author Tim Heidelbach
- * @version 0.0.1
  */
 @Injectable()
 export class ReservationService extends CachingService {
@@ -21,10 +20,9 @@ export class ReservationService extends CachingService {
    */
   public getReservationsByDesk(desk: any) {
 
-    if (this.cache["reservations"] != null) {
-
+    if (this.cache["desk" + desk.number] != null) {
       return new Promise<any>(resolve => {
-        resolve(this.cache["reservations"]);
+        resolve(this.cache["desk" + desk.number]);
       });
 
     } else {
@@ -32,7 +30,7 @@ export class ReservationService extends CachingService {
         this.http.get("/api/reservation/desk/" + desk.id)
           .map(res => res.json())
           .subscribe(data => {
-            this.saveToCache("reservations", data);
+            this.saveToCache("desk" + desk.number, data);
             resolve(data);
           });
       });
