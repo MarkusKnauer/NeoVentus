@@ -15,6 +15,7 @@ import {OrderDto} from "../../model/order-dto";
  */
 @Component({
   templateUrl: "desk.html",
+  selector: "desk-page"
 })
 export class DeskPage {
 
