@@ -1,11 +1,13 @@
 <ion-header>
   <ion-navbar color="primary">
-    <ion-title>Bestellübersicht - Küche</ion-title>
+    <ion-title>Bestellübersicht -
+      <span *ngIf="forKitchen == 0">Bar</span>
+      <span *ngIf="forKitchen == 1">Küche</span>
+    </ion-title>
 
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-
   </ion-navbar>
 </ion-header>
 
@@ -14,62 +16,87 @@
 
   <ion-grid class="grid-card">
     <ion-row>
-      <ion-col *ngFor="let ordersPerDesk of orderService.cache['open_orders_grouped_by_desks']" col-auto>
 
-        <!-- card for every desk -->
-        <ion-card class="order">
+      <!-- card for every desk -->
+      <ion-col *ngFor="let keyValuePair of orderService.cache['open_orders_grouped_by_desks'] | mapToIterable" col-auto>
 
-          <!-- card header-->
+        <!-- BEGIN card -->
+        <ion-card *ngIf="keyValuePair.val.length != 0" class="order">
+          <!-- BEGIN card header-->
           <ion-card-header class="card_header">
             <ion-item class="card_title">
-              <h1>Tisch {{ordersPerDesk.desk}}</h1>
+              <h1>Tisch {{keyValuePair.key}}</h1>
 
               <button class="desk_button" color="ligth" ion-button icon-only item-right clear large
-                      (click)="presentConfirm(ordersPerDesk.desk)">
+                      (click)="presentConfirmAllOfDesk(keyValuePair.key, keyValuePair.val)">
                 <ion-icon name='checkmark-circle-outline'></ion-icon>
               </button>
-
             </ion-item>
           </ion-card-header>
+          <!-- END card header-->
 
 
-          <ion-item-group *ngFor="let cat of ordersPerDesk['categories']">
+          <!--BEGIN card content -->
+          <ion-item-group *ngFor="let cat of keyValuePair.val">
 
-            <!-- category -->
-            <ion-item-divider>
-              <button ion-button block outline (click)="presentAlert()">
-                <a>{{cat.category}}</a>
+            <!-- BEGIN category divider
+            <!-- category only show in kitchen the category -->
+            <ion-item-divider *ngIf="forKitchen==1">
+              <button ion-button block outline (click)="presentConfirmCategory(keyValuePair.key, cat)">
+                <span>{{cat.category}}</span>
 
                 <button color="ligth" ion-button icon-only item-right clear>
                   <ion-icon name='checkmark-circle-outline'></ion-icon>
                 </button>
               </button>
             </ion-item-divider>
+            <!-- END category divider
+
 
             <!-- items of every card -->
             <ng-container *ngFor="let item of cat.itemsPerCat">
-              <ion-item>{{item.quantity}} x {{item.orderItem['0'].item.shortName}} <br>
-                {{item.orderItem['0'].guestWish}}
+
+              <ion-item>
+                <span>{{item.orderIds.length}} x {{item.item.shortName}} </span>
+                <span *ngIf="item.sideDishes.length != 0">mit </span>
+                <span *ngFor="let sideDish of item.sideDishes">{{sideDish.shortName}}</span>
+                <br>
+                <span *ngIf="item.guestWish.length != 0">Sonderwunsch: </span>
+                <span>{{item.guestWish}}</span>
               </ion-item>
             </ng-container>
 
           </ion-item-group>
+          <!--END card content -->
+
         </ion-card>
+        <!-- END card -->
+
       </ion-col>
     </ion-row>
   </ion-grid>
 
 
-  <!--overview of all items on the right side -->
+  <!-- BEGIN right overview
+  <!--overview of all items on the right side-->
   <div class="overview">
-    <h2 class="overview_header">Gerichte Übersicht</h2>
+    <h2 class="overview_header">Übersicht</h2>
 
-    <ion-list *ngFor="let item of orderService.cache['open_orders_grouped_by_orderitem']">
-      <ion-item>{{item.quantity}} x {{item.orderItem['0'].item.shortName}} <br>
-        {{item.orderItem['0'].guestWish}}
+    <ion-list *ngFor="let orderItem of orderService.cache['open_orders_grouped_by_orderitem']">
+      <ion-item>
+        <span>{{orderItem.count}} x {{orderItem.item.shortName}}</span>
+        <span *ngIf="orderItem.sideDishes.length != 0">mit </span>
+        <span *ngFor="let sideDish of orderItem.sideDishes">{{sideDish.shortName}}</span>
+
+        <br>
+        <span *ngIf="orderItem.guestWish.length != 0">Wunsch: </span>
+        <span>{{orderItem.guestWish}}</span>
       </ion-item>
     </ion-list>
   </div>
+  <!-- END right overview -->
+
 
 </ion-content>
+
 

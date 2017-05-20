@@ -1,19 +1,11 @@
 import {Component} from "@angular/core";
-import {NavController, LoadingController, AlertController} from "ionic-angular";
+import {NavController, LoadingController, AlertController, NavParams} from "ionic-angular";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {OrderService} from "../../service/order.service";
 import {MenuCategoryService} from "../../service/menu-category.service";
 import {OrderSocketService} from "../../service/order-socket-service";
 
 
-
-/**
- * @author Dominik Streif
- * @version 0.0.3 group by category - DS
- *          0.0.2 added cache support - DS
- *          0.0.1
- *
- */
 
 @Component({
   templateUrl: "kitchen-overview.html",
@@ -22,11 +14,11 @@ import {OrderSocketService} from "../../service/order-socket-service";
 export class KitchenOverviewPage {
 
   private loading;
+  //if value is 1 the kitchen with meals will be shown, otherwhise the bar with drinks is shown
+  private forKitchen;
 
-  // ToDo show category and order items
-  // ToDo filter - only meals/drinks
-
-  constructor(private navCtrl: NavController,
+  constructor(public navParams: NavParams,
+              private navCtrl: NavController,
               private orderService: OrderService,
               private authGuard: AuthGuardService,
               public loadingCtrl: LoadingController,
@@ -35,117 +27,48 @@ export class KitchenOverviewPage {
               //private orderSocketService: OrderSocketService
   ) {
 
+    this.forKitchen = navParams.get("forKitchen");
     this.presentLoadingDefault();
 
     Promise.all([
       this.menuCategoryService.loadCategoryTree(),
-      this.loadOrderItemsGroupedByDesk(),
-      this.loadOrderItemsGroupedByOrderItem()
+      this.orderService.getAllOpenOrderItemsGroupedByOrderItem(this.forKitchen),
+      this.loadOrderItemsGroupedByDeskAndCategory()
     ]).then(() => {
       this.loading.dismissAll();
     })
 
-    // ToDo Socket Callback function
-    //this.orderSocketService.subscribe(cb?);
+
+    // this.orderSocketService.subscribe();
   }
 
+  loadOrderItemsGroupedByDeskAndCategory() {
+    this.orderService.getAllOpenOrderItemsGroupedByDesk(this.forKitchen)
+      .then(data => {
 
-  loadOrderItemsGroupedByOrderItem() {
-    this.orderService.getAllOpenOrderItemsGroupedByOrderItem()
-      .then(
-        data => {
-          this.groupByOrderItem(data);
-        })
+        for (var key in data) {
+          if (data[key].length != 0) {
+            this.groupByCategory(data[key]);
+          }
+        }
+      })
   }
 
-  loadOrderItemsGroupedByDesk() {
-    this.orderService.getAllOpenOrderItems()
-      .then(
-        data2 => {
-          //this.orderItems = data;
-          this.groupByDesk(data2);
-        })
-  }
+  /**
+   * sorts orderItems per desk by category
+   * @param ordersPerDesk
+   */
 
-  groupByDesk(orderItems) {
-    //new object with keys as desk.number and
-    //orderItem array as value
-    var newArray = {};
-
-    //iterate through each element of array
-    orderItems.forEach(function (val) {
-      var key = val.desk.number;
-      var curr = newArray[key];
-
-      //if array key doesnt exist, init with empty array
-      if (!curr) {
-        newArray[key] = [];
-      }
-
-      //append orderItem to this key
-      newArray[key].push(val);
-    });
-
-    //remove elements from previous array
-    orderItems.length = 0;
-
-    //replace elements with new objects made of
-    //key value pairs from our created object
-    for (var key in newArray) {
-      this.groupByOrderItem(newArray[key]);
-      this.groupByCategory(newArray[key]);
-      orderItems.push({
-        'desk': key,
-        'categories': newArray[key]
-      });
-    }
-  }
-
-  groupByOrderItem(orderItemGrouped) {
-    //new object with keys as item.name and
-    //orderItem array as value
-    var newArray = {};
-
-    //iterate through each element of array
-    orderItemGrouped.forEach(function (val) {
-      var key = (val.item.name).concat(val.guestWish);
-
-      var curr = newArray[key];
-
-      //if array key doesnt exist, init with empty array
-      if (!curr) {
-        newArray[key] = [];
-      }
-
-      //append orderItem to this key
-      newArray[key].push(val);
-    });
-
-    //remove elements from previous array
-    orderItemGrouped.length = 0;
-
-    //replace elements with new objects made of
-    //key value pairs from our created object
-    for (var key in newArray) {
-      orderItemGrouped.push({
-        'quantity': newArray[key].length,
-        'orderItem': newArray[key]
-      });
-    }
-
-
-  }
-
-  groupByCategory(orderItems) {
+  groupByCategory(ordersPerDesk) {
     //new object with keys as item.name and
     //orderItem array as value
     var newArray = {};
 
 
     //iterate through each element of array
-    orderItems.forEach((val) => {
+    ordersPerDesk.forEach((val) => {
 
-      var key = this.getCategoryRootParent(val.orderItem['0'].item.menuItemCategory.id);
+      var key = this.getCategoryRootParent(val.item.menuItemCategory.id);
       var curr = newArray[key];
 
       //if array key doesnt exist, init with empty array
@@ -158,12 +81,12 @@ export class KitchenOverviewPage {
     });
 
     //remove elements from previous array
-    orderItems.length = 0;
+    ordersPerDesk.length = 0;
 
     //replace elements with new objects made of
     //key value pairs from our created object
     for (var key in newArray) {
-      orderItems.push({
+      ordersPerDesk.push({
         'category': key,
         'itemsPerCat': newArray[key]
       });
@@ -184,7 +107,6 @@ export class KitchenOverviewPage {
     }
   }
 
-
   /**
    * traverse menu category tree to get a id array
    * @param cat
@@ -196,7 +118,6 @@ export class KitchenOverviewPage {
   }
 
 
-
   // Fancy Loading circle
   presentLoadingDefault() {
     this.loading = this.loadingCtrl.create({
@@ -206,21 +127,33 @@ export class KitchenOverviewPage {
     this.loading.present();
   }
 
-  presentConfirm(desknumber) {
+
+  /**
+   * sets the status of all orderItems per desk as finished
+   * @param desknumber, orderPerDesk
+   */
+  presentConfirmAllOfDesk(deskNumber, ordersPerDesk) {
     let alert = this.alertCtrl.create({
-      title: 'Wollen Sie alle Gerichte des Tisches ' + desknumber + ' fertigstellen?',
+      title: 'Alle Gerichte des Tisches ' + deskNumber + ' fertigstellen?',
       buttons: [
         {
           text: 'Abbruch',
           role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
         },
         {
           text: 'Fertigstellen',
           handler: () => {
-            console.log('finished clicked');
+            var ids;
+            ids = '';
+            // go through the hierachy per desk
+            for (var itemsPerCat of ordersPerDesk) {
+              for (var orderItems of itemsPerCat.itemsPerCat) {
+                for (var orderIds of orderItems.orderIds) {
+                  ids += orderIds + ",";
+                }
+              }
+            }
+            this.sendingData(ids);
           }
         }
       ]
@@ -228,14 +161,45 @@ export class KitchenOverviewPage {
     alert.present();
   }
 
-  presentAlert() {
+
+  presentConfirmCategory(desknumber, cat) {
     let alert = this.alertCtrl.create({
-      //title:
-      subTitle: 'Ein sehr mächtiger Button',
-      //message:
-      buttons: ['OK']
+      title: cat.category + ' für Tisch ' + desknumber + ' fertigstellen?',
+      buttons: [
+        {
+          text: 'Abbruch',
+          role: 'cancel',
+        },
+        {
+          text: 'Fertigstellen',
+          handler: () => {
+            var ids;
+            ids = '';
+
+
+            // go through the hierachy
+            for (var orderItems of cat.itemsPerCat) {
+              for (var orderIds of orderItems.orderIds) {
+                ids += orderIds + ",";
+              }
+            }
+            this.sendingData(ids);
+          }
+        }
+      ]
     });
     alert.present();
+  }
+
+  /**
+   * sending the data and reload
+   * @param ids
+   */
+  sendingData(ids) {
+    this.orderService.setOrderItemStateFinished(ids).toPromise().then(() => {
+      this.orderService.getAllOpenOrderItemsGroupedByOrderItem(this.forKitchen),
+        this.loadOrderItemsGroupedByDeskAndCategory()
+    });
   }
 
 }

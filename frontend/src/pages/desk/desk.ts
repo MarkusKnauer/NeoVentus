@@ -202,6 +202,69 @@ export class DeskPage {
   }
 
   /**
+   * open storno popup to chose which order to abort
+   * @param group
+   */
+  openStornoPopup(group) {
+    let data = [];
+    let reqs = [];
+    for (let orderId of group.orderIds) {
+      let req = this.orderService.getOrderInfo(orderId);
+      reqs.push(req);
+      req.then((resp) => {
+        data.push(resp.json());
+      }, () => {
+      })
+    }
+
+    // get data and then filter for cancel orders
+    Promise.all(reqs).then(() => {
+      let inputs = [];
+      for (let d of data) {
+        if (d.currentState == "NEW") {
+          let date = new Date(d.states[0].date);
+          inputs.push({
+            type: "checkbox",
+            label: d.item.shortName + " von " + d.waiter.username + " um " + date.getHours() + ":" + date.getMinutes(),
+            value: d.id
+          })
+        }
+      }
+
+      // build alert
+      let alert = this.alertCtrl.create({
+        title: "Bestellungen stornieren?",
+        message: !inputs.length ? "Keine Bestellung zum Stornieren verfügbar" : "",
+        inputs: inputs,
+        buttons: [
+          {
+            text: "Abbrechen",
+            role: "cancel",
+          },
+          {
+            text: "Ok"
+          }
+        ]
+      });
+
+      alert.present();
+
+      // after confirmation execute action and reload
+      alert.onDidDismiss((orderIds) => {
+        if (orderIds.length) {
+          this.orderService.cancleOrders(orderIds).toPromise().then(() => {
+            // reload data
+            this.orderService.getOrdersByDesk(this.deskNumber).then(() => {
+              this.initCatGroups();
+            });
+          });
+        }
+      });
+    })
+
+  }
+
+  /**
    * send orders to servers
    */
   submitOrders() {
