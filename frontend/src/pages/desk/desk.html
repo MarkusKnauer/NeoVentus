@@ -1,11 +1,6 @@
 <ion-header>
   <ion-navbar color="primary">
     <ion-title>Tisch {{deskNumber}}</ion-title><!-- created by Bettina Hartmann-->
-    <ion-buttons end>
-      <button ion-button icon-only (click)='openOrderSelectModal()'>
-        <ion-icon name="add"></ion-icon>
-      </button>
-    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -37,13 +32,18 @@
       Total: {{ getTotalPrice() | costDecimal }} €
     </ion-item>
   </ion-list>
+  <ion-fab bottom right>
+    <button ion-fab mini icon-only (click)='openOrderSelectModal()'>
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
 </ion-content>
-<ion-footer>
+<ion-footer *ngIf="orderService.cache[ordersCacheKey]?.length || tmpOrders.length">
   <ion-grid>
     <ion-row>
       <ion-col col-10>
         <button ion-button full icon-left
-                *ngIf="orderService.cache[ordersCacheKey]?.length ">
+                *ngIf="orderService.cache[ordersCacheKey]?.length">
           <ion-icon name="cash"></ion-icon>
           Rechnung
         </button>

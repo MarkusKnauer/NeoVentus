@@ -66,9 +66,9 @@ import {ReservationService} from "../service/reservation.service";
       links: [
         // browser support links
         {component: LoginPage, name: "Login", segment: "login"},
-        {component: DeskOverviewPage, name: "Desk Overview", segment: "desks"},
-        {component: DeskPage, name: "ShowOrders", segment: "orders/:deskNumber"},
-        {component: KitchenOverviewPage, name: "Kitchen Overview", segment: "kitchen"}
+        {component: DeskOverviewPage, name: "DeskOverview", segment: "desks"},
+        {component: DeskPage, name: "ShowOrders", segment: "orders/:deskNumber", defaultHistory: ["DeskOverview"]},
+        {component: KitchenOverviewPage, name: "KitchenOverview", segment: "kitchen"}
       ]
     }),
     IonicStorageModule.forRoot()
