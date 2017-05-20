@@ -7,10 +7,6 @@ import {OrderDto} from "../model/order-dto";
  * handling requests to the backend belonging the orders
  *
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.6 added insert batch order support - DT
- *          0.0.5 added caching support for kitchen/bar - DS
- *          0.0.4 changed url for getAllOpenOrderItems - DS
- *          0.0.3 changed urls
  */
 @Injectable()
 export class OrderService extends CachingService {
@@ -84,6 +80,26 @@ export class OrderService extends CachingService {
    */
   public insertOrders(orders: Array<OrderDto>) {
     return this.http.post(OrderService.BASE_URL, orders);
+  }
+
+  /**
+   * get details for a specific order
+   *
+   * @param id
+   * @returns {Promise<T>}
+   */
+  public getOrderInfo(id: string) {
+    return this.http.get(OrderService.BASE_URL + "/" + id).toPromise();
+  }
+
+  /**
+   * cancel orders by ids
+   *
+   * @param orderIds
+   * @returns {Observable<Response>}
+   */
+  public cancleOrders(orderIds: Array<string>) {
+    return this.http.put(OrderService.BASE_URL + "/cancel/" + orderIds.join(","), {});
   }
 
 }
