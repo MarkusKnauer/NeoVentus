@@ -34,9 +34,9 @@
               {{desk.number}}
             </h1>
             <div class="desk-details">
-              <p *ngIf="desk.status == 0">frei</p>
-              <p *ngIf="desk.reservation">reserviert ab<br/><span
-                class="important">{{desk.reservation | date:'HH:mm'}}</span></p>
+              <span *ngIf="desk.status == 0">frei<br/></span>
+              <span *ngIf="desk.reservation">reserviert ab<br/><span
+                class="important">{{desk.reservation | date:'HH:mm'}}</span></span>
             </div>
           </div>
         </ion-col>
