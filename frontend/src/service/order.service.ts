@@ -40,10 +40,10 @@ export class OrderService extends CachingService {
    *
    * @returns {Observable<Response>}
    */
-  public getAllOpenOrderItems() {
+  public getAllOpenOrderItemsGroupedByDesk(forKitchen) {
 
     return new Promise<any>(resolve => {
-      this.http.get(OrderService.BASE_URL + "/all/open/meals")
+      this.http.get(OrderService.BASE_URL + "/unfinished/grouped/by-desk/" + forKitchen.toString())
         .map(res => res.json())
         .subscribe(data => {
           this.saveToCache("open_orders_grouped_by_desks", data);
@@ -53,15 +53,16 @@ export class OrderService extends CachingService {
 
   }
 
+
   /**
    * Gets all orders by orderItem
    *
    * @returns {Observable<Response>}
    */
-  public getAllOpenOrderItemsGroupedByOrderItem() {
+  public getAllOpenOrderItemsGroupedByOrderItem(forKitchen) {
 
     return new Promise<any>(resolve => {
-      this.http.get(OrderService.BASE_URL + "/all/open/meals")
+      this.http.get(OrderService.BASE_URL + "/unfinished/grouped/by-item/" + forKitchen.toString())
         .map(res => res.json())
         .subscribe(data => {
           this.saveToCache("open_orders_grouped_by_orderitem", data);
@@ -101,5 +102,14 @@ export class OrderService extends CachingService {
   public cancleOrders(orderIds: Array<string>) {
     return this.http.put(OrderService.BASE_URL + "/cancel/" + orderIds.join(","), {});
   }
+
+
+  public setOrderItemStateFinished(ids) {
+    console.debug("HTTP-PUT finished Orders: ", ids);
+    return this.http.put(OrderService.BASE_URL + "/finish", ids);
+
+  }
+
+
 
 }

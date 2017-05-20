@@ -25,6 +25,7 @@ import {OrderSelectModalComponent} from "../component/order-select-modal/order-s
 import {MenuCategoryService} from "../service/menu-category.service";
 import {MenuService} from "../service/menu.service";
 import {CostDecimalPipe} from "../pipe/CostDecimalPipe";
+import {MapToIterable} from "../pipe/MapToIterable";
 import {MenuDetailModalComponent} from "../component/menu-detail-modal/menu-detail-modal";
 import {MenuBoxComponent} from "../component/menu-box/menu-box";
 import {IonicStorageModule} from "@ionic/storage";
@@ -56,7 +57,8 @@ import {ReservationService} from "../service/reservation.service";
     MenuBoxComponent,
 
     //pipes
-    CostDecimalPipe
+    CostDecimalPipe,
+    MapToIterable
 
   ],
   imports: [

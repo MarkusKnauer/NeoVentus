@@ -85,13 +85,13 @@ public class OrderItemController {
 	 * controller method to list all orders grouped by desk and item
 	 *
 	 * @param response
-	 * @param kitchen
+	 * @param forKitchen
 	 * @return
 	 */
-	@GetMapping("/unfinished/grouped/by-desk")
-	public Map<Integer, List<OrderDeskAggregationDto>> listAllOpenOrdersByDesk(HttpServletResponse response, @RequestParam(defaultValue = "1", required = false) Integer kitchen) {
+	@GetMapping("/unfinished/grouped/by-desk/{forKitchen}")
+	public Map<Integer, List<OrderDeskAggregationDto>> listAllOpenOrdersByDesk(HttpServletResponse response, @PathVariable Integer forKitchen) {
 		try {
-			return this.orderRepository.getUnfinishedOrdersForCategoriesGroupedByDeskAndOrderItem(kitchen == 1);
+			return this.orderRepository.getUnfinishedOrdersForCategoriesGroupedByDeskAndOrderItem(forKitchen == 1);
 		} catch (Exception e) {
 			LOGGER.warning("Error getting all orders: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -103,13 +103,13 @@ public class OrderItemController {
 	 * controller method to list all order grouped by item
 	 *
 	 * @param response
-	 * @param kitchen
+	 * @param forKitchen
 	 * @return
 	 */
-	@GetMapping("/unfinished/grouped/by-item")
-	public List<OrderDeskAggregationDto> listAllOpenOrdersByItem(HttpServletResponse response, @RequestParam(defaultValue = "1", required = false) Integer kitchen) {
+	@GetMapping("/unfinished/grouped/by-item/{forKitchen}")
+	public List<OrderDeskAggregationDto> listAllOpenOrdersByItem(HttpServletResponse response, @PathVariable Integer forKitchen) {
 		try {
-			return this.orderRepository.getUnfinishedOrderForCategoriesGroupedByItem(kitchen == 1);
+			return this.orderRepository.getUnfinishedOrderForCategoriesGroupedByItem(forKitchen == 1);
 		} catch (Exception e) {
 			LOGGER.warning("Error getting all orders: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -167,11 +167,11 @@ public class OrderItemController {
 	/**
 	 * controller method to mark order as finished
 	 *
-	 * @param response
+	 * @param response, ids
 	 * @param ids
 	 */
-	@RequestMapping(value = "/finish/{ids}", method = RequestMethod.PUT)
-	public void finishOrder(HttpServletResponse response, @PathVariable String ids) {
+	@RequestMapping(value = "/finish", method = RequestMethod.PUT)
+	public void finishOrder(@RequestBody String ids, HttpServletResponse response) {
 		try {
 			this.updateOrderState(ids, OrderItemState.State.FINISHED);
 		} catch (IllegalArgumentException e) {
@@ -182,11 +182,11 @@ public class OrderItemController {
 	/**
 	 * controller method to mark order as canceled
 	 *
-	 * @param response
+	 * @param response, ids
 	 * @param ids
 	 */
-	@RequestMapping(value = "/cancel/{ids}", method = RequestMethod.PUT)
-	public void cancelOrder(HttpServletResponse response, @PathVariable String ids) {
+	@RequestMapping(value = "/cancel", method = RequestMethod.PUT)
+	public void cancelOrder(@RequestBody String ids, HttpServletResponse response) {
 		try {
 			this.updateOrderState(ids, OrderItemState.State.CANCELED);
 		} catch (IllegalArgumentException e) {
