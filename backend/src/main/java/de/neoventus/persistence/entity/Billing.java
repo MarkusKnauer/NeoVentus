@@ -23,7 +23,12 @@ public class Billing extends AbstractDocument {
         this.items = new ArrayList<>();
     }
 
-    // getter and setter
+	public Billing(Date billedAt, Double totalPaid, List<BillingItem> items) {
+		this.billedAt = billedAt;
+		this.totalPaid = totalPaid;
+		this.items = items;
+	}
+// getter and setter
 
     public Date getBilledAt() {
         return billedAt;

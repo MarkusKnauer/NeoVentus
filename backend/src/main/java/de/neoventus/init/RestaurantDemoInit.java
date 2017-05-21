@@ -57,33 +57,10 @@ public class RestaurantDemoInit {
      *
      * @see PostConstruct
      */
-//	@PostConstruct
+	//@PostConstruct
 	public void initialize() {
-		clearIndexes();
-		clearData();
         new DefaultDemoDataIntoDB(deskRepository, userRepository, menuItemRepository, menuItemCategoryRepository, orderItemRepository, reservationRepository,billingRepository,sideDishRepository, mongoTemplate);
 	}
 
-    /**
-     * clear before regenerate to allow changes
-     */
-    private void clearData() {
-        deskRepository.deleteAll();
-        menuItemRepository.deleteAll();
-        userRepository.deleteAll();
-        orderItemRepository.deleteAll();
-        reservationRepository.deleteAll();
-        menuItemCategoryRepository.deleteAll();
-        sideDishRepository.deleteAll();
 
-    }
-
-	/**
-	 * clear existing indexes
-	 */
-	private void clearIndexes() {
-		for (String collection : this.mongoTemplate.getDb().getCollectionNames()) {
-			this.mongoTemplate.getDb().getCollection(collection).dropIndexes();
-		}
-	}
 }

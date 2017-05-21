@@ -49,6 +49,8 @@ public class WriteExcelInDB {
 	private final static Logger LOGGER = Logger.getLogger(WriteExcelInDB.class.getName());
 	private MenuItemCategory category = null;
 
+	private List<MenuItem> newMenu;
+
 
 	@Autowired
 	public WriteExcelInDB(MenuItemRepository menuItemRepository, MenuItemCategoryRepository menuItemCategoryRepository, UserRepository userRepository, DeskRepository deskRepository, OrderItemRepository orderItemRepository, BillingRepository billingRepository, ReservationRepository reservationRepository, SideDishRepository sideDishRepository, MongoTemplate mongoTemplate) {
@@ -86,6 +88,7 @@ public class WriteExcelInDB {
 	private void writeMenuAndCategory(Sheet excelSheet) {
 		LOGGER.info("Writes Menu-Excelsheet in MongoDB");
 		Iterator<Row> row = excelSheet.iterator();
+		 newMenu = new ArrayList<MenuItem>();
 		// Jump over the first two lines
 		row.next();
 		row.next();
@@ -102,6 +105,7 @@ public class WriteExcelInDB {
 
 
 		}
+
 	}
 	// Subfunction for Category
 	private void writeCategory(Iterator<Cell> cellIterator) {
@@ -114,10 +118,21 @@ public class WriteExcelInDB {
 
 		}
 		// Constructor Category: Name, Kitchen or Bar
-		category = new MenuItemCategory(value.get(1),!value.get(2).equals("Bar"));
-		if (!value.get(0).equals("")) {
-			category.setParent(menuItemCategoryRepository.findByName(value.get(0)));
+		if(menuItemCategoryRepository.findByName(value.get(1))== null){
+			category = new MenuItemCategory(value.get(1),!value.get(2).equals("Bar"));
+			if (!value.get(0).equals("")) {
+				category.setParent(menuItemCategoryRepository.findByName(value.get(0)));
+			}
+		} else{
+			category = menuItemCategoryRepository.findByName(value.get(1));
+			category.setForKitchen(!value.get(2).equals("Bar"));
+			if (!value.get(0).equals("")) {
+				category.setParent(menuItemCategoryRepository.findByName(value.get(0)));
+			}
+			LOGGER.info("Categorie exists");
 		}
+
+
 		menuItemCategoryRepository.save(category);
 	}
 
@@ -130,19 +145,28 @@ public class WriteExcelInDB {
 			value.add(returnValue(currentCell));
 		}
 		// MenuItem-Constructor: Category, name, Shortname, price, currency, description, mediaURL, notices
-		menuItemRepository.save(
-			new MenuItem(
-				category,
-				value.get(0),
-				value.get(1),
-				Double.parseDouble(value.get(2)),
-				value.get(3),
-				value.get(4),
-				"",
-				new ArrayList<>()
-			)
-		);
+		MenuItem menuItem;
+			if (menuItemRepository.findByName(value.get(0)) == null) {
+				menuItem = new MenuItem(
+					category,
+					value.get(0),
+					value.get(1),
+					Double.parseDouble(value.get(2)),
+					value.get(3),
+					value.get(4),
+					"",
+					new ArrayList<>());
 
+			} else {
+				menuItem = menuItemRepository.findByName(value.get(0));
+				menuItem.setMenuItemCategory(category);
+				menuItem.setShortName(value.get(1));
+				menuItem.setPrice(Double.parseDouble(value.get(2)));
+				menuItem.setCurrency(value.get(3));
+				menuItem.setDescription(value.get(4));
+			}
+			newMenu.add(menuItem);
+			menuItemRepository.save(menuItem);
 	}
 // --------------------- END: SEMANTIC GROUP CATEGORY AND MENU ---------------------------------------------------------
 
@@ -162,7 +186,15 @@ public class WriteExcelInDB {
 			}
 			if(!value.get(0).equals("Gesamt")) {
 				//Desk-Constructor: number, seats, max. Seats
-				Desk desk = new Desk((int) Double.parseDouble(value.get(0)), (int) Double.parseDouble(value.get(1)), (int) Double.parseDouble(value.get(2)));
+				Desk desk;
+				if(deskRepository.findByNumber((int) Double.parseDouble(value.get(0))) == null) {
+					desk = new Desk((int) Double.parseDouble(value.get(0)), (int) Double.parseDouble(value.get(1)), (int) Double.parseDouble(value.get(2)));
+
+				} else {
+					desk = deskRepository.findByNumber((int) Double.parseDouble(value.get(0)));
+					desk.setSeats((int) Double.parseDouble(value.get(1)));
+					desk.setMaximalSeats((int) Double.parseDouble(value.get(1)));
+				}
 				deskRepository.save(desk);
 			}
 		}
@@ -171,7 +203,6 @@ public class WriteExcelInDB {
 	private void writeUserDefault(Sheet excelSheet){
 		LOGGER.info("Writes User-Excelsheet in MongoDB");
 		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
 		Iterator<Row> row = excelSheet.iterator();
 		// Jump over the first two lines
 		row.next();
@@ -187,9 +218,20 @@ public class WriteExcelInDB {
 				value.add(returnValue(currentCell));
 			}
 			// User-Constructor: Username, firstname, lastname, password, WorkingTimeModell, Permissions
-			User user = new User(value.get(0),value.get(1),value.get(2), bCryptPasswordEncoder.encode(value.get(3)),value.get(4),Permission.valueOf(value.get(5)));
+			User user;
+			if(userRepository.findByUsername(value.get(0))==null) {
+				user = new User(value.get(0), value.get(1), value.get(2), bCryptPasswordEncoder.encode(value.get(3)), value.get(4), Permission.valueOf(value.get(5)));
+			} else{
+				user = userRepository.findByUsername(value.get(0));
+				user.setFirstName(value.get(1));
+				user.setLastName(value.get(2));
+				user.setPassword(bCryptPasswordEncoder.encode(value.get(3)));
+				user.setWorkingTimeModell(value.get(4));
+				List<Permission> perm = user.getPermissions();
+				perm.add(Permission.valueOf(value.get(5)));
+				user.setPermissions(perm);
+			}
 			userRepository.save(user);
-
 		}
 	}
 
@@ -213,16 +255,17 @@ public class WriteExcelInDB {
 	}
 
 
+
 	/**
 	 * clear before regenerate to allow changes
 	 */
 	private void clearData() {
-		deskRepository.deleteAll();
-		menuItemRepository.deleteAll();
-		userRepository.deleteAll();
+	//	deskRepository.deleteAll();
+	//	menuItemRepository.deleteAll();
+	//	userRepository.deleteAll();
 		orderItemRepository.deleteAll();
 		reservationRepository.deleteAll();
-		menuItemCategoryRepository.deleteAll();
+	//	menuItemCategoryRepository.deleteAll();
 		sideDishRepository.deleteAll();
 
 	}
