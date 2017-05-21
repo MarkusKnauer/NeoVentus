@@ -26,10 +26,11 @@ public class Billing extends AbstractDocument {
         this.items = new ArrayList<>();
     }
 
-	public Billing(Date billedAt, Double totalPaid, List<BillingItem> items) {
+	public Billing(Date billedAt, Double totalPaid, List<BillingItem> items, User waiter) {
 		this.billedAt = billedAt;
 		this.totalPaid = totalPaid;
 		this.items = items;
+		this.waiter = waiter;
 	}
 // getter and setter
 

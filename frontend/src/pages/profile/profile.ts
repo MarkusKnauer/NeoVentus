@@ -88,7 +88,7 @@ export class ProfilePage {
           this.gratitude_all += (billing.totalPaid - itemsPrice);
 
           if (date.getDay() == this.today.getDay()) {
-            this.profit_today += itemsPrice
+            this.profit_today += itemsPrice;
             this.gratitude_today += (billing.totalPaid - itemsPrice);
           }
         }

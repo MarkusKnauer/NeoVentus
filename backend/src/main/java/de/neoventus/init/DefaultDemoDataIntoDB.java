@@ -12,10 +12,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -75,8 +71,8 @@ class DefaultDemoDataIntoDB {
 		updateUserDesk();
 		generateFinishedOrderItem(); //DBREF: All
 		generateActualOrderItem();
-		generateOrderItem(); //DBREF: All
-		generateBillings();
+	//	generateOrderItem(); //DBREF: All
+	//	generateBillings();
 
 	}
 
@@ -280,32 +276,6 @@ class DefaultDemoDataIntoDB {
 		}
 	}
 
-
-	// DANGER! Here must be Parametres in use for dynamic assignment
-	private void updateUserDesk() {
-		User u = userRepository.findByUsername("Karl");
-		u.getDesks().add(deskRepository.findByNumber(1));
-		u.getDesks().add(deskRepository.findByNumber(2));
-		u.getDesks().add(deskRepository.findByNumber(3));
-		u.getDesks().add(deskRepository.findByNumber(4));
-		userRepository.save(u);
-
-		u = userRepository.findByUsername("Katja");
-		u.getDesks().add(deskRepository.findByNumber(5));
-		u.getDesks().add(deskRepository.findByNumber(6));
-		u.getDesks().add(deskRepository.findByNumber(7));
-		userRepository.save(u);
-
-		u = userRepository.findByUsername("Knut");
-		u.getDesks().add(deskRepository.findByNumber(8));
-		u.getDesks().add(deskRepository.findByNumber(9));
-		u.getDesks().add(deskRepository.findByNumber(10));
-		userRepository.save(u);
-
-	}
-
-
-
 	// ------------- START OF Semantic group: BI- orders ------------------------------------
 	private void generateFinishedOrderItem() {
 		LOGGER.info("Creating random orders");
@@ -361,7 +331,7 @@ class DefaultDemoDataIntoDB {
 					totalprice = (Math.round(totalprice*10))/10;
 
 
-					billing = new Billing(new Date(calendar.getTimeInMillis()+delay+billingtime),totalprice,billingItemList);
+					billing = new Billing(new Date(calendar.getTimeInMillis()+delay+billingtime),totalprice,billingItemList, randomUserService(waiter));
 					billing.setId(String.valueOf(new ObjectId()));
 					billingList.add(billing);
 

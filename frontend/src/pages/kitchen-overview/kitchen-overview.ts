@@ -1,10 +1,9 @@
 import {Component} from "@angular/core";
-import {NavController, LoadingController, AlertController, NavParams} from "ionic-angular";
+import {AlertController, LoadingController, NavController, NavParams} from "ionic-angular";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {OrderService} from "../../service/order.service";
 import {MenuCategoryService} from "../../service/menu-category.service";
 import {OrderSocketService} from "../../service/order-socket-service";
-
 
 
 @Component({
@@ -46,7 +45,7 @@ export class KitchenOverviewPage {
       this.loadOrderItemsGroupedByDeskAndCategory()
     ]).then(() => {
       this.loading.dismissAll();
-    })
+    });
 
 
     this.orderSocketService.subscribe(this.socketTopic,

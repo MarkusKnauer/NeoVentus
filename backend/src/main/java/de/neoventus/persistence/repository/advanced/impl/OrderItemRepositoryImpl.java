@@ -72,7 +72,7 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 
 	@Override
 	public Map<Integer, List<OrderDeskAggregationDto>> getUnfinishedOrdersForCategoriesGroupedByDeskAndOrderItem(boolean forKitchen) {
-		List<Desk> desks = (List<Desk>) this.deskRepository.findAll();
+		List<Desk> desks = this.deskRepository.findAll();
 		List<MenuItemCategory> categories = this.menuItemCategoryRepository.findByForKitchen(forKitchen);
 		List<MenuItem> itemsInterested = this.menuItemRepository.findAllByMenuItemCategoryIn(categories);
 

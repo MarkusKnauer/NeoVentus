@@ -137,7 +137,7 @@ export class DeskOverviewPage {
       console.log("my desks only");
       this.myDesksOnly = true;
     }
-  }
+  };
 
   private getUserName() {
     if (this.user == null) {
