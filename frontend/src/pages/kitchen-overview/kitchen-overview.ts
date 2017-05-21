@@ -14,8 +14,10 @@ import {OrderSocketService} from "../../service/order-socket-service";
 export class KitchenOverviewPage {
 
   private loading;
+
   //if value is 1 the kitchen with meals will be shown, otherwhise the bar with drinks is shown
   private forKitchen;
+  private socketTopic;
 
   constructor(public navParams: NavParams,
               private navCtrl: NavController,
@@ -23,12 +25,20 @@ export class KitchenOverviewPage {
               private authGuard: AuthGuardService,
               public loadingCtrl: LoadingController,
               private menuCategoryService: MenuCategoryService,
-              private alertCtrl: AlertController
-              //private orderSocketService: OrderSocketService
+              private alertCtrl: AlertController,
+              private orderSocketService: OrderSocketService
   ) {
 
     this.forKitchen = navParams.get("forKitchen");
-    this.presentLoadingDefault();
+
+    if (this.forKitchen == 1) {
+      this.socketTopic = "/topic/order/kitchen";
+    } else {
+      this.socketTopic = "/topic/order/bar";
+    }
+
+
+    this.presentLoadingDefault("Bestellungen werden geladen");
 
     Promise.all([
       this.menuCategoryService.loadCategoryTree(),
@@ -39,19 +49,47 @@ export class KitchenOverviewPage {
     })
 
 
-    // this.orderSocketService.subscribe();
+    this.orderSocketService.subscribe(this.socketTopic,
+      data => {
+
+        for (var key in data) {
+
+          if (key == "desks") {
+            //group by category and save to cache
+            this.groupByCategory(data[key]);
+            this.orderService.cache['open_orders_grouped_by_desks'] = data[key];
+          }
+
+          else if (key == "items") {
+            //save to cache
+            this.orderService.cache['open_orders_grouped_by_orderitem'] = data[key];
+          }
+
+        }
+      });
+
   }
 
   loadOrderItemsGroupedByDeskAndCategory() {
     this.orderService.getAllOpenOrderItemsGroupedByDesk(this.forKitchen)
       .then(data => {
-
-        for (var key in data) {
-          if (data[key].length != 0) {
-            this.groupByCategory(data[key]);
-          }
-        }
+        this.groupByCategory(data);
       })
+  }
+
+  /**
+   * sorts orderItems by category
+   * @param orderitems
+   */
+
+  groupByCategory(orderItems) {
+    if (orderItems != null) {
+      for (var key in orderItems) {
+        if (orderItems[key].length != 0) {
+          this.groupByCategoryPerDesk(orderItems[key]);
+        }
+      }
+    }
   }
 
   /**
@@ -59,7 +97,7 @@ export class KitchenOverviewPage {
    * @param ordersPerDesk
    */
 
-  groupByCategory(ordersPerDesk) {
+  groupByCategoryPerDesk(ordersPerDesk) {
     //new object with keys as item.name and
     //orderItem array as value
     var newArray = {};
@@ -117,16 +155,17 @@ export class KitchenOverviewPage {
     });
   }
 
-
-  // Fancy Loading circle
-  presentLoadingDefault() {
+  /**
+   * fancy loading
+   * @param message
+   */
+  presentLoadingDefault(info) {
     this.loading = this.loadingCtrl.create({
-      content: 'Bestellungen werden geladen.'
+      content: info
     });
 
     this.loading.present();
   }
-
 
   /**
    * sets the status of all orderItems per desk as finished
@@ -196,9 +235,15 @@ export class KitchenOverviewPage {
    * @param ids
    */
   sendingData(ids) {
+    this.presentLoadingDefault("Bitte warten ...");
+
     this.orderService.setOrderItemStateFinished(ids).toPromise().then(() => {
-      this.orderService.getAllOpenOrderItemsGroupedByOrderItem(this.forKitchen),
-        this.loadOrderItemsGroupedByDeskAndCategory()
+      // optional - loading all orders new at once
+
+      //this.orderService.getAllOpenOrderItemsGroupedByOrderItem(this.forKitchen),
+      //  this.loadOrderItemsGroupedByDeskAndCategory();
+
+      this.loading.dismissAll();
     });
   }
 

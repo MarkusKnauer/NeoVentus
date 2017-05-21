@@ -110,7 +110,6 @@ export class OrderService extends CachingService {
 
 
   public setOrderItemStateFinished(ids) {
-    console.debug("HTTP-PUT finished Orders: ", ids);
     return this.http.put(OrderService.BASE_URL + "/finish", ids);
 
   }

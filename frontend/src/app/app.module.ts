@@ -71,7 +71,7 @@ import {BillingService} from "../service/billing.service";
         {component: LoginPage, name: "Login", segment: "login"},
         {component: DeskOverviewPage, name: "DeskOverview", segment: "desks"},
         {component: DeskPage, name: "ShowOrders", segment: "orders/:deskNumber", defaultHistory: ["DeskOverview"]},
-        {component: KitchenOverviewPage, name: "KitchenOverview", segment: "kitchen"}
+        {component: KitchenOverviewPage, name: "KitchenOverview", segment: "kitchen/:forKitchen"}
       ]
     }),
     IonicStorageModule.forRoot()
