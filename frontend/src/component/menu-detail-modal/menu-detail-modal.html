@@ -41,7 +41,8 @@
         <button ion-button full (click)="localStorageService.saveMenuFavorite(menu.id)" *ngIf="!isFavorite()">
           <ion-icon name="heart"></ion-icon>
         </button>
-        <button ion-button icon-left full color="danger" *ngIf="isFavorite()">
+        <button ion-button icon-left full color="danger" *ngIf="isFavorite()"
+                (click)="localStorageService.deleteMenuFavorite(menu.id)">
           <ion-icon name="trash"></ion-icon>
           Fav
         </button>

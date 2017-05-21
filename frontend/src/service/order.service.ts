@@ -6,11 +6,7 @@ import {OrderDto} from "../model/order-dto";
 /**
  * handling requests to the backend belonging the orders
  *
- * @author Julian Beck, Dennis Thanner
- * @version 0.0.6 added insert batch order support - DT
- *          0.0.5 added caching support for kitchen/bar - DS
- *          0.0.4 changed url for getAllOpenOrderItems - DS
- *          0.0.3 changed urls
+ * @author Julian Beck, Dennis Thanner, Tim Heidelbach
  */
 @Injectable()
 export class OrderService extends CachingService {
@@ -27,16 +23,22 @@ export class OrderService extends CachingService {
    *
    * @returns {Observable<Response>}
    */
-  public getOrdersByDesk(desknumber: number) {
+  public getOrdersByDeskNumber(deskNumber: number) {
 
-    return new Promise<any>(resolve => {
-      this.http.get(OrderService.BASE_URL + "/desk/open/" + desknumber.toString())
-        .map(res => res.json())
-        .subscribe(order => {
-          this.saveToCache("orders_desk" + desknumber.toString(), order);
-          resolve(order);
-        });
-    });
+    if (this.cache["orders_desk" + deskNumber] != null) {
+      return new Promise<any>(resolve => {
+        resolve(this.cache["orders_desk" + deskNumber]);
+      })
+    } else {
+      return new Promise<any>(resolve => {
+        this.http.get(OrderService.BASE_URL + "/desk/open/" + deskNumber)
+          .map(res => res.json())
+          .subscribe(order => {
+            this.saveToCache("orders_desk" + deskNumber, order);
+            resolve(order);
+          });
+      });
+    }
   }
 
   /**
@@ -44,10 +46,10 @@ export class OrderService extends CachingService {
    *
    * @returns {Observable<Response>}
    */
-  public getAllOpenOrderItems() {
+  public getAllOpenOrderItemsGroupedByDesk(forKitchen) {
 
     return new Promise<any>(resolve => {
-      this.http.get(OrderService.BASE_URL + "/all/open/meals")
+      this.http.get(OrderService.BASE_URL + "/unfinished/grouped/by-desk/" + forKitchen.toString())
         .map(res => res.json())
         .subscribe(data => {
           this.saveToCache("open_orders_grouped_by_desks", data);
@@ -62,10 +64,10 @@ export class OrderService extends CachingService {
    *
    * @returns {Observable<Response>}
    */
-  public getAllOpenOrderItemsGroupedByOrderItem() {
+  public getAllOpenOrderItemsGroupedByOrderItem(forKitchen) {
 
     return new Promise<any>(resolve => {
-      this.http.get(OrderService.BASE_URL + "/all/open/meals")
+      this.http.get(OrderService.BASE_URL + "/unfinished/grouped/by-item/" + forKitchen.toString())
         .map(res => res.json())
         .subscribe(data => {
           this.saveToCache("open_orders_grouped_by_orderitem", data);
@@ -85,5 +87,33 @@ export class OrderService extends CachingService {
   public insertOrders(orders: Array<OrderDto>) {
     return this.http.post(OrderService.BASE_URL, orders);
   }
+
+  /**
+   * get details for a specific order
+   *
+   * @param id
+   * @returns {Promise<T>}
+   */
+  public getOrderInfo(id: string) {
+    return this.http.get(OrderService.BASE_URL + "/" + id).toPromise();
+  }
+
+  /**
+   * cancel orders by ids
+   *
+   * @param orderIds
+   * @returns {Observable<Response>}
+   */
+  public cancleOrders(orderIds: Array<string>) {
+    return this.http.put(OrderService.BASE_URL + "/cancel/" + orderIds.join(","), {});
+  }
+
+
+  public setOrderItemStateFinished(ids) {
+    return this.http.put(OrderService.BASE_URL + "/finish", ids);
+
+  }
+
+
 
 }

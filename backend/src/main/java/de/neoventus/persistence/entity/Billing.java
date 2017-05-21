@@ -1,13 +1,13 @@
 package de.neoventus.persistence.entity;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
  * @author Dennis Thanner, Tim Heidelbach
- * @version 0.0.3 removed member billingID
- *          0.0.2 removed local variable StringBuilder
  **/
 public class Billing extends AbstractDocument {
 
@@ -16,6 +16,9 @@ public class Billing extends AbstractDocument {
     private Double totalPaid;
 
     private List<BillingItem> items;
+
+	@DBRef
+	private User waiter;
 
     // constructor
     public Billing() {
@@ -53,6 +56,14 @@ public class Billing extends AbstractDocument {
     public void setItems(List<BillingItem> items) {
         this.items = items;
     }
+
+	public User getWaiter() {
+		return waiter;
+	}
+
+	public void setWaiter(User waiter) {
+		this.waiter = waiter;
+	}
 
     @Override
     public String toString() {

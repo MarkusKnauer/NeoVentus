@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
  * REST controller for entity billing
  *
  * @author Tim Heidelbach
- * @version 0.0.1
+ * @version 0.0.2
  */
 @RestController
 @RequestMapping("/api/billing")
@@ -45,6 +46,24 @@ public class BillingController {
 			return billingRepository.findOne(billingId);
 		} catch (DataAccessException e) {
 			LOGGER.warning("Error searching billing by Id " + billingId + ": " + e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return null;
+		}
+	}
+
+	/**
+	 * Controller method to get a all billings by a specific waiter
+	 *
+	 * @param response the response
+	 * @param waiterId the waiterId
+	 * @return the billings
+	 */
+	@RequestMapping(value = "/waiter/{waiterId}", method = RequestMethod.GET)
+	public List<Billing> listBillingsByWaiter(HttpServletResponse response, @PathVariable String waiterId) {
+		try {
+			return billingRepository.findByWaiter(waiterId);
+		} catch (DataAccessException e) {
+			LOGGER.warning("Error searching billings by waiter: " + waiterId + ": " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return null;
 		}

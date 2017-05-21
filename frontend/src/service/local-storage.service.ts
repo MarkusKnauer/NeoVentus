@@ -7,7 +7,6 @@ import {CachingService} from "./caching.service";
  * service for storing data on local device storage
  *
  * @author Dennis Thanner
- * @version 0.0.2 added caching - DT
  */
 @Injectable()
 export class LocalStorageService extends CachingService {
@@ -32,6 +31,16 @@ export class LocalStorageService extends CachingService {
    */
   saveMenuFavorite(menuId: string) {
     this.cache["favs"].push(menuId);
+    this.storage.ready().then(() => {
+      this.storage.set("favs", JSON.stringify(this.cache["favs"]));
+    });
+  }
+
+  /**
+   * delete menu favorite
+   */
+  deleteMenuFavorite(menuId: string) {
+    this.cache["favs"].splice(this.cache["favs"].indexOf(menuId), 1);
     this.storage.ready().then(() => {
       this.storage.set("favs", JSON.stringify(this.cache["favs"]));
     });

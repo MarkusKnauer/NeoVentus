@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {LoadingController, ModalController, NavController, NavParams} from "ionic-angular";
+import {AlertController, LoadingController, ModalController, NavController, NavParams} from "ionic-angular";
 import {OrderService} from "../../service/order.service";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {DeskOverviewPage} from "../desk-overview/desk-overview";
@@ -12,16 +12,10 @@ import {OrderDto} from "../../model/order-dto";
 
 /**
  * @author Julian beck, Dennis Thanner
- * @version 0.0.7 batch request for order submitting -DT
- *          0.0.6 added submit orders - DT
- *          0.0.5 added tmp orders - DT
- *          0.0.4 refactored grouped order ouput - DT
- *          0.0.3 finished grouped order ouput and total - DT
- *          0.0.2 "Name-value-pair"- compatibility
- *          0.0.1 created showorders.ts - JB
  */
 @Component({
   templateUrl: "desk.html",
+  selector: "desk-page"
 })
 export class DeskPage {
 
@@ -39,7 +33,7 @@ export class DeskPage {
 
   constructor(public navParams: NavParams, private navCtrl: NavController, private orderService: OrderService,
               private authGuard: AuthGuardService, public loadingCtrl: LoadingController, private modalCtrl: ModalController,
-              private menuCategoryService: MenuCategoryService) {
+              private menuCategoryService: MenuCategoryService, private alertCtrl: AlertController) {
     this.deskNumber = navParams.get("deskNumber");
     this.ordersCacheKey = "orders_desk" + this.deskNumber;
     if (this.deskNumber != null) {
@@ -47,7 +41,7 @@ export class DeskPage {
 
       Promise.all([
         this.menuCategoryService.loadCategoryTree(),
-        this.orderService.getOrdersByDesk(this.deskNumber)
+        this.orderService.getOrdersByDeskNumber(this.deskNumber)
       ]).then(() => {
         this.loading.dismissAll();
         this.initCatGroups();
@@ -62,6 +56,9 @@ export class DeskPage {
    * by getting all child ids
    */
   initCatGroups() {
+    // clear array to prevent duplicates
+    this.catGroups = [];
+
     for (let cat of this.menuCategoryService.cache["tree"]) {
       let catIds = this.getChildCategoryIds(cat);
       catIds.push(cat.id);
@@ -91,6 +88,46 @@ export class DeskPage {
     });
   }
 
+  /**
+   * protection method to prevent closing view if orders are not submitted
+   *
+   * @returns {boolean}
+   */
+  ionViewCanLeave() {
+    if (!this.tmpOrders.length) {
+      // no open not submitted orders
+      return true;
+    } else {
+      let alert = this.alertCtrl.create({
+        title: "Offene Bestellungen verwerfen?",
+        buttons: [
+          {
+            text: "Nein",
+            handler: () => {
+              alert.dismiss();
+            }
+          },
+          {
+            text: "Ja",
+            handler: () => {
+              alert.dismiss().then(() => {
+                // delete not submitted orders to allow go back
+                this.tmpOrders = [];
+                // go back
+                this.navCtrl.pop();
+              });
+            }
+          }
+        ],
+        enableBackdropDismiss: false
+      });
+      alert.present();
+
+      // prevent from going back
+      // decision is prompted as alert
+      return false;
+    }
+  }
 
   /**
    * sum desk total order value
@@ -125,20 +162,24 @@ export class DeskPage {
   }
 
   /**
-   * group tmp order by item and sidedish
+   * group tmp order by item and sidedish and guest wish
    *
    * @returns {Array}
    */
   getGroupedTmpOrders() {
     let result = [];
     for (let tmp of this.tmpOrders) {
+      // find group element
       let rTmp = result.find(el => {
-        return tmp.item.id == el.item.id && Utils.arraysEqual(tmp.sideDishes, el.sideDishes);
+        return tmp.item.id == el.item.id && Utils.arraysEqual(tmp.sideDishes, el.sideDishes)
+          && tmp.wish == el.guestWish;
       });
       if (rTmp) {
+        // group element found increase counter
         rTmp.count += 1;
       } else {
-        result.push({item: tmp.item, sideDishes: tmp.sideDishes, count: 1});
+        // group not found, create new group
+        result.push({item: tmp.item, sideDishes: tmp.sideDishes, count: 1, guestWish: tmp.wish});
       }
     }
     console.debug("grouped tmp orders", result);
@@ -158,6 +199,69 @@ export class DeskPage {
     });
 
     this.loading.present();
+  }
+
+  /**
+   * open storno popup to chose which order to abort
+   * @param group
+   */
+  openStornoPopup(group) {
+    let data = [];
+    let reqs = [];
+    for (let orderId of group.orderIds) {
+      let req = this.orderService.getOrderInfo(orderId);
+      reqs.push(req);
+      req.then((resp) => {
+        data.push(resp.json());
+      }, () => {
+      })
+    }
+
+    // get data and then filter for cancel orders
+    Promise.all(reqs).then(() => {
+      let inputs = [];
+      for (let d of data) {
+        if (d.currentState == "NEW") {
+          let date = new Date(d.states[0].date);
+          inputs.push({
+            type: "checkbox",
+            label: d.item.shortName + " von " + d.waiter.username + " um " + date.getHours() + ":" + date.getMinutes(),
+            value: d.id
+          })
+        }
+      }
+
+      // build alert
+      let alert = this.alertCtrl.create({
+        title: "Bestellungen stornieren?",
+        message: !inputs.length ? "Keine Bestellung zum Stornieren verfügbar" : "",
+        inputs: inputs,
+        buttons: [
+          {
+            text: "Abbrechen",
+            role: "cancel",
+          },
+          {
+            text: "Ok"
+          }
+        ]
+      });
+
+      alert.present();
+
+      // after confirmation execute action and reload
+      alert.onDidDismiss((orderIds) => {
+        if (orderIds.length) {
+          this.orderService.cancleOrders(orderIds).toPromise().then(() => {
+            // reload data
+            this.orderService.getOrdersByDeskNumber(this.deskNumber).then(() => {
+              this.initCatGroups();
+            });
+          });
+        }
+      });
+    })
+
   }
 
   /**
@@ -184,12 +288,15 @@ export class DeskPage {
 
     // batch insert orders
     this.orderService.insertOrders(orders).toPromise().then(() => {
-      this.orderService.getOrdersByDesk(this.deskNumber).then(() => {
+      // reset tmp order
+      this.groupedTmpOrders = [];
+      this.tmpOrders = [];
+
+      // reload data
+      this.orderService.getOrdersByDeskNumber(this.deskNumber).then(() => {
         this.initCatGroups();
         this.loading.dismissAll();
       });
-      // reset tmp order
-      this.groupedTmpOrders = [];
     });
   }
 

@@ -25,6 +25,7 @@ import {OrderSelectModalComponent} from "../component/order-select-modal/order-s
 import {MenuCategoryService} from "../service/menu-category.service";
 import {MenuService} from "../service/menu.service";
 import {CostDecimalPipe} from "../pipe/CostDecimalPipe";
+import {MapToIterable} from "../pipe/MapToIterable";
 import {MenuDetailModalComponent} from "../component/menu-detail-modal/menu-detail-modal";
 import {MenuBoxComponent} from "../component/menu-box/menu-box";
 import {IonicStorageModule} from "@ionic/storage";
@@ -32,6 +33,7 @@ import {LocalStorageService} from "../service/local-storage.service";
 import {OrderSocketService} from "../service/order-socket-service";
 import {StompService} from "ng2-stomp-service";
 import {ReservationService} from "../service/reservation.service";
+import {BillingService} from "../service/billing.service";
 
 
 @NgModule({
@@ -56,7 +58,8 @@ import {ReservationService} from "../service/reservation.service";
     MenuBoxComponent,
 
     //pipes
-    CostDecimalPipe
+    CostDecimalPipe,
+    MapToIterable
 
   ],
   imports: [
@@ -66,9 +69,9 @@ import {ReservationService} from "../service/reservation.service";
       links: [
         // browser support links
         {component: LoginPage, name: "Login", segment: "login"},
-        {component: DeskOverviewPage, name: "Desk Overview", segment: "desks"},
-        {component: DeskPage, name: "ShowOrders", segment: "orders/:deskNumber"},
-        {component: KitchenOverviewPage, name: "Kitchen Overview", segment: "kitchen"}
+        {component: DeskOverviewPage, name: "DeskOverview", segment: "desks"},
+        {component: DeskPage, name: "ShowOrders", segment: "orders/:deskNumber", defaultHistory: ["DeskOverview"]},
+        {component: KitchenOverviewPage, name: "KitchenOverview", segment: "kitchen/:forKitchen"}
       ]
     }),
     IonicStorageModule.forRoot()
@@ -101,7 +104,8 @@ import {ReservationService} from "../service/reservation.service";
     MenuService,
     LocalStorageService,
     OrderSocketService,
-    ReservationService
+    ReservationService,
+    BillingService
   ]
 })
 export class AppModule {

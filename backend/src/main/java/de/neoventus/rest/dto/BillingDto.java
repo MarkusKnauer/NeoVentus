@@ -17,6 +17,8 @@ public class BillingDto implements Serializable {
 
 	private Double totalPaid;
 
+	private String waiter;
+
 	@NotNull
 	private List<String> items;
 
@@ -52,5 +54,13 @@ public class BillingDto implements Serializable {
 
 	public void setItems(List<String> items) {
 		this.items = items;
+	}
+
+	public String getWaiter() {
+		return waiter;
+	}
+
+	public void setWaiter(String waiter) {
+		this.waiter = waiter;
 	}
 }

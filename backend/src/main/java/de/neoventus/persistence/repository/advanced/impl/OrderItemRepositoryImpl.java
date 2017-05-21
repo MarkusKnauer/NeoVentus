@@ -20,14 +20,6 @@ import java.util.Map;
 
 /**
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.8 multiple side dish support - DT
- *          0.0.7 added side dish support in aggregated orders by desk - DT
- *          0.0.6 deleted searchOrderItemOutpuDto - DT
- *          0.0.5 orderState refactoring - DT
- *          0.0.4 state with enum - DS
- *          0.0.3 redundancy clean up - DT
- *          0.0.2 added variable state - DS
- *          0.0.1
  **/
 public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 
@@ -67,8 +59,9 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 	public List<OrderDeskAggregationDto> getGroupedNotPayedOrdersByItemForDesk(Desk desk) {
 		Aggregation agg = Aggregation.newAggregation(
 			Aggregation.match(Criteria.where("billing").is(null).and("desk").is(desk).and("states.state").ne(OrderItemState.State.CANCELED)),
-			Aggregation.group("item", "sideDishes").count().as("count").first("waiter").as("waiter"),
-			Aggregation.project("waiter", "count").and("_id.item").as("item").and("_id.sideDishes").as("sideDishes")
+			Aggregation.group("item", "sideDishes").count().as("count").first("waiter")
+				.as("waiter").addToSet("$id").as("orderIds"),
+			Aggregation.project("waiter", "count", "orderIds").and("_id.item").as("item").and("_id.sideDishes").as("sideDishes")
 		);
 
 		AggregationResults<OrderDeskAggregationDto> aggR = this.mongoTemplate.aggregate(agg, OrderItem.class, OrderDeskAggregationDto.class);

@@ -1,11 +1,6 @@
 <ion-header>
   <ion-navbar color="primary">
     <ion-title>Tisch {{deskNumber}}</ion-title><!-- created by Bettina Hartmann-->
-    <ion-buttons end>
-      <button ion-button icon-only (click)='openOrderSelectModal()'>
-        <ion-icon name="add"></ion-icon>
-      </button>
-    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -15,17 +10,25 @@
       <ion-item-divider color="light" [hidden]="cat.orders.length == 0">
         <span class="important">{{cat.name}}</span>
       </ion-item-divider>
-      <ion-item *ngFor="let order of cat.orders">
-        {{order.count}} x {{ order.item.name }}
-        <span class="side-dish" *ngFor="let side of order.sideDishes"> - {{side.name}}</span>
-        <span class="right">{{order.item.price * order.count | costDecimal}} €</span>
-      </ion-item>
+      <ion-item-sliding *ngFor="let order of cat.orders">
+        <ion-item>
+          {{order.count}} x {{ order.item.name }}
+          <span class="side-dish" *ngFor="let side of order.sideDishes"> - {{side.name}}</span>
+          <span class="right">{{order.item.price * order.count | costDecimal}} €</span>
+        </ion-item>
+        <!--sliding menu button-->
+        <ion-item-options side="right">
+          <button ion-button color="danger" (click)="openStornoPopup(order)">Storno</button>
+        </ion-item-options>
+      </ion-item-sliding>
     </ng-container>
+
+    <!--tmp orders not submitted to server -->
     <ng-container *ngIf="groupedTmpOrders.length">
       <ion-item-divider color="secondary">
         <span class="important">Ausstehend</span>
       </ion-item-divider>
-      <ion-item *ngFor="let tmpOrder of groupedTmpOrders">
+      <ion-item *ngFor="let tmpOrder of groupedTmpOrders" padding-right>
         {{tmpOrder.count}} x {{tmpOrder.item.name}}
         <span class="side-dish" *ngFor="let side of tmpOrder.sideDishes"> - {{side.name}}</span>
         <span class="right secondary-text">
@@ -33,17 +36,29 @@
         </span>
       </ion-item>
     </ng-container>
-    <ion-item text-right>
-      Total: {{ getTotalPrice() | costDecimal }} €
+    <!--total price -->
+    <ion-item padding-vertical padding-right>
+      <div text-right>
+        Total: <b>{{ getTotalPrice() | costDecimal }} €</b>
+      </div>
     </ion-item>
   </ion-list>
+
+  <!--floating action button -->
+  <ion-fab bottom right>
+    <button ion-fab mini icon-only (click)='openOrderSelectModal()'>
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
 </ion-content>
-<ion-footer>
+
+<!--footer menu -->
+<ion-footer *ngIf="orderService.cache[ordersCacheKey]?.length || tmpOrders.length">
   <ion-grid>
     <ion-row>
       <ion-col col-10>
         <button ion-button full icon-left
-                *ngIf="orderService.cache[ordersCacheKey]?.length ">
+                *ngIf="orderService.cache[ordersCacheKey]?.length">
           <ion-icon name="cash"></ion-icon>
           Rechnung
         </button>

@@ -11,12 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
+
 /**
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.5 multiple side dish support - DT
- *          0.0.4 added side dish to price calc - DT
- *          0.0.3 billing item refactoring - DT
- *          0.0.2 redundancy clean up - DT
  **/
 @Repository
 public class BillingRepositoryImpl implements NVBillingRepository {
@@ -65,4 +62,5 @@ public class BillingRepositoryImpl implements NVBillingRepository {
 
 		mongoTemplate.save(billing);
 	}
+
 }

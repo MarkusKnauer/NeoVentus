@@ -23,16 +23,6 @@ import java.util.logging.Logger;
  * REST controller for entity Order
  *
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.92 added aggregated order output by desk and order item, with difference of kitchen and bar - DT
- *          0.0.91 added multi batch support for insert and order state - DT
- *          0.0.9 GetMapping /all/open/meals
- *          0.0.8 corrected GET-Method /all/open - DS
- *          0.0.7 url and method refactoring - DT
- *          0.0.6 added finish and cancel methods, removed socket update to event listener - DT
- *          0.0.5 No key-Value-pairs and refactor GET-Method
- *          0.0.4 Name-Value-Pair for GET and OrderitemOutput for specific frontend-data
- *          0.0.3 added socket support - DT
- *          0.0.2 redundancy clean up - DT
  */
 @RestController
 @RequestMapping("/api/order")
@@ -73,20 +63,35 @@ public class OrderItemController {
 			//response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return null;
 		}
+	}
 
+	/**
+	 * get details of a specific order
+	 *
+	 * @param orderId
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/{orderId}", method = RequestMethod.GET)
+	public OrderItem getOrder(@PathVariable String orderId, HttpServletResponse response) {
+		OrderItem o = this.orderRepository.findOne(orderId);
+		if (o == null) {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+		}
+		return o;
 	}
 
 	/**
 	 * controller method to list all orders grouped by desk and item
 	 *
 	 * @param response
-	 * @param kitchen
+	 * @param forKitchen
 	 * @return
 	 */
-	@GetMapping("/unfinished/grouped/by-desk")
-	public Map<Integer, List<OrderDeskAggregationDto>> listAllOpenOrdersByDesk(HttpServletResponse response, @RequestParam(defaultValue = "1", required = false) Integer kitchen) {
+	@GetMapping("/unfinished/grouped/by-desk/{forKitchen}")
+	public Map<Integer, List<OrderDeskAggregationDto>> listAllOpenOrdersByDesk(HttpServletResponse response, @PathVariable Integer forKitchen) {
 		try {
-			return this.orderRepository.getUnfinishedOrdersForCategoriesGroupedByDeskAndOrderItem(kitchen == 1);
+			return this.orderRepository.getUnfinishedOrdersForCategoriesGroupedByDeskAndOrderItem(forKitchen == 1);
 		} catch (Exception e) {
 			LOGGER.warning("Error getting all orders: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -98,13 +103,13 @@ public class OrderItemController {
 	 * controller method to list all order grouped by item
 	 *
 	 * @param response
-	 * @param kitchen
+	 * @param forKitchen
 	 * @return
 	 */
-	@GetMapping("/unfinished/grouped/by-item")
-	public List<OrderDeskAggregationDto> listAllOpenOrdersByItem(HttpServletResponse response, @RequestParam(defaultValue = "1", required = false) Integer kitchen) {
+	@GetMapping("/unfinished/grouped/by-item/{forKitchen}")
+	public List<OrderDeskAggregationDto> listAllOpenOrdersByItem(HttpServletResponse response, @PathVariable Integer forKitchen) {
 		try {
-			return this.orderRepository.getUnfinishedOrderForCategoriesGroupedByItem(kitchen == 1);
+			return this.orderRepository.getUnfinishedOrderForCategoriesGroupedByItem(forKitchen == 1);
 		} catch (Exception e) {
 			LOGGER.warning("Error getting all orders: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -162,11 +167,11 @@ public class OrderItemController {
 	/**
 	 * controller method to mark order as finished
 	 *
-	 * @param response
+	 * @param response, ids
 	 * @param ids
 	 */
-	@RequestMapping(value = "/finish/{ids}", method = RequestMethod.PUT)
-	public void finishOrder(HttpServletResponse response, @PathVariable String ids) {
+	@RequestMapping(value = "/finish", method = RequestMethod.PUT)
+	public void finishOrder(@RequestBody String ids, HttpServletResponse response) {
 		try {
 			this.updateOrderState(ids, OrderItemState.State.FINISHED);
 		} catch (IllegalArgumentException e) {
@@ -177,11 +182,11 @@ public class OrderItemController {
 	/**
 	 * controller method to mark order as canceled
 	 *
-	 * @param response
+	 * @param response, ids
 	 * @param ids
 	 */
-	@RequestMapping(value = "/cancel/{ids}", method = RequestMethod.PUT)
-	public void cancelOrder(HttpServletResponse response, @PathVariable String ids) {
+	@RequestMapping(value = "/cancel", method = RequestMethod.PUT)
+	public void cancelOrder(@RequestBody String ids, HttpServletResponse response) {
 		try {
 			this.updateOrderState(ids, OrderItemState.State.CANCELED);
 		} catch (IllegalArgumentException e) {
