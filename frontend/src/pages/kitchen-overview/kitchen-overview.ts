@@ -25,8 +25,7 @@ export class KitchenOverviewPage {
               public loadingCtrl: LoadingController,
               private menuCategoryService: MenuCategoryService,
               private alertCtrl: AlertController,
-              private orderSocketService: OrderSocketService
-  ) {
+              private orderSocketService: OrderSocketService) {
 
     this.forKitchen = navParams.get("forKitchen");
 
@@ -35,7 +34,6 @@ export class KitchenOverviewPage {
     } else {
       this.socketTopic = "/topic/order/bar";
     }
-
 
     this.presentLoadingDefault("Bestellungen werden geladen");
 
@@ -46,7 +44,6 @@ export class KitchenOverviewPage {
     ]).then(() => {
       this.loading.dismissAll();
     });
-
 
     this.orderSocketService.subscribe(this.socketTopic,
       data => {
@@ -181,6 +178,7 @@ export class KitchenOverviewPage {
         {
           text: 'Fertigstellen',
           handler: () => {
+
             var ids;
             ids = '';
             // go through the hierachy per desk
@@ -200,31 +198,37 @@ export class KitchenOverviewPage {
   }
 
 
+  /**
+   * creates a checkboxAlert to declare the status of all or specific orderItems of a category as finished
+   * @param desknumber, orderPerDesk
+   */
   presentConfirmCategory(desknumber, cat) {
-    let alert = this.alertCtrl.create({
-      title: cat.category + ' für Tisch ' + desknumber + ' fertigstellen?',
-      buttons: [
-        {
-          text: 'Abbruch',
-          role: 'cancel',
-        },
-        {
-          text: 'Fertigstellen',
-          handler: () => {
-            var ids;
-            ids = '';
+    let alert = this.alertCtrl.create();
+    alert.setTitle(cat.category + ' für Tisch ' + desknumber + ' fertigstellen?');
 
+    for (var orderItems of cat.itemsPerCat) {
+      alert.addInput({
+        type: 'checkbox',
+        label: orderItems.orderIds.length + " x " + orderItems.item.shortName,
+        value: orderItems,
+        checked: true
+      });
+    }
 
-            // go through the hierachy
-            for (var orderItems of cat.itemsPerCat) {
-              for (var orderIds of orderItems.orderIds) {
-                ids += orderIds + ",";
-              }
-            }
-            this.sendingData(ids);
+    alert.addButton('Abbruch');
+    alert.addButton({
+      text: 'Fertigstellen',
+      handler: data => {
+        var ids;
+        ids = '';
+
+        for (var orderItems of data) {
+          for (var orderIds of orderItems.orderIds) {
+            ids += orderIds + ",";
           }
         }
-      ]
+        this.sendingData(ids);
+      }
     });
     alert.present();
   }
@@ -247,5 +251,3 @@ export class KitchenOverviewPage {
   }
 
 }
-
-
