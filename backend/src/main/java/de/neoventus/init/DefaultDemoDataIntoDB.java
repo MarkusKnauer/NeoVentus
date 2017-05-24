@@ -425,10 +425,10 @@ private void generateActualOrderItem() {
 	//for one Year
 	for(int j = 0; j < 1; j++ ){
 		// Time warp for other desks, 7 * 2h = 14 <-- max. Opening time
-		for(int b = 0; b < 7; b++){
+		for(int b = 0; b < 1; b++){
 			// delay: random time after 30 min = 1800 sec. and 90 mins fix
 			delay = (int)(b * Math.random() * 1800000+5400000);
-			for(int k = 0; k < desks.size(); k++){
+			for(int k = 0; k < desks.size()-1; k++){
 				// For Orders
 				// orders per Desk
 				int ordersPerDesk = (int)(Math.random() * 4)+4;
