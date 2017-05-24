@@ -207,9 +207,19 @@ export class KitchenOverviewPage {
     alert.setTitle(cat.category + ' für Tisch ' + desknumber + ' fertigstellen?');
 
     for (var orderItems of cat.itemsPerCat) {
+      var labelText;
+      labelText = orderItems.orderIds.length + " x " + orderItems.item.shortName;
+
+      orderItems.sideDishes.length != 0 ? labelText += " - " : "";
+      for(var sideDish of orderItems.sideDishes){
+        labelText += sideDish.shortName + " ";
+      }
+      orderItems.guestWish.length != 0 ? labelText += " Wunsch: " + orderItems.guestWish : "";
+
+
       alert.addInput({
         type: 'checkbox',
-        label: orderItems.orderIds.length + " x " + orderItems.item.shortName,
+        label:  labelText,
         value: orderItems,
         checked: true
       });
