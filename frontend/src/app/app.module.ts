@@ -34,6 +34,7 @@ import {OrderSocketService} from "../service/order-socket-service";
 import {StompService} from "ng2-stomp-service";
 import {ReservationService} from "../service/reservation.service";
 import {BillingService} from "../service/billing.service";
+import {ManageStornoReasonsModalComponent} from "../component/manage-storno-reasons/manage-storno-reasons";
 
 
 @NgModule({
@@ -56,6 +57,7 @@ import {BillingService} from "../service/billing.service";
     OrderSelectModalComponent,
     MenuDetailModalComponent,
     MenuBoxComponent,
+    ManageStornoReasonsModalComponent,
 
     //pipes
     CostDecimalPipe,
@@ -71,7 +73,8 @@ import {BillingService} from "../service/billing.service";
         {component: LoginPage, name: "Login", segment: "login"},
         {component: DeskOverviewPage, name: "DeskOverview", segment: "desks"},
         {component: DeskPage, name: "ShowOrders", segment: "orders/:deskNumber", defaultHistory: ["DeskOverview"]},
-        {component: KitchenOverviewPage, name: "KitchenOverview", segment: "kitchen/:forKitchen"}
+        {component: KitchenOverviewPage, name: "KitchenOverview", segment: "kitchen/:forKitchen"},
+        {component: SettingsPage, name: "Settings", segment: "settings"}
       ]
     }),
     IonicStorageModule.forRoot()
@@ -89,7 +92,8 @@ import {BillingService} from "../service/billing.service";
     ProfilePage,
     KitchenOverviewPage,
     OrderSelectModalComponent,
-    MenuDetailModalComponent
+    MenuDetailModalComponent,
+    ManageStornoReasonsModalComponent,
   ],
   providers: [
     StatusBar,

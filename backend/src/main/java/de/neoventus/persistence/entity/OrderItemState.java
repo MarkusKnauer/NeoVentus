@@ -1,18 +1,24 @@
 package de.neoventus.persistence.entity;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
 import java.util.Date;
 
 /**
  * states for OrderItems
  *
  * @author dominik
- * @version 0.0.1
  */
 public class OrderItemState {
 
 	private State state;
 
 	private Date date;
+
+	private String reason;
+
+	@DBRef
+	private User waiter;
 
 	// constructor
 
@@ -38,6 +44,22 @@ public class OrderItemState {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public User getWaiter() {
+		return waiter;
+	}
+
+	public void setWaiter(User waiter) {
+		this.waiter = waiter;
 	}
 
 	public enum State {

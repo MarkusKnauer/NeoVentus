@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-navbar>
+    <ion-buttons start>
+      <button ion-button icon-only (click)="close()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>Stornierungsgründe</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-input placeholder="Neuen Grund hinzufügen" [(ngModel)]="newReason" clearInput=""></ion-input>
+    </ion-item>
+    <button ion-item icon-left *ngIf="newReason.length > 0" (click)="addReason()">
+      <ion-icon name="add"></ion-icon>
+      Hinzufügen
+    </button>
+
+    <ion-item-group reorder="true" (ionItemReorder)="saveReorder($event)">
+      <ion-item-sliding *ngFor="let reason of reasonCache">
+        <ion-item>
+          {{reason}}
+        </ion-item>
+        <ion-item-options side="right">
+          <button ion-button color="danger" (click)="deleteReason(reason)">Löschen</button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-item-group>
+  </ion-list>
+</ion-content>

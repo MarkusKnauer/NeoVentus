@@ -1,5 +1,12 @@
 import {Component} from "@angular/core";
-import {AlertController, LoadingController, ModalController, NavController, NavParams} from "ionic-angular";
+import {
+  ActionSheetController,
+  AlertController,
+  LoadingController,
+  ModalController,
+  NavController,
+  NavParams
+} from "ionic-angular";
 import {OrderService} from "../../service/order.service";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {DeskOverviewPage} from "../desk-overview/desk-overview";
@@ -8,6 +15,7 @@ import {MenuCategoryService} from "../../service/menu-category.service";
 import {Order} from "../../model/order";
 import {Utils} from "../../app/utils";
 import {OrderDto} from "../../model/order-dto";
+import {LocalStorageService} from "../../service/local-storage.service";
 
 
 /**
@@ -33,7 +41,9 @@ export class DeskPage {
 
   constructor(public navParams: NavParams, private navCtrl: NavController, private orderService: OrderService,
               private authGuard: AuthGuardService, public loadingCtrl: LoadingController, private modalCtrl: ModalController,
-              private menuCategoryService: MenuCategoryService, private alertCtrl: AlertController) {
+              private menuCategoryService: MenuCategoryService, private alertCtrl: AlertController,
+              private actionSheetCtrl: ActionSheetController, private localStorageService: LocalStorageService) {
+    this.localStorageService.loadStornoReasons();
     this.deskNumber = navParams.get("deskNumber");
     this.ordersCacheKey = "orders_desk" + this.deskNumber;
     if (this.deskNumber != null) {
@@ -204,64 +214,45 @@ export class DeskPage {
   /**
    * open storno popup to chose which order to abort
    * @param group
+   * @param all
    */
-  openStornoPopup(group) {
-    let data = [];
-    let reqs = [];
-    for (let orderId of group.orderIds) {
-      let req = this.orderService.getOrderInfo(orderId);
-      reqs.push(req);
-      req.then((resp) => {
-        data.push(resp.json());
-      }, () => {
-      })
+  openStornoAction(group, all: boolean) {
+    console.debug(group, all);
+    let orderIds = [];
+    if (all) {
+      orderIds = group.orderIds;
+    } else {
+      orderIds.push(group.orderIds[0]);
     }
 
-    // get data and then filter for cancel orders
-    Promise.all(reqs).then(() => {
-      let inputs = [];
-      for (let d of data) {
-        if (d.currentState == "NEW") {
-          let date = new Date(d.states[0].date);
-          inputs.push({
-            type: "checkbox",
-            label: d.item.shortName + " von " + d.waiter.username + " um " + date.getHours() + ":" + date.getMinutes(),
-            value: d.id
-          })
+    // get clickable buttons
+    let buttons = [];
+    for (let reason of this.localStorageService.cache[LocalStorageService.STORNO_REASONS_KEY]) {
+      buttons.push({
+        text: reason,
+        handler: () => {
+          actionSheet.dismiss(reason);
+          return false;
         }
-      }
-
-      // build alert
-      let alert = this.alertCtrl.create({
-        title: "Bestellungen stornieren?",
-        message: !inputs.length ? "Keine Bestellung zum Stornieren verfügbar" : "",
-        inputs: inputs,
-        buttons: [
-          {
-            text: "Abbrechen",
-            role: "cancel",
-          },
-          {
-            text: "Ok"
-          }
-        ]
       });
+    }
+    buttons.push({text: "Abbrechen", role: "cancel"});
 
-      alert.present();
+    let actionSheet = this.actionSheetCtrl.create({
+      title: "Stornierungsgrund",
+      buttons: buttons
+    });
+    actionSheet.present();
 
-      // after confirmation execute action and reload
-      alert.onDidDismiss((orderIds) => {
-        if (orderIds.length) {
-          this.orderService.cancleOrders(orderIds).toPromise().then(() => {
-            // reload data
-            this.orderService.getOrdersByDeskNumber(this.deskNumber).then(() => {
-              this.initCatGroups();
-            });
-          });
-        }
+    // after close reload data
+    actionSheet.onDidDismiss((reason) => {
+      this.orderService.cancelOrders(orderIds, reason).toPromise().then(() => {
+        console.debug("Reload data");
+        this.orderService.getOrdersByDeskNumber(this.deskNumber, true).then(() => {
+          this.initCatGroups();
+        });
       });
     })
-
   }
 
   /**
@@ -293,7 +284,7 @@ export class DeskPage {
       this.tmpOrders = [];
 
       // reload data
-      this.orderService.getOrdersByDeskNumber(this.deskNumber).then(() => {
+      this.orderService.getOrdersByDeskNumber(this.deskNumber, true).then(() => {
         this.initCatGroups();
         this.loading.dismissAll();
       });

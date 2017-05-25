@@ -18,7 +18,10 @@
         </ion-item>
         <!--sliding menu button-->
         <ion-item-options side="right">
-          <button ion-button color="danger" (click)="openStornoPopup(order)">Storno</button>
+          <button ion-button color="danger" (click)="openStornoAction(order, false)">Storno Einzel</button>
+          <button *ngIf="order.count > 1" ion-button color="danger" (click)="openStornoAction(order, true)">Storno
+            Alle
+          </button>
         </ion-item-options>
       </ion-item-sliding>
     </ng-container>

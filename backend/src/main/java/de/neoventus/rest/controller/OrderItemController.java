@@ -4,17 +4,21 @@ import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.entity.OrderItem;
 import de.neoventus.persistence.entity.OrderItemState;
 import de.neoventus.persistence.repository.DeskRepository;
-import de.neoventus.persistence.repository.MenuItemCategoryRepository;
 import de.neoventus.persistence.repository.OrderItemRepository;
+import de.neoventus.persistence.repository.UserRepository;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.OrderDeskAggregationDto;
+import de.neoventus.rest.auth.NVUserDetails;
 import de.neoventus.rest.dto.OrderItemDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -32,15 +36,15 @@ public class OrderItemController {
 
 	private final OrderItemRepository orderRepository;
 	private DeskRepository deskRepository;
-	private MenuItemCategoryRepository menuItemCategoryRepository;
+	private UserRepository userRepository;
 
 
 	@Autowired
 	public OrderItemController(OrderItemRepository orderRepository, DeskRepository deskRepository,
-							   MenuItemCategoryRepository menuItemCategoryRepository) {
+							   UserRepository userRepository) {
 		this.orderRepository = orderRepository;
 		this.deskRepository = deskRepository;
-		this.menuItemCategoryRepository = menuItemCategoryRepository;
+		this.userRepository = userRepository;
 	}
 
 	/**
@@ -186,9 +190,9 @@ public class OrderItemController {
 	 * @param ids
 	 */
 	@RequestMapping(value = "/cancel", method = RequestMethod.PUT)
-	public void cancelOrder(@RequestBody String ids, HttpServletResponse response) {
+	public void cancelOrder(@RequestParam String ids, @RequestParam String reason, @AuthenticationPrincipal NVUserDetails principal, HttpServletResponse response) {
 		try {
-			this.updateOrderState(ids, OrderItemState.State.CANCELED);
+			this.updateOrderState(ids, OrderItemState.State.CANCELED, reason, principal.getUserId());
 		} catch (IllegalArgumentException e) {
 			response.setStatus(HttpStatus.BAD_REQUEST.value());
 		}
@@ -199,18 +203,42 @@ public class OrderItemController {
 	 *
 	 * @param orderIds
 	 * @param state
+	 * @param reason
+	 * @param userId
 	 * @throws IllegalArgumentException
 	 */
-	private void updateOrderState(String orderIds, OrderItemState.State state) throws IllegalArgumentException {
+	private void updateOrderState(String orderIds, OrderItemState.State state, String reason, String userId) throws IllegalArgumentException {
 		for (String id : orderIds.split(",")) {
 			OrderItem o = this.orderRepository.findOne(id);
 
 			if (o != null) {
-				o.addState(state);
-
+				// todo check if already contains state
+				if (reason == null && userId == null) {
+					o.addState(state);
+				} else {
+					OrderItemState orderState = new OrderItemState(state);
+					try {
+						orderState.setReason(URLDecoder.decode(reason, "UTF-8"));
+					} catch (UnsupportedEncodingException e) {
+						// set not decoded reason
+						orderState.setReason(reason);
+					}
+					orderState.setWaiter(this.userRepository.findOne(userId));
+					o.getStates().add(orderState);
+				}
 				this.orderRepository.save(o);
 			}
 		}
+	}
+
+	/**
+	 * convenience method
+	 *
+	 * @param orderIds
+	 * @param state
+	 */
+	private void updateOrderState(String orderIds, OrderItemState.State state) {
+		this.updateOrderState(orderIds, state, null, null);
 	}
 
 

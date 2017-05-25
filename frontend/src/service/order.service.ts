@@ -21,11 +21,13 @@ export class OrderService extends CachingService {
   /**
    * Gets all orders by desk number
    *
-   * @returns {Observable<Response>}
+   * @returns {Promise<any>}
+   * @param deskNumber
+   * @param force if method is forced to reload
    */
-  public getOrdersByDeskNumber(deskNumber: number) {
+  public getOrdersByDeskNumber(deskNumber: number, force?: boolean) {
 
-    if (this.cache["orders_desk" + deskNumber] != null) {
+    if (this.cache["orders_desk" + deskNumber] != null && !force) {
       return new Promise<any>(resolve => {
         resolve(this.cache["orders_desk" + deskNumber]);
       })
@@ -103,9 +105,10 @@ export class OrderService extends CachingService {
    *
    * @param orderIds
    * @returns {Observable<Response>}
+   * @param reason
    */
-  public cancleOrders(orderIds: Array<string>) {
-    return this.http.put(OrderService.BASE_URL + "/cancel/" + orderIds.join(","), {});
+  public cancelOrders(orderIds: Array<string>, reason: string) {
+    return this.http.put(OrderService.BASE_URL + "/cancel?ids=" + orderIds.join(",") + "&reason=" + encodeURI(reason), {});
   }
 
 

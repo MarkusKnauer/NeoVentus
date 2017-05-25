@@ -1,6 +1,5 @@
 import {Injectable} from "@angular/core";
 import {Storage} from "@ionic/storage";
-import {Events} from "ionic-angular";
 import {CachingService} from "./caching.service";
 
 /**
@@ -11,7 +10,10 @@ import {CachingService} from "./caching.service";
 @Injectable()
 export class LocalStorageService extends CachingService {
 
-  constructor(private storage: Storage, private events: Events) {
+  public static FAV_KEY = "favs";
+  public static STORNO_REASONS_KEY = "storno_reasons";
+
+  constructor(private storage: Storage) {
     super();
   }
 
@@ -20,8 +22,8 @@ export class LocalStorageService extends CachingService {
    */
   loadMenuFavoriteIds() {
     return this.storage.ready().then(() => {
-      return this.storage.get("favs").then((val) => {
-        this.saveToCache("favs", val ? JSON.parse(val) : []);
+      return this.storage.get(LocalStorageService.FAV_KEY).then((val) => {
+        this.saveToCache(LocalStorageService.FAV_KEY, val ? JSON.parse(val) : []);
       })
     })
   }
@@ -30,20 +32,42 @@ export class LocalStorageService extends CachingService {
    * save menu to favorites
    */
   saveMenuFavorite(menuId: string) {
-    this.cache["favs"].push(menuId);
-    this.storage.ready().then(() => {
-      this.storage.set("favs", JSON.stringify(this.cache["favs"]));
-    });
+    this.cache[LocalStorageService.FAV_KEY].push(menuId);
+    this.saveCachedJsonData(LocalStorageService.FAV_KEY);
   }
 
   /**
    * delete menu favorite
    */
   deleteMenuFavorite(menuId: string) {
-    this.cache["favs"].splice(this.cache["favs"].indexOf(menuId), 1);
+    this.cache[LocalStorageService.FAV_KEY].splice(this.cache[LocalStorageService.FAV_KEY].indexOf(menuId), 1);
+    this.saveCachedJsonData(LocalStorageService.FAV_KEY);
+  }
+
+  /**
+   * load storno reasons to cache
+   * @returns {Promise<TResult2|any|any|any>|Promise<LocalForage>|Promise<TResult|LocalForage>|Promise<any|any|any>}
+   */
+  loadStornoReasons() {
+    return this.storage.ready().then(() => {
+      return this.storage.ready().then(() => {
+        return this.storage.get(LocalStorageService.STORNO_REASONS_KEY).then((val) => {
+          this.saveToCache(LocalStorageService.STORNO_REASONS_KEY, val ? JSON.parse(val) : []);
+        })
+      })
+    })
+  }
+
+
+  /**
+   * private save cached json data
+   * @param key
+   */
+  saveCachedJsonData(key: string) {
     this.storage.ready().then(() => {
-      this.storage.set("favs", JSON.stringify(this.cache["favs"]));
+      this.storage.set(key, JSON.stringify(this.cache[key]));
     });
+
   }
 
 }
