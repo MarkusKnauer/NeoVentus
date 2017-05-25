@@ -1,8 +1,15 @@
 package testing.repository;
 
+import de.neoventus.persistence.entity.MenuItem;
+import de.neoventus.persistence.entity.OrderItem;
 import de.neoventus.persistence.entity.Permission;
 import de.neoventus.persistence.entity.User;
+import de.neoventus.persistence.repository.BillingRepository;
+import de.neoventus.persistence.repository.MenuItemRepository;
+import de.neoventus.persistence.repository.OrderItemRepository;
 import de.neoventus.persistence.repository.UserRepository;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.UserProfileDetails;
+import de.neoventus.rest.dto.BillingDto;
 import de.neoventus.rest.dto.UserDto;
 import org.junit.After;
 import org.junit.Assert;
@@ -11,16 +18,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
 import testing.AbstractTest;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * testing the user repository methods
  *
  * @author Dennis Thanner
- * @version 0.0.2 added testSaveByDto, test before save event
  **/
 public class UserRepositoryTest extends AbstractTest {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private BillingRepository billingRepository;
+
+	@Autowired
+	private OrderItemRepository orderItemRepository;
+
+	@Autowired
+	private MenuItemRepository menuItemRepository;
 
 	@Test
 	public void testSearchByName() {
@@ -72,11 +91,100 @@ public class UserRepositoryTest extends AbstractTest {
 	}
 
 	/**
+	 * test user details calculation
+	 */
+	@Test
+	public void testProfileDetails() {
+		// create test user
+		User test = new User();
+		test = this.userRepository.save(test);
+
+		// create test menu item
+		MenuItem m = new MenuItem();
+		m.setPrice(2.50);
+		m = this.menuItemRepository.save(m);
+
+		// create orders
+		OrderItem or = new OrderItem();
+		or.setItem(m);
+		or.setWaiter(test);
+		or = this.orderItemRepository.save(or);
+
+		OrderItem or1 = new OrderItem();
+		or1.setItem(m);
+		or1.setWaiter(test);
+		or1 = this.orderItemRepository.save(or1);
+
+		// create billing
+		BillingDto billingDto = new BillingDto();
+		billingDto.setItems(Arrays.asList(or.getId(), or1.getId()));
+		billingDto.setWaiter(test.getId());
+		billingDto.setTotalPaid(5.50);
+		this.billingRepository.save(billingDto);
+
+		UserProfileDetails details = this.userRepository.getUserProfileDetails(test.getId());
+
+		Assert.assertTrue(details.getRevenueToday() == 5.5);
+		Assert.assertTrue(details.getTipsToday() == .5);
+		Assert.assertTrue(details.getLevel() == 0);
+		Assert.assertTrue(details.getExpNextLevel() == 50);
+		Assert.assertTrue(details.getExp() == 2);
+
+	}
+
+	/**
+	 * test level calculation
+	 */
+	@Test
+	public void testUserLevel() {
+		// create test user
+		User test = new User();
+		test = this.userRepository.save(test);
+
+
+		List<OrderItem> orders = new ArrayList<>();
+		// create orders
+		for (int i = 0; i < 49; i++) {
+
+			OrderItem or1 = new OrderItem();
+			or1.setWaiter(test);
+			orders.add(or1);
+
+		}
+		this.orderItemRepository.save(orders);
+
+		UserProfileDetails userProfileDetails = this.userRepository.getUserProfileDetails(test.getId());
+
+		Assert.assertTrue(userProfileDetails.getLevel() == 0);
+
+		orders = new ArrayList<>();
+		// create orders
+		for (int i = 0; i < 49; i++) {
+
+			OrderItem or1 = new OrderItem();
+			or1.setWaiter(test);
+			orders.add(or1);
+
+		}
+		this.orderItemRepository.save(orders);
+
+		userProfileDetails = this.userRepository.getUserProfileDetails(test.getId());
+
+		Assert.assertTrue(userProfileDetails.getLevel() > 0);
+
+		Assert.assertTrue(userProfileDetails.getExpNextLevel() == (int) (50 * Math.pow(1.2, userProfileDetails.getLevel() + 1)));
+
+	}
+
+	/**
 	 * clear the data written
 	 */
 	@After
 	public void deleteAll() {
 		userRepository.deleteAll();
+		menuItemRepository.deleteAll();
+		billingRepository.deleteAll();
+		orderItemRepository.deleteAll();
 	}
 
 }

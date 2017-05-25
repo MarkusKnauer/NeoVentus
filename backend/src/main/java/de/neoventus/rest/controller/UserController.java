@@ -1,6 +1,8 @@
 package de.neoventus.rest.controller;
 
 import de.neoventus.persistence.repository.UserRepository;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.UserProfileDetails;
+import de.neoventus.rest.auth.NVUserDetails;
 import de.neoventus.rest.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,8 +18,6 @@ import java.util.logging.Logger;
  * REST controller for entity User
  *
  * @author Tim Heidelbach, Dennis Thanner
- * @version 0.0.3 remove user detail exposing,  added principal controller method DT
- *          0.0.2 added user dto support - DT
  */
 @RestController
 @RequestMapping("/api/user")
@@ -42,6 +42,19 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.GET)
 	public Principal getUserPrincipal(HttpServletResponse response, Principal principal) {
 		return principal;
+	}
+
+
+	/**
+	 * user profile details with daily revenue and level
+	 *
+	 * @param principal
+	 * @return
+	 */
+	@RequestMapping(value = "/profile", method = RequestMethod.GET)
+	public UserProfileDetails getProfileDetails(Principal principal) {
+		NVUserDetails userDetails = (NVUserDetails) principal;
+		return this.userRepository.getUserProfileDetails(userDetails.getUserId());
 	}
 
 	/**

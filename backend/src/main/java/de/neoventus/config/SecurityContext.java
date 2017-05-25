@@ -21,7 +21,6 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
  * spring security config class
  *
  * @author Dennis Thanner, Tim Heidelbach
- * @version 0.0.2
  **/
 @EnableWebSecurity
 @Configuration
@@ -50,7 +49,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 			.antMatchers(HttpMethod.POST, "/api/user").hasAnyRole(Permission.ADMIN.toString(), Permission.CEO.toString())
 			.antMatchers(HttpMethod.PUT, "/api/user").hasAnyRole(Permission.ADMIN.toString(), Permission.CEO.toString())
-			.antMatchers(HttpMethod.GET, "/api/user").authenticated()
+			.antMatchers(HttpMethod.GET, "/api/user/**").authenticated()
 			.antMatchers(HttpMethod.POST, "/api/reservation").hasAnyRole(Permission.SERVICE.toString(),
 			Permission.ADMIN.toString(), Permission.CEO.toString())
 			.and()

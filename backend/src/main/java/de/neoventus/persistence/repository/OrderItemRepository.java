@@ -13,9 +13,6 @@ import java.util.List;
 
 /**
  * @author Dennis Thanner
- * @version 0.0.4 added findByBillingIsNullAndStatesStateNotInAndDesk - DT
- *          0.0.3 added findByBilling and findByBillingIsNullAndStatesStateNotIn - DT
- *          0.0.2 redundancy clean up - DT
  **/
 @Repository
 public interface OrderItemRepository extends CrudRepository<OrderItem, String>, NVOrderItemRepository {
@@ -61,5 +58,13 @@ public interface OrderItemRepository extends CrudRepository<OrderItem, String>, 
 	 * @return
 	 */
 	List<OrderItem> findByBillingIsNullAndStatesStateNotInAndDesk(Collection<OrderItemState.State> states, Desk desk);
+
+	/**
+	 * get order count per waiter id
+	 *
+	 * @param id
+	 * @return
+	 */
+	Integer countAllByWaiterId(String id);
 
 }

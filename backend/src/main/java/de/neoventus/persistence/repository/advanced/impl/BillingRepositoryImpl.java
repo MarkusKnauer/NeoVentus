@@ -5,6 +5,7 @@ import de.neoventus.persistence.entity.BillingItem;
 import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.entity.OrderItem;
 import de.neoventus.persistence.repository.OrderItemRepository;
+import de.neoventus.persistence.repository.UserRepository;
 import de.neoventus.persistence.repository.advanced.NVBillingRepository;
 import de.neoventus.rest.dto.BillingDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +23,13 @@ public class BillingRepositoryImpl implements NVBillingRepository {
 
 	private OrderItemRepository orderItemRepository;
 
-	@Autowired
-	private void setMongoTemplate(MongoTemplate mongoTemplate) {
-		this.mongoTemplate = mongoTemplate;
-	}
+	private UserRepository userRepository;
 
 	@Autowired
-	public void setOrderItemRepository(OrderItemRepository orderItemRepository) {
+	public BillingRepositoryImpl(MongoTemplate mongoTemplate, OrderItemRepository orderItemRepository, UserRepository userRepository) {
+		this.mongoTemplate = mongoTemplate;
 		this.orderItemRepository = orderItemRepository;
+		this.userRepository = userRepository;
 	}
 
 	@Override
@@ -42,9 +42,11 @@ public class BillingRepositoryImpl implements NVBillingRepository {
 			billing = new Billing();
 		}
 
-		billing.setBilledAt(dto.getBilledAt());
 		billing.setTotalPaid(dto.getTotalPaid());
 
+		billing.setWaiter(this.userRepository.findOne(dto.getWaiter()));
+
+		billing.getItems().clear();
 		for (String orderId : dto.getItems()) {
 			OrderItem order = this.orderItemRepository.findOne(orderId);
 			int sideDishesPrice = 0;
@@ -58,7 +60,6 @@ public class BillingRepositoryImpl implements NVBillingRepository {
 			));
 		}
 
-		billing.getItems().clear();
 
 		mongoTemplate.save(billing);
 	}

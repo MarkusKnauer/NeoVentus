@@ -1,10 +1,10 @@
 package de.neoventus.persistence.repository.advanced;
 
+import de.neoventus.persistence.repository.advanced.impl.aggregation.UserProfileDetails;
 import de.neoventus.rest.dto.UserDto;
 
 /**
  * @author Dennis Thanner
- * @version 0.0.1
  **/
 public interface NVUserRepository {
 
@@ -14,5 +14,13 @@ public interface NVUserRepository {
 	 * @param dto
 	 */
 	void save(UserDto dto);
+
+	/**
+	 * load user profile details from database
+	 *
+	 * @param id
+	 * @return
+	 */
+	UserProfileDetails getUserProfileDetails(String id);
 
 }
