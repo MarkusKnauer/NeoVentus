@@ -301,8 +301,8 @@ class DefaultDemoDataIntoDB {
 		//  BI - Starttime (11:00 because in Mongo it is 09:00)
 		Calendar calendar = new GregorianCalendar(2016,4,20,11,0,0);
 
-		//for one Year
-		for(int j = 0; j < 365; j++ ){
+		// one week
+		for (int j = 0; j < 7; j++) {
 			// Time warp for other desks, 7 * 2h = 14 <-- max. Opening time
 			for(int b = 0; b < 7; b++){
 				// delay: random time after 30 min = 1800 sec. and 90 mins fix
