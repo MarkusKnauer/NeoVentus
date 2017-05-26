@@ -17,17 +17,15 @@ button.desk_button {
   color: white;
 }
 
-ion-grid.grid-card {
-  width: 85%;
+.grid-card {
   float: left;
+  width: 85%;
 }
 
 
 .overview {
   background: color($colors, light);
-  width: 15%;
-  height: 100vh;
-  float: left;
+  float: right;
 
   ion-list {
     background: color($colors, light);

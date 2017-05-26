@@ -70,7 +70,7 @@ public class OrderLifecycleEvents extends AbstractMongoEventListener<OrderItem> 
 	private Void sendKitchenBarData(boolean forKitchen, String dest) {
 		Map<String, Object> data = new HashMap<>();
 		data.put("desks", this.orderItemRepository.getUnfinishedOrdersForCategoriesGroupedByDeskAndOrderItem(forKitchen));
-		data.put("items", this.orderItemRepository.getUnfinishedOrderForCategoriesGroupedByItem(forKitchen));
+		data.put("items", this.orderItemRepository.getUnfinishedOrderForCategoriesGroupedByItemOrderByCount(forKitchen));
 
 		this.simpMessagingTemplate.convertAndSend(dest, data);
 		return null;
