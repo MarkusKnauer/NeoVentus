@@ -6,6 +6,7 @@ import de.neoventus.rest.auth.NVUserDetails;
 import de.neoventus.rest.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,12 +49,11 @@ public class UserController {
 	/**
 	 * user profile details with daily revenue and level
 	 *
-	 * @param principal
+	 * @param userDetails
 	 * @return
 	 */
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
-	public UserProfileDetails getProfileDetails(Principal principal) {
-		NVUserDetails userDetails = (NVUserDetails) principal;
+	public UserProfileDetails getProfileDetails(@AuthenticationPrincipal NVUserDetails userDetails) {
 		return this.userRepository.getUserProfileDetails(userDetails.getUserId());
 	}
 
