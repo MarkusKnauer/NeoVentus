@@ -113,7 +113,7 @@ public class OrderItemController {
 	@GetMapping("/unfinished/grouped/by-item/{forKitchen}")
 	public List<OrderDeskAggregationDto> listAllOpenOrdersByItem(HttpServletResponse response, @PathVariable Integer forKitchen) {
 		try {
-			return this.orderRepository.getUnfinishedOrderForCategoriesGroupedByItem(forKitchen == 1);
+			return this.orderRepository.getUnfinishedOrderForCategoriesGroupedByItemOrderByCount(forKitchen == 1);
 		} catch (Exception e) {
 			LOGGER.warning("Error getting all orders: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

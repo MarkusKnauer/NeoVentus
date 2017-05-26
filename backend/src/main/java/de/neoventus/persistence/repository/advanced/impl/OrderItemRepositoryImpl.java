@@ -6,6 +6,7 @@ import de.neoventus.persistence.repository.advanced.NVOrderItemRepository;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.OrderDeskAggregationDto;
 import de.neoventus.rest.dto.OrderItemDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -104,7 +105,7 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 	}
 
 	@Override
-	public List<OrderDeskAggregationDto> getUnfinishedOrderForCategoriesGroupedByItem(boolean forKitchen) {
+	public List<OrderDeskAggregationDto> getUnfinishedOrderForCategoriesGroupedByItemOrderByCount(boolean forKitchen) {
 		List<MenuItemCategory> categories = this.menuItemCategoryRepository.findByForKitchen(forKitchen);
 		List<MenuItem> itemsInterested = this.menuItemRepository.findAllByMenuItemCategoryIn(categories);
 
@@ -114,7 +115,8 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 				.and("item").in(itemsInterested)),
 			Aggregation.group("item", "sideDishes", "guestWish").count().as("count"),
 			Aggregation.project("count").and("_id.item").as("item").and("_id.sideDishes").as("sideDishes")
-				.and("_id.guestWish").as("guestWish")
+				.and("_id.guestWish").as("guestWish"),
+			Aggregation.sort(Sort.Direction.DESC, "count")
 		);
 
 		AggregationResults<OrderDeskAggregationDto> aggR = this.mongoTemplate.aggregate(agg, OrderItem.class, OrderDeskAggregationDto.class);

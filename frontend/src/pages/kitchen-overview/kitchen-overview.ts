@@ -54,6 +54,7 @@ export class KitchenOverviewPage {
             //group by category and save to cache
             this.groupByCategory(data[key]);
             this.orderService.cache['open_orders_grouped_by_desks'] = data[key];
+            console.debug("--->Category!!!!!!!", data[key]);
           }
 
           else if (key == "items") {
@@ -94,37 +95,37 @@ export class KitchenOverviewPage {
    */
 
   groupByCategoryPerDesk(ordersPerDesk) {
-    //new object with keys as item.name and
-    //orderItem array as value
-    var newArray = {};
 
+    var catGroups = [];
 
-    //iterate through each element of array
-    ordersPerDesk.forEach((val) => {
+    for (let cat of this.menuCategoryService.cache["tree"]) {
+      let catIds = this.getChildCategoryIds(cat);
+      catIds.push(cat.id);
+      catGroups.push({category: cat.name, itemsPerCat: this.getOrdersByCat(catIds, ordersPerDesk)});
+    }
 
-      var key = this.getCategoryRootParent(val.item.menuItemCategory.id);
-      var curr = newArray[key];
-
-      //if array key doesnt exist, init with empty array
-      if (!curr) {
-        newArray[key] = [];
-      }
-
-      //append orderItem to this key
-      newArray[key].push(val);
-    });
-
-    //remove elements from previous array
     ordersPerDesk.length = 0;
 
-    //replace elements with new objects made of
-    //key value pairs from our created object
-    for (var key in newArray) {
-      ordersPerDesk.push({
-        'category': key,
-        'itemsPerCat': newArray[key]
-      });
+    for (var cat of catGroups) {
+      if (cat.itemsPerCat.length != 0) {
+        ordersPerDesk.push({
+          'category': cat.category,
+          'itemsPerCat': cat.itemsPerCat
+        });
+      }
     }
+
+  }
+
+  /**
+   * get orders by root category ids with child ids
+   *
+   * @param catIds
+   */
+  getOrdersByCat(catIds, ordersPerDesk) {
+    return ordersPerDesk.filter(el => {
+      return catIds.indexOf(el.item.menuItemCategory.id) != -1;
+    });
   }
 
   /**

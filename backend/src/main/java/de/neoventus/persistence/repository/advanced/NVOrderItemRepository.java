@@ -41,7 +41,6 @@ public interface NVOrderItemRepository {
 	 *
 	 * @param forKitchen@return
 	 */
-	List<OrderDeskAggregationDto> getUnfinishedOrderForCategoriesGroupedByItem(boolean forKitchen);
-
+	List<OrderDeskAggregationDto> getUnfinishedOrderForCategoriesGroupedByItemOrderByCount(boolean forKitchen);
 }
 
