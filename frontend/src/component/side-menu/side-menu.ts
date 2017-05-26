@@ -89,7 +89,7 @@ export class SideMenuComponent {
 
   logout() {
     this.userService.logout().then(() => {
-      this.events.publish('Open-Menu-Page', LoginPage);
+      this.events.publish('Open-Menu-Page', {page: LoginPage});
       this.user == null;
     }, (err) => {
       console.debug(err)
