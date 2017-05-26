@@ -41,7 +41,7 @@ public class DeskController {
 	 * @param response the response
 	 * @return all desks
 	 */
-	@RequestMapping(method = RequestMethod.GET)
+	@GetMapping("/all")
 	public Iterable<Desk> getAllDesks(HttpServletResponse response) {
 		try {
 			return deskRepository.findAll();
@@ -59,7 +59,7 @@ public class DeskController {
 	 * @param number
 	 * @return
 	 */
-	@RequestMapping(value = "/{number}", method = RequestMethod.GET)
+	@RequestMapping(value = "/single/{number}", method = RequestMethod.GET)
 	public Desk listDesk(HttpServletResponse response, @PathVariable Integer number) {
 		try {
 			return deskRepository.findByNumber(number);

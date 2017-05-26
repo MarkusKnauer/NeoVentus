@@ -28,7 +28,7 @@ export class DeskService extends CachingService {
 
     } else {
       return new Promise<any>(resolve => {
-        this.http.get("/api/desk/")
+        this.http.get("/api/desk/all")
           .map(res => res.json())
           .subscribe(data => {
             this.saveToCache("desks", data);

@@ -40,7 +40,7 @@ public class ReservationController {
 	 * @param reservationId the reservation Id
 	 * @return the reservation entity
 	 */
-	@RequestMapping(value = "/{reservationId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/single/{reservationId}", method = RequestMethod.GET)
 	public Reservation getReservationById(HttpServletResponse response, @PathVariable String reservationId) {
 		try {
 			return reservationRepository.findOne(reservationId);

@@ -40,7 +40,7 @@ public class BillingController {
 	 * @param billingId the billingId
 	 * @return the billing
 	 */
-	@RequestMapping(value = "/{billingId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/single/{billingId}", method = RequestMethod.GET)
 	public Billing listBilling(HttpServletResponse response, @PathVariable String billingId) {
 		try {
 			return billingRepository.findOne(billingId);

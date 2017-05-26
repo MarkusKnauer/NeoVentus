@@ -30,7 +30,7 @@ export class MenuService extends CachingService {
     }
 
     if (!this.reqs[cKey]) {
-      this.reqs[cKey] = this.http.get(MenuService.BASE_URL).toPromise();
+      this.reqs[cKey] = this.http.get(MenuService.BASE_URL + "/all").toPromise();
 
       this.reqs[cKey].then((resp) => {
         this.saveToCache(cKey, resp.json());

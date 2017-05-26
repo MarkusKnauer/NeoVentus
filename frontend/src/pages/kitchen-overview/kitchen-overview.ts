@@ -14,7 +14,7 @@ export class KitchenOverviewPage {
 
   private loading;
 
-  //if value is 1 the kitchen with meals will be shown, otherwhise the bar with drinks is shown
+  //if value is 1 the kitchen with meals will be shown, otherwise the bar with drinks is shown
   private forKitchen;
   private socketTopic;
 

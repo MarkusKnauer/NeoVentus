@@ -40,7 +40,7 @@ public class MenuController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.GET)
+	@GetMapping("/all")
 	public Iterable<MenuItem> listAll(HttpServletResponse response) {
 		try {
 			return this.menuItemRepository.findAll();
@@ -58,7 +58,7 @@ public class MenuController {
 	 * @param menuItem
 	 * @return
 	 */
-	@RequestMapping(value = "/{menuItem}", method = RequestMethod.GET)
+	@GetMapping("/single/{menuItem}")
 	public MenuItem listMenuItem(HttpServletResponse response, @PathVariable String menuItem) {
 		try {
 			return menuItemRepository.findByName(menuItem);
