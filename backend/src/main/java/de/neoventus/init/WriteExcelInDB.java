@@ -29,24 +29,16 @@ import java.util.logging.Logger;
 public class WriteExcelInDB {
 
 
+	private final static Logger LOGGER = Logger.getLogger(WriteExcelInDB.class.getName());
 	private final MenuItemRepository menuItemRepository;
-
 	private final MenuItemCategoryRepository menuItemCategoryRepository;
-
 	private final UserRepository userRepository;
-
 	private final DeskRepository deskRepository;
-
 	private final OrderItemRepository orderItemRepository;
-
 	private final BillingRepository billingRepository;
-
 	private final ReservationRepository reservationRepository;
 	private final SideDishRepository sideDishRepository;
-
 	private final MongoTemplate mongoTemplate;
-
-	private final static Logger LOGGER = Logger.getLogger(WriteExcelInDB.class.getName());
 	private MenuItemCategory category = null;
 
 	private List<MenuItem> newMenu;
@@ -228,7 +220,10 @@ public class WriteExcelInDB {
 				user.setPassword(bCryptPasswordEncoder.encode(value.get(3)));
 				user.setWorkingTimeModell(value.get(4));
 				List<Permission> perm = user.getPermissions();
-				perm.add(Permission.valueOf(value.get(5)));
+				// TODO: what about multiple permissions in excel sheet?
+				if (!perm.contains(Permission.valueOf(value.get(5)))) {
+					perm.add(Permission.valueOf(value.get(5)));
+				}
 				user.setPermissions(perm);
 			}
 			userRepository.save(user);
