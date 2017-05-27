@@ -51,10 +51,10 @@ public class OrderLifecycleEvents extends AbstractMongoEventListener<OrderItem> 
 			boolean forKitchen = event.getSource().getItem().getMenuItemCategory().isForKitchen();
 			if (forKitchen) {
 				dest = "/topic/order/kitchen";
-				eventDebounce.debounce("kitchen", 500, integer -> sendKitchenBarData(forKitchen, dest));
+				eventDebounce.debounce("kitchen", 200, integer -> sendKitchenBarData(forKitchen, dest));
 			} else {
 				dest = "/topic/order/bar";
-				eventDebounce.debounce("bar", 500, integer -> sendKitchenBarData(forKitchen, dest));
+				eventDebounce.debounce("bar", 200, integer -> sendKitchenBarData(forKitchen, dest));
 			}
 
 		}

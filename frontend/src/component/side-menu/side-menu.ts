@@ -13,10 +13,7 @@ import {AuthGuardService} from "../../service/auth-guard.service";
 
 /**
  * @author Markus Knauer
- * @version 0.0.1 created by MK
  */
-
-
 @Component({
   templateUrl: "side-menu.html",
   selector: "nv-side-menu"
@@ -90,7 +87,7 @@ export class SideMenuComponent {
   logout() {
     this.userService.logout().then(() => {
       this.events.publish('Open-Menu-Page', {page: LoginPage});
-      this.user == null;
+      this.user = null;
     }, (err) => {
       console.debug(err)
     })
@@ -105,7 +102,6 @@ export class SideMenuComponent {
       try {
         this.user = this.authGuard.userDetails.name;
       } catch (exception) {
-        console.error("Side menu - Cannot read username");
       }
     }
     return this.user;
