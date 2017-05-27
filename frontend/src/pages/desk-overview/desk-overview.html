@@ -30,11 +30,11 @@
       <ng-container *ngFor="let desk of desks">
         <ion-col *ngIf="!myDesksOnly||desk.mine" col-auto (click)="deskSelected(desk)">
           <div class="desk">
-            <h1 [ngClass]="{unused: desk.status == 0, default: desk.status == 1}">
+            <h1 [ngClass]="{unused: !desk.inUse, used: desk.inUse}">
               {{desk.number}}
             </h1>
             <div class="desk-details">
-              <span *ngIf="desk.status == 0">frei<br/></span>
+              <span *ngIf="!desk.inUse">frei<br/></span>
               <p *ngIf="desk.reservation">
                 <span class="important">{{ desk.reservation | customTime }}</span>
                 <br/>
@@ -57,7 +57,7 @@
         <ion-item *ngIf="!myDesksOnly||desk.mine" (click)="deskSelected(desk)">
 
           <ion-avatar item-left>
-            <h1 [ngClass]="{unused: desk.status == 0, default: desk.status == 1}">
+            <h1 [ngClass]="{unused: !desk.inUse, used: desk.inUse}">
               {{desk.number}}
             </h1>
           </ion-avatar>

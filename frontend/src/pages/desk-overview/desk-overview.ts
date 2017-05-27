@@ -67,8 +67,9 @@ export class DeskOverviewPage {
 
         if (totalPrice != 0) {
           desk.price = totalPrice.toFixed(2); // some weird but negligible rounding errors happen here
+          desk.inUse = true;
         } else {
-          desk.status = 0; // desk unused
+          desk.inUse = false;
         }
 
         if (waiters.has(this.getUserName())) {

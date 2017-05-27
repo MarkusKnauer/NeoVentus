@@ -108,10 +108,10 @@ h1.danger {
   background: color($colors, danger-background) !important;
 }
 
-h1.default {
-  background: color($colors, light2) !important;
+h1.unused {
+  background: color($colors, danger-background) !important;
 }
 
-h1.unused {
+h1.used {
   background: color($colors, secondary-background) !important;
 }
