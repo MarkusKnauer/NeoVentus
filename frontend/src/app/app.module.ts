@@ -35,6 +35,7 @@ import {StompService} from "ng2-stomp-service";
 import {ReservationService} from "../service/reservation.service";
 import {BillingService} from "../service/billing.service";
 import {ManageStornoReasonsModalComponent} from "../component/manage-storno-reasons/manage-storno-reasons";
+import {CustomDataPipe} from "../pipe/DatePipe";
 
 
 @NgModule({
@@ -61,7 +62,9 @@ import {ManageStornoReasonsModalComponent} from "../component/manage-storno-reas
 
     //pipes
     CostDecimalPipe,
-    MapToIterable
+    MapToIterable,
+    CustomDataPipe,
+
 
   ],
   imports: [

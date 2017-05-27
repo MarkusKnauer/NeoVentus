@@ -36,7 +36,7 @@
             <div class="desk-details">
               <span *ngIf="desk.status == 0">frei<br/></span>
               <p *ngIf="desk.reservation">
-                <span class="important">{{desk.reservation| date:'HH:mm'}}</span>
+                <span class="important">{{ desk.reservation | customTime }}</span>
                 <br/>
                 <span class="unimportant">Reservierung</span>
               </p>
@@ -53,6 +53,7 @@
     <ion-list class="list-tables">
 
       <ng-container *ngFor="let desk of desks">
+
         <ion-item *ngIf="!myDesksOnly||desk.mine" (click)="deskSelected(desk)">
 
           <ion-avatar item-left>
@@ -61,17 +62,42 @@
             </h1>
           </ion-avatar>
 
-          <h2 *ngIf="!desk.price == 0">
-            <span class="important">
-              {{desk.price}}
-            </span>€
-          </h2>
-          <h3>
-            <span>{{desk.waiter}}</span>
-            <span class="right">{{desk.reservation | date:'HH:mm'}}</span>
-          </h3>
+          <table>
+
+            <tr>
+              <td width="100%">
+
+                <h2 *ngIf="!desk.price == 0">
+                  <span class="important">
+                  {{desk.price}}
+                  </span>€
+                </h2>
+              </td>
+
+              <td *ngIf="desk.reservation" valign="bottom">
+                <span class="important">{{ desk.reservation | customTime }}</span>
+              </td>
+
+            </tr>
+
+            <tr>
+
+              <td>
+                <h3>
+                  <span>{{desk.waiter}}</span>
+                </h3>
+              </td>
+
+              <td *ngIf="desk.reservation" valign="top">
+                <span class="unimportant">Reservierung</span>
+              </td>
+
+            </tr>
+
+          </table>
 
         </ion-item>
+
       </ng-container>
 
     </ion-list>
