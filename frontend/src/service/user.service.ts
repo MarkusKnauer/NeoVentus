@@ -5,8 +5,7 @@ import {AuthGuardService} from "./auth-guard.service";
 /**
  * handling requests to the backend belonging the user
  *
- * @author Dennis Thanner
- * @version 0.0.2 changed to promise
+ * @author Dennis Thanner, Tim Heidelbach
  */
 @Injectable()
 export class UserService {
@@ -34,4 +33,13 @@ export class UserService {
     });
   }
 
+  public getProfileDetails() {
+    return new Promise<any>(resolve => {
+      this.http.get("/api/user/profile")
+        .map(res => res.json())
+        .subscribe(data => {
+          resolve(data);
+        });
+    });
+  }
 }

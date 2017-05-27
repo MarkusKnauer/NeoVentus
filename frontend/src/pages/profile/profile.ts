@@ -1,7 +1,7 @@
 import {Component, ViewChild} from "@angular/core";
 import {Content, NavController} from "ionic-angular";
 import {AuthGuardService} from "../../service/auth-guard.service";
-import {BillingService} from "../../service/billing.service";
+import {UserService} from "../../service/user.service";
 
 /**
  * @author Markus Knauer, Tim Heidelbach
@@ -21,14 +21,12 @@ export class ProfilePage {
   private userroles: any = null;
   private telephone;
   private email;
-  private sales = 0;
-  private gratitude = 0;
+  private revenue = 0;
+  private tips = 0;
   private level = 1;
   private xp = 31154;
-  private xpToLvlUp = 100000;
+  private expNextLevel = 100000;
   private steps = 0;
-
-  private billings: any;
 
   private today: Date;
 
@@ -36,7 +34,7 @@ export class ProfilePage {
 
   constructor(public navCtrl: NavController,
               private authGuard: AuthGuardService,
-              private billingService: BillingService) {
+              private userService: UserService) {
 
     // TODO: make avatar dynamic
     this.avatar = "../assets/avatars/default-male.png";
@@ -45,7 +43,7 @@ export class ProfilePage {
 
     this.getUserName();
     this.getUserRoles();
-    this.getSalesData();
+    this.getUserProfile();
 
     this.email = this.username.toLowerCase() + "@neovent.us";
   }
@@ -74,25 +72,16 @@ export class ProfilePage {
     return this.userroles;
   }
 
-  getSalesData() {
-
-    this.billingService.getBillingByWaiter(this.userId).then(
-      billings => {
-        this.billings = billings;
-
-        for (let billing of billings) {
-
-          let date = new Date(billing.billedAt);
-
-          let itemsPrice = 0;
-          for (let item of billing.items) {
-            itemsPrice += item.price;
-          }
-
-          this.sales += itemsPrice;
-          this.gratitude += (billing.totalPaid - itemsPrice);
-        }
-      });
+  getUserProfile() {
+    this.userService.getProfileDetails().then(
+      profile => {
+        this.xp = profile.exp;
+        this.level = profile.level;
+        this.expNextLevel = profile.expNextLevel;
+        this.revenue = profile.revenueToday;
+        this.tips = profile.tipsToday;
+      }
+    )
   }
 
   fixDimensions() {
