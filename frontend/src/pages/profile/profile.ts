@@ -19,11 +19,14 @@ export class ProfilePage {
   private username = null;
   private userId;
   private userroles: any = null;
-
-  private profit_today = 0;
-  private profit_all = 0;
-  private gratitude_today = 0;
-  private gratitude_all = 0;
+  private telephone;
+  private email;
+  private sales = 0;
+  private gratitude = 0;
+  private level = 1;
+  private xp = 31154;
+  private xpToLvlUp = 100000;
+  private steps = 0;
 
   private billings: any;
 
@@ -43,6 +46,8 @@ export class ProfilePage {
     this.getUserName();
     this.getUserRoles();
     this.getSalesData();
+
+    this.email = this.username.toLowerCase() + "@neovent.us";
   }
 
   getUserName() {
@@ -84,13 +89,8 @@ export class ProfilePage {
             itemsPrice += item.price;
           }
 
-          this.profit_all += itemsPrice;
-          this.gratitude_all += (billing.totalPaid - itemsPrice);
-
-          if (date.getDay() == this.today.getDay()) {
-            this.profit_today += itemsPrice;
-            this.gratitude_today += (billing.totalPaid - itemsPrice);
-          }
+          this.sales += itemsPrice;
+          this.gratitude += (billing.totalPaid - itemsPrice);
         }
       });
   }

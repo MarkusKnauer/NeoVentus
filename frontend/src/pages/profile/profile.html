@@ -1,4 +1,4 @@
-<ion-header id="profileheader">
+<ion-header>
 
   <ion-navbar color="primary">
 
@@ -10,68 +10,98 @@
 
   </ion-navbar>
 
-  <ion-avatar>
-    <img src={{avatar}}>
-  </ion-avatar>
-
-  <h1 id="username">{{username}}</h1>
-
-  <ng-container *ngFor="let role of userroles">
-    <div [ngSwitch]="role" id="roles">
-
-      <h2 *ngSwitchCase="'ROLE_ADMIN'">Administrator</h2>
-      <h2 *ngSwitchCase="'ROLE_CEO'">Chief Executive Officer</h2>
-      <h2 *ngSwitchCase="'ROLE_SERVICE'">Bedienung</h2>
-      <h2 *ngSwitchCase="'ROLE_CHEF'">Koch</h2>
-      <h2 *ngSwitchCase="'ROLE_BAR'">Barkeeper</h2>
-
-      <h2 *ngSwitchDefault>{{role}}</h2>
-
-    </div>
-  </ng-container>
-  {{fixDimensions()}}
-
 </ion-header>
 
 <ion-content id="profilecontent">
 
+  <div id="profileheader">
+
+    <ion-avatar>
+      <img src={{avatar}}>
+    </ion-avatar>
+
+    <h1 id="username">{{username}}</h1>
+
+    <ng-container *ngFor="let role of userroles">
+      <div [ngSwitch]="role" id="roles">
+        <h2 *ngSwitchCase="'ROLE_ADMIN'">Administrator</h2>
+        <h2 *ngSwitchCase="'ROLE_CEO'">Chief Executive Officer</h2>
+        <h2 *ngSwitchCase="'ROLE_SERVICE'">Bedienung</h2>
+        <h2 *ngSwitchCase="'ROLE_CHEF'">Koch</h2>
+        <h2 *ngSwitchCase="'ROLE_BAR'">Barkeeper</h2>
+        <h2 *ngSwitchDefault>{{role}}</h2>
+      </div>
+    </ng-container>
+    {{fixDimensions()}}
+
+  </div>
+
   <ion-list>
 
     <ion-list-header>
-      <ion-icon name="logo-usd" item-left></ion-icon>
-      Gewinn
+      <ion-icon name="person" item-left></ion-icon>
+      Persönliches
     </ion-list-header>
 
     <ion-item>
-      Heute
+      Telefon
       <ion-note item-right>
-        {{profit_today|costDecimal}} €
+        {{telephone}}
       </ion-note>
     </ion-item>
 
     <ion-item>
-      Gesamt
+      E-Mail
       <ion-note item-right>
-        {{profit_all|costDecimal}} €
+        {{email}}
       </ion-note>
     </ion-item>
+
+    <div class="filler"></div>
 
     <ion-list-header>
-      <ion-icon name="logo-usd" item-left></ion-icon>
-      Trinkgeld
+      <ion-icon name="medal" item-left></ion-icon>
+      League of Service
     </ion-list-header>
 
     <ion-item>
-      Heute
+      Level <span class="level">{{level}}</span>
+      <br/>
+      <progress max="{{xpToLvlUp}}" value="{{xp}}"></progress>
+    </ion-item>
+
+    <ion-item>
+      Erfahrung
       <ion-note item-right>
-        {{gratitude_today|costDecimal}}
+        {{xp}} / {{xpToLvlUp}}
+      </ion-note>
+    </ion-item>
+
+    <div class="filler"></div>
+
+    <ion-list-header>
+      <ion-icon name="information-circle" item-left></ion-icon>
+      Kennzahlen
+    </ion-list-header>
+
+    <ion-item>
+      Umsatz
+      <ion-note item-right>
+        {{sales|costDecimal}} €
       </ion-note>
     </ion-item>
 
     <ion-item>
-      Gesamt
+      Trinkgeld
       <ion-note item-right>
-        {{gratitude_all|costDecimal}}
+        {{gratitude|costDecimal}} €
+      </ion-note>
+    </ion-item>
+
+    <ion-item>
+      Schritte
+      <ion-note item-right>
+        {{steps}}
       </ion-note>
     </ion-item>
 
