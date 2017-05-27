@@ -84,21 +84,21 @@
       Kennzahlen
     </ion-list-header>
 
-    <ion-item>
+    <ion-item *ngIf="userroles == 'ROLE_SERVICE'">
       Umsatz
       <ion-note item-right>
         {{revenue|costDecimal}} €
       </ion-note>
     </ion-item>
 
-    <ion-item>
+    <ion-item *ngIf="userroles == 'ROLE_SERVICE'">
       Trinkgeld
       <ion-note item-right>
         {{tips|costDecimal}} €
       </ion-note>
     </ion-item>
 
-    <ion-item>
+    <ion-item *ngIf="userroles == 'ROLE_SERVICE'">
       Schritte
       <ion-note item-right>
         {{steps}}
