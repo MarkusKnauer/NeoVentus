@@ -67,6 +67,13 @@ export class KitchenOverviewPage {
 
   }
 
+  /**
+   * on page leave unsubscribe
+   */
+  ionWillLeaveView() {
+    this.orderSocketService.disconnect();
+  }
+
   loadOrderItemsGroupedByDeskAndCategory() {
     this.orderService.getAllOpenOrderItemsGroupedByDesk(this.forKitchen)
       .then(data => {

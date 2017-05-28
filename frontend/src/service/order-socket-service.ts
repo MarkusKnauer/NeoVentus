@@ -1,29 +1,17 @@
-import {Injectable, isDevMode} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {StompService} from "ng2-stomp-service";
+import {SocketService} from "./socket.service";
 
 /**
  * @author Dennis Thanner
- * @version 0.0.1
  */
 @Injectable()
-export class OrderSocketService {
+export class OrderSocketService extends SocketService {
 
-  private wsConfig = {
-    host: "/socket/socket-api",
-    debug: isDevMode(),
-    queue: {}
-  };
+  private subscription: any;
 
-  constructor(private stomp: StompService) {
-  }
-
-  /**
-   * @returns {Promise<{}>}
-   */
-  private connect() {
-    this.stomp.configure(this.wsConfig);
-
-    return this.stomp.startConnect();
+  constructor(stomp: StompService) {
+    super(stomp)
   }
 
   /**
@@ -36,7 +24,7 @@ export class OrderSocketService {
     this.connect().then(() => {
       console.debug("order socket connected");
 
-      this.stomp.subscribe(topic, cb);
+      this.subscription = this.stomp.subscribe(topic, cb);
 
     }).catch((err) => {
       console.debug("Error connecting to socket");
@@ -45,11 +33,10 @@ export class OrderSocketService {
   }
 
   /**
-   *
+   * unsubscribe current topic subscription
    */
-  public disconnect() {
-    this.stomp.disconnect();
+  unsubscribe() {
+    this.stomp.unsubscribe(this.subscription);
   }
-
 
 }

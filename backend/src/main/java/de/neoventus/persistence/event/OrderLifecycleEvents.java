@@ -43,6 +43,7 @@ public class OrderLifecycleEvents extends AbstractMongoEventListener<OrderItem> 
 	/**
 	 * method to send open orders to socket but debounce to execute
 	 * only once if the event is triggered many times in a short period
+	 *
 	 * @param event
 	 */
 	private void updateOrderSocket(MongoMappingEvent<OrderItem> event) {
@@ -114,15 +115,17 @@ public class OrderLifecycleEvents extends AbstractMongoEventListener<OrderItem> 
 							notification += "Bestellung für Tisch " + d.getNumber() + " fertig";
 						}
 
-						this.simpMessagingTemplate.convertAndSend("/topic/user/" + waiter.getId(), notification);
+						this.simpMessagingTemplate.convertAndSendToUser(waiter.getUsername(), "/topic/user/", notification);
 						return null;
 					});
 					break;
 				case CANCELED:
-					// on cancel send single notification for every team
-					// todo send notification only if waiter is different than who sent the cancel request
-					String notification = o.getItem().getName() + " für Tisch " + d.getNumber() + " wurde storniert";
-					this.simpMessagingTemplate.convertAndSend("/topic/user/" + waiter.getId(), notification);
+					// on cancel send single notification for every order
+					// only if user canceled the order is different from user inserting the order
+					if (waiter != o.getStates().get(o.getStates().size() - 1).getWaiter()) {
+						String notification = o.getItem().getName() + " für Tisch " + d.getNumber() + " wurde storniert";
+						this.simpMessagingTemplate.convertAndSendToUser(waiter.getUsername(), "/topic/user", notification);
+					}
 					break;
 			}
 		}
