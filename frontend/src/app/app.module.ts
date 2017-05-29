@@ -78,7 +78,8 @@ import {WorkingShiftService} from "../service/workingShifts.service";
         {component: DeskOverviewPage, name: "DeskOverview", segment: "desks"},
         {component: DeskPage, name: "ShowOrders", segment: "orders/:deskNumber", defaultHistory: ["DeskOverview"]},
         {component: KitchenOverviewPage, name: "KitchenOverview", segment: "kitchen/:forKitchen"},
-        {component: SettingsPage, name: "Settings", segment: "settings"}
+        {component: SettingsPage, name: "Settings", segment: "settings"},
+        {component: ProfilePage, name: "Profile", segment: "profile"}
       ]
     }),
     IonicStorageModule.forRoot()

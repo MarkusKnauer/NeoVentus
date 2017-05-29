@@ -21,6 +21,7 @@ import testing.AbstractTest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * testing the user repository methods
@@ -157,9 +158,12 @@ public class UserRepositoryTest extends AbstractTest {
 
 		Assert.assertTrue(userProfileDetails.getLevel() == 0);
 
+		Assert.assertTrue(userProfileDetails.getExpLevelStart() == 0);
+		Assert.assertTrue(userProfileDetails.getExpNextLevel() == 50);
+
 		orders = new ArrayList<>();
 		// create orders
-		for (int i = 0; i < 49; i++) {
+		for (int i = 0; i < 2; i++) {
 
 			OrderItem or1 = new OrderItem();
 			or1.setWaiter(test);
@@ -170,9 +174,12 @@ public class UserRepositoryTest extends AbstractTest {
 
 		userProfileDetails = this.userRepository.getUserProfileDetails(test.getId());
 
-		Assert.assertTrue(userProfileDetails.getLevel() > 0);
+		Logger.getAnonymousLogger().info(userProfileDetails.getLevel() + "");
 
-		Assert.assertTrue(userProfileDetails.getExpNextLevel() == (int) (50 * Math.pow(1.2, userProfileDetails.getLevel() + 1)));
+		Assert.assertTrue(userProfileDetails.getLevel() == 1);
+		Assert.assertTrue(userProfileDetails.getExpNextLevel() == 60);
+		Assert.assertTrue(userProfileDetails.getExpLevelStart() == 50);
+
 
 	}
 

@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.logging.Logger;
 
 /**
  * @author Dennis Thanner
@@ -110,14 +111,15 @@ public class UserRepositoryImpl implements NVUserRepository {
 
 		// current level = floor( log of lvlIncreaseRate ( currentExp / lvl1Exp))
 		// use log identity log b (n) = ln (n) / ln(b)
-
-		int currentLevel = (int) Math.floor(Math.log(exp * 1D / lvl1Exp) / Math.log(lvlIncreaseRate));
-		currentLevel = currentLevel < 0 ? 0 : currentLevel;
-		int nextLevelExp = (int) (lvl1Exp * Math.pow(lvlIncreaseRate, currentLevel == 0 ? currentLevel : currentLevel + 1));
+		int currentLevel = (int) Math.floor(Math.log(exp * 1D / lvl1Exp) / Math.log(lvlIncreaseRate)) + 1;
+		int nextLevelExp = (int) (lvl1Exp * Math.pow(lvlIncreaseRate, currentLevel));
+		int levelStartExp = (int) (lvl1Exp * Math.pow(lvlIncreaseRate, currentLevel - 1));
+		Logger.getAnonymousLogger().info(currentLevel + "");
 
 		profileDetails.setExp(exp);
 		profileDetails.setExpNextLevel(nextLevelExp);
 		profileDetails.setLevel(currentLevel);
+		profileDetails.setExpLevelStart(currentLevel == 0 ? 0 : levelStartExp);
 
 		return profileDetails;
 	}

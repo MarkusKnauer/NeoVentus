@@ -13,7 +13,7 @@
       <h2 text-center>Favoriten</h2>
       <ion-grid>
         <ion-row>
-          <div col-3 *ngFor="let favId of this.localStorageService.cache['favs']">
+          <div col-3 *ngFor="let favId of getExistingFavorites()">
             <!--todo prefent multiple get menu object id-->
             <menu-box [item]="getMenuObjectToId(favId)" [count]="getTmpOrderCount(getMenuObjectToId(favId))"
                       (press)="openDetailModal(favId)"
