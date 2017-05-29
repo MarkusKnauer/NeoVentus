@@ -1,18 +1,21 @@
 
 package de.neoventus.init;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.BulkWriteOperation;
-import com.mongodb.DBCollection;
 import de.neoventus.persistence.entity.*;
 import de.neoventus.persistence.repository.*;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 /**
@@ -34,6 +37,7 @@ class DefaultDemoDataIntoDB {
 	private ReservationRepository reservationRepository;
 	private SideDishRepository sideDishRepository;
 	private MongoTemplate mongoTemplate;
+	private final WorkingPlanRepository workingPlanRepository;
 
 	// init documents saved for class based access
 	private List<Desk> desks;
@@ -45,7 +49,7 @@ class DefaultDemoDataIntoDB {
 
 	DefaultDemoDataIntoDB(DeskRepository deskRepository, UserRepository userRepository,
 								 MenuItemRepository menuItemRepository, MenuItemCategoryRepository menuItemCategoryRepository, OrderItemRepository orderItemRepository,
-								 ReservationRepository reservationRepository, BillingRepository billingRepository, SideDishRepository sideDishRepository, MongoTemplate mongoTemplate) {
+								 ReservationRepository reservationRepository, BillingRepository billingRepository, SideDishRepository sideDishRepository, MongoTemplate mongoTemplate,WorkingPlanRepository workingPlanRepository) {
 
 		random = new Random();
 
@@ -58,22 +62,42 @@ class DefaultDemoDataIntoDB {
 		this.orderItemRepository = orderItemRepository;
 		this.sideDishRepository = sideDishRepository;
 		this.mongoTemplate = mongoTemplate;
-
-
+		this.workingPlanRepository = workingPlanRepository;
+		clearIndexes();
 		this.desks = deskRepository.findAll();
 		this.menuItems = menuItemRepository.findAll();
 		this.users = userRepository.findAll();
 
-		clearData();
-		clearIndexes();
-		generateReservation(); // DBRef: User, Desk
-		generateSideDish(); // DbRef: MenuItem
-		updateUserDesk();
-		generateFinishedOrderItem(); //DBREF: All
-		generateActualOrderItem();
+		List<Workingplan> wp = (List<Workingplan>) workingPlanRepository.findAll();
+
+		List<MenuItemCategory> menuItemCategories = (List<MenuItemCategory>) menuItemCategoryRepository.findAll();
+		List<MenuItem> menuItems = menuItemRepository.findAll();
+
+		if (checkLists(menuItems)){
+			this.sideDishRepository.deleteAll();
+			generateSideDish();
+		}
+		if(checkLists(users)&&checkLists(desks)){
+			this.reservationRepository.deleteAll();
+			generateReservation();
+		}
+		if (checkLists(users)&&checkLists(desks)&&checkLists(wp)&&checkLists(menuItems)){
+			this.billingRepository.deleteAll();
+			this.orderItemRepository.deleteAll();
+			generateFinishedOrderItem();
+			generateActualOrderItem();
+		}
+		//	generateReservation(); // DBRef: User, Desk
+	//	generateSideDish(); // DbRef: MenuItem
+	//	updateUserDesk();
+	//	generateFinishedOrderItem(); //DBREF: All
+	//	generateActualOrderItem();
 	//	generateOrderItem(); //DBREF: All
 	//	generateBillings();
 
+	}
+	private boolean checkLists(List<?> list){
+		return list != null && !list.isEmpty();
 	}
 
 	private static double round(double value) {
@@ -154,7 +178,7 @@ class DefaultDemoDataIntoDB {
 	}
 
 	// ------------- START Semantic group: SideDishGroup -------------------------
-	private void generateSideDish() {
+	public void generateSideDish() {
 		LOGGER.info("Creating Sidedishes");
 		SideDishGroup sideDishGroup;
 
@@ -217,7 +241,7 @@ class DefaultDemoDataIntoDB {
 	}
 
 	// ------------- END OF Semantic group: SideDishGroup ----------------------------
-	private void generateReservation() {
+	public void generateReservation() {
 		LOGGER.info("Generate Reservations");
 		List<Permission> permissions = new ArrayList<>();
 		permissions.add(Permission.ADMIN);
@@ -276,17 +300,12 @@ class DefaultDemoDataIntoDB {
 		}
 	}
 
-	// ------------- START OF Semantic group: BI- orders ------------------------------------
-	private void generateFinishedOrderItem() {
+//------------------- START OF Semantic group: BI- orders ------------------------------------
+	// Finished Orders
+	public void generateFinishedOrderItem() {
 		LOGGER.info("Creating random orders");
 		List<OrderItem> orderItems = new ArrayList<>();
-		List<User> waiter = new ArrayList<User>();
 		List<MenuItem> menu = menuItemRepository.findAll();
-
-		// Only for Waiters
-		users.parallelStream().forEach(user -> {
-			if (user.getPermissions().contains(Permission.SERVICE)) waiter.add(user);
-		});
 
 		OrderItem ord;
 		// Billing variables
@@ -299,10 +318,27 @@ class DefaultDemoDataIntoDB {
 		// Time variable in Millis
 		long delay;
 		//  BI - Starttime (11:00 because in Mongo it is 09:00)
-		Calendar calendar = new GregorianCalendar(2016,4,20,11,0,0);
-
+	//Find first and Last
+		Query query = new Query();
+		query.limit(1);
+		query.with(new Sort(Sort.Direction.ASC, "lastModifiedDate"));
+		Workingplan plan =mongoTemplate.findOne(query, Workingplan.class);
+		query = new Query();
+		query.limit(1);
+		query.with(new Sort(Sort.Direction.DESC, "lastModifiedDate"));
+		Workingplan lastPlan =mongoTemplate.findOne(query, Workingplan.class);
+		if(lastPlan.getCreatedPlan().compareTo(new Date(System.currentTimeMillis()))>0) return;
+		LOGGER.info(plan.toString());
+		Date calendar = plan.getWorkingDay();
+		calendar.setHours(11);
+		calendar.setMinutes(0);
 		// one week
-		for (int j = 0; j < 7; j++) {
+		//for (int j = 0; j < 7; j++) {
+	int j = 0;
+		while(
+			plan!= null&&
+			lastPlan.getCreatedPlan().compareTo(new Date(System.currentTimeMillis()))<1&&
+			!lastPlan.equals(plan)){
 			// Time warp for other desks, 7 * 2h = 14 <-- max. Opening time
 			for(int b = 0; b < 7; b++){
 				// delay: random time after 30 min = 1800 sec. and 90 mins fix
@@ -315,10 +351,14 @@ class DefaultDemoDataIntoDB {
 					int ordersPerDesk = (int)(Math.random() * 4)+4;
 					// Billing after 30 mins + Randomvalue 20 mins - Max. 50 mins - Min. 30 mins
 					int billingtime = (int)(Math.random()*1200000+1800000);
+					LOGGER.info("Plan-Calendar111: "+calendar.toLocaleString());
+					billing = new Billing(new Date(calendar.getTime()+delay+billingtime), (double) 0,billingItemList, randomUserService((calendar.getTime()+delay+billingtime), plan.getWorkingshift()));
+					billing.setId(String.valueOf(new ObjectId()));
 					for (int i = 0; i < ordersPerDesk; i++) {
 
-						ord = new OrderItem(randomUserService(waiter),desks.get(k),randomMenuItem(menu),"");
+						ord = new OrderItem(randomUserService(calendar.getTime()+delay, plan.getWorkingshift()),desks.get(k),randomMenuItem(menu),"");
 						ord.setStates(setStates(calendar,delay,billingtime));
+						ord.setBilling(billing);
 						double price = ord.getItem().getPrice();
 						totalprice += price;
 						ord.setId(String.valueOf(new ObjectId()));
@@ -329,10 +369,7 @@ class DefaultDemoDataIntoDB {
 					// 10-15% Drinking-cash
 					totalprice += totalprice*(Math.random()*5+10)/100;
 					totalprice = (Math.round(totalprice*10))/10;
-
-
-					billing = new Billing(new Date(calendar.getTimeInMillis()+delay+billingtime),totalprice,billingItemList, randomUserService(waiter));
-					billing.setId(String.valueOf(new ObjectId()));
+					billing.setTotalPaid(totalprice);
 					billingList.add(billing);
 
 
@@ -342,87 +379,44 @@ class DefaultDemoDataIntoDB {
 
 			}
 			// set next day
-			calendar.set(2016,4,(calendar.get(3)+(j+1)));
+			calendar.setDate(calendar.getDate()+1);
+			LOGGER.info("Plan-Calendar: "+calendar.toLocaleString());
+			j++;
+			plan = findWorkingplan(calendar);
+
 		}
 
+		// Bulk-Insert + Bulk-Update
+		insertOrders(orderItems);
+		insertBilling(billingList);
 
-		LOGGER.info("Write OrderItem in DB");
-		BulkOperations bulkOrders = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED,OrderItem.class);
-		bulkOrders.insert(orderItems);
-		bulkOrders.execute();
+		//updateBillingReferenceInOrders(billingList);
 
-		LOGGER.info("Write Billing in DB");
-		BulkOperations bulkBillings = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED,Billing.class);
-		bulkBillings.insert(billingList);
-		bulkBillings.execute();
-
-
-		LOGGER.info("Update OrderItem in DB");
-		DBCollection collection = mongoTemplate.getDb().getCollection("orderItem");
-		BulkWriteOperation bulk = collection.initializeOrderedBulkOperation();
-		for(Billing b: billingList){
-			for(BillingItem bi: b.getItems()){
-
-				BasicDBObject billingOb = new BasicDBObject();
-				billingOb.put("$ref","billing");
-				billingOb.put("$id", new ObjectId(b.getId()));
-				bulk.find(
-					new BasicDBObject("_id", new ObjectId(bi.getItem().getId())))
-					.update(
-						new BasicDBObject("$set", new BasicDBObject("billing",billingOb)
-						)
-				);
-			}
-		}
-		bulk.execute();
 		LOGGER.info("Finished creating random orders");
 	}
 
-
-	private List<OrderItemState> setStates(Calendar calendar, long delay,int billingtime){
-		// For BI-Group new Timestemp
-		List<OrderItemState> states = new ArrayList<>();
-
-		OrderItemState state = new OrderItemState(OrderItemState.State.NEW);
-		state.setDate(new Date(calendar.getTimeInMillis()+delay));
-
-		states.add(state);
-
-		OrderItemState finished= new OrderItemState(OrderItemState.State.FINISHED);
-		finished.setDate(new Date(calendar.getTimeInMillis()+delay+billingtime));
-
-		states.add(finished);
-
-		return states;
-
-	}
-	private User randomUserService(List<User> waiter){
-		return waiter.get((int) (Math.random() * waiter.size()));
-	}
-	private MenuItem randomMenuItem(List<MenuItem> menuItems){
-		return menuItems.get((int) (Math.random() * menuItems.size()));
-	}
-
-
-	// ------------- START OF Semantic group: Actual orders ------------------------------------
-private void generateActualOrderItem() {
+	//  Actual orders
+	public void generateActualOrderItem() {
 	LOGGER.info("Creating actual random orders");
 	List<OrderItem> orderItems = new ArrayList<>();
-	List<User> waiter = new ArrayList<User>();
 	List<MenuItem> menu = menuItemRepository.findAll();
-
-	// Only for Waiters
-	users.parallelStream().forEach(user -> {
-		if (user.getPermissions().contains(Permission.SERVICE)) waiter.add(user);
-	});
 
 	OrderItem ord;
 	// Time variable in Millis
 	long delay;
 	//  BI - Starttime (11:00 because in Mongo it is 09:00)
-	Calendar calendar = new GregorianCalendar(2017,Calendar.MONTH,Calendar.DAY_OF_MONTH,11,0,0);
+		Query query = new Query();
+		query.limit(1);
+		query.with(new Sort(Sort.Direction.DESC, "lastModifiedDate"));
+		Workingplan plan =mongoTemplate.findOne(query, Workingplan.class);
 
-	//for one Year
+		if(plan.getCreatedPlan().compareTo(new Date(System.currentTimeMillis()))>0) return;
+	Date calendar = plan.getWorkingDay();
+		calendar.setHours(11);
+		calendar.setMinutes(0);
+
+		//for one Year
+
 	for(int j = 0; j < 1; j++ ){
 		// Time warp for other desks, 7 * 2h = 14 <-- max. Opening time
 		for(int b = 0; b < 1; b++){
@@ -433,7 +427,7 @@ private void generateActualOrderItem() {
 				// orders per Desk
 				int ordersPerDesk = (int)(Math.random() * 4)+4;
 				for (int i = 0; i < ordersPerDesk; i++) {
-					ord = new OrderItem(randomActualUserService(waiter),desks.get(k),randomActualMenuItem(menu),"");
+					ord = new OrderItem(randomUserService((calendar.getTime()+delay), plan.getWorkingshift()),desks.get(k),randomMenuItem(menu),"");
 					ord.setStates(setNewStates(calendar,delay));
 					orderItems.add(ord);
 				}
@@ -443,36 +437,92 @@ private void generateActualOrderItem() {
 
 		}
 		// set next day
-		calendar.set(2017,4,(calendar.get(3)+(j+1)));
+		calendar.setDate(calendar.getDay()+1);
+		plan = findWorkingplan(calendar);
 	}
+	// Bulk-Insert
+	insertOrders(orderItems);
 
-
-	LOGGER.info("Write New-OrderItem in DB");
-	BulkOperations bulkOrders = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED,OrderItem.class);
-	bulkOrders.insert(orderItems);
-	bulkOrders.execute();
 	LOGGER.info("Finished creating random orders");
 }
 
+	// *******************************************************************************
+	// ********************* Orderitem-Help-Functions ********************************
+	/**
+	 * MenuItem , WorkingPlan, User(in direction of Workingplan), TimeStates
+	 *
+	 *	Inserts / Updates
+	 */
+	private Workingplan findWorkingplan(Date calendar){
+		Date date1 = calendar;
+		Date date2 = calendar;
+		Query query = new Query();
+		date1.setHours(0);
+		date1.setMinutes(0);
+		date2.setMinutes(0);
+		date2.setHours(26);
+		query.addCriteria(Criteria.where("workingDay").gte(date1).lt(date2));
+		return mongoTemplate.findOne(query,Workingplan.class);
+	}
+	private List<OrderItemState> setStates(Date calendar, long delay, int billingtime){
+	// For BI-Group new Timestemp
+	List<OrderItemState> states = new ArrayList<>();
 
-	private List<OrderItemState> setNewStates(Calendar calendar, long delay){
+	OrderItemState state = new OrderItemState(OrderItemState.State.NEW);
+	state.setDate(new Date(calendar.getTime()+delay));
+
+	states.add(state);
+
+	OrderItemState finished= new OrderItemState(OrderItemState.State.FINISHED);
+	finished.setDate(new Date(calendar.getTime()+delay+billingtime));
+
+	states.add(finished);
+
+	return states;
+
+}
+	private User randomUserService(long delay, List<Workingshift> workingshifts){
+		Date date = new Date(delay);
+		List<User> user = new ArrayList<>();
+		for(Workingshift shift : workingshifts){
+			if(date.after(shift.getStartShift())&& date.before(shift.getEndShift())){
+				user.add(shift.getUser());
+			}
+		}
+		return user.get((int) (Math.random() * user.size()));
+	}
+	private MenuItem randomMenuItem(List<MenuItem> menuItems){
+		return menuItems.get((int) (Math.random() * menuItems.size()));
+	}
+	private List<OrderItemState> setNewStates(Date calendar, long delay){
 		// For BI-Group new Timestemp
 		List<OrderItemState> states = new ArrayList<>();
 
 		OrderItemState state = new OrderItemState(OrderItemState.State.NEW);
-		state.setDate(new Date(calendar.getTimeInMillis()+delay));
+		state.setDate(new Date(calendar.getTime()+delay));
 
 		states.add(state);
 
 		return states;
 
 	}
-	private User randomActualUserService(List<User> waiter){
-		return waiter.get((int) (Math.random() * waiter.size()));
+	//
+	private void insertOrders(List<OrderItem> orderItems){
+		LOGGER.info("Write New-OrderItem in DB");
+		BulkOperations bulkOrders = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED,OrderItem.class);
+		bulkOrders.insert(orderItems);
+		bulkOrders.execute();
 	}
-	private MenuItem randomActualMenuItem(List<MenuItem> menuItems){
-		return menuItems.get((int) (Math.random() * menuItems.size()));
+	private void insertBilling(List<Billing> billingList){
+		LOGGER.info("Write Billing in DB");
+		BulkOperations bulkBillings = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED,Billing.class);
+		bulkBillings.insert(billingList);
+		bulkBillings.execute();
+
 	}
+	// *******************************************************************************
+	// *******************************************************************************
+// --------------------- END of OrderItem-functions ----------------------------------------
 
 	/**
 	 * clear before regenerate to allow changes

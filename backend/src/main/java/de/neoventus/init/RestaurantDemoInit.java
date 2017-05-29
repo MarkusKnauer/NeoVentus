@@ -34,12 +34,13 @@ public class RestaurantDemoInit {
     private final MenuItemCategoryRepository menuItemCategoryRepository;
     private final SideDishRepository sideDishRepository;
 	private final MongoTemplate mongoTemplate;
+	private final WorkingPlanRepository workingPlanRepository;
 
     @Autowired
     public RestaurantDemoInit(DeskRepository deskRepository, UserRepository userRepository,
 							  OrderItemRepository orderItemRepository, MenuItemRepository menuItemRepository, MenuItemCategoryRepository menuItemCategoryRepository,
 							  ReservationRepository reservationRepository, BillingRepository billingRepository, SideDishRepository sideDishRepository,
-							  MongoTemplate mongoTemplate) {
+							  MongoTemplate mongoTemplate, WorkingPlanRepository  workingPlanRepository) {
 
         this.billingRepository = billingRepository;
         this.reservationRepository = reservationRepository;
@@ -50,6 +51,7 @@ public class RestaurantDemoInit {
         this.menuItemCategoryRepository = menuItemCategoryRepository;
         this.sideDishRepository =sideDishRepository;
 		this.mongoTemplate = mongoTemplate;
+		this.workingPlanRepository = workingPlanRepository;
 	}
 
     /**
@@ -57,9 +59,9 @@ public class RestaurantDemoInit {
      *
      * @see PostConstruct
      */
-	//@PostConstruct
+	@PostConstruct
 	public void initialize() {
-        new DefaultDemoDataIntoDB(deskRepository, userRepository, menuItemRepository, menuItemCategoryRepository, orderItemRepository, reservationRepository,billingRepository,sideDishRepository, mongoTemplate);
+        new DefaultDemoDataIntoDB(deskRepository, userRepository, menuItemRepository, menuItemCategoryRepository, orderItemRepository, reservationRepository,billingRepository,sideDishRepository, mongoTemplate,workingPlanRepository);
 	}
 
 

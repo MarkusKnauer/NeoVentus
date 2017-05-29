@@ -8,6 +8,73 @@
 </ion-header>
 
 <ion-content padding>
-  <h3>Hier werden die Schichten angezeigt</h3>
+  <h3>{{headlineString()}} </h3>
+
+
+  <ion-list>
+    <ion-item>
+      <ion-label>Starteingabe</ion-label>
+      <ion-datetime displayFormat="DD. MMM. YYYY" doneText="Fertig" cancelText="Abbrechen" [(ngModel)]="event.startDate"></ion-datetime>
+
+    </ion-item>
+    <ion-item>
+      <ion-label>Endeingabe</ion-label>
+      <ion-datetime displayFormat="DD. MMM. YYYY" doneText="Fertig" cancelText="Abbrechen" [(ngModel)]="event.endDate" (click)="getRightShift()"></ion-datetime>
+    </ion-item>
+  </ion-list>
+  <button ion-button>
+    <ion-label>Schichtplan suchen</ion-label>
+  </button>
+
+
+  <div class="cards-bg">
+    <ion-grid class="grid-card">
+      <ion-row>
+
+        <!-- card for every desk -->
+        <ion-col *ngFor="let nD of newDay" col-auto>
+
+          <!-- BEGIN card -->
+          <ion-card>
+            <!-- BEGIN card header-->
+            <ion-card-header class="card_header">
+              <ion-item class="card_title">
+                <h1>{{nD.date.substring(0,9)}}</h1>
+              </ion-item>
+            </ion-card-header>
+            <!-- END card header-->
+
+
+            <!--BEGIN card content -->
+            <ion-item-group *ngFor="let shift of nD.shifts">
+
+
+              <!-- BEGIN category divider
+              <!-- category only show in kitchen the category -->
+              <ion-item-divider>
+                <div> {{shift.userName}}: {{shift.startShift.toLocaleString().substring(11,16)}} - {{shift.endShift.toLocaleString().substring(11,16)}}</div>
+              </ion-item-divider>
+              <!-- END category divider-->
+
+            </ion-item-group>
+            <!--END card content -->
+
+          </ion-card>
+          <!-- END card -->
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 
 </ion-content>
+<ion-footer>
+
+  <ion-toolbar color="light">
+    <ion-item>
+      <ion-label>Gesamtplan anzeigen</ion-label>
+      <ion-toggle checked={{!personalView}} ngModel="toggleMyShiftsOnly()" color="dark" (ionChange)="toggleMyShiftsOnly()">
+      </ion-toggle>
+    </ion-item>
+  </ion-toolbar>
+
+</ion-footer>

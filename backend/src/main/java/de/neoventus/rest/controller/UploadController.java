@@ -36,13 +36,14 @@ public class UploadController {
 	private final ReservationRepository reservationRepository;
 	private final SideDishRepository sideDishRepository;
 	private final MongoTemplate mongoTemplate;
+	private final WorkingPlanRepository workingPlanRepository;
 	private WriteExcelInDB wexc;
 
 	//Save the uploaded file to this folder
 	private static String UPLOADED_FOLDER = "";
 	private final String URL_PATH = "/api/upload";
 	@Autowired
-	public UploadController(MenuItemRepository menuItemRepository, MenuItemCategoryRepository menuItemCategoryRepository, UserRepository userRepository, DeskRepository deskRepository, OrderItemRepository orderItemRepository, BillingRepository billingRepository, ReservationRepository reservationRepository, SideDishRepository sideDishRepository, MongoTemplate mongoTemplate){
+	public UploadController(MenuItemRepository menuItemRepository, MenuItemCategoryRepository menuItemCategoryRepository, UserRepository userRepository, DeskRepository deskRepository, OrderItemRepository orderItemRepository, BillingRepository billingRepository, ReservationRepository reservationRepository, SideDishRepository sideDishRepository, MongoTemplate mongoTemplate, WorkingPlanRepository workingPlanRepository){
 		this.menuItemRepository = menuItemRepository;
 		this.menuItemCategoryRepository = menuItemCategoryRepository;
 		this.userRepository = userRepository;
@@ -52,7 +53,7 @@ public class UploadController {
 		this.reservationRepository = reservationRepository;
 		this.sideDishRepository = sideDishRepository;
 		this.mongoTemplate = mongoTemplate;
-
+		this.workingPlanRepository = workingPlanRepository;
 		 this.wexc =new WriteExcelInDB(
 			menuItemRepository,
 			menuItemCategoryRepository,
@@ -62,7 +63,8 @@ public class UploadController {
 			billingRepository,
 			reservationRepository,
 			sideDishRepository,
-			mongoTemplate);
+			mongoTemplate,
+			 workingPlanRepository);
 	}
 
 

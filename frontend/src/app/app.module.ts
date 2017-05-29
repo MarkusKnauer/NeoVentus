@@ -36,6 +36,7 @@ import {ReservationService} from "../service/reservation.service";
 import {BillingService} from "../service/billing.service";
 import {ManageStornoReasonsModalComponent} from "../component/manage-storno-reasons/manage-storno-reasons";
 import {CustomDataPipe} from "../pipe/DatePipe";
+import {WorkingShiftService} from "../service/workingShifts.service";
 
 
 @NgModule({
@@ -112,7 +113,8 @@ import {CustomDataPipe} from "../pipe/DatePipe";
     LocalStorageService,
     OrderSocketService,
     ReservationService,
-    BillingService
+    BillingService,
+    WorkingShiftService
   ]
 })
 export class AppModule {
