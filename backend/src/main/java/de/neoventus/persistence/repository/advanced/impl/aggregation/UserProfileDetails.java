@@ -17,6 +17,8 @@ public class UserProfileDetails {
 
 	private long expNextLevel;
 
+	private long expLevelStart;
+
 	// constructors
 
 	public UserProfileDetails() {
@@ -65,5 +67,13 @@ public class UserProfileDetails {
 
 	public void setExpNextLevel(long expNextLevel) {
 		this.expNextLevel = expNextLevel;
+	}
+
+	public long getExpLevelStart() {
+		return expLevelStart;
+	}
+
+	public void setExpLevelStart(long expLevelStart) {
+		this.expLevelStart = expLevelStart;
 	}
 }
