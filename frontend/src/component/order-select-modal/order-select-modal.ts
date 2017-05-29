@@ -36,6 +36,23 @@ export class OrderSelectModalComponent {
   }
 
   /**
+   * filter favorites not existing anymore
+   * due to databse changes
+   */
+  getExistingFavorites() {
+    if (this.localStorageService.cache[LocalStorageService.FAV_KEY]) {
+      return this.localStorageService.cache[LocalStorageService.FAV_KEY].filter((fav) => {
+        return this.menuService.cache["all"].find(menu => {
+            return menu.id == fav;
+          }) != null;
+      });
+    }
+    else {
+      return [];
+    }
+  }
+
+  /**
    * get menu object by id from cache
    * @param menuId
    */
