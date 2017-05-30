@@ -128,20 +128,9 @@ export class ShiftsPage {
     let dat1 = Date.parse(this.event.startDate);
     let dat2 = Date.parse(this.event.endDate);
     if(this.personalView){
-      out = "Schichtplan von "+this.authGuard.userDetails.name + "\n";
+      out = "Meinschichtplan";
     } else{
-      out = "Gesamtschichtplan ";
-    }
-    switch(this.compareDates()){
-      case 0:
-        out += "für den Tag: "+ this.getDate(new Date(dat1));
-        break;
-      case 1:
-        out = "Der Zeitraum ist ungültig, bitte überprüfen Sie Ihre Eingabe!!";
-        break;
-      case -1:
-        out += "für den Zeitraum von "+this.getDate(new Date(dat1))+" bis "+ this.getDate(new Date(dat2));
-        break;
+      out = "Gesamtschichtplan";
     }
     return out;
   }

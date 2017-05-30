@@ -2,9 +2,12 @@ package testing.repository;
 
 import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.entity.MenuItemCategory;
+import de.neoventus.persistence.entity.OrderItem;
 import de.neoventus.persistence.repository.MenuItemCategoryRepository;
 import de.neoventus.persistence.repository.MenuItemRepository;
+import de.neoventus.persistence.repository.OrderItemRepository;
 import de.neoventus.persistence.repository.SideDishRepository;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.GuestWishCount;
 import de.neoventus.rest.dto.MenuDto;
 import org.junit.After;
 import org.junit.Assert;
@@ -14,14 +17,12 @@ import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
 import testing.AbstractTest;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * testing the menuItem repository methods
  *
  * @author Markus Knauer
- * @version 0.0.3 add sideDish - JB
- *          0.0.2 add menuItemCategory -JB
- *          0.0.1 created by MK
  */
 public class MenuItemRepositoryTest extends AbstractTest {
 
@@ -33,6 +34,9 @@ public class MenuItemRepositoryTest extends AbstractTest {
 
 	@Autowired
 	private SideDishRepository sideDishRepository;
+
+	@Autowired
+	private OrderItemRepository orderItemRepository;
 
 	@Test
 	public void testSearchByName() {
@@ -92,31 +96,40 @@ public class MenuItemRepositoryTest extends AbstractTest {
 		return cat;
 	}
 
-//    FIXME ASAP Duplcciate???
-//    @Test
-//    public void testSideDish(){
-//
-//        // Unit Test for old- Version of SideDishGroup
-//
-//        deleteAll();
-//        MenuItem u2 = new MenuItem();
-//
-//        u2.setName("Menu");
-//        u2.setNumber(1);
-//        menuItemRepository.save(u2);
-//        MenuItem u = new MenuItem(getCategory(),"test", 12.02, "EUR", "Testdescr", "Testmedia", new ArrayList<>());
-//        menuItemRepository.save(u);
-//        SideDishGroup sideDish = u.getSideDishGroup();
-//       // sideDish.addParentalMeal(u2);
-//        sideDishRepository.save(sideDish);
-//        MenuItem u3 = new MenuItem();
-//        u3.setName("Kuchen");
-//        menuItemRepository.save(u3);
-//        SideDishGroup d = u3.getSideDishGroup();
-//        sideDishRepository.save(d);
-//
-//
-//    }
+	/**
+	 * test popular guest wishes
+	 */
+	@Test
+	public void testPopularGuestWishes() {
+		MenuItem m = new MenuItem();
+		m = this.menuItemRepository.save(m);
+
+		OrderItem o = new OrderItem();
+		o.setItem(m);
+		o.setGuestWish("Test");
+		this.orderItemRepository.save(o);
+		o = new OrderItem();
+		o.setItem(m);
+		o.setGuestWish("Test");
+		this.orderItemRepository.save(o);
+
+		List<GuestWishCount> result = this.menuItemRepository.getPopularGuestWishesForItem(m.getId());
+
+		Assert.assertTrue(result.size() == 1);
+		Assert.assertTrue(result.get(0).getGuestWish().equals("Test"));
+
+
+		o = new OrderItem();
+		o.setGuestWish("Test 2");
+		o.setItem(m);
+		this.orderItemRepository.save(o);
+
+		result = this.menuItemRepository.getPopularGuestWishesForItem(m.getId());
+
+		Assert.assertTrue(result.size() == 2);
+		Assert.assertTrue(result.get(0).getGuestWish().equals("Test"));
+		Assert.assertTrue(result.get(1).getGuestWish().equals("Test 2"));
+	}
 
 
 	/**
@@ -127,6 +140,7 @@ public class MenuItemRepositoryTest extends AbstractTest {
 		menuItemRepository.deleteAll();
 		menuItemCategoryRepository.deleteAll();
 		sideDishRepository.deleteAll();
+		this.orderItemRepository.deleteAll();
 	}
 
 }

@@ -21,6 +21,8 @@ export class MenuDetailModalComponent {
 
   private wish: string = "";
 
+  private suggestions = [];
+
   constructor(private viewCtrl: ViewController, private navParams: NavParams, private menuService: MenuService,
               private localStorageService: LocalStorageService, private alertCtrl: AlertController) {
     this.menu = this.menuService.cache["all"].find(el => {
@@ -31,6 +33,10 @@ export class MenuDetailModalComponent {
         this.selectedSideDish[sideDish.id] = false;
       }
     }
+
+    this.menuService.getPopularGuestWishes(this.menu.id).then((data) => {
+      this.suggestions = data.json();
+    })
   }
 
   /**
@@ -64,26 +70,26 @@ export class MenuDetailModalComponent {
           sideDishes.push(sideDish);
         }
       }
-      if (this.menu.sideDishGroup.selectionRequired && sideDishes.length == 0) {
+    }
+    if (this.menu.sideDishGroup && this.menu.sideDishGroup.selectionRequired && sideDishes.length == 0) {
 
-        let alert = this.alertCtrl.create({
-          title: "Bitte treffen Sie eine Auswahl",
-          buttons: [
-            {
-              text: "OK",
-              handler: () => {
-                alert.dismiss();
-              }
-            },
-          ],
-          enableBackdropDismiss: false
-        });
-        alert.present();
-      } else {
+      let alert = this.alertCtrl.create({
+        title: "Bitte treffen Sie eine Auswahl",
+        buttons: [
+          {
+            text: "OK",
+            handler: () => {
+              alert.dismiss();
+            }
+          },
+        ],
+        enableBackdropDismiss: false
+      });
+      alert.present();
+    } else {
 
-        //No SideDish necessary
-        this.viewCtrl.dismiss(new Order(this.menu, sideDishes, this.wish));
-      }
+      //No SideDish necessary
+      this.viewCtrl.dismiss(new Order(this.menu, sideDishes, this.wish));
     }
   }
 

@@ -54,7 +54,6 @@ export class KitchenOverviewPage {
             //group by category and save to cache
             this.groupByCategory(data[key]);
             this.orderService.cache['open_orders_grouped_by_desks'] = data[key];
-            console.debug("--->Category!!!!!!!", data[key]);
           }
 
           else if (key == "items") {
@@ -178,6 +177,7 @@ export class KitchenOverviewPage {
   presentConfirmAllOfDesk(deskNumber, ordersPerDesk) {
     let alert = this.alertCtrl.create({
       title: 'Alle Gerichte des Tisches ' + deskNumber + ' fertigstellen?',
+
       buttons: [
         {
           text: 'Abbruch',
@@ -189,15 +189,24 @@ export class KitchenOverviewPage {
 
             var ids;
             ids = '';
+
             // go through the hierachy per desk
             for (var itemsPerCat of ordersPerDesk) {
               for (var orderItems of itemsPerCat.itemsPerCat) {
                 for (var orderIds of orderItems.orderIds) {
                   ids += orderIds + ",";
                 }
+
+                this.deleteItemInOverview(orderItems);
               }
             }
-            this.sendingData(ids);
+
+
+            this.orderService.setOrderItemStateFinished(ids).toPromise();
+
+            //delete desk
+            this.orderService.cache['open_orders_grouped_by_desks'][deskNumber].length = 0;
+
           }
         }
       ]
@@ -210,10 +219,10 @@ export class KitchenOverviewPage {
    * creates a checkboxAlert to declare the status of all or specific orderItems of a category as finished
    * @param desknumber, orderPerDesk
    */
-  presentConfirmCategory(desknumber, cat) {
+  presentConfirmCategory(deskNumber, cat) {
     let alert = this.alertCtrl.create();
-    alert.setTitle(cat.category + ' für Tisch ' + desknumber + ' fertigstellen?');
-
+    alert.setTitle(cat.category + ' für Tisch ' + deskNumber + ' fertigstellen?');
+    alert.setMessage
     for (var orderItems of cat.itemsPerCat) {
       var labelText;
       labelText = orderItems.orderIds.length + " x " + orderItems.item.shortName;
@@ -240,32 +249,57 @@ export class KitchenOverviewPage {
         var ids;
         ids = '';
 
+
         for (var orderItems of data) {
           for (var orderIds of orderItems.orderIds) {
             ids += orderIds + ",";
           }
+
+          this.deleteItemInOverview(orderItems);
+          this.deleteItemInCard(cat, orderItems, deskNumber);
         }
-        this.sendingData(ids);
+
+        this.orderService.setOrderItemStateFinished(ids).toPromise();
+
       }
     });
     alert.present();
   }
 
   /**
-   * sending the data and reload
-   * @param ids
+   * deletes or reduces an orderItems in the right overview
+   * @param orderItem
    */
-  sendingData(ids) {
-    this.presentLoadingDefault("Bitte warten ...");
+  deleteItemInOverview(orderItem) {
 
-    this.orderService.setOrderItemStateFinished(ids).toPromise().then(() => {
-      // optional - loading all orders new at once
-
-      //this.orderService.getAllOpenOrderItemsGroupedByOrderItem(this.forKitchen),
-      //  this.loadOrderItemsGroupedByDeskAndCategory();
-
-      this.loading.dismissAll();
+    var rmOrder = this.orderService.cache['open_orders_grouped_by_orderitem'].find((el) => {
+      return el.item.name == orderItem.item.name;
     });
+
+    var rmOrderIndex = this.orderService.cache['open_orders_grouped_by_orderitem'].indexOf(rmOrder);
+
+    if (rmOrder.count == orderItem.orderIds.length) {
+      // delete the whole orderItem
+      this.orderService.cache['open_orders_grouped_by_orderitem'].splice(rmOrderIndex, 1);
+    } else {
+      //reduce the count
+      rmOrder.count -= orderItem.orderIds.length;
+    }
+  }
+
+  deleteItemInCard(cat, orderItem, deskNumber) {
+    //delete item in cards
+    var rmOrder = cat.itemsPerCat.find((el) => {
+      return el.item.id == orderItem.item.id;
+    });
+
+    var rmOrderIndex = cat.itemsPerCat.indexOf(rmOrder);
+    cat.itemsPerCat.splice(rmOrderIndex, 1);
+
+    if (cat.itemsPerCat.length == 0) {
+      var catIndex = this.orderService.cache['open_orders_grouped_by_desks'][deskNumber].indexOf(cat);
+      this.orderService.cache['open_orders_grouped_by_desks'][deskNumber].splice(catIndex, 1);
+    }
   }
 
 }

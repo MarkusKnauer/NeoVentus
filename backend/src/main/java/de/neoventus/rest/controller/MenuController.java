@@ -2,6 +2,7 @@ package de.neoventus.rest.controller;
 
 import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.repository.MenuItemRepository;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.GuestWishCount;
 import de.neoventus.rest.dto.MenuDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -69,6 +71,22 @@ public class MenuController {
 		}
 	}
 
+	/**
+	 * controller method to list popular guest wishes per menu
+	 *
+	 * @param response
+	 * @param menuId
+	 * @return
+	 */
+	@GetMapping("/popular-wishes/{menuId}")
+	public List<GuestWishCount> listPopularGuestWishes(HttpServletResponse response, @PathVariable String menuId) {
+		try {
+			return menuItemRepository.getPopularGuestWishesForItem(menuId);
+		} catch (Exception e) {
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return null;
+		}
+	}
 
 	/**
 	 * controller method for inserting menuItem
