@@ -351,7 +351,6 @@ class DefaultDemoDataIntoDB {
 					int ordersPerDesk = (int)(Math.random() * 4)+4;
 					// Billing after 30 mins + Randomvalue 20 mins - Max. 50 mins - Min. 30 mins
 					int billingtime = (int)(Math.random()*1200000+1800000);
-					LOGGER.info("Plan-Calendar111: "+calendar.toLocaleString());
 					billing = new Billing(new Date(calendar.getTime()+delay+billingtime), (double) 0,billingItemList, randomUserService((calendar.getTime()+delay+billingtime), plan.getWorkingshift()));
 					billing.setId(String.valueOf(new ObjectId()));
 					for (int i = 0; i < ordersPerDesk; i++) {
@@ -380,7 +379,6 @@ class DefaultDemoDataIntoDB {
 			}
 			// set next day
 			calendar.setDate(calendar.getDate()+1);
-			LOGGER.info("Plan-Calendar: "+calendar.toLocaleString());
 			j++;
 			plan = findWorkingplan(calendar);
 

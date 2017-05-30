@@ -64,8 +64,6 @@ public class WorkingShiftController {
 	@RequestMapping(value = "/all/{date1}&{date2}", method = RequestMethod.GET)
 	public List<Workingplan> periodShifts(HttpServletResponse response, @PathVariable String date1,  @PathVariable String date2) {
 		try {
-			LOGGER.info("Date 1: "+date1);
-			LOGGER.info("Date 2: "+date2);
 			return workingplanRepository.findAllUsersByPeriod(date1, date2);
 		} catch (Exception e) {
 			LOGGER.warning("Error searching workingplan with periodShifts"  + ": " + date1+ ": " + date2);
@@ -85,8 +83,6 @@ public class WorkingShiftController {
 	@RequestMapping(value = "/personal/{UserName}&{date1}&{date2}", method = RequestMethod.GET)
 	public List<Workingshift> userPeriodShifts(HttpServletResponse response, @PathVariable String UserName, @PathVariable String date1, @PathVariable String date2) {
 		try {
-			LOGGER.info("Date 1: "+date1);
-			LOGGER.info("Date 2: "+date2);
 			return workingplanRepository.findAllUserbyPeriod(UserName, date1, date2);
 		} catch (Exception e) {
 			LOGGER.warning("Error searching workingplan with username " + UserName + ": " + e.getMessage());

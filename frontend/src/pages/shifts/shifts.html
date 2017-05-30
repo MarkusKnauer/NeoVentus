@@ -10,28 +10,24 @@
 <ion-content padding>
   <h3>{{headlineString()}} </h3>
 
-
+<!-- Datetime selection-->
   <ion-list>
     <ion-item>
       <ion-label>Starteingabe</ion-label>
-      <ion-datetime displayFormat="DD. MMM. YYYY" doneText="Fertig" cancelText="Abbrechen" [(ngModel)]="event.startDate"></ion-datetime>
-
+      <ion-datetime displayFormat="DD.MM.YYYY" doneText="Fertig" cancelText="Abbrechen" (ionChange)="getRightShift()" [(ngModel)]="event.startDate"></ion-datetime>
     </ion-item>
     <ion-item>
       <ion-label>Endeingabe</ion-label>
-      <ion-datetime displayFormat="DD. MMM. YYYY" doneText="Fertig" cancelText="Abbrechen" [(ngModel)]="event.endDate" (click)="getRightShift()"></ion-datetime>
+      <ion-datetime displayFormat="DD.MM.YYYY" doneText="Fertig" cancelText="Abbrechen" (ionChange)="getRightShift()" [(ngModel)]="event.endDate"></ion-datetime>
     </ion-item>
   </ion-list>
-  <button ion-button>
-    <ion-label>Schichtplan suchen</ion-label>
-  </button>
 
-
+<!-- Begin DateTime results -->
   <div class="cards-bg">
     <ion-grid class="grid-card">
       <ion-row>
 
-        <!-- card for every desk -->
+        <!-- card for every Day -->
         <ion-col *ngFor="let nD of newDay" col-auto>
 
           <!-- BEGIN card -->
@@ -48,10 +44,11 @@
             <!--BEGIN card content -->
             <ion-item-group *ngFor="let shift of nD.shifts">
 
-
-
               <ion-item-divider>
-                <div> {{shift.userName}}: {{getDateTime(shift.startShift)}} - {{getDateTime(shift.endShift)}}</div>
+                  {{shift.userName}}:
+                  <ion-note item-right>
+                    {{getDateTime(shift.startShift)}} - {{getDateTime(shift.endShift)}}
+                  </ion-note>
               </ion-item-divider>
               <!-- END category divider-->
 

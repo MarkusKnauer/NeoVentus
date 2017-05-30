@@ -39,7 +39,7 @@ public class WriteExcelInDB {
 	private final MongoTemplate mongoTemplate;
 	private final WorkingPlanRepository workingPlanRepository;
 	private MenuItemCategory category = null;
-	private DefaultDemoDataIntoDB defaultDemoDataIntoDB;
+
 	private List<MenuItem> newMenu;
 
 
@@ -91,7 +91,7 @@ public class WriteExcelInDB {
 
 			// load Default-data
 
-			defaultDemoDataIntoDB = new DefaultDemoDataIntoDB(deskRepository, userRepository, menuItemRepository, menuItemCategoryRepository, orderItemRepository, reservationRepository, billingRepository, sideDishRepository, mongoTemplate, workingPlanRepository);
+			 new DefaultDemoDataIntoDB(deskRepository, userRepository, menuItemRepository, menuItemCategoryRepository, orderItemRepository, reservationRepository, billingRepository, sideDishRepository, mongoTemplate, workingPlanRepository);
 
 
 		} catch (IOException e) {
@@ -261,18 +261,11 @@ public class WriteExcelInDB {
 
 		List<Workingplan> workingplan = new ArrayList<Workingplan>();
 		List<GregorianCalendar> calendars = new ArrayList<GregorianCalendar>();
-		int earlyStartHour= 0;
-		int earlyStartMinute = 0;
-		int earlyEndHour = 0;
-		int earlyEndMinute = 0;
-		int laterStartHour = 0;
-		int laterStartMinute= 0;
-		int laterEndHour = 0;
-		int laterEndMinute = 0;
-
+		List<HelpShiftClass> helpShiftClassList = new ArrayList<>();
 
 		Iterator<Row> row = excelSheet.iterator();
 		// Jump over the first three lines
+
 		row.next();
 		row.next();
 		while (row.hasNext()) {
@@ -280,92 +273,75 @@ public class WriteExcelInDB {
 			Iterator<Cell> cellIterator = currentRow.iterator();
 			Cell currentCell = cellIterator.next();
 			if (currentRow.getCell(0).getStringCellValue().equals("Personen:")) break;
-			if (currentRow.getCell(0).getStringCellValue().equals("Früh")) {
+			HelpShiftClass helpShiftClass = new HelpShiftClass(currentRow.getCell(0).getStringCellValue());
+				currentCell = cellIterator.next();
+				helpShiftClass.setStartTime(returnValue(currentCell));
+				currentCell = cellIterator.next();
+				helpShiftClass.setEndTime(returnValue(currentCell));
 
-				currentCell = cellIterator.next();
-				earlyStartHour =(int)Double.parseDouble(returnValue(currentCell))*24;
-				earlyStartMinute = (int)((Double.parseDouble(returnValue(currentCell))*24-earlyStartHour)*60);
-				currentCell = cellIterator.next();
-				earlyEndHour =(int)Double.parseDouble(returnValue(currentCell))*24;
-				earlyEndMinute = (int)((Double.parseDouble(returnValue(currentCell))*24-earlyEndHour)*60);
-			} else {
-				currentCell = cellIterator.next();
-				laterStartHour =(int)Double.parseDouble(returnValue(currentCell))*24;
-				laterStartMinute = (int)((Double.parseDouble(returnValue(currentCell))*24-laterStartHour)*60);
-				currentCell = cellIterator.next();
-				laterEndHour =(int)Double.parseDouble(returnValue(currentCell))*24;
-				laterEndMinute = (int)((Double.parseDouble(returnValue(currentCell))*24-laterEndHour)*60);
-			}
+			helpShiftClassList.add(helpShiftClass);
 		}
 	//	row.next();
 		while (row.hasNext()) {
 			Row currentRow = row.next();
 			Iterator<Cell> cellIterator = currentRow.iterator();
 				// Check if Line is a dateline
-				if (currentRow.getCell(0).getStringCellValue().equals("---")) {
-					int i = 0;
-					cellIterator.next();
-					while (cellIterator.hasNext()) {
-						Cell currentCell = cellIterator.next();
-						GregorianCalendar calendar = new GregorianCalendar(1900, 0, (int)(Double.parseDouble(returnValue(currentCell)))-1,1,0);
-						calendars.add(calendar);
-//  Workingplan(Date createdPlan, Date startShift, Date endShift, List<Workingshift> workingshiftList, User waiter)
-						workingplan.add(new Workingplan(
-							new Date( System.currentTimeMillis()),
-							calendar.getTime(),
-							new ArrayList<>()
-						));
-					}
-				} else {
-					User user = userRepository.findByUsername(currentRow.getCell(0).getStringCellValue());
+			if (currentRow.getCell(0).getStringCellValue().equals("---")) {
+				cellIterator.next();
+				while (cellIterator.hasNext()) {
+					Cell currentCell = cellIterator.next();
+					GregorianCalendar calendar = new GregorianCalendar(1900, 0, (int)(Double.parseDouble(returnValue(currentCell)))-1,1,0);
+					calendars.add(calendar);
+			//  Workingplan(Date createdPlan, Date startShift, Date endShift, List<Workingshift> workingshiftList, User waiter)
+					workingplan.add(new Workingplan(
+						new Date( System.currentTimeMillis()),
+						calendar.getTime(),
+						new ArrayList<>()
+					));
+				}
+			} else {
+				User user = userRepository.findByUsername(currentRow.getCell(0).getStringCellValue());
+				// check if User existing in db
+				if(user != null && user.getUsername().length() != 0){
 					cellIterator.next();
 					int i = 0;
 					while (cellIterator.hasNext()) {
 						Cell currentCell = cellIterator.next();
 						String res= returnValue(currentCell);
-						// Workingshift(Date startShift, Date endShift, User user, List<Desk> deskList)
-						Workingshift workingshift;
-						Calendar start = null;
-						Calendar end = null;
-						Workingplan plan;
-						int startHour = 0;
-						int startMinute = 0;
-						int endHour = 0;
-						int endMinute = 0;
-						switch(res){
-							case "Früh":
-								startHour = earlyStartHour;
-								endHour = earlyEndHour;
-								startMinute = earlyStartMinute;
-								endMinute = earlyEndMinute;
-								break;
-							case "Spät":
-								startMinute = laterStartMinute;
-								startHour = laterStartHour;
-								endHour = laterEndHour;
-								endMinute = laterEndMinute;
-								break;
-							case "Frei":
-								i++;
-								continue;
-							default:
+
+					// Find available Shift
+						HelpShiftClass helpShiftClass = null;
+						for( int j = 0; j < helpShiftClassList.size(); j++){
+							if(helpShiftClassList.get(j).getName().equals(res)){
+								helpShiftClass = helpShiftClassList.get(j);
+							}
 						}
-						start = new GregorianCalendar(calendars.get(i).get(1),calendars.get(i).get(2),calendars.get(i).get(5),startHour+1,startMinute,0);
-						end = new GregorianCalendar(calendars.get(i).get(1),calendars.get(i).get(2),calendars.get(i).get(5),endHour+1,endMinute,0);
-						workingshift =new Workingshift(start.getTime(),end.getTime(),user,null);
+					// if shift is available -> write new Workingplan
+						if(helpShiftClass != null){
+							//Date time
+							Calendar start = new GregorianCalendar(calendars.get(i).get(1),
+								calendars.get(i).get(2),
+								calendars.get(i).get(5),
+								helpShiftClass.getStartHour(),
+								helpShiftClass.getStartMinute());
 
-						plan = workingplan.get(i);
-						plan.addShift(workingshift);
-						plan.setId(String.valueOf(new ObjectId()));
-						workingplan.set(i, plan);
+							Calendar end = new GregorianCalendar(calendars.get(i).get(1),
+								calendars.get(i).get(2),
+								calendars.get(i).get(5),
+								helpShiftClass.getEndHour(),
+								helpShiftClass.getEndMinute());
 
+							Workingshift workingshift =new Workingshift(start.getTime(),end.getTime(),user,null);
+							Workingplan plan = workingplan.get(i);
+							plan.addShift(workingshift);
+							plan.setId(String.valueOf(new ObjectId()));
+							workingplan.set(i, plan);
+
+						}
 						i++;
 					}
-
-
 				}
-
-
+			}
 		}
 		BulkOperations bulkOrders = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED,Workingplan.class);
 		bulkOrders.insert(workingplan);
@@ -422,6 +398,83 @@ public class WriteExcelInDB {
 	private void clearIndexes() {
 		for (String collection : this.mongoTemplate.getDb().getCollectionNames()) {
 			this.mongoTemplate.getDb().getCollection(collection).dropIndexes();
+		}
+	}
+
+	class HelpShiftClass{
+		private String name;
+		private int startHour;
+		private int endHour;
+		private int startMinute;
+		private int endMinute;
+
+		public HelpShiftClass(String name) {
+			this.name = name;
+		}
+
+
+		public void setStartTime(String startTime){
+			double time = Double.parseDouble(startTime);
+			setStartHour((int)((time)*24));
+			setStartMinute((int)((time*24-getStartHour())*60));
+		}
+
+		public void setEndTime(String endTime){
+			double time = Double.parseDouble(endTime);
+			setEndHour((int)((time)*24));
+			setEndMinute((int)((time*24-getEndHour())*60));
+
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public int getStartHour() {
+			return startHour;
+		}
+
+		public void setStartHour(int startHour) {
+			this.startHour = startHour;
+		}
+
+		public int getEndHour() {
+			return endHour;
+		}
+
+		public void setEndHour(int endHour) {
+			this.endHour = endHour;
+		}
+
+		public int getStartMinute() {
+			return startMinute;
+		}
+
+		public void setStartMinute(int startMinute) {
+			this.startMinute = startMinute;
+		}
+
+		public int getEndMinute() {
+			return endMinute;
+		}
+
+		public void setEndMinute(int endMinute) {
+			this.endMinute = endMinute;
+		}
+
+		@Override
+		public String toString() {
+			return "HelpShiftClass{" +
+				"name='" + name + '\'' +
+				", startHour=" + startHour +
+				", endHour=" + endHour +
+				", startMinute=" + startMinute +
+				", endMinute=" + endMinute +
+				'}';
 		}
 	}
 }

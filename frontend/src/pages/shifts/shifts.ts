@@ -24,23 +24,35 @@ export class ShiftsPage {
   private personalView = true;
 
   constructor(private authGuard: AuthGuardService, private workingPlanService: WorkingShiftService,  public loadingCtrl: LoadingController, public navCtrl: NavController) {
-    this.getPersonalShifts();
+    if(this.authGuard.hasRole("ROLE_SERVICE")){
+      this.getPersonalShifts();
+    } else {
+      this.getAllShifts();
+    }
+
 
   }
 
-
-getRightShift(){
+  /**
+   * Select the choosen View
+   * @returns {undefined}
+   */
+  getRightShift(){
     console.debug("right shift");
 
     if(this.personalView){
       return this.getPersonalShifts();
     } else {
-      return this.getShifts();
+      return this.getAllShifts();
     }
 
 }
 
-  getShifts(){
+
+  /**
+   * Get all Shifts for the Date-space and grouped by Day
+   */
+  getAllShifts(){
     let shifts = [];
     this.newDay = [];
     let tmpDate: Date;
@@ -73,11 +85,14 @@ getRightShift(){
 
   }
 
+  /**
+   * Personal view for Logined User
+   */
   getPersonalShifts(){
     let shifts = [];
     let tmpDate: Date;
     this.newDay = [];
-    this.presentLoadingDefault('Gesamtansicht wird geladen.');
+    this.presentLoadingDefault('Deine persönliche Ansicht wird geladen.');
     Promise.all([
     this.workingPlanService.userPeriodShifts(this.authGuard.userDetails.name,this.event.startDate,this.event.endDate).then(
       workshift => {
@@ -95,11 +110,19 @@ getRightShift(){
     });
   }
 
+  /**
+   * Sorts the Shifts in one Day by Date
+   * @param shifts
+   */
   sortShiftsByDate(shifts: any){
     shifts.sort((shift1,shift2) => shift1.startShift - shift2.startShift);
   }
 
 
+  /**
+   * Writes die Headline of Shifts
+   * @returns {string}
+   */
   headlineString(){
     let out: string;
     let dat1 = Date.parse(this.event.startDate);
@@ -123,18 +146,29 @@ getRightShift(){
     return out;
   }
 
+  /**
+   * Parsing Date in German Date Notion DD.MM.YYYY
+   * @param date
+   * @returns {string}
+   */
   getDate(date: Date){
     let day:string = "";
     let month:string = "";
-    if(date.getMonth() < 10){
+    if(date.getMonth()+1 < 10){
       month = "0";
     }
-    if(date.getDate() < 10){
+    if(date.getDate()+1 < 10){
       day = "0";
     }
 
     return day+date.getDate()+"."+month+(date.getMonth()+1)+"."+date.getFullYear()
   }
+
+  /**
+   * Get 24 h Daytime in Format HH:MM (
+   * @param date
+   * @returns {string}
+   */
   getDateTime(date: Date){
     let hours: string = "";
     let minutes: string= "";

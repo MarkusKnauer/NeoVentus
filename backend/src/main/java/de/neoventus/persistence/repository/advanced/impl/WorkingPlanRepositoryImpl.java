@@ -34,7 +34,12 @@ public class WorkingPlanRepositoryImpl implements NVWorkingPlanRepository {
 		this.mongoTemplate = mongoTemplate;
 	}
 
-
+	/**
+	 * find Workingplans for ALL Users
+	 * @param date1
+	 * @param date2
+	 * @return
+	 */
 
 	@Override
 	public List<Workingplan> findAllUsersByPeriod(String date1, String date2) {
@@ -49,8 +54,6 @@ public class WorkingPlanRepositoryImpl implements NVWorkingPlanRepository {
 			beginDate.setMinutes(0);
 			endDate.setHours(23);
 			endDate.setMinutes(59);
-			LOGGER.info("Date1: "+beginDate.toString());
-			LOGGER.info("Date2: "+endDate.toString());
 			Query query = new Query();
 			query.addCriteria(Criteria.where("workingDay").gte(beginDate).lt(endDate));
 			return  mongoTemplate.find(query,Workingplan.class);
@@ -61,6 +64,13 @@ public class WorkingPlanRepositoryImpl implements NVWorkingPlanRepository {
 		return null;
 	}
 
+	/**
+	 * find all Workingplans for One User
+	 * @param Username
+	 * @param date1
+	 * @param date2
+	 * @return
+	 */
 	@Override
 	public List<Workingshift> findAllUserbyPeriod(String Username, String date1, String date2) {
 		List<Workingplan> wp = new ArrayList<>();
@@ -76,8 +86,7 @@ public class WorkingPlanRepositoryImpl implements NVWorkingPlanRepository {
 			beginDate.setMinutes(0);
 			endDate.setHours(23);
 			endDate.setMinutes(59);
-			LOGGER.info("Date1: "+beginDate.toString());
-			LOGGER.info("Date2: "+endDate.toString());
+
 			Query query = new Query();
 			query.addCriteria(Criteria.where("workingDay").gte(beginDate).lt(endDate));
 			wp = mongoTemplate.find(query,Workingplan.class);
