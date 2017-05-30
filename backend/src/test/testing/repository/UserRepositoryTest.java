@@ -21,7 +21,6 @@ import testing.AbstractTest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * testing the user repository methods
@@ -142,6 +141,12 @@ public class UserRepositoryTest extends AbstractTest {
 		User test = new User();
 		test = this.userRepository.save(test);
 
+		UserProfileDetails userProfileDetails = this.userRepository.getUserProfileDetails(test.getId());
+
+		Assert.assertTrue(userProfileDetails.getLevel() == 0);
+		Assert.assertTrue(userProfileDetails.getExp() == 0);
+		Assert.assertTrue(userProfileDetails.getExpLevelStart() == 0);
+		Assert.assertTrue(userProfileDetails.getExpNextLevel() == 50);
 
 		List<OrderItem> orders = new ArrayList<>();
 		// create orders
@@ -154,10 +159,10 @@ public class UserRepositoryTest extends AbstractTest {
 		}
 		this.orderItemRepository.save(orders);
 
-		UserProfileDetails userProfileDetails = this.userRepository.getUserProfileDetails(test.getId());
+		userProfileDetails = this.userRepository.getUserProfileDetails(test.getId());
 
 		Assert.assertTrue(userProfileDetails.getLevel() == 0);
-
+		Assert.assertTrue(userProfileDetails.getExp() == 49);
 		Assert.assertTrue(userProfileDetails.getExpLevelStart() == 0);
 		Assert.assertTrue(userProfileDetails.getExpNextLevel() == 50);
 
@@ -174,10 +179,9 @@ public class UserRepositoryTest extends AbstractTest {
 
 		userProfileDetails = this.userRepository.getUserProfileDetails(test.getId());
 
-		Logger.getAnonymousLogger().info(userProfileDetails.getLevel() + "");
-
 		Assert.assertTrue(userProfileDetails.getLevel() == 1);
 		Assert.assertTrue(userProfileDetails.getExpNextLevel() == 60);
+		Assert.assertTrue(userProfileDetails.getExp() == 51);
 		Assert.assertTrue(userProfileDetails.getExpLevelStart() == 50);
 
 

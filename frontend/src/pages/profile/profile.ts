@@ -27,6 +27,7 @@ export class ProfilePage {
   private xp = 31154;
   private expNextLevel = 100000;
   private steps = 0;
+  private expLevelStart = 0;
 
   private today: Date;
 
@@ -80,6 +81,7 @@ export class ProfilePage {
         this.expNextLevel = profile.expNextLevel;
         this.revenue = profile.revenueToday;
         this.tips = profile.tipsToday;
+        this.expLevelStart = profile.expLevelStart;
       }
     )
   }

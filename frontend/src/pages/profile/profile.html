@@ -67,7 +67,7 @@
     <ion-item>
       Level <span class="level">{{level}}</span>
       <br/>
-      <progress max="{{expNextLevel}}" value="{{xp}}"></progress>
+      <progress max="100" value="{{(xp - expLevelStart) * 100 / (expNextLevel - expLevelStart)}}"></progress>
     </ion-item>
 
     <ion-item>

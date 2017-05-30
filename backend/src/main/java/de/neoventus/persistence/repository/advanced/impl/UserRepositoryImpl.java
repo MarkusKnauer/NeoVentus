@@ -112,6 +112,9 @@ public class UserRepositoryImpl implements NVUserRepository {
 		// current level = floor( log of lvlIncreaseRate ( currentExp / lvl1Exp))
 		// use log identity log b (n) = ln (n) / ln(b)
 		int currentLevel = (int) Math.floor(Math.log(exp * 1D / lvl1Exp) / Math.log(lvlIncreaseRate)) + 1;
+		if (currentLevel < 0) {
+			currentLevel = 0;
+		}
 		int nextLevelExp = (int) (lvl1Exp * Math.pow(lvlIncreaseRate, currentLevel));
 		int levelStartExp = (int) (lvl1Exp * Math.pow(lvlIncreaseRate, currentLevel - 1));
 		Logger.getAnonymousLogger().info(currentLevel + "");
