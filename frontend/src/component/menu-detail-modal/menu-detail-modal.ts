@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavParams, ViewController} from "ionic-angular";
+import {AlertController, NavParams, ViewController} from "ionic-angular";
 import {MenuService} from "../../service/menu.service";
 import {LocalStorageService} from "../../service/local-storage.service";
 import {Order} from "../../model/order";
@@ -22,7 +22,7 @@ export class MenuDetailModalComponent {
   private wish: string = "";
 
   constructor(private viewCtrl: ViewController, private navParams: NavParams, private menuService: MenuService,
-              private localStorageService: LocalStorageService) {
+              private localStorageService: LocalStorageService, private alertCtrl: AlertController) {
     this.menu = this.menuService.cache["all"].find(el => {
       return el.id == navParams.data.id;
     });
@@ -64,13 +64,24 @@ export class MenuDetailModalComponent {
           sideDishes.push(sideDish);
         }
       }
-      if (this.menu.sideDishGroup.isSelectionRequired && sideDishes.length == 0) {
+      if (this.menu.sideDishGroup.selectionRequired && sideDishes.length == 0) {
 
-        alert("Bitte treffen Sie ihre Auswahl!" + this.menu.sideDishGroup.isSelectionRequired);
-
+        let alert = this.alertCtrl.create({
+          title: "Bitte treffen Sie eine Auswahl",
+          buttons: [
+            {
+              text: "OK",
+              handler: () => {
+                alert.dismiss();
+              }
+            },
+          ],
+          enableBackdropDismiss: false
+        });
+        alert.present();
       } else {
 
-        alert("Keine Auswahl gewünscht");
+        //No SideDish necessary
         this.viewCtrl.dismiss(new Order(this.menu, sideDishes, this.wish));
       }
     }
