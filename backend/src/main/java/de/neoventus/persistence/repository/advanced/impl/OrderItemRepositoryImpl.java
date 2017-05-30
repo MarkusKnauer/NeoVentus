@@ -1,7 +1,10 @@
 package de.neoventus.persistence.repository.advanced.impl;
 
 import de.neoventus.persistence.entity.*;
-import de.neoventus.persistence.repository.*;
+import de.neoventus.persistence.repository.DeskRepository;
+import de.neoventus.persistence.repository.MenuItemCategoryRepository;
+import de.neoventus.persistence.repository.MenuItemRepository;
+import de.neoventus.persistence.repository.UserRepository;
 import de.neoventus.persistence.repository.advanced.NVOrderItemRepository;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.OrderDeskAggregationDto;
 import de.neoventus.rest.dto.OrderItemDto;
@@ -24,15 +27,10 @@ import java.util.Map;
  **/
 public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 
-	@Autowired
-	private OrderItemRepository orderItemRepository;
-
 	private MongoTemplate mongoTemplate;
 	private DeskRepository deskRepository;
 	private MenuItemRepository menuItemRepository;
 	private UserRepository userRepository;
-	private ReservationRepository reservationRepository;
-	private BillingRepository billingRepository;
 	private MenuItemCategoryRepository menuItemCategoryRepository;
 
 	@Override
@@ -146,17 +144,6 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 	public void setUserRepository(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
-
-	@Autowired
-	public void setReservationRepository(ReservationRepository reservationRepository) {
-		this.reservationRepository = reservationRepository;
-	}
-
-	@Autowired
-	public void setBillingRepository(BillingRepository billingRepository) {
-		this.billingRepository = billingRepository;
-	}
-	// Next  Respo Lager (not the Beer)
 
 	@Autowired
 	public void setMenuItemCategoryRepository(MenuItemCategoryRepository menuItemCategoryRepository) {
