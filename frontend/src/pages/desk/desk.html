@@ -12,8 +12,14 @@
       </ion-item-divider>
       <ion-item-sliding *ngFor="let order of cat.orders">
         <ion-item>
-          {{order.count}} x {{ order.item.name }}
+          {{order.count}}x
+          <button icon-only ion-button clear color="secondary" class="order-shortcut"
+                  (click)="addTmpOrder(order.item, order.sideDishes, order.guestWish)">
+            <ion-icon name="add"></ion-icon>
+          </button>
+          {{ order.item.name }}
           <span class="side-dish" *ngFor="let side of order.sideDishes"> - {{side.name}}</span>
+          <span *ngIf="order.guestWish && order.guestWish.length"> - SW: {{order.guestWish}}</span>
           <span class="right">{{order.item.price * order.count | costDecimal}} €</span>
         </ion-item>
         <!--sliding menu button-->
@@ -32,8 +38,18 @@
         <span class="important">Ausstehend</span>
       </ion-item-divider>
       <ion-item *ngFor="let tmpOrder of groupedTmpOrders" padding-right>
-        {{tmpOrder.count}} x {{tmpOrder.item.name}}
+        <button ion-button clear color="danger" class="order-shortcut" icon-only
+                (click)="removeTmpOrder(tmpOrder.item, tmpOrder.sideDishes, tmpOrder.guestWish)">
+          <ion-icon name="remove"></ion-icon>
+        </button>
+        {{tmpOrder.count}}x
+        <button class="order-shortcut" clear ion-button icon-only color="secondary"
+                (click)="addTmpOrder(tmpOrder.item, tmpOrder.sideDishes, tmpOrder.guestWish)">
+          <ion-icon name="add"></ion-icon>
+        </button>
+        {{tmpOrder.item.name}}
         <span class="side-dish" *ngFor="let side of tmpOrder.sideDishes"> - {{side.name}}</span>
+        <span *ngIf="tmpOrder.guestWish && tmpOrder.guestWish.length != 0"> - SW: {{tmpOrder.guestWish}}</span>
         <span class="right secondary-text">
           {{tmpOrder.count * tmpOrder.item.price | costDecimal}} €
         </span>

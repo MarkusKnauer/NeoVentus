@@ -101,4 +101,10 @@ desk-page {
   h1.unused {
     background: color($colors, secondary-background) !important;
   }
+
+  .order-shortcut {
+    transform: translateY(-25%);
+    margin-top: 0;
+    margin-bottom: 0;
+  }
 }

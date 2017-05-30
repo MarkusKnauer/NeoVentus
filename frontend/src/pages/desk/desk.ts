@@ -78,6 +78,33 @@ export class DeskPage {
   }
 
   /**
+   * add order from shortcuts
+   *
+   * @param item
+   * @param guestWish
+   * @param sideDishes
+   */
+  addTmpOrder(item, sideDishes, guestWish) {
+    this.tmpOrders.push(new Order(item, sideDishes, guestWish));
+    this.getGroupedTmpOrders();
+  }
+
+  /**
+   *
+   * @param item
+   * @param sideDishes
+   * @param guestWish
+   */
+  removeTmpOrder(item, sideDishes, guestWish) {
+    let rmOrder = this.tmpOrders.find((el) => {
+      return el.item == item && Utils.arraysEqual(sideDishes, el.sideDishes) && el.wish == guestWish;
+    });
+    this.tmpOrders.splice(this.tmpOrders.indexOf(rmOrder), 1);
+    // re group orders
+    this.getGroupedTmpOrders();
+  }
+
+  /**
    * traverse menu category tree to get a id array
    * @param cat
    */

@@ -60,9 +60,10 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 	public List<OrderDeskAggregationDto> getGroupedNotPayedOrdersByItemForDesk(Desk desk) {
 		Aggregation agg = Aggregation.newAggregation(
 			Aggregation.match(Criteria.where("billing").is(null).and("desk").is(desk).and("states.state").ne(OrderItemState.State.CANCELED)),
-			Aggregation.group("item", "sideDishes").count().as("count").first("waiter")
+			Aggregation.group("item", "sideDishes", "guestWish").count().as("count").first("waiter")
 				.as("waiter").addToSet("$id").as("orderIds"),
 			Aggregation.project("waiter", "count", "orderIds").and("_id.item").as("item").and("_id.sideDishes").as("sideDishes")
+				.and("_id.guestWish").as("guestWish")
 		);
 
 		AggregationResults<OrderDeskAggregationDto> aggR = this.mongoTemplate.aggregate(agg, OrderItem.class, OrderDeskAggregationDto.class);
