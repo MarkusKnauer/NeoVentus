@@ -64,9 +64,16 @@ export class MenuDetailModalComponent {
           sideDishes.push(sideDish);
         }
       }
-    }
+      if (sideDishes.length == 0) {
 
-    this.viewCtrl.dismiss(new Order(this.menu, sideDishes, this.wish));
+        alert("Bitte treffen Sie ihre Auswahl!" + this.menu.sideDishGroup.isSelectionRequired);
+
+      } else {
+
+        alert("Keine Auswahl gewünscht");
+        this.viewCtrl.dismiss(new Order(this.menu, sideDishes, this.wish));
+      }
+    }
   }
 
 }
