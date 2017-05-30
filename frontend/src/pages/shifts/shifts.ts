@@ -20,12 +20,8 @@ export class ShiftsPage {
 
  };
 
-
   private newDay = [];
   private personalView = true;
-
-  private tileView = true;
-  private myDesksOnly = false;
 
   constructor(private authGuard: AuthGuardService, private workingPlanService: WorkingShiftService,  public loadingCtrl: LoadingController, public navCtrl: NavController) {
     this.getPersonalShifts();
@@ -35,6 +31,7 @@ export class ShiftsPage {
 
 getRightShift(){
     console.debug("right shift");
+
     if(this.personalView){
       return this.getPersonalShifts();
     } else {
@@ -46,45 +43,56 @@ getRightShift(){
   getShifts(){
     let shifts = [];
     this.newDay = [];
-    let tmpDate: String;
-    this.workingPlanService.periodShifts(this.event.startDate, this.event.endDate).then(
-      workplan => {
-        for(let plan of workplan){
-          shifts = [];
-          for(let shift of plan.workingshift){
-            shifts.push({startShift: new Date(shift.startShift).toLocaleString(), endShift: new Date(shift.endShift).toLocaleString(), userName: shift.user.username});
-            console.debug("WIe oft?");
+    let tmpDate: Date;
+    this.presentLoadingDefault('Gesamtansicht wird geladen.');
+    Promise.all([
+      this.workingPlanService.periodShifts(this.event.startDate, this.event.endDate).then(
+        workplan => {
+          for(let plan of workplan){
+            shifts = [];
+            for(let shift of plan.workingshift){
+              shifts.push({startShift: new Date(shift.startShift), endShift: new Date(shift.endShift), userName: shift.user.username});
+              console.debug("WIe oft?");
+            }
+            this.sortShiftsByDate(shifts);
+
+            console.debug("Wie oft hier?");
+            tmpDate = new Date(plan.workingDay);
+            this.newDay.push({shifts: shifts, date: tmpDate});
           }
-          this.sortShiftsByDate(shifts);
 
-          console.debug("Wie oft hier?");
-          tmpDate = new Date(plan.workingDay).toLocaleString();
-          this.newDay.push({shifts: shifts, date: tmpDate});
+
         }
+      )
+    ]).then(() => {
+      this.loading.dismissAll();
+    });
 
 
-      }
-    );
+
 
   }
 
   getPersonalShifts(){
     let shifts = [];
-    let tmpDate: String;
+    let tmpDate: Date;
     this.newDay = [];
+    this.presentLoadingDefault('Gesamtansicht wird geladen.');
+    Promise.all([
     this.workingPlanService.userPeriodShifts(this.authGuard.userDetails.name,this.event.startDate,this.event.endDate).then(
       workshift => {
           for(let shift of workshift){
             shifts = [];
-            tmpDate = new Date(shift.startShift).toLocaleString();
-            shifts.push({startShift: new Date(shift.startShift).toLocaleString(), endShift: new Date(shift.endShift).toLocaleString(), userName: shift.user.username});
+            tmpDate = new Date(shift.startShift);
+            shifts.push({startShift: new Date(shift.startShift), endShift: new Date(shift.endShift), userName: shift.user.username});
             this.newDay.push({shifts: shifts, date: tmpDate});
           }
 
       }
-    );
-    console.debug("NewDay: "+ this.newDay.length);
-    return "ok";
+    )
+    ]).then(() => {
+      this.loading.dismissAll();
+    });
   }
 
   sortShiftsByDate(shifts: any){
@@ -103,22 +111,38 @@ getRightShift(){
     }
     switch(this.compareDates()){
       case 0:
-        out += "für den Tag: "+ new Date(dat1).toLocaleString().substring(0,9);
+        out += "für den Tag: "+ this.getDate(new Date(dat1));
         break;
       case 1:
         out = "Der Zeitraum ist ungültig, bitte überprüfen Sie Ihre Eingabe!!";
         break;
       case -1:
-        out += "für den Zeitraum von "+new Date(dat1).toLocaleString().substring(0,9)+ " bis "+ new Date(dat2).toLocaleString().substring(0,9);
+        out += "für den Zeitraum von "+this.getDate(new Date(dat1))+" bis "+ this.getDate(new Date(dat2));
         break;
     }
     return out;
   }
 
+  getDate(date: Date){
+    let day:string = "";
+    let month:string = "";
+    if(date.getMonth() < 10){
+      month = "0";
+    }
+    if(date.getDate() < 10){
+      day = "0";
+    }
 
-  midLineString(){
-   this.getPersonalShifts();
-   return "Test";
+    return day+date.getDate()+"."+month+(date.getMonth()+1)+"."+date.getFullYear()
+  }
+  getDateTime(date: Date){
+    let hours: string = "";
+    let minutes: string= "";
+    if(date.getHours()< 10)
+      hours = "0";
+    if(date.getMinutes()<10)
+      minutes = "0";
+    return hours+date.getHours()+":"+minutes+date.getMinutes();
   }
 
   toggleMyShiftsOnly = function () {

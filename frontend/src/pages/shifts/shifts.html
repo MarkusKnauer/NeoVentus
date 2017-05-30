@@ -39,7 +39,7 @@
             <!-- BEGIN card header-->
             <ion-card-header class="card_header">
               <ion-item class="card_title">
-                <h1>{{nD.date.substring(0,9)}}</h1>
+                <h1>{{getDate(nD.date)}}</h1>
               </ion-item>
             </ion-card-header>
             <!-- END card header-->
@@ -49,10 +49,9 @@
             <ion-item-group *ngFor="let shift of nD.shifts">
 
 
-              <!-- BEGIN category divider
-              <!-- category only show in kitchen the category -->
+
               <ion-item-divider>
-                <div> {{shift.userName}}: {{shift.startShift.toLocaleString().substring(11,16)}} - {{shift.endShift.toLocaleString().substring(11,16)}}</div>
+                <div> {{shift.userName}}: {{getDateTime(shift.startShift)}} - {{getDateTime(shift.endShift)}}</div>
               </ion-item-divider>
               <!-- END category divider-->
 
