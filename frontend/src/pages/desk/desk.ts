@@ -273,12 +273,15 @@ export class DeskPage {
 
     // after close reload data
     actionSheet.onDidDismiss((reason) => {
-      this.orderService.cancelOrders(orderIds, reason).toPromise().then(() => {
-        console.debug("Reload data");
-        this.orderService.getOrdersByDeskNumber(this.deskNumber, true).then(() => {
-          this.initCatGroups();
+      // only execute if reason is set
+      if (reason) {
+        this.orderService.cancelOrders(orderIds, reason).toPromise().then(() => {
+          console.debug("Reload data");
+          this.orderService.getOrdersByDeskNumber(this.deskNumber, true).then(() => {
+            this.initCatGroups();
+          });
         });
-      });
+      }
     })
   }
 
