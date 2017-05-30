@@ -64,7 +64,7 @@ export class MenuDetailModalComponent {
           sideDishes.push(sideDish);
         }
       }
-      if (sideDishes.length == 0) {
+      if (this.menu.sideDishGroup.isSelectionRequired && sideDishes.length == 0) {
 
         alert("Bitte treffen Sie ihre Auswahl!" + this.menu.sideDishGroup.isSelectionRequired);
 
