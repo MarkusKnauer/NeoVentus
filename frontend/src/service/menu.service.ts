@@ -44,4 +44,14 @@ export class MenuService extends CachingService {
     return this.reqs[cKey];
   }
 
+  /**
+   * get the most popular guest wishes
+   *
+   * @param id
+   * @returns {Observable<Response>}
+   */
+  public getPopularGuestWishes(id: string) {
+    return this.http.get(MenuService.BASE_URL + "/popular-wishes/" + id).toPromise();
+  }
+
 }

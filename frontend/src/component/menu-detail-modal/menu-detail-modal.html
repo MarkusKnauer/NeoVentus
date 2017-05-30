@@ -8,10 +8,18 @@
     <ion-title>{{menu.name}} - Details</ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content padding>
-  <div padding-bottom>
-    <ion-input [(ngModel)]="wish" placeholder="Kundenwunsch"></ion-input>
-  </div>
+<ion-content>
+  <ion-list>
+    <ion-item-group *ngIf="suggestions.length > 0">
+      <ion-item-divider color="light">Beliebte Kundenwünsche</ion-item-divider>
+      <ion-item *ngFor="let sugg of suggestions" (click)="wish = sugg.guestWish;">
+        {{sugg.guestWish}}
+      </ion-item>
+    </ion-item-group>
+    <ion-item>
+      <ion-input clearInput="" [(ngModel)]="wish" placeholder="Kundenwunsch"></ion-input>
+    </ion-item>
+  </ion-list>
   <ng-container *ngIf="menu.sideDishGroup" padding-bottom>
     Beilagen
     <ion-list>
@@ -25,8 +33,8 @@
     </ion-list>
   </ng-container>
   <ng-container *ngIf="menu.notices.length" padding-bottom>
-    Informationen
     <ion-list>
+      <ion-item-divider>Informationen</ion-item-divider>
       <ion-item *ngFor="let info of menu.notices">
         {{info}}
       </ion-item>
