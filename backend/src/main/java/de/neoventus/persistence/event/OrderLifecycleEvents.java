@@ -5,12 +5,14 @@ import de.neoventus.persistence.repository.OrderItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
+import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
 import org.springframework.data.mongodb.core.mapping.event.MongoMappingEvent;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * order lifecycle events
@@ -26,6 +28,8 @@ public class OrderLifecycleEvents extends AbstractMongoEventListener<OrderItem> 
 
 	private EventDebounce eventDebounce;
 
+	private static Logger logger = Logger.getLogger(OrderLifecycleEvents.class.getName());
+
 	@Autowired
 	public OrderLifecycleEvents(OrderItemRepository orderItemRepository, SimpMessagingTemplate simpMessagingTemplate,
 								EventDebounce eventDebounce) {
@@ -37,6 +41,10 @@ public class OrderLifecycleEvents extends AbstractMongoEventListener<OrderItem> 
 	@Override
 	public void onAfterSave(AfterSaveEvent<OrderItem> event) {
 		this.updateOrderSocket(event);
+	}
+
+	@Override
+	public void onBeforeSave(BeforeSaveEvent<OrderItem> event) {
 		this.updateUserNotificationSocket(event);
 	}
 
@@ -69,6 +77,7 @@ public class OrderLifecycleEvents extends AbstractMongoEventListener<OrderItem> 
 	 * @return
 	 */
 	private Void sendKitchenBarData(boolean forKitchen, String dest) {
+		logger.info("Sending data to order socket - dest: " + dest);
 		Map<String, Object> data = new HashMap<>();
 		data.put("desks", this.orderItemRepository.getUnfinishedOrdersForCategoriesGroupedByDeskAndOrderItem(forKitchen));
 		data.put("items", this.orderItemRepository.getUnfinishedOrderForCategoriesGroupedByItemOrderByCount(forKitchen));
@@ -84,49 +93,60 @@ public class OrderLifecycleEvents extends AbstractMongoEventListener<OrderItem> 
 	 */
 	private void updateUserNotificationSocket(MongoMappingEvent<OrderItem> event) {
 		OrderItem o = event.getSource();
-		User waiter = o.getWaiter();
-		Desk d = o.getDesk();
+		if (o.getId() != null) {
+			// execute only on existing orders
+			OrderItem old = this.orderItemRepository.findOne(o.getId());
+			User waiter = o.getWaiter();
+			Desk d = o.getDesk();
 
-		if (waiter != null & o.getCurrentState() != OrderItemState.State.NEW) {
+			if (waiter != null & o.getCurrentState() != OrderItemState.State.NEW
+				&& o.getCurrentState() != old.getCurrentState()) {
+				// only send notification on state change
+				// ->> old state != new state
 
-			switch (o.getCurrentState()) {
-				case FINISHED:
-					// debounce finish events to get a single notification if more orders are finished
-					// make sure to debunce for every waiter different -> use waiter id in debounce key
-					// also different debounce if event comes from kitchebn or from bar
-					String prefix = "";
-					final MenuItemCategory category = o.getItem().getMenuItemCategory();
-					if (category != null) {
-						prefix = category.isForKitchen() ? "kitchen" : "bar";
-					}
-					eventDebounce.debounce(prefix + "-finished-" + waiter.getId(), 2000, count -> {
-						String notification = "";
-
-						if (category.isForKitchen()) {
-							notification = "Küche: ";
-						} else {
-							notification = "Bar: ";
+				switch (o.getCurrentState()) {
+					case FINISHED:
+						// debounce finish events to get a single notification if more orders are finished
+						// make sure to debunce for every waiter different -> use waiter id in debounce key
+						// also different debounce if event comes from kitchebn or from bar
+						String prefix = "";
+						final MenuItemCategory category = o.getItem().getMenuItemCategory();
+						if (category != null) {
+							prefix = category.isForKitchen() ? "kitchen" : "bar";
 						}
+						eventDebounce.debounce(prefix + "-finished-" + waiter.getId(), 2000, count -> {
+							String notification = "";
 
-						// different messages depending on count
-						if (count > 1) {
-							notification += "Mehrere Bestellungen für Tisch " + d.getNumber() + " fertig";
-						} else {
-							notification += "Bestellung für Tisch " + d.getNumber() + " fertig";
+							if (category.isForKitchen()) {
+								notification = "Küche: ";
+							} else {
+								notification = "Bar: ";
+							}
+
+							// different messages depending on count
+							if (count > 1) {
+								notification += "Mehrere Bestellungen für Tisch " + d.getNumber() + " fertig";
+							} else {
+								notification += "Bestellung für Tisch " + d.getNumber() + " fertig";
+							}
+
+							logger.info("Sending notification for User " + waiter.getUsername() + ": " + notification);
+
+							this.simpMessagingTemplate.convertAndSendToUser(waiter.getUsername(), "/queue/notification", notification);
+							return null;
+						});
+						break;
+					case CANCELED:
+						// on cancel send single notification for every order
+						// only if user canceled the order is different from user inserting the order
+						if (waiter != o.getStates().get(o.getStates().size() - 1).getWaiter()) {
+
+							String notification = o.getItem().getName() + " für Tisch " + d.getNumber() + " wurde storniert";
+							logger.info("Sending notification for User " + waiter.getUsername() + ": " + notification);
+							this.simpMessagingTemplate.convertAndSendToUser(waiter.getUsername(), "/queue/notification", notification);
 						}
-
-						this.simpMessagingTemplate.convertAndSendToUser(waiter.getUsername(), "/topic/user/", notification);
-						return null;
-					});
-					break;
-				case CANCELED:
-					// on cancel send single notification for every order
-					// only if user canceled the order is different from user inserting the order
-					if (waiter != o.getStates().get(o.getStates().size() - 1).getWaiter()) {
-						String notification = o.getItem().getName() + " für Tisch " + d.getNumber() + " wurde storniert";
-						this.simpMessagingTemplate.convertAndSendToUser(waiter.getUsername(), "/topic/user", notification);
-					}
-					break;
+						break;
+				}
 			}
 		}
 	}

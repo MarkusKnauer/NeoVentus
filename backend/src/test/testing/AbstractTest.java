@@ -18,11 +18,9 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
  * basic test class
  *
  * @author Dennis Thanner
- * @version 0.0.3 added delete indexes method for compatibility
- *          0.0.2 added mock mvc
  **/
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class)
+@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class AbstractTest {
 
 	@Autowired

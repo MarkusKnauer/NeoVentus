@@ -10,17 +10,10 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
  * web socket configuration class
  *
  * @author Dennis Thanner
- * @version 0.0.1
  */
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {
-
-//	@Override
-//	public void configureMessageBroker(MessageBrokerRegistry registry) {
-//		registry.enableSimpleBroker("/order/");
-//		registry.setApplicationDestinationPrefixes("/app");
-//	}
 
 	@Override
 	protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
