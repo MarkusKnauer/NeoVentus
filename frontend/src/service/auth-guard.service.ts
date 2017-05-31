@@ -1,15 +1,12 @@
 import {Injectable} from "@angular/core";
 import {Http, Response} from "@angular/http";
+import {NotificationService} from "./notification.service";
 
 /**
  * service for role based access
  *
  * @author Dennis Thanner
- * @version 0.0.6 added role check withous promise - DT
- *          0.0.5 promise bug fix - DT
- *          0.0.4 minor isAuthenticated() bug fix - DT
- *          0.0.3 added async support to isAuthenticated and hasRole, added hasAnyRole - DT
- *          0.0.2 minor bug fix - DT
+
  */
 @Injectable()
 export class AuthGuardService {
@@ -18,7 +15,7 @@ export class AuthGuardService {
 
   private userDetailPromise: Promise<Response>;
 
-  constructor(private http: Http) {
+  constructor(private http: Http, private notificationService: NotificationService) {
   }
 
   /**
@@ -33,6 +30,8 @@ export class AuthGuardService {
       this._userDetails.authorities = this._userDetails.authorities.map(auth => {
         return auth.authority
       });
+      // start notification listener
+      this.notificationService.startup(this._userDetails.name);
       console.debug(this._userDetails);
     }).catch(err => {
     });
@@ -75,7 +74,8 @@ export class AuthGuardService {
     this._userDetails = null;
     this.userDetailPromise = null;
     this.userDetails = null;
-
+    // stop notification listener
+    this.notificationService.disconnect();
   }
 
   /**

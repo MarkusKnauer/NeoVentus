@@ -103,6 +103,7 @@ public class OrderLifecycleEvents extends AbstractMongoEventListener<OrderItem> 
 				&& o.getCurrentState() != old.getCurrentState()) {
 				// only send notification on state change
 				// ->> old state != new state
+				Map<String, Object> payload = new HashMap<>();
 
 				switch (o.getCurrentState()) {
 					case FINISHED:
@@ -132,7 +133,9 @@ public class OrderLifecycleEvents extends AbstractMongoEventListener<OrderItem> 
 
 							logger.info("Sending notification for User " + waiter.getUsername() + ": " + notification);
 
-							this.simpMessagingTemplate.convertAndSendToUser(waiter.getUsername(), "/queue/notification", notification);
+							payload.put("message", notification);
+
+							this.simpMessagingTemplate.convertAndSendToUser(waiter.getUsername(), "/notification", payload);
 							return null;
 						});
 						break;
@@ -142,8 +145,9 @@ public class OrderLifecycleEvents extends AbstractMongoEventListener<OrderItem> 
 						if (waiter != o.getStates().get(o.getStates().size() - 1).getWaiter()) {
 
 							String notification = o.getItem().getName() + " für Tisch " + d.getNumber() + " wurde storniert";
+							payload.put("message", notification);
 							logger.info("Sending notification for User " + waiter.getUsername() + ": " + notification);
-							this.simpMessagingTemplate.convertAndSendToUser(waiter.getUsername(), "/queue/notification", notification);
+							this.simpMessagingTemplate.convertAndSendToUser(waiter.getUsername(), "/notification", payload);
 						}
 						break;
 				}

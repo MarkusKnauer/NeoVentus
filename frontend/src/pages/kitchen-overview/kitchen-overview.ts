@@ -78,8 +78,8 @@ export class KitchenOverviewPage {
   /**
    * on page leave unsubscribe
    */
-  ionWillLeaveView() {
-    this.orderSocketService.disconnect();
+  ionViewWillLeave() {
+    this.orderSocketService.unsubscribe();
   }
 
   loadOrderItemsGroupedByDeskAndCategory() {

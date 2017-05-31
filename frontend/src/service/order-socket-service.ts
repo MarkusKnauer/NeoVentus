@@ -1,17 +1,16 @@
 import {Injectable} from "@angular/core";
-import {StompService} from "ng2-stomp-service";
 import {SocketService} from "./socket.service";
 
 /**
  * @author Dennis Thanner
  */
 @Injectable()
-export class OrderSocketService extends SocketService {
+export class OrderSocketService {
 
   private subscription: any;
 
-  constructor(stomp: StompService) {
-    super(stomp)
+  constructor(private socketService: SocketService) {
+
   }
 
   /**
@@ -21,10 +20,10 @@ export class OrderSocketService extends SocketService {
    * @param topic
    */
   subscribe(topic: string, cb: Function) {
-    this.connect().then(() => {
+    this.socketService.connect().then(() => {
       console.debug("order socket connected");
 
-      this.subscription = this.stomp.subscribe(topic, cb);
+      this.subscription = this.socketService.stomp.subscribe(topic, cb);
 
     }).catch((err) => {
       console.debug("Error connecting to socket");
@@ -36,7 +35,7 @@ export class OrderSocketService extends SocketService {
    * unsubscribe current topic subscription
    */
   unsubscribe() {
-    this.stomp.unsubscribe(this.subscription);
+    this.socketService.stomp.unsubscribe(this.subscription);
   }
 
 }

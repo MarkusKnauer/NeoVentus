@@ -1,6 +1,6 @@
 import {StompService} from "ng2-stomp-service";
-import {isDevMode} from "@angular/core";
-
+import {Injectable, isDevMode} from "@angular/core";
+@Injectable()
 export class SocketService {
 
   /**
@@ -14,16 +14,16 @@ export class SocketService {
     queue: {}
   };
 
-  constructor(protected stomp: StompService) {
+  constructor(private _stomp: StompService) {
   }
 
   /**
    *
    */
-  protected connect() {
+  public connect() {
     if (!this.connection) {
-      this.stomp.configure(this.wsConfig);
-      this.connection = this.stomp.startConnect();
+      this._stomp.configure(this.wsConfig);
+      this.connection = this._stomp.startConnect();
     }
     return this.connection;
   }
@@ -32,8 +32,16 @@ export class SocketService {
    *
    */
   public disconnect() {
-    this.stomp.disconnect();
+    this._stomp.disconnect();
     this.connection = null;
   }
 
+
+  get stomp(): StompService {
+    return this._stomp;
+  }
+
+  set stomp(value: StompService) {
+    this._stomp = value;
+  }
 }

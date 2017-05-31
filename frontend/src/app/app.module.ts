@@ -37,6 +37,9 @@ import {BillingService} from "../service/billing.service";
 import {ManageStornoReasonsModalComponent} from "../component/manage-storno-reasons/manage-storno-reasons";
 import {CustomDataPipe} from "../pipe/DatePipe";
 import {WorkingShiftService} from "../service/workingShifts.service";
+import {SocketService} from "../service/socket.service";
+import {NotificationService} from "../service/notification.service";
+import {LocalNotifications} from "@ionic-native/local-notifications";
 
 
 @NgModule({
@@ -103,8 +106,11 @@ import {WorkingShiftService} from "../service/workingShifts.service";
   providers: [
     StatusBar,
     SplashScreen,
+    LocalNotifications,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     StompService,
+    SocketService,
+    NotificationService,
     AuthGuardService,
     UserService,
     DeskService,
