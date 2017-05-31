@@ -12,10 +12,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -320,24 +317,24 @@ class DefaultDemoDataIntoDB {
 		//  BI - Starttime (11:00 because in Mongo it is 09:00)
 	//Find first and Last
 		Query query = new Query();
-		query.limit(1);
-		query.with(new Sort(Sort.Direction.ASC, "lastModifiedDate"));
-		Workingplan plan =mongoTemplate.findOne(query, Workingplan.class);
-		query = new Query();
-		query.limit(1);
-		query.with(new Sort(Sort.Direction.DESC, "lastModifiedDate"));
-		Workingplan lastPlan =mongoTemplate.findOne(query, Workingplan.class);
+		query.with(new Sort(Sort.Direction.ASC, "workingDay"));
+		List<Workingplan> wp = mongoTemplate.find(query, Workingplan.class);
+		Workingplan plan = wp.get(0);
+		Workingplan lastPlan = wp.get(wp.size()-1);
 		if(lastPlan.getCreatedPlan().compareTo(new Date(System.currentTimeMillis()))>0) return;
-		LOGGER.info(plan.toString());
-		Date calendar = plan.getWorkingDay();
-		calendar.setHours(11);
-		calendar.setMinutes(0);
+		Calendar calendar = new GregorianCalendar(plan.getWorkingDay().getYear()+1900,plan.getWorkingDay().getMonth(),plan.getWorkingDay().getDate(),10,0);
+
 		// one week
 		//for (int j = 0; j < 7; j++) {
-	int j = 0;
+		int j = 0;
+		// Day Counter, if totalDay = 0 <- write all
+		int totalDay = 7;
+		Calendar today = getCalendar(calendar,totalDay);
+
 		while(
 			plan!= null&&
-			lastPlan.getCreatedPlan().compareTo(new Date(System.currentTimeMillis()))<1&&
+				plan.getWorkingDay().compareTo(today.getTime())<1&&
+			lastPlan.getWorkingDay().compareTo(today.getTime())>0&&
 			!lastPlan.equals(plan)){
 			// Time warp for other desks, 7 * 2h = 14 <-- max. Opening time
 			for(int b = 0; b < 7; b++){
@@ -351,11 +348,11 @@ class DefaultDemoDataIntoDB {
 					int ordersPerDesk = (int)(Math.random() * 4)+4;
 					// Billing after 30 mins + Randomvalue 20 mins - Max. 50 mins - Min. 30 mins
 					int billingtime = (int)(Math.random()*1200000+1800000);
-					billing = new Billing(new Date(calendar.getTime()+delay+billingtime), (double) 0,billingItemList, randomUserService((calendar.getTime()+delay+billingtime), plan.getWorkingshift()));
+					billing = new Billing(new Date(calendar.getTimeInMillis()+delay+billingtime), (double) 0,billingItemList, randomUserService((calendar.getTimeInMillis()+delay+billingtime), plan.getWorkingshift()));
 					billing.setId(String.valueOf(new ObjectId()));
 					for (int i = 0; i < ordersPerDesk; i++) {
 
-						ord = new OrderItem(randomUserService(calendar.getTime()+delay, plan.getWorkingshift()),desks.get(k),randomMenuItem(menu),"");
+						ord = new OrderItem(randomUserService(calendar.getTimeInMillis()+delay, plan.getWorkingshift()),desks.get(k),randomMenuItem(menu),"");
 						ord.setStates(setStates(calendar,delay,billingtime));
 						ord.setBilling(billing);
 						double price = ord.getItem().getPrice();
@@ -378,10 +375,9 @@ class DefaultDemoDataIntoDB {
 
 			}
 			// set next day
-			calendar.setDate(calendar.getDate()+1);
+			calendar = getCalendar(calendar, 1);
 			j++;
 			plan = findWorkingplan(calendar);
-
 		}
 
 		// Bulk-Insert + Bulk-Update
@@ -403,19 +399,11 @@ class DefaultDemoDataIntoDB {
 	// Time variable in Millis
 	long delay;
 	//  BI - Starttime (11:00 because in Mongo it is 09:00)
-		Query query = new Query();
-		query.limit(1);
-		query.with(new Sort(Sort.Direction.DESC, "lastModifiedDate"));
-		Workingplan plan =mongoTemplate.findOne(query, Workingplan.class);
-
+		Workingplan plan = findWorkingplan(new GregorianCalendar());
 		if(plan.getCreatedPlan().compareTo(new Date(System.currentTimeMillis()))>0) return;
-	Date calendar = plan.getWorkingDay();
-		calendar.setHours(11);
-		calendar.setMinutes(0);
+		Calendar calendar = new GregorianCalendar(plan.getWorkingDay().getYear()+1900,plan.getWorkingDay().getMonth(),plan.getWorkingDay().getDate(),11,0);
 
-		//for one Year
 
-	for(int j = 0; j < 1; j++ ){
 		// Time warp for other desks, 7 * 2h = 14 <-- max. Opening time
 		for(int b = 0; b < 1; b++){
 			// delay: random time after 30 min = 1800 sec. and 90 mins fix
@@ -425,8 +413,8 @@ class DefaultDemoDataIntoDB {
 				// orders per Desk
 				int ordersPerDesk = (int)(Math.random() * 4)+4;
 				for (int i = 0; i < ordersPerDesk; i++) {
-					ord = new OrderItem(randomUserService((calendar.getTime()+delay), plan.getWorkingshift()),desks.get(k),randomMenuItem(menu),"");
-					ord.setStates(setNewStates(calendar,delay));
+					ord = new OrderItem(randomUserService((calendar.getTimeInMillis()+delay), plan.getWorkingshift()),desks.get(k),randomMenuItem(menu),"");
+					ord.setStates(setNewStates(calendar.getTime(),delay));
 					orderItems.add(ord);
 				}
 				// waiter time (walk to next Desk) max. 6 mins - min. 1 min
@@ -434,10 +422,7 @@ class DefaultDemoDataIntoDB {
 			}
 
 		}
-		// set next day
-		calendar.setDate(calendar.getDay()+1);
-		plan = findWorkingplan(calendar);
-	}
+
 	// Bulk-Insert
 	insertOrders(orderItems);
 
@@ -451,9 +436,21 @@ class DefaultDemoDataIntoDB {
 	 *
 	 *	Inserts / Updates
 	 */
-	private Workingplan findWorkingplan(Date calendar){
-		Date date1 = calendar;
-		Date date2 = calendar;
+	private GregorianCalendar getCalendar(Calendar calendar, int day){
+
+		if(day==0) return new GregorianCalendar();
+
+		return new GregorianCalendar(
+			calendar.get(Calendar.YEAR),
+			calendar.get(Calendar.MONTH),
+			calendar.get(Calendar.DAY_OF_MONTH) + day,
+			calendar.get(Calendar.HOUR_OF_DAY),
+			calendar.get(Calendar.MINUTE)
+		);
+	}
+	private Workingplan findWorkingplan(Calendar calendar){
+		Date date1 = calendar.getTime();
+		Date date2 = calendar.getTime();
 		Query query = new Query();
 		date1.setHours(0);
 		date1.setMinutes(0);
@@ -462,17 +459,17 @@ class DefaultDemoDataIntoDB {
 		query.addCriteria(Criteria.where("workingDay").gte(date1).lt(date2));
 		return mongoTemplate.findOne(query,Workingplan.class);
 	}
-	private List<OrderItemState> setStates(Date calendar, long delay, int billingtime){
+	private List<OrderItemState> setStates(Calendar calendar, long delay, int billingtime){
 	// For BI-Group new Timestemp
 	List<OrderItemState> states = new ArrayList<>();
 
 	OrderItemState state = new OrderItemState(OrderItemState.State.NEW);
-	state.setDate(new Date(calendar.getTime()+delay));
+	state.setDate(new Date(calendar.getTimeInMillis()+delay));
 
 	states.add(state);
 
 	OrderItemState finished= new OrderItemState(OrderItemState.State.FINISHED);
-	finished.setDate(new Date(calendar.getTime()+delay+billingtime));
+	finished.setDate(new Date(calendar.getTimeInMillis()+delay+billingtime));
 
 	states.add(finished);
 
@@ -506,7 +503,7 @@ class DefaultDemoDataIntoDB {
 	}
 	//
 	private void insertOrders(List<OrderItem> orderItems){
-		LOGGER.info("Write New-OrderItem in DB");
+		LOGGER.info("Write New-OrderItem in DB ");
 		BulkOperations bulkOrders = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED,OrderItem.class);
 		bulkOrders.insert(orderItems);
 		bulkOrders.execute();
