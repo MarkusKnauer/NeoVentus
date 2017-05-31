@@ -45,6 +45,14 @@ export class KitchenOverviewPage {
       this.loading.dismissAll();
     });
 
+    this.initSocket();
+
+  }
+
+  /**
+   * initializes the orderSocket
+   */
+  initSocket() {
     this.orderSocketService.subscribe(this.socketTopic,
       data => {
 
@@ -63,6 +71,7 @@ export class KitchenOverviewPage {
 
         }
       });
+
 
   }
 
@@ -134,19 +143,6 @@ export class KitchenOverviewPage {
     });
   }
 
-  /**
-   * get the root parent of a spezific subcategory
-   * @param id
-   */
-  getCategoryRootParent(id) {
-    for (let cat of this.menuCategoryService.cache["tree"]) {
-      let catIds = this.getChildCategoryIds(cat);
-      catIds.push(cat.id);
-      if (catIds.indexOf(id) != -1) {
-        return cat.name
-      }
-    }
-  }
 
   /**
    * traverse menu category tree to get a id array
@@ -201,12 +197,10 @@ export class KitchenOverviewPage {
               }
             }
 
-
             this.orderService.setOrderItemStateFinished(ids).toPromise();
 
             //delete desk
             this.orderService.cache['open_orders_grouped_by_desks'][deskNumber].length = 0;
-
           }
         }
       ]
@@ -246,9 +240,9 @@ export class KitchenOverviewPage {
     alert.addButton({
       text: 'Fertigstellen',
       handler: data => {
+
         var ids;
         ids = '';
-
 
         for (var orderItems of data) {
           for (var orderIds of orderItems.orderIds) {
@@ -268,6 +262,7 @@ export class KitchenOverviewPage {
 
   /**
    * deletes or reduces an orderItems in the right overview
+   *
    * @param orderItem
    */
   deleteItemInOverview(orderItem) {
@@ -287,6 +282,13 @@ export class KitchenOverviewPage {
     }
   }
 
+  /**
+   * deletes an orderItems in a spezific card
+   *
+   * @param cat
+   * @param orderItem
+   * @param deskNumber
+   */
   deleteItemInCard(cat, orderItem, deskNumber) {
     //delete item in cards
     var rmOrder = cat.itemsPerCat.find((el) => {
