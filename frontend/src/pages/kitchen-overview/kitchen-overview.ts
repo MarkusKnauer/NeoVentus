@@ -56,12 +56,13 @@ export class KitchenOverviewPage {
     this.orderSocketService.subscribe(this.socketTopic,
       data => {
 
-        for (var key in data) {
+        for (let key in data) {
 
           if (key == "desks") {
             //group by category and save to cache
             this.groupByCategory(data[key]);
             this.orderService.cache['open_orders_grouped_by_desks'] = data[key];
+            this.checkForNewItems(data[key]);
           }
 
           else if (key == "items") {
@@ -86,6 +87,8 @@ export class KitchenOverviewPage {
     this.orderService.getAllOpenOrderItemsGroupedByDesk(this.forKitchen)
       .then(data => {
         this.groupByCategory(data);
+        this.copyMap(data);
+
       })
   }
 
@@ -96,7 +99,7 @@ export class KitchenOverviewPage {
 
   groupByCategory(orderItems) {
     if (orderItems != null) {
-      for (var key in orderItems) {
+      for (let key in orderItems) {
         if (orderItems[key].length != 0) {
           this.groupByCategoryPerDesk(orderItems[key]);
         }
@@ -111,7 +114,7 @@ export class KitchenOverviewPage {
 
   groupByCategoryPerDesk(ordersPerDesk) {
 
-    var catGroups = [];
+    let catGroups = [];
 
     for (let cat of this.menuCategoryService.cache["tree"]) {
       let catIds = this.getChildCategoryIds(cat);
@@ -121,7 +124,7 @@ export class KitchenOverviewPage {
 
     ordersPerDesk.length = 0;
 
-    for (var cat of catGroups) {
+    for (let cat of catGroups) {
       if (cat.itemsPerCat.length != 0) {
         ordersPerDesk.push({
           'category': cat.category,
@@ -183,13 +186,13 @@ export class KitchenOverviewPage {
           text: 'Fertigstellen',
           handler: () => {
 
-            var ids;
+            let ids;
             ids = '';
 
             // go through the hierachy per desk
-            for (var itemsPerCat of ordersPerDesk) {
-              for (var orderItems of itemsPerCat.itemsPerCat) {
-                for (var orderIds of orderItems.orderIds) {
+            for (let itemsPerCat of ordersPerDesk) {
+              for (let orderItems of itemsPerCat.itemsPerCat) {
+                for (let orderIds of orderItems.orderIds) {
                   ids += orderIds + ",";
                 }
 
@@ -217,12 +220,12 @@ export class KitchenOverviewPage {
     let alert = this.alertCtrl.create();
     alert.setTitle(cat.category + ' für Tisch ' + deskNumber + ' fertigstellen?');
     alert.setMessage
-    for (var orderItems of cat.itemsPerCat) {
+    for (let orderItems of cat.itemsPerCat) {
       var labelText;
       labelText = orderItems.orderIds.length + " x " + orderItems.item.shortName;
 
       orderItems.sideDishes.length != 0 ? labelText += " - " : "";
-      for(var sideDish of orderItems.sideDishes){
+      for (let sideDish of orderItems.sideDishes) {
         labelText += sideDish.shortName + " ";
       }
       orderItems.guestWish.length != 0 ? labelText += " Wunsch: " + orderItems.guestWish : "";
@@ -241,11 +244,11 @@ export class KitchenOverviewPage {
       text: 'Fertigstellen',
       handler: data => {
 
-        var ids;
+        let ids;
         ids = '';
 
-        for (var orderItems of data) {
-          for (var orderIds of orderItems.orderIds) {
+        for (let orderItems of data) {
+          for (let orderIds of orderItems.orderIds) {
             ids += orderIds + ",";
           }
 
@@ -267,11 +270,11 @@ export class KitchenOverviewPage {
    */
   deleteItemInOverview(orderItem) {
 
-    var rmOrder = this.orderService.cache['open_orders_grouped_by_orderitem'].find((el) => {
-      return el.item.name == orderItem.item.name;
+    let rmOrder = this.orderService.cache['open_orders_grouped_by_orderitem'].find((el) => {
+      return el.item.id == orderItem.item.id;
     });
 
-    var rmOrderIndex = this.orderService.cache['open_orders_grouped_by_orderitem'].indexOf(rmOrder);
+    let rmOrderIndex = this.orderService.cache['open_orders_grouped_by_orderitem'].indexOf(rmOrder);
 
     if (rmOrder.count == orderItem.orderIds.length) {
       // delete the whole orderItem
@@ -291,17 +294,122 @@ export class KitchenOverviewPage {
    */
   deleteItemInCard(cat, orderItem, deskNumber) {
     //delete item in cards
-    var rmOrder = cat.itemsPerCat.find((el) => {
+    let rmOrder = cat.itemsPerCat.find((el) => {
       return el.item.id == orderItem.item.id;
     });
 
-    var rmOrderIndex = cat.itemsPerCat.indexOf(rmOrder);
+    let rmOrderIndex = cat.itemsPerCat.indexOf(rmOrder);
     cat.itemsPerCat.splice(rmOrderIndex, 1);
 
     if (cat.itemsPerCat.length == 0) {
-      var catIndex = this.orderService.cache['open_orders_grouped_by_desks'][deskNumber].indexOf(cat);
+      let catIndex = this.orderService.cache['open_orders_grouped_by_desks'][deskNumber].indexOf(cat);
       this.orderService.cache['open_orders_grouped_by_desks'][deskNumber].splice(catIndex, 1);
     }
+  }
+
+  /**
+   * copies the map of orderItems per desk in a new one
+   * @param map
+   */
+  copyMap(map) {
+    var newMap = {};
+
+    for (let key in map) {
+      newMap[key] = map[key];
+    }
+
+    this.orderService.cache['old_orderItems'] = newMap;
+  }
+
+
+  checkForNewItems(data) {
+    let tmpOrder;
+    let newIndex;
+
+    let checkMap = this.orderService.cache['old_orderItems'];
+    //checkMap[key][catIndex].itemsPerCat[orderIndex].orderIds.length
+
+    for (let key in checkMap) {
+
+      //desk do not have any open orders
+      if (data[key].length == 0) continue;
+      let existingCats = [];
+
+      checkMap[key].forEach((category) => {
+
+        // find the new position of the old category
+        tmpOrder = data[key].find((el) => {
+          return el.category == category.category;
+        });
+        var newCatIndex = data[key].indexOf(tmpOrder);
+        existingCats.push(newCatIndex);
+
+        //added new items in a category
+        if (category.itemsPerCat.length < data[key][newCatIndex].itemsPerCat.length) {
+          let indexTil = 9999999999;
+
+          for (let orderItem of category.itemsPerCat) {
+
+            // find new position of the old orderItems
+            // itemsPerCat Array is like a stack - new orders are put to the top
+            tmpOrder = data[key][newCatIndex].itemsPerCat.find((el) => {
+              return el.item.id == orderItem.item.id;
+            });
+            newIndex = data[key][newCatIndex].itemsPerCat.indexOf(tmpOrder);
+            newIndex < indexTil ? indexTil = newIndex : "";
+          }
+
+          //loop until the old orderItems
+          for (let i = 0; i < indexTil; i++) {
+            //ToDo do cool stuff
+            this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[i]);
+            console.debug("Neue Bestellung pro Kategorie", data[key][newCatIndex].itemsPerCat[i].item.name, "Tisch ", key);
+          }
+        }
+
+
+        // an existing item  has increased
+        category.itemsPerCat.forEach((orderItem) => {
+
+          // find new position of the old orderItems
+          tmpOrder = data[key][newCatIndex].itemsPerCat.find((el) => {
+            return el.item.id == orderItem.item.id;
+          });
+          newIndex = data[key][newCatIndex].itemsPerCat.indexOf(tmpOrder);
+
+          if (newIndex != -1 && data[key][newCatIndex].itemsPerCat[newIndex].orderIds.length > orderItem.orderIds.length) {
+            //ToDo do cool stuff
+            this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[newIndex]);
+            console.debug("Bestellerhöhung für", data[key][newCatIndex].itemsPerCat[newIndex].item.name, "Tisch ", key);
+          }
+        });
+
+      });
+
+      //added a new category
+      if (checkMap[key].length < data[key].length) {
+
+        for (let i = 0; i < data[key].length; i++) {
+          if (existingCats.indexOf(i) != -1) continue;
+          else {
+            for (let orderItem of data[key][i].itemsPerCat) {
+              //todo do cool stuff
+              this.markOrderAsNew(orderItem);
+              console.debug("neue Kategorie ", data[key][i].category, "item ", orderItem.item.name, "für Tisch", key);
+            }
+          }
+        }
+      }
+    }
+    this.copyMap(data);
+    console.debug("Data", data);
+  }
+
+  markOrderAsNew(item) {
+    //todo add new attribute
+    //item.push({
+    //  'state' : 'new'
+    //})
   }
 
 }
