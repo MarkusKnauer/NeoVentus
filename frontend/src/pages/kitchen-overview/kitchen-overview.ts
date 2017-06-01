@@ -1,6 +1,5 @@
 import {Component} from "@angular/core";
-import {AlertController, LoadingController, NavController, NavParams} from "ionic-angular";
-import {AuthGuardService} from "../../service/auth-guard.service";
+import {AlertController, LoadingController, NavParams} from "ionic-angular";
 import {OrderService} from "../../service/order.service";
 import {MenuCategoryService} from "../../service/menu-category.service";
 import {OrderSocketService} from "../../service/order-socket-service";
@@ -17,11 +16,11 @@ export class KitchenOverviewPage {
   //if value is 1 the kitchen with meals will be shown, otherwise the bar with drinks is shown
   private forKitchen;
   private socketTopic;
+  //30 seconds
+  private timeInterval = 30000;
 
   constructor(public navParams: NavParams,
-              private navCtrl: NavController,
               private orderService: OrderService,
-              private authGuard: AuthGuardService,
               public loadingCtrl: LoadingController,
               private menuCategoryService: MenuCategoryService,
               private alertCtrl: AlertController,
@@ -94,7 +93,7 @@ export class KitchenOverviewPage {
 
   /**
    * sorts orderItems by category
-   * @param orderitems
+   * @param orderItems
    */
 
   groupByCategory(orderItems) {
@@ -139,6 +138,7 @@ export class KitchenOverviewPage {
    * get orders by root category ids with child ids
    *
    * @param catIds
+   * @param ordersPerDesk
    */
   getOrdersByCat(catIds, ordersPerDesk) {
     return ordersPerDesk.filter(el => {
@@ -159,7 +159,7 @@ export class KitchenOverviewPage {
 
   /**
    * fancy loading
-   * @param message
+   * @param info
    */
   presentLoadingDefault(info) {
     this.loading = this.loadingCtrl.create({
@@ -171,7 +171,8 @@ export class KitchenOverviewPage {
 
   /**
    * sets the status of all orderItems per desk as finished
-   * @param desknumber, orderPerDesk
+   * @param deskNumber
+   * @param ordersPerDesk
    */
   presentConfirmAllOfDesk(deskNumber, ordersPerDesk) {
     let alert = this.alertCtrl.create({
@@ -214,14 +215,15 @@ export class KitchenOverviewPage {
 
   /**
    * creates a checkboxAlert to declare the status of all or specific orderItems of a category as finished
-   * @param desknumber, orderPerDesk
+   * @param deskNumber
+   * @param cat
    */
   presentConfirmCategory(deskNumber, cat) {
     let alert = this.alertCtrl.create();
     alert.setTitle(cat.category + ' für Tisch ' + deskNumber + ' fertigstellen?');
     alert.setMessage
     for (let orderItems of cat.itemsPerCat) {
-      var labelText;
+      let labelText;
       labelText = orderItems.orderIds.length + " x " + orderItems.item.shortName;
 
       orderItems.sideDishes.length != 0 ? labelText += " - " : "";
@@ -312,7 +314,7 @@ export class KitchenOverviewPage {
    * @param map
    */
   copyMap(map) {
-    var newMap = {};
+    let newMap = {};
 
     for (let key in map) {
       newMap[key] = map[key];
@@ -321,7 +323,10 @@ export class KitchenOverviewPage {
     this.orderService.cache['old_orderItems'] = newMap;
   }
 
-
+  /**
+   * checks the data if there are new orders
+   * @param data
+   */
   checkForNewItems(data) {
     let tmpOrder;
     let newIndex;
@@ -341,7 +346,7 @@ export class KitchenOverviewPage {
         tmpOrder = data[key].find((el) => {
           return el.category == category.category;
         });
-        var newCatIndex = data[key].indexOf(tmpOrder);
+        let newCatIndex = data[key].indexOf(tmpOrder);
         existingCats.push(newCatIndex);
 
         //added new items in a category
@@ -361,7 +366,7 @@ export class KitchenOverviewPage {
 
           //loop until the old orderItems
           for (let i = 0; i < indexTil; i++) {
-            this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[i]);
+            this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[i], 0);
           }
         }
 
@@ -376,7 +381,15 @@ export class KitchenOverviewPage {
           newIndex = data[key][newCatIndex].itemsPerCat.indexOf(tmpOrder);
 
           if (newIndex != -1 && data[key][newCatIndex].itemsPerCat[newIndex].orderIds.length > orderItem.orderIds.length) {
-            this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[newIndex]);
+            this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[newIndex], 0);
+          }
+          //nothing changed, check if item is marked as new
+          if (newIndex != -1 &&
+            data[key][newCatIndex].itemsPerCat[newIndex].orderIds.length == orderItem.orderIds.length &&
+            orderItem.isNew != null &&
+            orderItem.isNew == true) {
+
+            this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[newIndex], orderItem.stateTimeUntil);
           }
         });
 
@@ -389,7 +402,7 @@ export class KitchenOverviewPage {
           if (existingCats.indexOf(i) != -1) continue;
           else {
             for (let orderItem of data[key][i].itemsPerCat) {
-              this.markOrderAsNew(orderItem);
+              this.markOrderAsNew(orderItem, 0);
             }
           }
         }
@@ -398,8 +411,26 @@ export class KitchenOverviewPage {
     this.copyMap(data);
   }
 
-  markOrderAsNew(item) {
+  /**
+   * marks a Order as new an sets the state to default after a spezific time
+   * @param item
+   * @param timestamp
+   */
+  markOrderAsNew(item, timestamp) {
+
     item.isNew = true;
+
+    if (timestamp == 0) {
+      item.stateTimeUntil = Date.now() + this.timeInterval;
+    } else {
+      item.stateTimeUntil = timestamp;
+    }
+
+    let sleepTime = item.stateTimeUntil - Date.now();
+    console.debug(sleepTime);
+    setTimeout(function () {
+      item.isNew = false;
+    }, sleepTime);
   }
 
 }
