@@ -57,7 +57,8 @@
               <!-- items of every card -->
               <ng-container *ngFor="let item of cat.itemsPerCat">
 
-                <ion-item>
+
+                <ion-item [ngClass]="{new: item.isNew, old: !item.isNew}">
                   <span>{{item.orderIds.length}} x {{item.item.shortName}} </span>
                   <span *ngIf="item.sideDishes.length != 0">mit </span>
                   <span *ngFor="let sideDish of item.sideDishes; let isLast = last">

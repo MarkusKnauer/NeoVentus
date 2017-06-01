@@ -22,6 +22,14 @@ button.desk_button {
   width: 85%;
 }
 
+ion-item.new {
+  background: color($colors, secondary-background) !important;
+}
+
+ion-item.old {
+  background-color: transparent;
+}
+
 
 .overview {
   background: color($colors, light);

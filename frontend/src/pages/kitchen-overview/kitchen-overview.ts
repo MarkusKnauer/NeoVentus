@@ -361,9 +361,7 @@ export class KitchenOverviewPage {
 
           //loop until the old orderItems
           for (let i = 0; i < indexTil; i++) {
-            //ToDo do cool stuff
             this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[i]);
-            console.debug("Neue Bestellung pro Kategorie", data[key][newCatIndex].itemsPerCat[i].item.name, "Tisch ", key);
           }
         }
 
@@ -378,9 +376,7 @@ export class KitchenOverviewPage {
           newIndex = data[key][newCatIndex].itemsPerCat.indexOf(tmpOrder);
 
           if (newIndex != -1 && data[key][newCatIndex].itemsPerCat[newIndex].orderIds.length > orderItem.orderIds.length) {
-            //ToDo do cool stuff
             this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[newIndex]);
-            console.debug("Bestellerhöhung für", data[key][newCatIndex].itemsPerCat[newIndex].item.name, "Tisch ", key);
           }
         });
 
@@ -393,23 +389,17 @@ export class KitchenOverviewPage {
           if (existingCats.indexOf(i) != -1) continue;
           else {
             for (let orderItem of data[key][i].itemsPerCat) {
-              //todo do cool stuff
               this.markOrderAsNew(orderItem);
-              console.debug("neue Kategorie ", data[key][i].category, "item ", orderItem.item.name, "für Tisch", key);
             }
           }
         }
       }
     }
     this.copyMap(data);
-    console.debug("Data", data);
   }
 
   markOrderAsNew(item) {
-    //todo add new attribute
-    //item.push({
-    //  'state' : 'new'
-    //})
+    item.isNew = true;
   }
 
 }
