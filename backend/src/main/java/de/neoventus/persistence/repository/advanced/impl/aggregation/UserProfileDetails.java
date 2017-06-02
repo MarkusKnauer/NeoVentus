@@ -11,7 +11,7 @@ public class UserProfileDetails {
 
 	private double tipsToday;
 
-	private int exp;
+	private long exp;
 
 	private int level;
 
@@ -45,11 +45,11 @@ public class UserProfileDetails {
 		this.tipsToday = tipsToday;
 	}
 
-	public int getExp() {
+	public long getExp() {
 		return exp;
 	}
 
-	public void setExp(int exp) {
+	public void setExp(long exp) {
 		this.exp = exp;
 	}
 

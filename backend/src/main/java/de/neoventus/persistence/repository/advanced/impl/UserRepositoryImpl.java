@@ -13,12 +13,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.logging.Logger;
 
 /**
  * @author Dennis Thanner
@@ -102,7 +102,15 @@ public class UserRepositoryImpl implements NVUserRepository {
 		}
 
 		// get waiter level and experience points
-		Integer exp = this.orderItemRepository.countAllByWaiterId(id);
+		long exp = this.orderItemRepository.countAllByWaiterId(id);
+
+		// 1 exp per billing with saldo less than 200
+		long countBillings = this.mongoTemplate.count(Query.query(Criteria.where("waiter.$id").is(new ObjectId(id)).and("totalPaid").lt(200.0)), Billing.class);
+		exp += countBillings;
+
+		// 10 exp per billing with saldo gte 200
+		long highPaidBillings = this.mongoTemplate.count(Query.query(Criteria.where("waiter.$id").is(new ObjectId(id)).and("totalPaid").gte(200.0)), Billing.class);
+		exp += highPaidBillings * 10;
 
 		int lvl1Exp = 50;
 		double lvlIncreaseRate = 1.2;
@@ -117,7 +125,6 @@ public class UserRepositoryImpl implements NVUserRepository {
 		}
 		int nextLevelExp = (int) (lvl1Exp * Math.pow(lvlIncreaseRate, currentLevel));
 		int levelStartExp = (int) (lvl1Exp * Math.pow(lvlIncreaseRate, currentLevel - 1));
-		Logger.getAnonymousLogger().info(currentLevel + "");
 
 		profileDetails.setExp(exp);
 		profileDetails.setExpNextLevel(nextLevelExp);

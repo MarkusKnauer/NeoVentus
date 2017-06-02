@@ -1,9 +1,6 @@
 package testing.repository;
 
-import de.neoventus.persistence.entity.MenuItem;
-import de.neoventus.persistence.entity.OrderItem;
-import de.neoventus.persistence.entity.Permission;
-import de.neoventus.persistence.entity.User;
+import de.neoventus.persistence.entity.*;
 import de.neoventus.persistence.repository.BillingRepository;
 import de.neoventus.persistence.repository.MenuItemRepository;
 import de.neoventus.persistence.repository.OrderItemRepository;
@@ -128,7 +125,7 @@ public class UserRepositoryTest extends AbstractTest {
 		Assert.assertTrue(details.getTipsToday() == .5);
 		Assert.assertTrue(details.getLevel() == 0);
 		Assert.assertTrue(details.getExpNextLevel() == 50);
-		Assert.assertTrue(details.getExp() == 2);
+		Assert.assertTrue(details.getExp() == 3);
 
 	}
 
@@ -184,7 +181,14 @@ public class UserRepositoryTest extends AbstractTest {
 		Assert.assertTrue(userProfileDetails.getExp() == 51);
 		Assert.assertTrue(userProfileDetails.getExpLevelStart() == 50);
 
+		Billing b = new Billing();
+		b.setWaiter(test);
+		b.setTotalPaid(205.0);
+		this.billingRepository.save(b);
 
+		userProfileDetails = this.userRepository.getUserProfileDetails(test.getId());
+
+		Assert.assertTrue(userProfileDetails.getExp() == 61);
 	}
 
 	/**
