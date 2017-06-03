@@ -3,6 +3,7 @@ package de.neoventus.rest.controller;
 import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.repository.MenuItemRepository;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.GuestWishCount;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.MenuItemProcessingDetails;
 import de.neoventus.rest.dto.MenuDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -86,6 +87,22 @@ public class MenuController {
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return null;
 		}
+	}
+
+	/**
+	 * get processing details for menu item
+	 *
+	 * @param response
+	 * @param menuId
+	 * @return
+	 */
+	@RequestMapping(value = "/processing-details/{menuId}", method = RequestMethod.GET)
+	public MenuItemProcessingDetails getAvgProcessing(HttpServletResponse response, @PathVariable String menuId) {
+		MenuItemProcessingDetails result = menuItemRepository.getProcessingDetails(menuId);
+		if (result == null) {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+		}
+		return result;
 	}
 
 	/**

@@ -18,6 +18,7 @@ import {Utils} from "../../app/utils";
 import {OrderDto} from "../../model/order-dto";
 import {LocalStorageService} from "../../service/local-storage.service";
 import {BillingModalComponent} from "../../component/billing-modal/billing-modal";
+import {OrderGroupDetailModalComponent} from "../../component/order-group-detail-modal/order-group-detail-modal";
 
 
 /**
@@ -99,7 +100,19 @@ export class DeskPage {
       } else {
         this.initCatGroups();
       }
-    })
+    });
+  }
+
+  /**
+   * open processing detail modal
+   * @param group
+   */
+  public openProcessingDetailModal(group) {
+    let modal = this.modalCtrl.create(OrderGroupDetailModalComponent, {
+      orderIds: group.orderIds,
+      itemId: group.item.id
+    });
+    modal.present();
   }
 
   /**

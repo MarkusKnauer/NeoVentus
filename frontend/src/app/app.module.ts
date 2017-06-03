@@ -42,6 +42,7 @@ import {NotificationService} from "../service/notification.service";
 import {LocalNotifications} from "@ionic-native/local-notifications";
 import {BillingModalComponent} from "../component/billing-modal/billing-modal";
 import {BillingCheckoutModalComponent} from "../component/billing-checkout-modal/billing-checkout-modal";
+import {OrderGroupDetailModalComponent} from "../component/order-group-detail-modal/order-group-detail-modal";
 
 
 @NgModule({
@@ -67,6 +68,7 @@ import {BillingCheckoutModalComponent} from "../component/billing-checkout-modal
     ManageStornoReasonsModalComponent,
     BillingModalComponent,
     BillingCheckoutModalComponent,
+    OrderGroupDetailModalComponent,
 
     //pipes
     CostDecimalPipe,
@@ -107,7 +109,8 @@ import {BillingCheckoutModalComponent} from "../component/billing-checkout-modal
     MenuDetailModalComponent,
     ManageStornoReasonsModalComponent,
     BillingModalComponent,
-    BillingCheckoutModalComponent
+    BillingCheckoutModalComponent,
+    OrderGroupDetailModalComponent
   ],
   providers: [
     StatusBar,

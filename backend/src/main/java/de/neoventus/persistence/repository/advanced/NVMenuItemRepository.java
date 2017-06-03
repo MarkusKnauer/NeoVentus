@@ -1,6 +1,7 @@
 package de.neoventus.persistence.repository.advanced;
 
 import de.neoventus.persistence.repository.advanced.impl.aggregation.GuestWishCount;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.MenuItemProcessingDetails;
 import de.neoventus.rest.dto.MenuDto;
 
 import java.util.List;
@@ -25,5 +26,13 @@ public interface NVMenuItemRepository {
 	 * @return
 	 */
 	List<GuestWishCount> getPopularGuestWishesForItem(String id);
+
+	/**
+	 * get menu processing details from last 3 months
+	 *
+	 * @param id
+	 * @return
+	 */
+	MenuItemProcessingDetails getProcessingDetails(String id);
 
 }

@@ -54,4 +54,14 @@ export class MenuService extends CachingService {
     return this.http.get(MenuService.BASE_URL + "/popular-wishes/" + id).toPromise();
   }
 
+  /**
+   * get processing details
+   *
+   * @param id
+   * @returns {Promise<T>}
+   */
+  public getProcessingDetails(id: string) {
+    return this.http.get(MenuService.BASE_URL + "/processing-details/" + id).toPromise();
+  }
+
 }

@@ -93,11 +93,11 @@ export class OrderService extends CachingService {
   /**
    * get details for a specific order
    *
-   * @param id
    * @returns {Promise<T>}
+   * @param ids
    */
-  public getOrderInfo(id: string) {
-    return this.http.get(OrderService.BASE_URL + "/" + id).toPromise();
+  public getOrderInfos(ids: Array<string>) {
+    return this.http.get(OrderService.BASE_URL + "/" + ids.join(",")).toPromise();
   }
 
   /**

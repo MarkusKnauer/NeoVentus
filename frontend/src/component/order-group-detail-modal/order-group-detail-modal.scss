@@ -1,0 +1,41 @@
+order-group-detail-modal {
+
+  progress {
+    width: 100%;
+    height: 20px;
+    border: 1px solid color($colors, light4);
+
+    &.normal {
+      background: color($colors, light3); // background FF
+      color: color($colors, primary); // foreground Edge
+
+      &::-moz-progress-bar {
+        background: color($colors, primary); // foreground FF
+      }
+
+      &::-webkit-progress-bar {
+        background: color($colors, light3) // background Chrome
+      }
+      &::-webkit-progress-value {
+        background: color($colors, primary); // foreground Chrome
+      }
+    }
+
+    &.danger {
+      background: color($colors, light3); // background FF
+      color: color($colors, danger); // foreground Edge
+
+      &::-moz-progress-bar {
+        background: color($colors, danger); // foreground FF
+      }
+
+      &::-webkit-progress-bar {
+        background: color($colors, light3) // background Chrome
+      }
+      &::-webkit-progress-value {
+        background: color($colors, danger); // foreground Chrome
+      }
+    }
+  }
+
+}

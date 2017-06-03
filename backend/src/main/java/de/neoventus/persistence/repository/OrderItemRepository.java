@@ -67,4 +67,12 @@ public interface OrderItemRepository extends CrudRepository<OrderItem, String>, 
 	 */
 	Integer countAllByWaiterId(String id);
 
+	/**
+	 * find multiple by ids
+	 *
+	 * @param ids
+	 * @return
+	 */
+	List<OrderItem> findByIdIn(Iterable<String> ids);
+
 }

@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -70,15 +71,16 @@ public class OrderItemController {
 	}
 
 	/**
-	 * get details of a specific order
+	 * get details of a multiple orders
 	 *
-	 * @param orderId
+	 * @param ids
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping(value = "/{orderId}", method = RequestMethod.GET)
-	public OrderItem getOrder(@PathVariable String orderId, HttpServletResponse response) {
-		OrderItem o = this.orderRepository.findOne(orderId);
+	@RequestMapping(value = "/{ids}", method = RequestMethod.GET)
+	public List<OrderItem> getOrder(@PathVariable String ids, HttpServletResponse response) {
+		String[] orderIds = ids.split(",");
+		List<OrderItem> o = this.orderRepository.findByIdIn(Arrays.asList(orderIds));
 		if (o == null) {
 			response.setStatus(HttpStatus.NOT_FOUND.value());
 		}

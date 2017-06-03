@@ -11,7 +11,7 @@
         <span class="important">{{cat.name}}</span>
       </ion-item-divider>
       <ion-item-sliding *ngFor="let order of cat.orders">
-        <ion-item>
+        <ion-item (press)="openProcessingDetailModal(order)">
           {{order.count}}x
           <button icon-only ion-button clear color="secondary" class="order-shortcut"
                   (click)="addTmpOrder(order.item, order.sideDishes, order.guestWish)">

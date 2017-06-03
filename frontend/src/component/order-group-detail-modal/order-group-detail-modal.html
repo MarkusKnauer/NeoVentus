@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Bestellungsdetails
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="close()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-refresher (ionRefresh)="load($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list>
+    <ion-item *ngFor="let order of orders">
+      <h2>{{order.item.name}} </h2>
+      <p>
+        Aufgenommen von: {{order.waiter.username}} <br/>
+        Status:
+        <span [ngSwitch]="order.currentState">
+        <span *ngSwitchCase="'NEW'"><b>Neu</b></span>
+        <span *ngSwitchCase="'FINISHED'">Fertiggestellt</span>
+        <span *ngSwitchCase="'CANCELED'">Storniert</span>
+      </span>
+        <br/>
+        <ng-container *ngIf="order.currentState == 'NEW' && processingDetail.timeSec != 0">
+          <progress
+            max="100" value="{{order.progress}}"
+            [ngClass]="{'danger': order.progress > 100, 'normal': order.progress <= 100}"></progress>
+          <br/>
+          <span *ngIf="order.progress <= 100">Fertig in ca. {{order.eta}}</span>
+          <span *ngIf="order.progress > 100">
+          <ion-icon name="warning"></ion-icon>
+          {{order.eta}} überfällig!
+        </span>
+        </ng-container>
+        <span *ngIf="order.currentState == 'NEW' && processingDetail.timeSec == 0">Es kann keine Angabe über die Fertigstellung gemacht werden</span>
+      </p>
+    </ion-item>
+  </ion-list>
+</ion-content>
