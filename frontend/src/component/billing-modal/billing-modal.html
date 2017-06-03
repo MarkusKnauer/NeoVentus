@@ -1,10 +1,18 @@
 <ion-header>
   <ion-navbar>
     <ion-title>Artikel</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="setSelection(true)">
+        <ion-icon name="done-all"></ion-icon>
+      </button>
+      <button ion-button icon-only (click)="setSelection(false)">
+        <ion-icon name="remove-circle"></ion-icon>
+      </button>
+      <button ion-button icon-only (click)="cancel()" color="danger">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
-  <ion-buttons>
-    <!--todo add toggle buttons for all select and no select-->
-  </ion-buttons>
 </ion-header>
 <ion-content>
   <ion-list>

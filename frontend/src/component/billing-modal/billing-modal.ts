@@ -111,4 +111,21 @@ export class BillingModalComponent {
   }
 
 
+  /**
+   * set complete selection to state
+   * @param state
+   */
+  public setSelection(state: boolean) {
+    for (let key in this.selection) {
+      this.selection[key] = state;
+    }
+  }
+
+  /**
+   * close billing modal
+   */
+  public cancel() {
+    this.viewCtrl.dismiss();
+  }
+
 }
