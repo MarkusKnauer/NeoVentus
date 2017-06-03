@@ -1,13 +1,17 @@
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
 import {CachingService} from "./caching.service";
+import {BillingDto} from "../model/billing-dto";
 /**
  * handling requests to the backend belonging the billings
  *
  * @author Tim Heidelbach
+ * @author Dennis Thanner
  */
 @Injectable()
 export class BillingService extends CachingService {
+
+  private static BASE_URL = "/api/billing";
 
   constructor(private http: Http) {
     super();
@@ -29,7 +33,7 @@ export class BillingService extends CachingService {
 
     } else {
       return new Promise<any>(resolve => {
-        this.http.get("/api/billing/waiter/" + userId)
+        this.http.get(BillingService.BASE_URL + "/waiter/" + userId)
           .map(res => res.json())
           .subscribe(data => {
             this.saveToCache(userId, data);
@@ -37,6 +41,16 @@ export class BillingService extends CachingService {
           });
       });
     }
+  }
+
+  /**
+   * insert billing
+   *
+   * @param billing
+   * @returns {Promise<T>}
+   */
+  public insertBilling(billing: BillingDto) {
+    return this.http.post(BillingService.BASE_URL, billing).toPromise();
   }
 
 }

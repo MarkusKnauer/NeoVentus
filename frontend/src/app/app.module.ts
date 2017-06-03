@@ -40,6 +40,8 @@ import {WorkingShiftService} from "../service/workingShifts.service";
 import {SocketService} from "../service/socket.service";
 import {NotificationService} from "../service/notification.service";
 import {LocalNotifications} from "@ionic-native/local-notifications";
+import {BillingModalComponent} from "../component/billing-modal/billing-modal";
+import {BillingCheckoutModalComponent} from "../component/billing-checkout-modal/billing-checkout-modal";
 
 
 @NgModule({
@@ -63,6 +65,8 @@ import {LocalNotifications} from "@ionic-native/local-notifications";
     MenuDetailModalComponent,
     MenuBoxComponent,
     ManageStornoReasonsModalComponent,
+    BillingModalComponent,
+    BillingCheckoutModalComponent,
 
     //pipes
     CostDecimalPipe,
@@ -102,6 +106,8 @@ import {LocalNotifications} from "@ionic-native/local-notifications";
     OrderSelectModalComponent,
     MenuDetailModalComponent,
     ManageStornoReasonsModalComponent,
+    BillingModalComponent,
+    BillingCheckoutModalComponent
   ],
   providers: [
     StatusBar,

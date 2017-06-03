@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Artikel</ion-title>
+  </ion-navbar>
+  <ion-buttons>
+    <!--todo add toggle buttons for all select and no select-->
+  </ion-buttons>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ng-container *ngFor="let group of cachedGroups">
+      <ion-item *ngFor="let orderId of group.orderIds">
+        <!--output sidedishes and guest wish too-->
+        <ion-label>{{group.item.name}}
+          <span class="right">
+            {{group.item.price | costDecimal}} €
+          </span>
+        </ion-label>
+        <ion-checkbox [(ngModel)]="selection[orderId]"></ion-checkbox>
+      </ion-item>
+    </ng-container>
+  </ion-list>
+</ion-content>
+<ion-footer>
+  <button ion-button full color="secondary" [disabled]="totalSelectedPrice() == 0" (click)="openBillingCheckout()">
+    {{totalSelectedPrice() | costDecimal}}€
+    Bezahlen
+  </button>
+</ion-footer>

@@ -72,12 +72,17 @@
 </ion-content>
 
 <!--footer menu -->
-<ion-footer *ngIf="orderService.cache[ordersCacheKey]?.length || tmpOrders.length">
+<ion-footer>
   <ion-grid>
     <ion-row>
-      <ion-col col-10>
-        <button ion-button full icon-left
-                *ngIf="orderService.cache[ordersCacheKey]?.length">
+      <ion-col col-2>
+        <button ion-button full icon-only color="light4" [disabled]="!orderService.cache[ordersCacheKey]?.length">
+          <ion-icon name="move"></ion-icon>
+        </button>
+      </ion-col>
+      <ion-col col-8>
+        <button ion-button full icon-left (click)="openBillingModal()"
+                [disabled]="!orderService.cache[ordersCacheKey]?.length">
           <ion-icon name="cash"></ion-icon>
           Rechnung
         </button>

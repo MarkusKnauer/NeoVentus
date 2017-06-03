@@ -121,6 +121,15 @@ export class AuthGuardService {
     return this.userDetails != null;
   }
 
+  /**
+   * get user id
+   *
+   * @returns {string}
+   */
+  public getUserId(): string {
+    return this._userDetails.principal.userId;
+  }
+
 
   get userDetails(): any {
     return this._userDetails;

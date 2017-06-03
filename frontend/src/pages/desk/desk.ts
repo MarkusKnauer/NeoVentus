@@ -2,6 +2,7 @@ import {Component} from "@angular/core";
 import {
   ActionSheetController,
   AlertController,
+  Events,
   LoadingController,
   ModalController,
   NavController,
@@ -16,6 +17,7 @@ import {Order} from "../../model/order";
 import {Utils} from "../../app/utils";
 import {OrderDto} from "../../model/order-dto";
 import {LocalStorageService} from "../../service/local-storage.service";
+import {BillingModalComponent} from "../../component/billing-modal/billing-modal";
 
 
 /**
@@ -42,7 +44,8 @@ export class DeskPage {
   constructor(public navParams: NavParams, private navCtrl: NavController, private orderService: OrderService,
               private authGuard: AuthGuardService, public loadingCtrl: LoadingController, private modalCtrl: ModalController,
               private menuCategoryService: MenuCategoryService, private alertCtrl: AlertController,
-              private actionSheetCtrl: ActionSheetController, private localStorageService: LocalStorageService) {
+              private actionSheetCtrl: ActionSheetController, private localStorageService: LocalStorageService,
+              private events: Events) {
     this.localStorageService.loadStornoReasons();
     this.deskNumber = navParams.get("deskNumber");
     this.ordersCacheKey = "orders_desk" + this.deskNumber;
@@ -59,6 +62,12 @@ export class DeskPage {
     } else {
       this.navCtrl.push(DeskOverviewPage);
     }
+
+    // listen to changes in cache made by ceckout to re group elements
+    this.events.subscribe("order-change-" + this.deskNumber, () => {
+      console.debug("Order Change Event");
+      this.initCatGroups();
+    })
   }
 
   /**
@@ -75,6 +84,22 @@ export class DeskPage {
       this.catGroups.push({name: cat.name, orders: this.getOrdersByCat(catIds)});
     }
     console.debug("Page Category Groups:", this.catGroups);
+  }
+
+  /**
+   * open billing modal
+   */
+  openBillingModal() {
+    let modal = this.modalCtrl.create(BillingModalComponent, {deskNumber: this.deskNumber});
+    modal.present();
+    modal.onDidDismiss((allPaid) => {
+      if (allPaid) {
+        // all paid go to desk overview
+        this.navCtrl.pop();
+      } else {
+        this.initCatGroups();
+      }
+    })
   }
 
   /**
