@@ -1,6 +1,8 @@
 package de.neoventus.persistence.repository.advanced.impl.aggregation;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.entity.User;
 
@@ -30,6 +32,13 @@ public class OrderDeskAggregationDto implements Serializable {
 	private String guestWish;
 
 	private List<String> orderIds;
+
+	/**
+	 * ignore output
+	 * only for internal mapping purpose
+	 */
+	@JsonIgnore
+	private Desk desk;
 
 	// constructor
 
@@ -87,5 +96,13 @@ public class OrderDeskAggregationDto implements Serializable {
 
 	public void setOrderIds(List<String> orderIds) {
 		this.orderIds = orderIds;
+	}
+
+	public Desk getDesk() {
+		return desk;
+	}
+
+	public void setDesk(Desk desk) {
+		this.desk = desk;
 	}
 }

@@ -17,10 +17,8 @@ import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * @author Julian Beck, Dennis Thanner
@@ -72,34 +70,40 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 
 	@Override
 	public Map<Integer, List<OrderDeskAggregationDto>> getUnfinishedOrdersForCategoriesGroupedByDeskAndOrderItem(boolean forKitchen) {
+		long start = System.currentTimeMillis();
 		List<Desk> desks = this.deskRepository.findAll();
 		List<MenuItemCategory> categories = this.menuItemCategoryRepository.findByForKitchen(forKitchen);
 		List<MenuItem> itemsInterested = this.menuItemRepository.findAllByMenuItemCategoryIn(categories);
 
 		Map<Integer, List<OrderDeskAggregationDto>> result = new HashMap<>();
 
-		GroupOperation group = Aggregation.group("item", "sideDishes", "guestWish").addToSet("$id").as("orderIds");
+		GroupOperation group = Aggregation.group("item", "sideDishes", "guestWish", "desk").addToSet("$id").as("orderIds");
 
 		ProjectionOperation projection = Aggregation.project("orderIds").and("_id.item").as("item")
 			.and("_id.sideDishes").as("sideDishes")
-			.and("_id.guestWish").as("guestWish");
+			.and("_id.guestWish").as("guestWish")
+			.and("_id.desk").as("desk");
 
-		for (Desk d : desks) {
-
-			Aggregation agg = Aggregation.newAggregation(
-				Aggregation.match(Criteria.where("billing").is(null).and("states.state")
+		Aggregation agg = Aggregation.newAggregation(
+			Aggregation.match(Criteria.where("billing").is(null).and("states.state")
 					.nin(Arrays.asList(OrderItemState.State.CANCELED, OrderItemState.State.FINISHED))
-					.and("item").in(itemsInterested).and("desk").is(d)),
+				.and("item").in(itemsInterested).and("desk").in(desks)),
 				group,
 				projection
-			);
+		);
 
-			AggregationResults<OrderDeskAggregationDto> aggR = this.mongoTemplate.aggregate(agg, OrderItem.class, OrderDeskAggregationDto.class);
+		List<OrderDeskAggregationDto> dbResult = this.mongoTemplate.aggregate(agg, OrderItem.class, OrderDeskAggregationDto.class).getMappedResults();
 
-			result.put(d.getNumber(), aggR.getMappedResults());
-
+		// group by desk
+		for (OrderDeskAggregationDto dto : dbResult) {
+			int number = dto.getDesk().getNumber();
+			if (!result.containsKey(number)) {
+				result.put(number, new ArrayList<>());
+			}
+			result.get(number).add(dto);
 		}
 
+		Logger.getAnonymousLogger().info("Kitchen/Bar Aggregation for Desks took: " + (System.currentTimeMillis() - start));
 		return result;
 	}
 
