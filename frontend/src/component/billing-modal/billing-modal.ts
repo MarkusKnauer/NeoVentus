@@ -33,6 +33,10 @@ export class BillingModalComponent {
     this.selection = {};
     return this.orderService.getOrdersByDeskNumber(this.deskNumber, force).then(() => {
       this.cachedGroups = this.orderService.cache["orders_desk" + this.deskNumber];
+      // sort elements by name
+      this.cachedGroups.sort((a, b) => {
+        return a.item.name.localeCompare(b.item.name);
+      });
 
       // publish event to update desk page
       if (force) {

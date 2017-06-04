@@ -2,15 +2,19 @@ package de.neoventus.rest.controller;
 
 import de.neoventus.persistence.entity.Billing;
 import de.neoventus.persistence.repository.BillingRepository;
+import de.neoventus.rest.auth.NVUserDetails;
 import de.neoventus.rest.dto.BillingDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -64,6 +68,29 @@ public class BillingController {
 			return billingRepository.findByWaiter(waiterId);
 		} catch (DataAccessException e) {
 			LOGGER.warning("Error searching billings by waiter: " + waiterId + ": " + e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return null;
+		}
+	}
+
+	/**
+	 * find todays billings
+	 *
+	 * @param response
+	 * @param userDetails
+	 * @return
+	 */
+	@RequestMapping(value = "/today", method = RequestMethod.GET)
+	public List<Billing> listTodaysBilling(HttpServletResponse response, @AuthenticationPrincipal NVUserDetails userDetails) {
+		try {
+			Calendar c = new GregorianCalendar();
+			c.set(Calendar.MILLISECOND, 0);
+			c.set(Calendar.SECOND, 0);
+			c.set(Calendar.MINUTE, 0);
+			c.set(Calendar.HOUR, 0);
+			return billingRepository.findByWaiterIdAndBilledAtGreaterThanOrderByBilledAtDesc(userDetails.getUserId(), c.getTime());
+		} catch (DataAccessException e) {
+			LOGGER.warning("Error searching billings by waiter: " + userDetails.getUserId() + ": " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return null;
 		}

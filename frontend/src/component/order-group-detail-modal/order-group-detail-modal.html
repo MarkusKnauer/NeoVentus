@@ -15,6 +15,13 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list>
+    <ng-container *ngIf="orders && orders[0] && orders[0].item.notices.length">
+      <ion-item-divider>Gerichthinweise</ion-item-divider>
+      <ion-item *ngFor="let notice of orders[0].item.notices">
+        {{notice}}
+      </ion-item>
+    </ng-container>
+    <ion-item-divider>Bestellungen</ion-item-divider>
     <ion-item *ngFor="let order of orders">
       <h2>{{order.item.name}} </h2>
       <p>
@@ -37,7 +44,10 @@
           {{order.eta}} überfällig!
         </span>
         </ng-container>
-        <span *ngIf="order.currentState == 'NEW' && processingDetail.timeSec == 0">Es kann keine Angabe über die Fertigstellung gemacht werden</span>
+        <span *ngIf="order.currentState == 'NEW' && processingDetail.timeSec == 0">
+          <ion-icon name="information-circle"></ion-icon>
+          Es kann keine Angabe über die Fertigstellung gemacht werden
+        </span>
       </p>
     </ion-item>
   </ion-list>

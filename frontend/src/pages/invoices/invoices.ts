@@ -1,9 +1,10 @@
 import {Component} from "@angular/core";
 import {NavController} from "ionic-angular";
+import {BillingService} from "../../service/billing.service";
 
 /**
  * @author Markus Knauer
- * @version 0.0.1
+ * @author Dennis Thanner
  */
 
 @Component({
@@ -12,8 +13,15 @@ import {NavController} from "ionic-angular";
 })
 export class InvoicesPage {
 
-  constructor(public navCtrl: NavController) {
+  constructor(public navCtrl: NavController, private billingService: BillingService) {
+    this.load();
+  }
 
+  load(refresher?) {
+    this.billingService.getTodaysBillings().then(() => {
+      if (refresher)
+        refresher.complete();
+    })
   }
 
 }

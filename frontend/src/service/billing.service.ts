@@ -53,4 +53,14 @@ export class BillingService extends CachingService {
     return this.http.post(BillingService.BASE_URL, billing).toPromise();
   }
 
+  /**
+   * save todays billings to cache
+   * @returns {Promise<TResult2|TResult1>}
+   */
+  public getTodaysBillings() {
+    return this.http.get(BillingService.BASE_URL + "/today").toPromise().then((resp) => {
+      this.saveToCache("today", resp.json());
+    })
+  }
+
 }

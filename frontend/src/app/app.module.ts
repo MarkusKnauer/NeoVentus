@@ -88,7 +88,8 @@ import {OrderGroupDetailModalComponent} from "../component/order-group-detail-mo
         {component: DeskPage, name: "ShowOrders", segment: "orders/:deskNumber", defaultHistory: ["DeskOverview"]},
         {component: KitchenOverviewPage, name: "KitchenOverview", segment: "kitchen/:forKitchen"},
         {component: SettingsPage, name: "Settings", segment: "settings"},
-        {component: ProfilePage, name: "Profile", segment: "profile"}
+        {component: ProfilePage, name: "Profile", segment: "profile"},
+        {component: InvoicesPage, name: "billings", segment: "billlings"},
       ]
     }),
     IonicStorageModule.forRoot()
