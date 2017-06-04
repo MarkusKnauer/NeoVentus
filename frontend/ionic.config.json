@@ -1,8 +1,6 @@
 {
   "name": "frontend",
   "app_id": "",
-  "v2": true,
-  "typescript": true,
   "proxies": [
     {
       "path": "/api",
@@ -16,5 +14,6 @@
       "path": "/socket",
       "proxyUrl": "http://localhost:8080/"
     }
-  ]
+  ],
+  "type": "ionic-angular"
 }

@@ -328,9 +328,10 @@ class DefaultDemoDataIntoDB {
 		//for (int j = 0; j < 7; j++) {
 		int j = 0;
 		// Day Counter, if totalDay = 0 <- write all
-		int totalDay = 7;
+		int totalDay = 0;
 		Calendar today = getCalendar(calendar,totalDay);
-
+LOGGER.info(lastPlan.getWorkingDay()+ " Lastday");
+LOGGER.info(today.getTime()+ " getTime");
 		while(
 			plan!= null&&
 				plan.getWorkingDay().compareTo(today.getTime())<1&&
@@ -381,9 +382,10 @@ class DefaultDemoDataIntoDB {
 		}
 
 		// Bulk-Insert + Bulk-Update
-		insertOrders(orderItems);
-		insertBilling(billingList);
-
+		if(orderItems != null && !orderItems.isEmpty()){
+			insertOrders(orderItems);
+			insertBilling(billingList);
+		}
 		//updateBillingReferenceInOrders(billingList);
 
 		LOGGER.info("Finished creating random orders");
@@ -400,7 +402,7 @@ class DefaultDemoDataIntoDB {
 	long delay;
 	//  BI - Starttime (11:00 because in Mongo it is 09:00)
 		Workingplan plan = findWorkingplan(new GregorianCalendar());
-		if(plan.getCreatedPlan().compareTo(new Date(System.currentTimeMillis()))>0) return;
+		if(plan == null || plan.getCreatedPlan().compareTo(new Date(System.currentTimeMillis()))>0) return;
 		Calendar calendar = new GregorianCalendar(plan.getWorkingDay().getYear()+1900,plan.getWorkingDay().getMonth(),plan.getWorkingDay().getDate(),11,0);
 
 
@@ -423,9 +425,10 @@ class DefaultDemoDataIntoDB {
 
 		}
 
-	// Bulk-Insert
-	insertOrders(orderItems);
-
+		// Bulk-Insert + Bulk-Update
+		if(orderItems != null && !orderItems.isEmpty()) {
+			insertOrders(orderItems);
+		}
 	LOGGER.info("Finished creating random orders");
 }
 
