@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavController} from "ionic-angular";
+import {Events, NavController} from "ionic-angular";
 import {DeskService} from "../../service/desk.service";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {LoginPage} from "../login/login";
@@ -25,7 +25,7 @@ export class DeskOverviewPage {
               private deskService: DeskService,
               private orderService: OrderService,
               private authGuard: AuthGuardService,
-              private reservationService: ReservationService) {
+              private reservationService: ReservationService, private events: Events) {
 
     this.now = new Date();
 
@@ -34,6 +34,13 @@ export class DeskOverviewPage {
         this.desks = desks;
 
         for (let desk of desks) {
+
+          // listen to billing changes and reload desk data
+          this.events.subscribe("order-change-" + desk.number, () => {
+            console.debug("reload desk overview data for desk after billing");
+            this.loadDeskOrderDetails(this.desks[desk.number - 1]);
+          });
+
           this.loadDeskOrderDetails(desk);
           this.loadDeskReservationDetails(desk);
         }

@@ -35,6 +35,7 @@ export class AuthGuardService {
       console.debug(this._userDetails);
     }).catch(err => {
     });
+    return this.userDetailPromise;
   }
 
   /**

@@ -23,9 +23,9 @@ export class ProfilePage {
   private email;
   private revenue = 0;
   private tips = 0;
-  private level = 1;
-  private xp = 31154;
-  private expNextLevel = 100000;
+  private level = 0;
+  private xp = 0;
+  private expNextLevel = 1;
   private steps = 0;
   private expLevelStart = 0;
 
@@ -42,11 +42,13 @@ export class ProfilePage {
 
     this.today = new Date();
 
-    this.getUserName();
-    this.getUserRoles();
-    this.getUserProfile();
+    this.authGuard.loadUserDetails().then(() => {
+      this.getUserName();
+      this.getUserRoles();
+      this.getUserProfile();
 
-    this.email = this.username.toLowerCase() + "@neovent.us";
+      this.email = this.username.toLowerCase() + "@neovent.us";
+    });
   }
 
   getUserName() {

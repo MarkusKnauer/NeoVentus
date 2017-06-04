@@ -16,9 +16,9 @@ import {AuthGuardService} from "../../service/auth-guard.service";
 })
 export class LoginPage {
 
-  private username: string;
+  private username: string = "";
 
-  private password: string;
+  private password: string = "";
 
   constructor(public navCtrl: NavController, private userService: UserService, private authGuard: AuthGuardService,
               private toastCtrl: ToastController) {

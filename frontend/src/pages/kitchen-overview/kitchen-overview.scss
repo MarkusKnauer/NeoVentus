@@ -1,51 +1,63 @@
-ion-card-header {
-  background: color($colors, primary);
-  height: 60pt;
-}
+kitchen-overview {
+  .card-header {
+    background: color($colors, primary);
+    height: 60pt;
+    padding: 0;
+  }
+  ion-card {
+    ion-item-divider {
+      .label {
+        margin-top: 1px;
+        margin-bottom: 1px;
+        .item-button {
+          height: 30px;
+        }
+      }
+    }
+  }
 
-ion-item.card_title {
-  padding-top: 0pt;
-  color: white;
-  background: color($colors, primary);
+  ion-item.card_title {
+    color: white;
+    background: color($colors, primary);
 
-  h1 {
+    h1 {
+      color: white;
+    }
+  }
+
+  button.desk_button {
     color: white;
   }
-}
 
-button.desk_button {
-  color: white;
-}
-
-.grid-card {
-  float: left;
-  width: 85%;
-}
-
-ion-item.new {
-  background: color($colors, secondary-background) !important;
-}
-
-ion-item.old {
-  background-color: transparent;
-}
-
-
-.overview {
-  background: color($colors, light);
-  width: 15%;
-  float: right;
-
-  ion-list {
-    background: color($colors, light);
+  .grid-card {
+    float: left;
+    width: 85%;
   }
-  ion-item {
+
+  ion-item.new {
+    background: color($colors, secondary-background) !important;
+  }
+
+  ion-item.old {
     background-color: transparent;
   }
-}
 
-h2.overview_header {
-  text-align: center;
+  .overview {
+    background: color($colors, light);
+    width: 15%;
+    float: right;
+
+    ion-list {
+      background: color($colors, light);
+    }
+    ion-item {
+      background-color: transparent;
+    }
+  }
+
+  h2.overview_header {
+    text-align: center;
+  }
 }
 
 

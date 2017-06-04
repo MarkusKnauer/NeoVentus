@@ -7,6 +7,7 @@ import {OrderSocketService} from "../../service/order-socket-service";
 
 @Component({
   templateUrl: "kitchen-overview.html",
+  selector: "kitchen-overview"
 })
 
 export class KitchenOverviewPage {

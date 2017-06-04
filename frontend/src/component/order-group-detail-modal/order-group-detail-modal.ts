@@ -61,7 +61,10 @@ export class OrderGroupDetailModalComponent {
     let now = new Date().getTime();
 
     let diffInSeconds = (now - start) / 1000;
-    order.progress = diffInSeconds * 100 / this.processingDetail.timeSec;
+    // set timeout for animation to work
+    setTimeout(() => {
+      order.progress = diffInSeconds * 100 / this.processingDetail.timeSec;
+    }, 10);
     let eta = Math.round(this.processingDetail.timeSec - diffInSeconds);
     if (Math.abs(eta) > 60) {
       order.eta = ((Math.abs(eta) / 60).toFixed(2) + " Minuten").replace(".", ",");

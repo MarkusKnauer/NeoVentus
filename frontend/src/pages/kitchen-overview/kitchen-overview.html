@@ -19,7 +19,8 @@
       <ion-row>
 
         <!-- card for every desk -->
-        <ion-col *ngFor="let keyValuePair of orderService.cache['open_orders_grouped_by_desks'] | mapToIterable" col-auto>
+        <ion-col *ngFor="let keyValuePair of orderService.cache['open_orders_grouped_by_desks'] | mapToIterable"
+                 [hidden]="keyValuePair.val.length == 0" col-auto>
 
           <!-- BEGIN card -->
           <ion-card *ngIf="keyValuePair.val.length != 0" class="order">
@@ -30,7 +31,7 @@
 
                 <button class="desk_button" color="ligth" ion-button icon-only item-right clear large
                         (click)="presentConfirmAllOfDesk(keyValuePair.key, keyValuePair.val)">
-                  <ion-icon name='checkmark-circle-outline'></ion-icon>
+                  <ion-icon name='checkmark'></ion-icon>
                 </button>
               </ion-item>
             </ion-card-header>
@@ -43,12 +44,10 @@
               <!-- BEGIN category divider
               <!-- category only show in kitchen the category -->
               <ion-item-divider *ngIf="forKitchen==1">
-                <button ion-button block outline (click)="presentConfirmCategory(keyValuePair.key, cat)">
+                <button ion-button block outline icon-right (click)="presentConfirmCategory(keyValuePair.key, cat)">
                   <span>{{cat.category}}</span>
 
-                  <button color="ligth" ion-button icon-only item-right clear>
-                    <ion-icon name='checkmark-circle-outline'></ion-icon>
-                  </button>
+                  <ion-icon name='checkmark'></ion-icon>
                 </button>
               </ion-item-divider>
               <!-- END category divider
@@ -88,8 +87,8 @@
   <div class="overview">
     <h2 class="overview_header">Übersicht</h2>
 
-    <ion-list *ngFor="let orderItem of orderService.cache['open_orders_grouped_by_orderitem']">
-      <ion-item>
+    <ion-list>
+      <ion-item *ngFor="let orderItem of orderService.cache['open_orders_grouped_by_orderitem']">
         <span>{{orderItem.count}} x {{orderItem.item.shortName}}</span>
         <span *ngIf="orderItem.sideDishes.length != 0">mit </span>
         <span *ngFor="let sideDish of orderItem.sideDishes; let isLast = last">

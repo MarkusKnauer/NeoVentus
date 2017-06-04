@@ -1,4 +1,4 @@
-<ion-content padding>
+<ion-content>
   <form (ngSubmit)="login()">
     <ion-list>
       <ion-item>
@@ -9,7 +9,9 @@
         <ion-label floating>Password</ion-label>
         <ion-input [(ngModel)]="password" name="password" type="password"></ion-input>
       </ion-item>
+      <ion-item-divider></ion-item-divider>
+      <button ion-item color="primary" [disabled]="password?.length == 0 || username?.length == 0" type="submit">Login
+      </button>
     </ion-list>
-    <button type="submit" ion-button>Login</button>
   </form>
 </ion-content>
