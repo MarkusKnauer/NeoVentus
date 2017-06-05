@@ -44,6 +44,8 @@ import {BillingModalComponent} from "../component/billing-modal/billing-modal";
 import {BillingCheckoutModalComponent} from "../component/billing-checkout-modal/billing-checkout-modal";
 import {OrderGroupDetailModalComponent} from "../component/order-group-detail-modal/order-group-detail-modal";
 import {ReservationPage} from "../pages/reservation/reservation";
+import {IBeacon} from "@ionic-native/ibeacon";
+import {BeaconService} from "../service/beacon.service";
 
 
 @NgModule({
@@ -120,6 +122,7 @@ import {ReservationPage} from "../pages/reservation/reservation";
     StatusBar,
     SplashScreen,
     LocalNotifications,
+    IBeacon,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     StompService,
     SocketService,
@@ -134,7 +137,8 @@ import {ReservationPage} from "../pages/reservation/reservation";
     OrderSocketService,
     ReservationService,
     BillingService,
-    WorkingShiftService
+    WorkingShiftService,
+    BeaconService
   ]
 })
 export class AppModule {
