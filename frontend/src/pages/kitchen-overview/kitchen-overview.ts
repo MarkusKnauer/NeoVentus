@@ -17,7 +17,7 @@ export class KitchenOverviewPage {
   //if value is 1 the kitchen with meals will be shown, otherwise the bar with drinks is shown
   private forKitchen;
   private socketTopic;
-  //30 seconds
+  //30 seconds interval
   private timeInterval = 30000;
 
   constructor(public navParams: NavParams,
@@ -96,7 +96,6 @@ export class KitchenOverviewPage {
    * sorts orderItems by category
    * @param orderItems
    */
-
   groupByCategory(orderItems) {
     if (orderItems != null) {
       for (let key in orderItems) {
@@ -111,7 +110,6 @@ export class KitchenOverviewPage {
    * sorts orderItems per desk by category
    * @param ordersPerDesk
    */
-
   groupByCategoryPerDesk(ordersPerDesk) {
 
     let catGroups = [];
@@ -137,7 +135,6 @@ export class KitchenOverviewPage {
 
   /**
    * get orders by root category ids with child ids
-   *
    * @param catIds
    * @param ordersPerDesk
    */
@@ -331,83 +328,94 @@ export class KitchenOverviewPage {
   checkForNewItems(data) {
     let tmpOrder;
     let newIndex;
-
     let checkMap = this.orderService.cache['old_orderItems'];
-    //checkMap[key][catIndex].itemsPerCat[orderIndex].orderIds.length
 
-    for (let key in checkMap) {
 
-      //desk do not have any open orders
-      if (data[key].length == 0) continue;
+    for (let key in data) {
+
+      //check if a desk already exists
+      let keyExists = key in checkMap;
       let existingCats = [];
 
-      checkMap[key].forEach((category) => {
+      if (keyExists) {
 
-        // find the new position of the old category
-        tmpOrder = data[key].find((el) => {
-          return el.category == category.category;
-        });
-        let newCatIndex = data[key].indexOf(tmpOrder);
-        existingCats.push(newCatIndex);
+        checkMap[key].forEach((category) => {
+          // find the new position of the old category
+          tmpOrder = data[key].find((el) => {
+            return el.category == category.category;
+          });
+          let newCatIndex = data[key].indexOf(tmpOrder);
+          existingCats.push(newCatIndex);
 
-        //added new items in a category
-        if (category.itemsPerCat.length < data[key][newCatIndex].itemsPerCat.length) {
-          let indexTil = 9999999999;
+          //CASE 0 - added new items in a category
+          if (category.itemsPerCat.length < data[key][newCatIndex].itemsPerCat.length) {
 
-          for (let orderItem of category.itemsPerCat) {
+            let indexTil = 9999999999;
+            for (let orderItem of category.itemsPerCat) {
+              // itemsPerCat Array behaves like a stack - new orders are put to the top
+              // find new position of the old orderItems
+              tmpOrder = data[key][newCatIndex].itemsPerCat.find((el) => {
+                return el.item.id == orderItem.item.id;
+              });
+              newIndex = data[key][newCatIndex].itemsPerCat.indexOf(tmpOrder);
+              newIndex < indexTil ? indexTil = newIndex : "";
+            }
+
+            //loop until the old orderItems
+            for (let i = 0; i < indexTil; i++) {
+              this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[i], 0, 0);
+            }
+          }
+
+          category.itemsPerCat.forEach((orderItem) => {
 
             // find new position of the old orderItems
-            // itemsPerCat Array is like a stack - new orders are put to the top
             tmpOrder = data[key][newCatIndex].itemsPerCat.find((el) => {
               return el.item.id == orderItem.item.id;
             });
             newIndex = data[key][newCatIndex].itemsPerCat.indexOf(tmpOrder);
-            newIndex < indexTil ? indexTil = newIndex : "";
-          }
 
-          //loop until the old orderItems
-          for (let i = 0; i < indexTil; i++) {
-            this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[i], 0);
-          }
-        }
+            //CASE 1 - an existing item  has increased
+            let diffCount = data[key][newCatIndex].itemsPerCat[newIndex].orderIds.length - orderItem.orderIds.length;
+            if (newIndex != -1 && diffCount > 0) {
+              let oldCount = orderItem.newItemCount;
+              oldCount != null ? diffCount += oldCount : "";
+              this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[newIndex], 0, diffCount);
+            }
 
-
-        // an existing item  has increased
-        category.itemsPerCat.forEach((orderItem) => {
-
-          // find new position of the old orderItems
-          tmpOrder = data[key][newCatIndex].itemsPerCat.find((el) => {
-            return el.item.id == orderItem.item.id;
+            //CASE 2 - nothing changed, check if item is marked as new
+            if (newIndex != -1 &&
+              data[key][newCatIndex].itemsPerCat[newIndex].orderIds.length == orderItem.orderIds.length &&
+              orderItem.isNew != null &&
+              orderItem.isNew == true) {
+              this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[newIndex], orderItem.stateTimeUntil, orderItem.newItemCount);
+            }
           });
-          newIndex = data[key][newCatIndex].itemsPerCat.indexOf(tmpOrder);
 
-          if (newIndex != -1 && data[key][newCatIndex].itemsPerCat[newIndex].orderIds.length > orderItem.orderIds.length) {
-            this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[newIndex], 0);
-          }
-          //nothing changed, check if item is marked as new
-          if (newIndex != -1 &&
-            data[key][newCatIndex].itemsPerCat[newIndex].orderIds.length == orderItem.orderIds.length &&
-            orderItem.isNew != null &&
-            orderItem.isNew == true) {
-
-            this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[newIndex], orderItem.stateTimeUntil);
-          }
         });
 
-      });
-
-      //added a new category
-      if (checkMap[key].length < data[key].length) {
-
-        for (let i = 0; i < data[key].length; i++) {
-          if (existingCats.indexOf(i) != -1) continue;
-          else {
-            for (let orderItem of data[key][i].itemsPerCat) {
-              this.markOrderAsNew(orderItem, 0);
+        //CASE 3 - added a new category to a existing desk
+        if (checkMap[key].length < data[key].length) {
+          for (let i = 0; i < data[key].length; i++) {
+            if (existingCats.indexOf(i) != -1) continue;
+            else {
+              for (let orderItem of data[key][i].itemsPerCat) {
+                this.markOrderAsNew(orderItem, 0, 0);
+              }
             }
           }
         }
       }
+
+      //CASE 4 - added a new desk
+      else {
+        data[key].forEach((category) => {
+          category.itemsPerCat.forEach((orderItem) => {
+            this.markOrderAsNew(orderItem, 0, 0);
+          })
+        })
+      }
+
     }
     this.copyMap(data);
   }
@@ -415,22 +423,27 @@ export class KitchenOverviewPage {
   /**
    * marks a Order as new an sets the state to default after a spezific time
    * @param item
-   * @param timestamp
+   * @param oldTimestamp
+   * @param diffCount
    */
-  markOrderAsNew(item, timestamp) {
+  markOrderAsNew(item, oldTimestamp, diffCount) {
 
     item.isNew = true;
 
-    if (timestamp == 0) {
+    if (diffCount != 0) {
+      item.newItemCount = diffCount;
+    }
+
+    if (oldTimestamp == 0) {
       item.stateTimeUntil = Date.now() + this.timeInterval;
     } else {
-      item.stateTimeUntil = timestamp;
+      item.stateTimeUntil = oldTimestamp;
     }
 
     let sleepTime = item.stateTimeUntil - Date.now();
-    console.debug(sleepTime);
     setTimeout(function () {
       item.isNew = false;
+      delete item.newItemCount;
     }, sleepTime);
   }
 

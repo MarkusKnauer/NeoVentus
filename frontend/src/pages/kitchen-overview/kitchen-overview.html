@@ -29,10 +29,20 @@
               <ion-item class="card_title">
                 <h1>Tisch {{keyValuePair.key}}</h1>
 
-                <button class="desk_button" color="ligth" ion-button icon-only item-right clear large
+                <!-- CASE BAR alert with checkboxes-->
+                <button *ngIf="forKitchen == 0" class="desk_button" color="ligth" ion-button icon-only item-right clear
+                        large
+                        (click)="presentConfirmCategory(keyValuePair.key, keyValuePair.val['0'])">
+                  <ion-icon name='checkmark'></ion-icon>
+                </button>
+
+                <!-- CASE KITCHEN alert without checkboxes-->
+                <button *ngIf="forKitchen == 1" class="desk_button" color="ligth" ion-button icon-only item-right clear
+                        large
                         (click)="presentConfirmAllOfDesk(keyValuePair.key, keyValuePair.val)">
                   <ion-icon name='checkmark'></ion-icon>
                 </button>
+
               </ion-item>
             </ion-card-header>
             <!-- END card header-->
@@ -58,12 +68,14 @@
 
 
                 <ion-item [ngClass]="{new: item.isNew, old: !item.isNew}">
-                  <span>{{item.orderIds.length}} x {{item.item.shortName}} </span>
+                  <span>{{item.orderIds.length}} x {{item.item.shortName}}
+                    <ion-badge>{{item.newItemCount}}</ion-badge>
+                  </span>
                   <span *ngIf="item.sideDishes.length != 0">mit </span>
                   <span *ngFor="let sideDish of item.sideDishes; let isLast = last">
                   {{sideDish.shortName}}
-                  <span *ngIf="!isLast">, </span>
-                </span>
+                    <span *ngIf="!isLast">, </span>
+                  </span>
                   <br>
                   <span *ngIf="item.guestWish.length != 0">Sonderwunsch:
                   <span>{{item.guestWish}}</span>
