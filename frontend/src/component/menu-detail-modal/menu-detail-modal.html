@@ -10,19 +10,19 @@
 </ion-header>
 <ion-content>
   <ion-list>
-    <ion-item-group *ngIf="suggestions.length > 0">
+    <ng-container *ngIf="suggestions.length > 0">
       <ion-item-divider color="light">Beliebte Kundenwünsche</ion-item-divider>
       <ion-item *ngFor="let sugg of suggestions" (click)="wish = sugg.guestWish;">
         {{sugg.guestWish}}
       </ion-item>
-    </ion-item-group>
+    </ng-container>
     <ion-item>
       <ion-input clearInput="" [(ngModel)]="wish" placeholder="Kundenwunsch"></ion-input>
     </ion-item>
-  </ion-list>
-  <ng-container *ngIf="menu.sideDishGroup" padding-bottom>
-    Beilagen
-    <ion-list>
+    <ng-container *ngIf="menu.sideDishGroup" padding-bottom>
+      <ion-item-divider>
+        Beilagen
+      </ion-item-divider>
       <ion-item *ngFor="let sideDish of menu.sideDishGroup.sideDishes">
         <ion-checkbox [(ngModel)]="selectedSideDish[sideDish.id]"></ion-checkbox>
         <ion-label>
@@ -30,17 +30,14 @@
           <span text-right>{{ sideDish.price | costDecimal}}€</span>
         </ion-label>
       </ion-item>
-    </ion-list>
-  </ng-container>
-  <ng-container *ngIf="menu.notices.length" padding-bottom>
-    <ion-list>
+    </ng-container>
+    <ng-container *ngIf="menu.notices.length" padding-bottom>
       <ion-item-divider>Informationen</ion-item-divider>
       <ion-item *ngFor="let info of menu.notices">
         {{info}}
       </ion-item>
-    </ion-list>
-  </ng-container>
-
+    </ng-container>
+  </ion-list>
 </ion-content>
 <ion-footer>
   <ion-grid>
