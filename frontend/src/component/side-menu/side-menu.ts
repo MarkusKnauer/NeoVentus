@@ -5,6 +5,7 @@ import {ShiftsPage} from "../../pages/shifts/shifts";
 import {MessagePage} from "../../pages/messages/message";
 import {InvoicesPage} from "../../pages/invoices/invoices";
 import {KitchenOverviewPage} from "../../pages/kitchen-overview/kitchen-overview";
+import {ReservationPage} from "../../pages/reservation/reservation";
 import {SettingsPage} from "../../pages/settings/settings";
 import {ProfilePage} from "../../pages/profile/profile";
 import {UserService} from "../../service/user.service";
@@ -64,6 +65,12 @@ export class SideMenuComponent {
             icon: 'beer',
             roles: ["ROLE_CEO", "ROLE_BAR"],
             data: {forKitchen: 0}
+          },
+          {
+            title: 'Reservierungen',
+            component: ReservationPage,
+            icon: 'clipboard',
+            roles: ["ROLE_CEO", "ROLE_BAR"]
           },
           {
             title: 'Einstellungen',
