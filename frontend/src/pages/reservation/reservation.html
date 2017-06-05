@@ -8,18 +8,53 @@
 </ion-header>
 
 <ion-content padding>
-  <!-- Datetime selection-->
+
+  <!-- Person selection-->
+  <ion-list>
+    <ion-item>
+      <ion-label>Anzahl Personen</ion-label>
+      <ion-input type="number" placeholder="Bitte Auswählen"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <!-- Date selection-->
   <ion-list>
     <ion-item>
       <ion-label>Datum</ion-label>
-      <ion-datetime displayFormat="DD.MM.YYYY" doneText="Fertig" cancelText="Abbrechen" (ionChange)="getRightShift()"
-                    [(ngModel)]="event.startDate"></ion-datetime>
+      <ion-datetime displayFormat="DD.MM.YYYY"></ion-datetime>
     </ion-item>
     <ion-item>
       <ion-label>Uhrzeit</ion-label>
-      <ion-datetime displayFormat="HH:mm" doneText="Fertig" cancelText="Abbrechen" (ionChange)="getRightShift()"
+      <ion-datetime displayFormat="HH:mm" doneText="Fertig" cancelText="Abbrechen" (ionChange)="getReservation()"
                     [(ngModel)]="event.startDate"></ion-datetime>
     </ion-item>
   </ion-list>
+
+
+  <!-- Begin freeDishes results -->
+  <ion-grid class="grid-tables">
+    <ion-row justify-content-center>
+
+      <ng-container *ngFor="let desk of desks">
+        <ion-col col-auto (click)="deskSelected(desk)">
+          <div class="desk">
+            <h1 [ngClass]="{unused: !desk.inUse, used: desk.inUse}">
+              {{desk.number}}
+            </h1>
+            <div class="desk-details">
+              <span *ngIf="!desk.inUse">frei<br/></span>
+              <p *ngIf="desk.reservation">
+                <span class="important">{{ desk.reservation | customTime }}</span>
+                <br/>
+                <span class="unimportant">Reservierung</span>
+              </p>
+            </div>
+          </div>
+        </ion-col>
+      </ng-container>
+
+    </ion-row>
+  </ion-grid>
+
 
 </ion-content>

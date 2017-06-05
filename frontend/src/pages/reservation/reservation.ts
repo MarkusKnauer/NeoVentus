@@ -1,6 +1,9 @@
 import {Component} from "@angular/core";
 import {LoadingController, NavController} from "ionic-angular";
 import {AuthGuardService} from "../../service/auth-guard.service";
+import {OrderService} from "../../service/order.service";
+import {ReservationService} from "../../service/reservation.service";
+import {DeskService} from "../../service/desk.service";
 /**
  * @author Markus Knauer
  * @version 0.0.1
@@ -12,6 +15,9 @@ import {AuthGuardService} from "../../service/auth-guard.service";
 })
 export class ReservationPage {
   private loading;
+  private now: Date;
+  private desks: any;
+
 
   public event = {
     startDate: new Date().toISOString(),
@@ -21,9 +27,21 @@ export class ReservationPage {
 
   private newDay = [];
 
-  constructor(private authGuard: AuthGuardService, public loadingCtrl: LoadingController, public navCtrl: NavController) {
+  constructor(private authGuard: AuthGuardService,
+              public loadingCtrl: LoadingController,
+              public navCtrl: NavController,
+              private orderService: OrderService,
+              private reservationService: ReservationService,
+              private deskService: DeskService) {
+
+    this.now = new Date();
+
+    this.deskService.getAllDesks().then(
+      desks => {
+        this.desks = desks;
 
 
+      });
   }
 
   /**
@@ -65,4 +83,32 @@ export class ReservationPage {
     this.loading.present();
   }
 
+
+  loadDeskReservationDetails(desk: any) {
+    this.reservationService.getReservationsByDesk(desk).then(
+      reservations => {
+
+        let next = null;
+
+        for (let reservation of reservations) {
+
+          let reservationTime = new Date(reservation.time);
+
+          if (reservationTime > this.now) { // reservation is in the future
+
+            if (next == null) {
+              next = reservationTime;
+
+            } else if (reservationTime < next) { // reservation is before previous reservation
+              next = reservationTime;
+            }
+          }
+        }
+
+        if (next != null && next.getDay() == this.now.getDay()) { // desk is reserved today
+          desk.reservation = next;
+        }
+      }
+    )
+  }
 }
