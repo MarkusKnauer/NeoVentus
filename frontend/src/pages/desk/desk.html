@@ -12,7 +12,15 @@
       </ion-item-divider>
       <ion-item-sliding *ngFor="let order of cat.orders">
         <ion-item (press)="openProcessingDetailModal(order)">
-          {{order.count}}x
+          <button *ngIf="getTmpOrderCount(order.item, order.sideDishes, order.guestWish) > 0" ion-button clear
+                  color="danger" class="order-shortcut" icon-only
+                  (click)="removeTmpOrder(order.item, order.sideDishes, order.guestWish)">
+            <ion-icon name="remove"></ion-icon>
+          </button>
+          <span class="count-container">
+          {{order.count}}
+          <ion-badge *ngIf="getTmpOrderCount(order.item, order.sideDishes, order.guestWish) > 0">{{getTmpOrderCount(order.item, order.sideDishes, order.guestWish)}}</ion-badge>
+          </span>
           <button icon-only ion-button clear color="secondary" class="order-shortcut"
                   (click)="addTmpOrder(order.item, order.sideDishes, order.guestWish)">
             <ion-icon name="add"></ion-icon>
@@ -42,7 +50,7 @@
                 (click)="removeTmpOrder(tmpOrder.item, tmpOrder.sideDishes, tmpOrder.guestWish)">
           <ion-icon name="remove"></ion-icon>
         </button>
-        {{tmpOrder.count}}x
+        {{tmpOrder.count}}
         <button class="order-shortcut" clear ion-button icon-only color="secondary"
                 (click)="addTmpOrder(tmpOrder.item, tmpOrder.sideDishes, tmpOrder.guestWish)">
           <ion-icon name="add"></ion-icon>

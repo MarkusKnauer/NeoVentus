@@ -132,6 +132,19 @@ export class DeskPage {
    * @param item
    * @param sideDishes
    * @param guestWish
+   * @return {number}
+   */
+  public getTmpOrderCount(item, sideDishes, guestWish) {
+    return this.tmpOrders.filter((el) => {
+      return el.item == item && Utils.arraysEqual(sideDishes, el.sideDishes) && el.wish == guestWish;
+    }).length;
+  }
+
+  /**
+   *
+   * @param item
+   * @param sideDishes
+   * @param guestWish
    */
   removeTmpOrder(item, sideDishes, guestWish) {
     let rmOrder = this.tmpOrders.find((el) => {

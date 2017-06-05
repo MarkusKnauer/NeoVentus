@@ -48,7 +48,7 @@ export class LoginPage {
     }).catch(() => {
       console.debug("Failed to login");
       let infoToast = this.toastCtrl.create({
-        message: "Invalid login",
+        message: "Falsche Kombination aus Benutzername und Passwort",
         duration: 3000,
         position: "bottom"
       });

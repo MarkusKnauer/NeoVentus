@@ -2,7 +2,7 @@
 
   <ion-content>
     <div class="spacer" style="width: 251.2px; height: 13px;"></div>
-    <div class="profile-image">
+    <div class="profile-image" *ngIf="authGuard.isAuthenticated()">
       <a style="display:block;" menuClose (click)="openPage(profilepage)">
         <img src="../assets/icon/icon.png" style="display: block; width: 60%; margin-left: auto; margin-right: auto;">
       </a>
@@ -20,7 +20,7 @@
     </ion-list>
 
     <ion-list>
-      <button menuClose ion-item detail-none color="danger" (click)="logout()">
+      <button *ngIf="authGuard.isAuthenticated()" menuClose ion-item detail-none color="danger" (click)="logout()">
         <ion-icon name="log-out" item-left></ion-icon>
         Logout
       </button>

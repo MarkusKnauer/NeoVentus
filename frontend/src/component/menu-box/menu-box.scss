@@ -9,6 +9,10 @@ menu-box {
     font-size: 85%;
     background-color: color($colors, light2);
 
+    @media (max-width: 380px) {
+      padding-bottom: 60%;
+    }
+
     .inner {
       position: absolute;
       top: 0.25rem;
