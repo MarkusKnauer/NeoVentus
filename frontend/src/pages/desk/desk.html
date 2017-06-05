@@ -65,7 +65,7 @@
 
   <!--floating action button -->
   <ion-fab bottom right>
-    <button ion-fab mini icon-only (click)='openOrderSelectModal()'>
+    <button ion-fab icon-only (click)='openOrderSelectModal()'>
       <ion-icon name="add"></ion-icon>
     </button>
   </ion-fab>
@@ -75,19 +75,19 @@
 <ion-footer>
   <ion-grid>
     <ion-row>
-      <ion-col col-2>
+      <ion-col col-3>
         <button ion-button full icon-only color="light4" [disabled]="!orderService.cache[ordersCacheKey]?.length">
           <ion-icon name="move"></ion-icon>
         </button>
       </ion-col>
-      <ion-col col-8>
+      <ion-col col-6>
         <button ion-button full icon-left (click)="openBillingModal()"
                 [disabled]="!orderService.cache[ordersCacheKey]?.length">
           <ion-icon name="cash"></ion-icon>
           Rechnung
         </button>
       </ion-col>
-      <ion-col col-2>
+      <ion-col col-3>
         <button ion-button full icon-only color="secondary" [disabled]="!tmpOrders.length" (click)="submitOrders()">
           <ion-icon name="send"></ion-icon>
         </button>
