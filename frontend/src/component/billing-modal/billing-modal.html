@@ -16,7 +16,10 @@
 </ion-header>
 <ion-content>
   <ion-list>
-    <ng-container *ngFor="let group of cachedGroups">
+    <ng-container *ngFor="let group of cachedGroups; let i = index">
+      <ion-item-divider color="light" *ngIf="i == 0 || group.item.name[0] != cachedGroups[i-1].item.name[0]">
+        {{group.item.name[0]}}
+      </ion-item-divider>
       <ion-item *ngFor="let orderId of group.orderIds">
         <!--output sidedishes and guest wish too-->
         <ion-label>{{group.item.name}}

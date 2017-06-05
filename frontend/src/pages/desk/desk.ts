@@ -158,9 +158,21 @@ export class DeskPage {
    * @param catIds
    */
   getOrdersByCat(catIds) {
-    return this.orderService.cache[this.ordersCacheKey].filter(el => {
+    let orders = this.orderService.cache[this.ordersCacheKey].filter(el => {
       return catIds.indexOf(el.item.menuItemCategory.id) != -1;
     });
+    this.sortOrderGroupsByName(orders);
+    return orders;
+  }
+
+  /**
+   * sort groups by item name
+   * @param groups
+   */
+  private sortOrderGroupsByName(groups) {
+    groups.sort((a, b) => {
+      return a.item.name.localeCompare(b.item.name);
+    })
   }
 
   /**
@@ -257,6 +269,7 @@ export class DeskPage {
         result.push({item: tmp.item, sideDishes: tmp.sideDishes, count: 1, guestWish: tmp.wish});
       }
     }
+    this.sortOrderGroupsByName(result);
     console.debug("grouped tmp orders", result);
     this.groupedTmpOrders = result;
     return result;
