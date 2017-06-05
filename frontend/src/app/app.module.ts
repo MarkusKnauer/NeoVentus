@@ -43,6 +43,7 @@ import {LocalNotifications} from "@ionic-native/local-notifications";
 import {BillingModalComponent} from "../component/billing-modal/billing-modal";
 import {BillingCheckoutModalComponent} from "../component/billing-checkout-modal/billing-checkout-modal";
 import {OrderGroupDetailModalComponent} from "../component/order-group-detail-modal/order-group-detail-modal";
+import {ReservationPage} from "../pages/reservation/reservation";
 
 
 @NgModule({
@@ -59,6 +60,7 @@ import {OrderGroupDetailModalComponent} from "../component/order-group-detail-mo
     SettingsPage,
     ProfilePage,
     KitchenOverviewPage,
+    ReservationPage,
 
     // components
     SideMenuComponent,
@@ -89,7 +91,7 @@ import {OrderGroupDetailModalComponent} from "../component/order-group-detail-mo
         {component: KitchenOverviewPage, name: "KitchenOverview", segment: "kitchen/:forKitchen"},
         {component: SettingsPage, name: "Settings", segment: "settings"},
         {component: ProfilePage, name: "Profile", segment: "profile"},
-        {component: InvoicesPage, name: "billings", segment: "billlings"},
+        {component: InvoicesPage, name: "billings", segment: "billlings"}
       ]
     }),
     IonicStorageModule.forRoot()
@@ -106,6 +108,7 @@ import {OrderGroupDetailModalComponent} from "../component/order-group-detail-mo
     SettingsPage,
     ProfilePage,
     KitchenOverviewPage,
+    ReservationPage,
     OrderSelectModalComponent,
     MenuDetailModalComponent,
     ManageStornoReasonsModalComponent,
