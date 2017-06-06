@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="de.neoventus" version="0.0.1" xmlns="http://www.w3.org/ns/widgets">
-    <name>NeoVentus</name>
-    <description>An awesome Ionic/Cordova app.</description>
-    <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
+<widget id="us.neovent.frontend" version="0.0.1" xmlns="http://www.w3.org/ns/widgets">
+  <name>NeoVentus</name>
+  <icon src="resources/web_hi_res_512.png"/>
+  <description>Gastronomy point of sale app</description>
+  <author href="http://www.hochschule-kempten.de/">NeoVentus Team</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
-    <allow-navigation href="http://192.168.178.39:8100" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
@@ -28,7 +28,8 @@
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashMaintainAspectRatio" value="true" />
     <preference name="FadeSplashScreenDuration" value="300" />
-    <preference name="SplashShowOnlyFirstTime" value="false" />
+  <preference name="SplashShowOnlyFirstTime" value="true"/>
+  <preference name="SplashScreen" value="none"/>
     <feature name="StatusBar">
         <param name="ios-package" onload="true" value="CDVStatusBar" />
     </feature>
