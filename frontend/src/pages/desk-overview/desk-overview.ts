@@ -36,9 +36,13 @@ export class DeskOverviewPage {
         for (let desk of desks) {
 
           // listen to billing changes and reload desk data
-          this.events.subscribe("order-change-" + desk.number, () => {
+          this.events.subscribe("order-change-" + desk.number, (number) => {
             console.debug("reload desk overview data for desk after billing");
-            this.loadDeskOrderDetails(this.desks[desk.number - 1]);
+            let desk = this.desks.find(el => {
+              return el.number == number;
+            });
+            if (desk)
+              this.loadDeskOrderDetails(desk, true);
           });
 
           this.loadDeskOrderDetails(desk);
@@ -47,8 +51,9 @@ export class DeskOverviewPage {
       });
   }
 
-  loadDeskOrderDetails(desk: any) {
-    this.orderService.getOrdersByDeskNumber(desk.number).then(
+  loadDeskOrderDetails(desk: any, force?) {
+    console.debug(desk);
+    this.orderService.getOrdersByDeskNumber(desk.number, force).then(
       orders => {
 
         let waiters = new Set<string>();
@@ -68,16 +73,16 @@ export class DeskOverviewPage {
           }
         });
 
-        if (strWaiters != "") {
-          desk.waiter = strWaiters
-        }
+
+        desk.waiter = strWaiters
+
 
         if (totalPrice != 0) {
-          desk.price = totalPrice.toFixed(2); // some weird but negligible rounding errors happen here
           desk.inUse = true;
         } else {
           desk.inUse = false;
         }
+        desk.price = totalPrice.toFixed(2);
 
         if (waiters.has(this.getUserName())) {
           desk.mine = true;

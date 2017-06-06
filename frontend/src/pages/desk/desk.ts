@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, NgZone} from "@angular/core";
 import {
   ActionSheetController,
   AlertController,
@@ -6,8 +6,8 @@ import {
   LoadingController,
   ModalController,
   NavController,
-  Platform,
-  NavParams
+  NavParams,
+  Platform
 } from "ionic-angular";
 import {OrderService} from "../../service/order.service";
 import {AuthGuardService} from "../../service/auth-guard.service";
@@ -20,9 +20,6 @@ import {OrderDto} from "../../model/order-dto";
 import {LocalStorageService} from "../../service/local-storage.service";
 import {BillingModalComponent} from "../../component/billing-modal/billing-modal";
 import {OrderGroupDetailModalComponent} from "../../component/order-group-detail-modal/order-group-detail-modal";
-import { NgZone } from "@angular/core";
-
-import {IBeacon} from "@ionic-native/ibeacon";
 import {BeaconService} from "../../service/beacon.service";
 import {BeaconModel} from "../../model/beacon-module";
 
@@ -388,6 +385,8 @@ export class DeskPage {
       // reset tmp order
       this.groupedTmpOrders = [];
       this.tmpOrders = [];
+
+      this.events.publish("order-change-" + this.deskNumber, this.deskNumber);
 
       // reload data
       this.orderService.getOrdersByDeskNumber(this.deskNumber, true).then(() => {

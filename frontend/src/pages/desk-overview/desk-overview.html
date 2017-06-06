@@ -69,7 +69,7 @@
 
                 <h2 *ngIf="!desk.price == 0">
                   <span class="important">
-                  {{desk.price}}
+                  {{desk.price | costDecimal}}
                   </span>€
                 </h2>
               </td>
