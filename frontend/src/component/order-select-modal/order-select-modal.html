@@ -16,7 +16,7 @@
           <div col-3 *ngFor="let favId of getExistingFavorites()">
             <!--todo prefent multiple get menu object id-->
             <menu-box [item]="getMenuObjectToId(favId)" [count]="getTmpOrderCount(getMenuObjectToId(favId))"
-                      (press)="openDetailModal(favId)"
+                      (longPress)="openDetailModal(favId)"
                       (click)="addOrder(getMenuObjectToId(favId))"></menu-box>
           </div>
         </ion-row>
@@ -29,7 +29,8 @@
         <ion-grid>
           <ion-row>
             <div col-3 *ngFor="let menuItem of cat.items">
-              <menu-box [item]="menuItem" [count]="getTmpOrderCount(menuItem)" (press)="openDetailModal(menuItem.id)"
+              <menu-box [item]="menuItem" [count]="getTmpOrderCount(menuItem)"
+                        (longPress)="openDetailModal(menuItem.id)"
                         (click)="addOrder(menuItem)"></menu-box>
             </div>
           </ion-row>
@@ -41,7 +42,7 @@
             <ion-row>
               <div col-3 *ngFor="let cMenuItem of child.items">
                 <menu-box [item]="cMenuItem" [count]="getTmpOrderCount(cMenuItem)"
-                          (press)="openDetailModal(cMenuItem.id)"
+                          (longPress)="openDetailModal(cMenuItem.id)"
                           (click)="addOrder(cMenuItem)">
                 </menu-box>
               </div>

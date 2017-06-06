@@ -46,6 +46,7 @@ import {OrderGroupDetailModalComponent} from "../component/order-group-detail-mo
 import {ReservationPage} from "../pages/reservation/reservation";
 import {IBeacon} from "@ionic-native/ibeacon";
 import {BeaconService} from "../service/beacon.service";
+import {LongPressDirective} from "../component/long-press.directive";
 
 
 @NgModule({
@@ -79,7 +80,8 @@ import {BeaconService} from "../service/beacon.service";
     MapToIterable,
     CustomDataPipe,
 
-
+    // directives
+    LongPressDirective,
   ],
   imports: [
     HttpModule,
@@ -116,7 +118,7 @@ import {BeaconService} from "../service/beacon.service";
     ManageStornoReasonsModalComponent,
     BillingModalComponent,
     BillingCheckoutModalComponent,
-    OrderGroupDetailModalComponent
+    OrderGroupDetailModalComponent,
   ],
   providers: [
     StatusBar,
