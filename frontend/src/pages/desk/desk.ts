@@ -395,7 +395,9 @@ export class DeskPage {
       });
     });
   }
-  onViewDidLoad() {
+
+
+  ionViewDidLoad() {
     this.platform.ready().then(() => {
       this.beaconService.initialise().then((isInitialised) => {
         if (isInitialised) {
@@ -406,16 +408,19 @@ export class DeskPage {
   }
 
   listenToBeaconEvents() {
-    this.events.subscribe("didRangeBeaconsInRegion", (data) => {
+    this.events.subscribe('didRangeBeaconsInRegion', (beaconData) => {
 
 // update the UI with the beacon list
       this.zone.run(() => {
 
         this.beacons = [];
 
-        let beaconList = data.beacons;
+        let beaconList = beaconData.beacons;
+
         beaconList.forEach((beacon) => {
+
           let beaconObject = new BeaconModel(beacon);
+
           this.beacons.push(beaconObject);
         });
 

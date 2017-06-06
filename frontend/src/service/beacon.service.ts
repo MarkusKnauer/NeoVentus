@@ -7,8 +7,8 @@
  */
 import {AuthGuardService} from "./auth-guard.service";
 import {Http} from "@angular/http";
-import {Events, Platform} from "ionic-angular";
-import {IBeacon} from "@ionic-native/ibeacon";
+import {AlertController, Events, Platform} from "ionic-angular";
+import {IBeacon} from 'ionic-native';
 import {Injectable} from "@angular/core";
 @Injectable()
 export class BeaconService {
@@ -16,45 +16,68 @@ export class BeaconService {
   delegate: any;
   region: any;
 
-  constructor(public platform: Platform, public events: Events,private http: Http, private authGuard: AuthGuardService, private ibeacon: IBeacon) {
+  constructor(public platform: Platform, public events: Events, private http: Http, private authGuard: AuthGuardService , private alertCtrl: AlertController) {
 
   }
 
   initialise(): any {
     let promise = new Promise((resolve, reject) => {
-// we need to be running on a device
-      if (this.platform.is("cordova")) {
+      // we need to be running on a device
+      if (this.platform.is('cordova')) {
 
-// Request permission to use location on iOS
-        this.ibeacon.requestAlwaysAuthorization();
+        // Request permission to use location on iOS
+        IBeacon.requestAlwaysAuthorization();
 
-// create a new delegate and register it with the native layer
-        this.delegate =  this.ibeacon.Delegate();
-
-// Subscribe to some of the delegate"s event handlers
+        // create a new delegate and register it with the native layer
+        this.delegate = IBeacon.Delegate();
+        // Subscribe to some of the delegate's event handlers
         this.delegate.didRangeBeaconsInRegion()
           .subscribe(
-            data => {
-              this.events.publish("didRangeBeaconsInRegion", data);
+            beaconData => {
+              this.events.publish('didRangeBeaconsInRegion', beaconData);
             },
             error => console.error()
           );
 
-// setup a beacon region – CHANGE THIS TO YOUR OWN UUID
-        this.region =  this.ibeacon.BeaconRegion("deskBeacon", "D2C56DB5-DFFB-48D2-B060-D0F5A71096E0");
+        // setup a beacon region
+        this.region = IBeacon.BeaconRegion('deskBeacon', '987B5028-30E2-4C08-B0B9-5AB16A57BE6B');
 
-// start ranging
-        this.ibeacon.startRangingBeaconsInRegion(this.region)
+        // start ranging
+        IBeacon.startRangingBeaconsInRegion(this.region)
           .then(
             () => {
+              let alert = this.alertCtrl.create({
+                title: 'Beacon richtig erkannt!',
+
+                buttons: [
+                  {
+                    text: 'Abbruch',
+                    role: 'cancel',
+                  }
+                ]
+              });
+              alert.present();
               resolve(true);
             },
             error => {
-              console.error("Failed to begin monitoring: ", error);
+              console.error('Failed to begin monitoring: ', error);
               resolve(false);
             }
           );
+
+
       } else {
+        let alert = this.alertCtrl.create({
+          title: 'Divice nicht erkannt!',
+
+          buttons: [
+            {
+              text: 'Abbruch',
+              role: 'cancel',
+            }
+          ]
+        });
+        alert.present();
         console.error("This application needs to be running on a device");
         resolve(false);
       }

@@ -47,8 +47,8 @@ import {ReservationPage} from "../pages/reservation/reservation";
 import {IBeacon} from "@ionic-native/ibeacon";
 import {BeaconService} from "../service/beacon.service";
 import {LongPressDirective} from "../component/long-press.directive";
-
-
+import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
+import { BLE } from '@ionic-native/ble';
 @NgModule({
   declarations: [
     MyApp,
@@ -125,6 +125,8 @@ import {LongPressDirective} from "../component/long-press.directive";
     SplashScreen,
     LocalNotifications,
     IBeacon,
+    BluetoothSerial,
+    BLE,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     StompService,
     SocketService,
@@ -140,7 +142,7 @@ import {LongPressDirective} from "../component/long-press.directive";
     ReservationService,
     BillingService,
     WorkingShiftService,
-    BeaconService
+    BeaconService,
   ]
 })
 export class AppModule {
