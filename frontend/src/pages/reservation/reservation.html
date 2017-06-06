@@ -12,21 +12,19 @@
   <!-- Person selection-->
   <ion-list>
     <ion-item>
-      <ion-label>Anzahl Personen</ion-label>
-      <ion-input type="number" placeholder="Bitte Auswählen"></ion-input>
+      <ion-input type="number" (input)="guestnumber = $event.target.value" placeholder="Anzahl Personen"
+                 (ionChange)="getReservation()"></ion-input>
     </ion-item>
   </ion-list>
 
   <!-- Date selection-->
   <ion-list>
     <ion-item>
-      <ion-label>Datum</ion-label>
-      <ion-datetime displayFormat="DD.MM.YYYY"></ion-datetime>
+      <ion-datetime displayFormat="DD.MM.YYYY" (ionChange)="getReservation()" placeholder="Datum"></ion-datetime>
     </ion-item>
     <ion-item>
-      <ion-label>Uhrzeit</ion-label>
       <ion-datetime displayFormat="HH:mm" doneText="Fertig" cancelText="Abbrechen" (ionChange)="getReservation()"
-                    [(ngModel)]="event.startDate"></ion-datetime>
+                    placeholder="Uhrzeit"></ion-datetime>
     </ion-item>
   </ion-list>
 

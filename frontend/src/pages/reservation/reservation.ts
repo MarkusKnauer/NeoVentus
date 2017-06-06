@@ -10,13 +10,15 @@ import {DeskService} from "../../service/desk.service";
  */
 
 @Component({
-  selector: 'reservation-message',
+  selector: 'reservation',
   templateUrl: 'reservation.html'
 })
 export class ReservationPage {
   private loading;
   private now: Date;
   private desks: any;
+  private alldesks: any;
+  private guestnumber: number;
 
 
   public event = {
@@ -37,11 +39,11 @@ export class ReservationPage {
     this.now = new Date();
 
     this.deskService.getAllDesks().then(
-      desks => {
-        this.desks = desks;
-
-
+      alldesks => {
+        this.alldesks = alldesks;
       });
+
+
   }
 
   /**
@@ -51,7 +53,23 @@ export class ReservationPage {
   getReservation() {
     console.debug("get Reservation");
 
-    //tue etwas
+
+    if (this.guestnumber <= 0 || this.guestnumber > 103) {
+
+      alert("Bitte beachten Sie das mindestens einer und maximal 103 Personen auswgewählt werden können!")
+
+
+    } else {
+
+      if (this.alldesks != null) {
+        for (let desk of this.alldesks) {
+
+          this.loadDeskReservationDetails(desk)
+
+        }
+      }
+    }
+
 
   }
 
