@@ -1,4 +1,4 @@
-import {Injectable, isDevMode} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {Storage} from "@ionic/storage";
 import {CachingService} from "./caching.service";
 
@@ -63,8 +63,6 @@ export class LocalStorageService extends CachingService {
    */
   loadConnectionUrl() {
     return this.storage.ready().then(() => {
-      if (isDevMode)
-        this.storage.clear();
       return this.storage.get(LocalStorageService.CONNECTION_URL).then((val) => {
         this.saveToCache(LocalStorageService.CONNECTION_URL, val);
       })
