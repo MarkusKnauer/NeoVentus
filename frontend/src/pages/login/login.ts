@@ -3,6 +3,7 @@ import {NavController, ToastController} from "ionic-angular";
 import {UserService} from "../../service/user.service";
 import {DeskOverviewPage} from "../desk-overview/desk-overview";
 import {AuthGuardService} from "../../service/auth-guard.service";
+import {KitchenOverviewPage} from "../kitchen-overview/kitchen-overview";
 
 /**
  * @author Dennis Thanner
@@ -29,12 +30,7 @@ export class LoginPage {
    * prevent login in screen to show up in browser if user is authenticated
    */
   ionViewWillEnter() {
-    this.authGuard.isAuthenticatedPromise().then(() => {
-      console.debug("User already authenticated");
-      this.navCtrl.setRoot(DeskOverviewPage)
-    }, () => {
-    });
-
+    this.redirectUser();
   }
 
   /**
@@ -44,7 +40,7 @@ export class LoginPage {
   public login() {
     this.userService.login(this.username, this.password).then(() => {
       // redirect to desk overview
-      this.navCtrl.setRoot(DeskOverviewPage)
+      this.redirectUser();
     }).catch(() => {
       console.debug("Failed to login");
       let infoToast = this.toastCtrl.create({
@@ -54,6 +50,24 @@ export class LoginPage {
       });
       infoToast.present();
     })
+  }
+
+  /**
+   * redirect user to specific pages after login
+   */
+  private redirectUser() {
+    this.authGuard.isAuthenticatedPromise().then(() => {
+      console.debug("User already authenticated");
+      if (this.authGuard.hasRole("ROLE_CHEF")) {
+        this.navCtrl.setRoot(KitchenOverviewPage, {forKitchen: 1})
+      } else if (this.authGuard.hasRole("ROLE_BAR")) {
+        this.navCtrl.setRoot(KitchenOverviewPage, {forKitchen: 0})
+      } else {
+        this.navCtrl.setRoot(DeskOverviewPage)
+      }
+    }, () => {
+    });
+
   }
 
 }
