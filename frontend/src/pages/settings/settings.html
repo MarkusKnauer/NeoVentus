@@ -14,7 +14,7 @@
         Stornierungsgründe verwalten
       </button>
     </ng-container>
-    <ng-container *ngIf="!authGuard.isAuthenticated()">
+    <ng-container *ngIf="!authGuard.isAuthenticated() && platform.is('cordova')">
       <ion-item-divider>
         Verbindung
       </ion-item-divider>
