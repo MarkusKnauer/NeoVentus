@@ -20,19 +20,28 @@
   <!-- Date selection-->
   <ion-list>
     <ion-item>
-      <ion-datetime displayFormat="DD.MM.YYYY" (ionChange)="getReservation()" placeholder="Datum"></ion-datetime>
-    </ion-item>
-    <ion-item>
-      <ion-datetime displayFormat="HH:mm" doneText="Fertig" cancelText="Abbrechen" (ionChange)="getReservation()"
-                    placeholder="Uhrzeit"></ion-datetime>
+      <ion-datetime displayFormat="DD.MM.YYYY, HH:mm" (ionChange)="getReservation()"
+                    doneText="Fertig" cancelText="Abbrechen" placeholder="Datum, Uhrzeit"
+                    (input)="time = $event.target.value"></ion-datetime>
     </ion-item>
   </ion-list>
 
 
-  <!-- Begin freeDishes results -->
+  <!-- Tell the User what happens -->
+  <ion-list>
+    <ion-item *ngIf="desks.length == 0">
+      <ion-label>
+        Im gewählten Zeitraum sind leider keine freien Tische mehr verfügbar
+      </ion-label>
+    </ion-item>
+    <ion-item *ngIf="desks.length != 0">
+      Im gewählten Zeitraum sind folgende Tische verfügbar:
+    </ion-item>
+  </ion-list>
   <ion-grid class="grid-tables">
     <ion-row justify-content-center>
 
+      <!-- Begin freeDishes results -->
       <ng-container *ngFor="let desk of desks">
         <ion-col col-auto (click)="deskSelected(desk)">
           <div class="desk">

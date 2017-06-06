@@ -15,17 +15,16 @@ import {DeskService} from "../../service/desk.service";
 })
 export class ReservationPage {
   private loading;
-  private now: Date;
+  private time: Date;
   private desks: any;
   private alldesks: any;
   private guestnumber: number;
 
-
+  /*
   public event = {
-    startDate: new Date().toISOString(),
-    endDate: new Date().toISOString(),
-
+   Date: new Date().toISOString(),
   };
+   */
 
   private newDay = [];
 
@@ -36,7 +35,8 @@ export class ReservationPage {
               private reservationService: ReservationService,
               private deskService: DeskService) {
 
-    this.now = new Date();
+    this.time = new Date();
+    this.desks = [];
 
     this.deskService.getAllDesks().then(
       alldesks => {
@@ -53,18 +53,19 @@ export class ReservationPage {
   getReservation() {
     console.debug("get Reservation");
 
-
     if (this.guestnumber <= 0 || this.guestnumber > 103) {
 
       alert("Bitte beachten Sie das mindestens einer und maximal 103 Personen auswgewählt werden können!")
 
-
     } else {
 
       if (this.alldesks != null) {
-        for (let desk of this.alldesks) {
+        if (this.desks.length == 0) {
+          for (let desk of this.alldesks) {
 
-          this.loadDeskReservationDetails(desk)
+            this.loadDeskAvailability(desk);
+
+          }
 
         }
       }
@@ -73,20 +74,6 @@ export class ReservationPage {
 
   }
 
-
-  compareDates() {
-    let compare: any;
-    let dat1 = Date.parse(this.event.startDate);
-    let dat2 = Date.parse(this.event.endDate);
-    compare = dat1 - dat2;
-    if (compare == 0) {
-      return 0;
-    } else if (compare < 0) {
-      return -1;
-    } else if (compare > 0) {
-      return 1;
-    }
-  }
 
   /**
    * show loading popup
@@ -102,6 +89,40 @@ export class ReservationPage {
   }
 
 
+  setTime(time: any) {
+    this.time = time;
+  }
+
+  loadDeskAvailability(desk: any) {
+    this.reservationService.getReservationsByDesk(desk).then(
+      reservations => {
+
+        let next = null;
+
+        let endtime = new Date();
+        let pretime = new Date();
+
+        for (let reservation of reservations) {
+
+          let reservationTime = new Date(reservation.time);
+
+          endtime.setTime(reservationTime.getTime() + 3600000) //give one hour time to eat
+
+          if (this.time > endtime) { // reservation is in the future, ok
+            next = 1;
+          }
+
+          pretime.setTime(reservationTime.getTime() - 3600000)//give one hour time to eat
+          if (this.time < pretime) {
+            next = 1;
+          }
+        }
+        if (next != null) this.desks.push(desk);
+
+      }
+    )
+  }
+
   loadDeskReservationDetails(desk: any) {
     this.reservationService.getReservationsByDesk(desk).then(
       reservations => {
@@ -112,7 +133,7 @@ export class ReservationPage {
 
           let reservationTime = new Date(reservation.time);
 
-          if (reservationTime > this.now) { // reservation is in the future
+          if (reservationTime > this.time) { // reservation is in the future
 
             if (next == null) {
               next = reservationTime;
@@ -123,7 +144,7 @@ export class ReservationPage {
           }
         }
 
-        if (next != null && next.getDay() == this.now.getDay()) { // desk is reserved today
+        if (next != null && next.getDay() == this.time.getDay()) { // desk is reserved today
           desk.reservation = next;
         }
       }
