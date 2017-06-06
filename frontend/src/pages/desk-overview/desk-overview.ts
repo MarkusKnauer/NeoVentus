@@ -52,7 +52,6 @@ export class DeskOverviewPage {
   }
 
   loadDeskOrderDetails(desk: any, force?) {
-    console.debug(desk);
     this.orderService.getOrdersByDeskNumber(desk.number, force).then(
       orders => {
 

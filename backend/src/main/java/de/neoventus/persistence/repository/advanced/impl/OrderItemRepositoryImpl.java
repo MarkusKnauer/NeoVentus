@@ -85,7 +85,7 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 			.and("_id.desk").as("desk");
 
 		Aggregation agg = Aggregation.newAggregation(
-			Aggregation.match(Criteria.where("billing").is(null).and("states.state")
+			Aggregation.match(Criteria.where("states.state")
 					.nin(Arrays.asList(OrderItemState.State.CANCELED, OrderItemState.State.FINISHED))
 				.and("item").in(itemsInterested).and("desk").in(desks)),
 				group,
@@ -113,7 +113,7 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 		List<MenuItem> itemsInterested = this.menuItemRepository.findAllByMenuItemCategoryIn(categories);
 
 		Aggregation agg = Aggregation.newAggregation(
-			Aggregation.match(Criteria.where("billing").is(null).and("states.state")
+			Aggregation.match(Criteria.where("states.state")
 				.nin(Arrays.asList(OrderItemState.State.CANCELED, OrderItemState.State.FINISHED))
 				.and("item").in(itemsInterested)),
 			Aggregation.group("item", "sideDishes", "guestWish").count().as("count"),
