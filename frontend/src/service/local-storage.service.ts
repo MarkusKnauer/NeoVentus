@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {Injectable, isDevMode} from "@angular/core";
 import {Storage} from "@ionic/storage";
 import {CachingService} from "./caching.service";
 
@@ -12,6 +12,7 @@ export class LocalStorageService extends CachingService {
 
   public static FAV_KEY = "favs";
   public static STORNO_REASONS_KEY = "storno_reasons";
+  public static CONNECTION_URL = "connection";
 
   constructor(private storage: Storage) {
     super();
@@ -50,14 +51,35 @@ export class LocalStorageService extends CachingService {
    */
   loadStornoReasons() {
     return this.storage.ready().then(() => {
-      return this.storage.ready().then(() => {
-        return this.storage.get(LocalStorageService.STORNO_REASONS_KEY).then((val) => {
-          this.saveToCache(LocalStorageService.STORNO_REASONS_KEY, val ? JSON.parse(val) : []);
-        })
+      return this.storage.get(LocalStorageService.STORNO_REASONS_KEY).then((val) => {
+        this.saveToCache(LocalStorageService.STORNO_REASONS_KEY, val ? JSON.parse(val) : []);
       })
     })
   }
 
+  /**
+   * load connection url
+   * @returns {Promise<TResult2|any|any|any>}
+   */
+  loadConnectionUrl() {
+    return this.storage.ready().then(() => {
+      if (isDevMode)
+        this.storage.clear();
+      return this.storage.get(LocalStorageService.CONNECTION_URL).then((val) => {
+        this.saveToCache(LocalStorageService.CONNECTION_URL, val);
+      })
+    })
+  }
+
+  /**
+   * save cached data
+   * @param key
+   */
+  saveData(key: string, data: string) {
+    this.storage.ready().then(() => {
+      this.storage.set(key, data);
+    });
+  }
 
   /**
    * private save cached json data

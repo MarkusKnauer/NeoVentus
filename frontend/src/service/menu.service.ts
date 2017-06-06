@@ -1,21 +1,24 @@
 import {Injectable} from "@angular/core";
 import {CachingService} from "./caching.service";
 import {Http} from "@angular/http";
+import {HttpService, ServiceUtils} from "./service-utils";
+import {Events, Platform} from "ionic-angular";
 
 /**
  * menu service class
  * for backend request
  *
  * @author Dennis Thanner
- * @version 0.0.2 prevent menu loading if exists - DT
  */
 @Injectable()
-export class MenuService extends CachingService {
+export class MenuService extends CachingService implements HttpService {
 
-  private static BASE_URL = "/api/menu";
+  BASE_URL_PREFIX = "/api/menu";
+  BASE_URL = this.BASE_URL_PREFIX;
 
-  constructor(private http: Http) {
+  constructor(private http: Http, platform: Platform, events: Events) {
     super();
+    ServiceUtils.initConnectionUrl(this, platform, events);
   }
 
   /**
@@ -30,7 +33,7 @@ export class MenuService extends CachingService {
     }
 
     if (!this.reqs[cKey]) {
-      this.reqs[cKey] = this.http.get(MenuService.BASE_URL + "/all").toPromise();
+      this.reqs[cKey] = this.http.get(this.BASE_URL + "/all").toPromise();
 
       this.reqs[cKey].then((resp) => {
         this.saveToCache(cKey, resp.json());
@@ -51,7 +54,7 @@ export class MenuService extends CachingService {
    * @returns {Observable<Response>}
    */
   public getPopularGuestWishes(id: string) {
-    return this.http.get(MenuService.BASE_URL + "/popular-wishes/" + id).toPromise();
+    return this.http.get(this.BASE_URL + "/popular-wishes/" + id).toPromise();
   }
 
   /**
@@ -61,7 +64,7 @@ export class MenuService extends CachingService {
    * @returns {Promise<T>}
    */
   public getProcessingDetails(id: string) {
-    return this.http.get(MenuService.BASE_URL + "/processing-details/" + id).toPromise();
+    return this.http.get(this.BASE_URL + "/processing-details/" + id).toPromise();
   }
 
 }

@@ -30,6 +30,16 @@ export class SideMenuComponent {
   profilepage: any;
   activepage: any;
 
+  private settingsPage = {
+    title: 'Einstellungen',
+    component: SettingsPage,
+    icon: 'settings',
+  };
+
+  private loginPage = {
+    component: LoginPage,
+  };
+
   private user = null;
   private userroles: any = null;
 
@@ -42,50 +52,44 @@ export class SideMenuComponent {
     this.getUserName();
     this.getUserRoles();
 
-        this.pages = [
-          {title: 'Tischübersicht', component: DeskOverviewPage, icon: 'home', roles: ["ROLE_CEO", "ROLE_SERVICE"]},
-          {title: 'Schicht', component: ShiftsPage, icon: 'clock', roles: ["ROLE_CEO", "ROLE_SERVICE"]},
-          {
-            title: 'Nachrichten',
-            component: MessagePage,
-            icon: 'chatboxes',
-            roles: ["ROLE_CEO", "ROLE_SERVICE", "ROLE_CHEF"]
-          },
-          {title: 'Rechnungen', component: InvoicesPage, icon: 'calculator', roles: ["ROLE_CEO", "ROLE_SERVICE"]},
-          {
-            title: 'Küche',
-            component: KitchenOverviewPage,
-            icon: 'bonfire',
-            roles: ["ROLE_CEO", "ROLE_CHEF"],
-            data: {forKitchen: 1}
-          },
-          {
-            title: 'Bar',
-            component: KitchenOverviewPage,
-            icon: 'beer',
-            roles: ["ROLE_CEO", "ROLE_BAR"],
-            data: {forKitchen: 0}
-          },
-          {
-            title: 'Reservierungen',
-            component: ReservationPage,
-            icon: 'clipboard',
-            roles: ["ROLE_CEO", "ROLE_BAR"]
-          },
-          {
-            title: 'Einstellungen',
-            component: SettingsPage,
-            icon: 'settings',
-            roles: ["ROLE_SERVICE", "ROLE_CEO", "ROLE_CHEF"]
-          }
-        ];
+    this.pages = [
+      {title: 'Tischübersicht', component: DeskOverviewPage, icon: 'home', roles: ["ROLE_CEO", "ROLE_SERVICE"]},
+      {title: 'Schicht', component: ShiftsPage, icon: 'clock', roles: ["ROLE_CEO", "ROLE_SERVICE"]},
+      {
+        title: 'Nachrichten',
+        component: MessagePage,
+        icon: 'chatboxes',
+        roles: ["ROLE_CEO", "ROLE_SERVICE", "ROLE_CHEF"]
+      },
+      {title: 'Rechnungen', component: InvoicesPage, icon: 'calculator', roles: ["ROLE_CEO", "ROLE_SERVICE"]},
+      {
+        title: 'Küche',
+        component: KitchenOverviewPage,
+        icon: 'bonfire',
+        roles: ["ROLE_CEO", "ROLE_CHEF"],
+        data: {forKitchen: 1}
+      },
+      {
+        title: 'Bar',
+        component: KitchenOverviewPage,
+        icon: 'beer',
+        roles: ["ROLE_CEO", "ROLE_BAR"],
+        data: {forKitchen: 0}
+      },
+      {
+        title: 'Reservierungen',
+        component: ReservationPage,
+        icon: 'clipboard',
+        roles: ["ROLE_CEO", "ROLE_BAR"]
+      },
+    ];
 
 
     this.profilepage = {title: "Profile", component: ProfilePage};
     this.activepage = this.pages[0];
   }
 
-  openPage(page, data) {
+  openPage(page, data?) {
     // Reset the content nav to have just this page
     this.events.publish('Open-Menu-Page', {page: page.component, data});
     this.activepage = page;

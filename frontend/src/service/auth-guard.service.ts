@@ -1,6 +1,8 @@
 import {Injectable} from "@angular/core";
 import {Http, Response} from "@angular/http";
 import {NotificationService} from "./notification.service";
+import {Events, Platform} from "ionic-angular";
+import {HttpService, ServiceUtils} from "./service-utils";
 
 /**
  * service for role based access
@@ -9,13 +11,17 @@ import {NotificationService} from "./notification.service";
 
  */
 @Injectable()
-export class AuthGuardService {
+export class AuthGuardService implements HttpService {
+
+  BASE_URL_PREFIX = "";
+  BASE_URL = this.BASE_URL_PREFIX;
 
   private _userDetails = null;
 
   private userDetailPromise: Promise<Response>;
 
-  constructor(private http: Http, private notificationService: NotificationService) {
+  constructor(private http: Http, private notificationService: NotificationService, events: Events, platform: Platform) {
+    ServiceUtils.initConnectionUrl(this, platform, events);
   }
 
   /**
@@ -23,7 +29,7 @@ export class AuthGuardService {
    * @returns {Subscription}
    */
   public loadUserDetails() {
-    this.userDetailPromise = this.http.get("/api/user").toPromise();
+    this.userDetailPromise = this.http.get(this.BASE_URL + "/api/user").toPromise();
     this.userDetailPromise.then(resp => {
       this._userDetails = resp.json();
       // flatten auth array
@@ -35,7 +41,7 @@ export class AuthGuardService {
       console.debug(this._userDetails);
     }).catch(err => {
     });
-    return this.userDetailPromise;
+    return this.userDetailPromise
   }
 
   /**

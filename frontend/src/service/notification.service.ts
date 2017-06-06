@@ -33,7 +33,7 @@ export class NotificationService {
    */
   public onNotificationData(data) {
 
-    if ((this.platform.is("mobile") || this.platform.is("phablet") || this.platform.is("tablet")) && !this.platform.is("mobileweb")) {
+    if (this.platform.is("cordova")) {
 
       this.notifications.hasPermission().then(enabledNotifications => {
         if (enabledNotifications) {
@@ -58,7 +58,7 @@ export class NotificationService {
   private showFallbackNotification(data) {
     let toast = this.toastCtrl.create({
       message: data.message,
-      duration: 5000
+      showCloseButton: true
     });
     toast.present();
   }

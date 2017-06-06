@@ -1,22 +1,25 @@
 import {CachingService} from "./caching.service";
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
+import {HttpService, ServiceUtils} from "./service-utils";
+import {Events, Platform} from "ionic-angular";
 
 /**
  * menu category service
  *
  * @author Dennis Thanner
- * @version 0.0.3 prevented menu category tree loading if exists - DT
- *          0.0.2 changed loading tree - DT
  */
 @Injectable()
-export class MenuCategoryService extends CachingService {
+export class MenuCategoryService extends CachingService implements HttpService {
 
-  private static BASE_URL = "/api/menu-category";
+  BASE_URL_PREFIX = "/api/menu-category";
+  BASE_URL = this.BASE_URL_PREFIX;
 
-  constructor(private http: Http) {
+  constructor(private http: Http, platform: Platform, events: Events) {
     super();
+    ServiceUtils.initConnectionUrl(this, platform, events);
   }
+
 
 
   /**
@@ -30,7 +33,7 @@ export class MenuCategoryService extends CachingService {
     }
 
     if (!this.reqs[cKey]) {
-      this.reqs[cKey] = this.http.get(MenuCategoryService.BASE_URL + "/tree").toPromise();
+      this.reqs[cKey] = this.http.get(this.BASE_URL + "/tree").toPromise();
       this.reqs[cKey].then((req) => {
         this.saveToCache("tree", req.json());
         this.reqs[cKey] = null;

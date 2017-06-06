@@ -1,6 +1,8 @@
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
 import {CachingService} from "./caching.service";
+import {HttpService, ServiceUtils} from "./service-utils";
+import {Events, Platform} from "ionic-angular";
 
 /**
  * handling requests to the backend belonging the reservation
@@ -8,10 +10,14 @@ import {CachingService} from "./caching.service";
  * @author Tim Heidelbach
  */
 @Injectable()
-export class ReservationService extends CachingService {
+export class ReservationService extends CachingService implements HttpService {
 
-  constructor(private http: Http) {
+  BASE_URL_PREFIX = "/api/reservation";
+  BASE_URL = this.BASE_URL_PREFIX;
+
+  constructor(private http: Http, platform: Platform, events: Events) {
     super();
+    ServiceUtils.initConnectionUrl(this, platform, events);
   }
 
   /**
@@ -27,7 +33,7 @@ export class ReservationService extends CachingService {
 
     } else {
       return new Promise<any>(resolve => {
-        this.http.get("/api/reservation/desk/" + desk.id)
+        this.http.get(this.BASE_URL + "/desk/" + desk.id)
           .map(res => res.json())
           .subscribe(data => {
             this.saveToCache("desk" + desk.number, data);

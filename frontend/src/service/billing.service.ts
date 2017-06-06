@@ -2,6 +2,8 @@ import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
 import {CachingService} from "./caching.service";
 import {BillingDto} from "../model/billing-dto";
+import {Events, Platform} from "ionic-angular";
+import {HttpService, ServiceUtils} from "./service-utils";
 /**
  * handling requests to the backend belonging the billings
  *
@@ -9,12 +11,14 @@ import {BillingDto} from "../model/billing-dto";
  * @author Dennis Thanner
  */
 @Injectable()
-export class BillingService extends CachingService {
+export class BillingService extends CachingService implements HttpService {
 
-  private static BASE_URL = "/api/billing";
+  BASE_URL_PREFIX = "/api/billing";
+  BASE_URL = this.BASE_URL_PREFIX;
 
-  constructor(private http: Http) {
+  constructor(private http: Http, events: Events, platform: Platform) {
     super();
+    ServiceUtils.initConnectionUrl(this, platform, events);
   }
 
   /**
@@ -33,7 +37,7 @@ export class BillingService extends CachingService {
 
     } else {
       return new Promise<any>(resolve => {
-        this.http.get(BillingService.BASE_URL + "/waiter/" + userId)
+        this.http.get(this.BASE_URL + "/waiter/" + userId)
           .map(res => res.json())
           .subscribe(data => {
             this.saveToCache(userId, data);
@@ -50,7 +54,7 @@ export class BillingService extends CachingService {
    * @returns {Promise<T>}
    */
   public insertBilling(billing: BillingDto) {
-    return this.http.post(BillingService.BASE_URL, billing).toPromise();
+    return this.http.post(this.BASE_URL, billing).toPromise();
   }
 
   /**
@@ -58,7 +62,7 @@ export class BillingService extends CachingService {
    * @returns {Promise<TResult2|TResult1>}
    */
   public getTodaysBillings() {
-    return this.http.get(BillingService.BASE_URL + "/today").toPromise().then((resp) => {
+    return this.http.get(this.BASE_URL + "/today").toPromise().then((resp) => {
       this.saveToCache("today", resp.json());
     })
   }

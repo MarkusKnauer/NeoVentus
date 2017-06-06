@@ -1,5 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
+import {HttpService, ServiceUtils} from "./service-utils";
+import {Events, Platform} from "ionic-angular";
 
 /**
  * handling requests to the backend belonging the shifts
@@ -7,10 +9,14 @@ import {Http} from "@angular/http";
  * @author JB
  */
 @Injectable()
-export class WorkingShiftService {
+export class WorkingShiftService implements HttpService {
 
-  constructor(private http: Http) {
+  BASE_URL_PREFIX = "/api/shift";
+  BASE_URL = this.BASE_URL_PREFIX;
+
+  constructor(private http: Http, platform: Platform, events: Events) {
     //super();
+    ServiceUtils.initConnectionUrl(this, platform, events);
   }
 
   /**
@@ -19,7 +25,7 @@ export class WorkingShiftService {
    */
   public getAllShifts() {
     return new Promise<any>(resolve => {
-      this.http.get("/api/shift")
+      this.http.get(this.BASE_URL)
         .map(res => res.json())
         .subscribe(data => {
           resolve(data);
@@ -30,7 +36,7 @@ export class WorkingShiftService {
 
   public periodShifts(date1: String, date2: String) {
     return new Promise<any>(resolve => {
-      this.http.get("/api/shift/all/"+date1+"&"+date2)
+      this.http.get(this.BASE_URL + "/all/" + date1 + "&" + date2)
         .map(res => res.json())
         .subscribe(data => {
           resolve(data);
@@ -40,7 +46,7 @@ export class WorkingShiftService {
 
   public userPeriodShifts(username: String, date1: String, date2: String) {
     return new Promise<any>(resolve => {
-      this.http.get("/api/shift/personal/"+username+"&"+date1+"&"+date2)
+      this.http.get(this.BASE_URL + "/personal/" + username + "&" + date1 + "&" + date2)
         .map(res => res.json())
         .subscribe(data => {
           resolve(data);

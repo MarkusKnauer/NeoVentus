@@ -2,6 +2,8 @@ import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
 import {CachingService} from "./caching.service";
 import {OrderDto} from "../model/order-dto";
+import {HttpService, ServiceUtils} from "./service-utils";
+import {Events, Platform} from "ionic-angular";
 
 /**
  * handling requests to the backend belonging the orders
@@ -9,13 +11,14 @@ import {OrderDto} from "../model/order-dto";
  * @author Julian Beck, Dennis Thanner, Tim Heidelbach
  */
 @Injectable()
-export class OrderService extends CachingService {
+export class OrderService extends CachingService implements HttpService {
 
-  private static BASE_URL = "/api/order";
+  BASE_URL_PREFIX = "/api/order";
+  BASE_URL = this.BASE_URL_PREFIX;
 
-  constructor(private http: Http) {
+  constructor(private http: Http, platform: Platform, events: Events) {
     super();
-    this.http = http;
+    ServiceUtils.initConnectionUrl(this, platform, events);
   }
 
   /**
@@ -33,7 +36,7 @@ export class OrderService extends CachingService {
       })
     } else {
       return new Promise<any>(resolve => {
-        this.http.get(OrderService.BASE_URL + "/desk/open/" + deskNumber)
+        this.http.get(this.BASE_URL + "/desk/open/" + deskNumber)
           .map(res => res.json())
           .subscribe(order => {
             this.saveToCache("orders_desk" + deskNumber, order);
@@ -51,7 +54,7 @@ export class OrderService extends CachingService {
   public getAllOpenOrderItemsGroupedByDesk(forKitchen) {
 
     return new Promise<any>(resolve => {
-      this.http.get(OrderService.BASE_URL + "/unfinished/grouped/by-desk/" + forKitchen.toString())
+      this.http.get(this.BASE_URL + "/unfinished/grouped/by-desk/" + forKitchen.toString())
         .map(res => res.json())
         .subscribe(data => {
           this.saveToCache("open_orders_grouped_by_desks", data);
@@ -69,7 +72,7 @@ export class OrderService extends CachingService {
   public getAllOpenOrderItemsGroupedByOrderItem(forKitchen) {
 
     return new Promise<any>(resolve => {
-      this.http.get(OrderService.BASE_URL + "/unfinished/grouped/by-item/" + forKitchen.toString())
+      this.http.get(this.BASE_URL + "/unfinished/grouped/by-item/" + forKitchen.toString())
         .map(res => res.json())
         .subscribe(data => {
           this.saveToCache("open_orders_grouped_by_orderitem", data);
@@ -87,7 +90,7 @@ export class OrderService extends CachingService {
    * @param orders
    */
   public insertOrders(orders: Array<OrderDto>) {
-    return this.http.post(OrderService.BASE_URL, orders);
+    return this.http.post(this.BASE_URL, orders);
   }
 
   /**
@@ -97,7 +100,7 @@ export class OrderService extends CachingService {
    * @param ids
    */
   public getOrderInfos(ids: Array<string>) {
-    return this.http.get(OrderService.BASE_URL + "/" + ids.join(",")).toPromise();
+    return this.http.get(this.BASE_URL + "/" + ids.join(",")).toPromise();
   }
 
   /**
@@ -108,12 +111,12 @@ export class OrderService extends CachingService {
    * @param reason
    */
   public cancelOrders(orderIds: Array<string>, reason: string) {
-    return this.http.put(OrderService.BASE_URL + "/cancel?ids=" + orderIds.join(",") + "&reason=" + encodeURI(reason), {});
+    return this.http.put(this.BASE_URL + "/cancel?ids=" + orderIds.join(",") + "&reason=" + encodeURI(reason), {});
   }
 
 
   public setOrderItemStateFinished(ids) {
-    return this.http.put(OrderService.BASE_URL + "/finish", ids);
+    return this.http.put(this.BASE_URL + "/finish", ids);
 
   }
 

@@ -9,9 +9,23 @@
 
 <ion-content>
   <ion-list>
-    <button ion-item (click)="openStornoReasonsModal()">
-      Stornierungsgründe verwalten
-    </button>
+    <ng-container *ngIf="authGuard.isAuthenticated()">
+      <button ion-item (click)="openStornoReasonsModal()">
+        Stornierungsgründe verwalten
+      </button>
+    </ng-container>
+    <ng-container *ngIf="!authGuard.isAuthenticated()">
+      <ion-item-divider>
+        Verbindung
+      </ion-item-divider>
+      <button ion-item (click)="editConnection = true">
+        Verbindung verwalten
+      </button>
+      <ion-item *ngIf="editConnection">
+        <ion-input placeholder="IP-Adresse" [(ngModel)]="connectionUrl" clearInput
+                   (blur)="saveConnectionUrl()"></ion-input>
+      </ion-item>
+    </ng-container>
   </ion-list>
 
 </ion-content>

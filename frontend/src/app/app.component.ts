@@ -4,6 +4,7 @@ import {StatusBar} from "@ionic-native/status-bar";
 import {SplashScreen} from "@ionic-native/splash-screen";
 import {LoginPage} from "../pages/login/login";
 import {AuthGuardService} from "../service/auth-guard.service";
+import {LocalStorageService} from "../service/local-storage.service";
 
 
 /**
@@ -22,12 +23,19 @@ export class MyApp {
 
   rootPage: any = LoginPage;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, authGuard: AuthGuardService, private events: Events) {
+  public static CONNECTION_URL = "";
+
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, authGuard: AuthGuardService, private events: Events,
+              localStorageService: LocalStorageService) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
+    });
+
+    localStorageService.loadConnectionUrl().then(() => {
+      MyApp.CONNECTION_URL = localStorageService.cache[LocalStorageService.CONNECTION_URL];
     });
 
     authGuard.loadUserDetails();

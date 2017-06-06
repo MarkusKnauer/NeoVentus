@@ -11,11 +11,25 @@
     <div class="spacer" style="width: 251.2px; height: 12px;"></div>
 
 
-    <ion-list *ngIf="authGuard.isAuthenticated()">
-      <button menuClose ion-item detail-none *ngFor="let p of pages" [hidden]="!authGuard.hasAnyRole(p.roles)"
-              [class.activeHighlight]="checkActive(p)" (click)="openPage(p, p.data)">
-        <ion-icon name={{p.icon}} item-left></ion-icon>
-        {{p.title}}
+    <ion-list>
+      <ng-container *ngIf="!authGuard.isAuthenticated()">
+        <button menuClose ion-item detail-none [class.activeHighlight]="checkActive(loginPage)"
+                (click)="openPage(loginPage)">
+          <ion-icon name="log-in" item-left></ion-icon>
+          Login
+        </button>
+      </ng-container>
+      <ng-container *ngIf="authGuard.isAuthenticated()">
+        <button menuClose ion-item detail-none *ngFor="let p of pages" [hidden]="!authGuard.hasAnyRole(p.roles)"
+                [class.activeHighlight]="checkActive(p)" (click)="openPage(p, p.data)">
+          <ion-icon name="{{p.icon}}" item-left></ion-icon>
+          {{p.title}}
+        </button>
+      </ng-container>
+      <button menuClose ion-item detail-none
+              [class.activeHighlight]="checkActive(settingsPage)" (click)="openPage(settingsPage)">
+        <ion-icon name="{{settingsPage.icon}}" item-left></ion-icon>
+        {{settingsPage.title}}
       </button>
     </ion-list>
 
