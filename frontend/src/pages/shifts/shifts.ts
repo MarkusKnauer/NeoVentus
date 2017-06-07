@@ -128,7 +128,7 @@ export class ShiftsPage {
     let dat1 = Date.parse(this.event.startDate);
     let dat2 = Date.parse(this.event.endDate);
     if(this.personalView){
-      out = "Meinschichtplan";
+      out = "Mein Schichtplan";
     } else{
       out = "Gesamtschichtplan";
     }

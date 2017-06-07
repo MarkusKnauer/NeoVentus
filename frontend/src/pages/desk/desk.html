@@ -71,28 +71,6 @@
     </ion-item>
   </ion-list>
 
-
-    <ion-list no-lines>
-      <ion-item *ngFor="let beacon of beacons ">
-        <ion-grid>
-          <ion-row>
-            <ion-col>Major2</ion-col>
-            <ion-col>{{beacon.major}}</ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col>Minor</ion-col>
-            <ion-col>{{beacon.minor}}</ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col>RSSI</ion-col>
-            <ion-col>{{beacon.rssi}}</ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-item>
-
-    </ion-list>
-
-
   <!--floating action button -->
   <ion-fab bottom right>
     <button ion-fab icon-only (click)='openOrderSelectModal()'>

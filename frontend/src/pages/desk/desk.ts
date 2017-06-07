@@ -20,8 +20,6 @@ import {OrderDto} from "../../model/order-dto";
 import {LocalStorageService} from "../../service/local-storage.service";
 import {BillingModalComponent} from "../../component/billing-modal/billing-modal";
 import {OrderGroupDetailModalComponent} from "../../component/order-group-detail-modal/order-group-detail-modal";
-import {BeaconService} from "../../service/beacon.service";
-import {BeaconModel} from "../../model/beacon-module";
 
 /**
  * @author Julian beck, Dennis Thanner
@@ -44,21 +42,17 @@ export class DeskPage {
 
   private ordersCacheKey: string;
 
-  beacons: BeaconModel[] = [];
-  zone: any;
+
   constructor(public navParams: NavParams, private navCtrl: NavController, private orderService: OrderService,
               private authGuard: AuthGuardService, public loadingCtrl: LoadingController, private modalCtrl: ModalController,
               private menuCategoryService: MenuCategoryService, private alertCtrl: AlertController,
               private actionSheetCtrl: ActionSheetController, private localStorageService: LocalStorageService,
-              private events: Events, public platform: Platform, public beaconService: BeaconService) {
+              private events: Events) {
     this.localStorageService.loadStornoReasons();
     this.deskNumber = navParams.get("deskNumber");
     this.ordersCacheKey = "orders_desk" + this.deskNumber;
     if (this.deskNumber != null) {
       this.presentLoadingDefault('Bestellungen werden geladen.');
-
-      // required for UI update
-      this.zone = new NgZone({ enableLongStackTrace: false });
 
 
 
@@ -397,36 +391,6 @@ export class DeskPage {
   }
 
 
-  ionViewDidLoad() {
-    this.platform.ready().then(() => {
-      this.beaconService.initialise().then((isInitialised) => {
-        if (isInitialised) {
-          this.listenToBeaconEvents();
-        }
-      });
-    });
-  }
 
-  listenToBeaconEvents() {
-    this.events.subscribe('didRangeBeaconsInRegion', (beaconData) => {
-
-// update the UI with the beacon list
-      this.zone.run(() => {
-
-        this.beacons = [];
-
-        let beaconList = beaconData.beacons;
-
-        beaconList.forEach((beacon) => {
-
-          let beaconObject = new BeaconModel(beacon);
-
-          this.beacons.push(beaconObject);
-        });
-
-      });
-
-    });
-  }
 
 }

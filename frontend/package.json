@@ -30,6 +30,7 @@
         "@ionic/storage": "2.0.1",
         "com.unarin.cordova.beacon": "^3.4.0",
         "cordova-android": "^6.2.3",
+        "cordova-ios": "^4.4.0",
         "cordova-plugin-add-swift-support": "file:node_modules\\cordova-plugin-add-swift-support",
         "cordova-plugin-app-event": "file:node_modules\\cordova-plugin-app-event",
         "cordova-plugin-ble-central": "^1.1.4",
@@ -50,6 +51,7 @@
         "ionicons": "3.0.0",
         "rxjs": "5.1.1",
         "sw-toolbox": "3.4.0",
+        "swift": "^0.1.8",
         "zone.js": "^0.8.4"
     },
     "devDependencies": {
@@ -87,7 +89,8 @@
             "cordova-plugin-secure-storage": {}
         },
         "platforms": [
-            "android"
+            "android",
+            "ios"
         ]
     }
 }

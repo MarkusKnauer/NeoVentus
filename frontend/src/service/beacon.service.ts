@@ -8,15 +8,12 @@
 import {AuthGuardService} from "./auth-guard.service";
 import {Http} from "@angular/http";
 import {AlertController, Events, Platform} from "ionic-angular";
-import {IBeacon} from 'ionic-native';
+import {IBeacon} from '@ionic-native/ibeacon';
 import {Injectable} from "@angular/core";
 @Injectable()
 export class BeaconService {
 
-  delegate: any;
-  region: any;
-
-  constructor(public platform: Platform, public events: Events, private http: Http, private authGuard: AuthGuardService , private alertCtrl: AlertController) {
+  constructor(private ibeacon: IBeacon,public platform: Platform, public events: Events, private http: Http, private authGuard: AuthGuardService , private alertCtrl: AlertController) {
 
   }
 
@@ -26,37 +23,65 @@ export class BeaconService {
       if (this.platform.is('cordova')) {
 
         // Request permission to use location on iOS
-        IBeacon.requestAlwaysAuthorization();
+        this.ibeacon.requestAlwaysAuthorization();
 
         // create a new delegate and register it with the native layer
-        this.delegate = IBeacon.Delegate();
+        let delegate = this.ibeacon.Delegate();
         // Subscribe to some of the delegate's event handlers
-        this.delegate.didRangeBeaconsInRegion()
+        delegate.didRangeBeaconsInRegion()
           .subscribe(
             beaconData => {
+              let alert = this.alertCtrl.create({
+                title: "BeaconResult: "+ beaconData.beacons[0].uuid,
+                buttons: [
+                  {
+                    text: "Nein",
+                    handler: () => {
+                      alert.dismiss();
+                    }
+                  }]});
+              alert.present();
+
               this.events.publish('didRangeBeaconsInRegion', beaconData);
+
             },
             error => console.error()
           );
 
+        delegate.didStartMonitoringForRegion()
+          .subscribe( test =>{
+           let alert = this.alertCtrl.create({
+          title: "BeaconMonitor: ",
+          buttons: [
+            {
+              text: "Nein",
+              handler: () => {
+                alert.dismiss();
+              }
+            }]});
+        alert.present(),
+
+        data => console.log('didStartMonitoringForRegion: ', data),
+            error => console.error()
+          });
         // setup a beacon region
-        this.region = IBeacon.BeaconRegion('deskBeacon', '987B5028-30E2-4C08-B0B9-5AB16A57BE6B');
+         let region = this.ibeacon.BeaconRegion('deskBeacon', '987B5028-30E2-4C08-B0B9-5AB16A57BE6B');
 
         // start ranging
-        IBeacon.startRangingBeaconsInRegion(this.region)
+        this.ibeacon.startRangingBeaconsInRegion(region)
           .then(
             () => {
               let alert = this.alertCtrl.create({
-                title: 'Beacon richtig erkannt!',
-
+                title: "Ranging: "+  this.ibeacon.getRangedRegions()[0].identifier,
                 buttons: [
                   {
-                    text: 'Abbruch',
-                    role: 'cancel',
-                  }
-                ]
-              });
+                    text: "Nein",
+                    handler: () => {
+                      alert.dismiss();
+                    }
+                  }]});
               alert.present();
+
               resolve(true);
             },
             error => {
@@ -67,17 +92,6 @@ export class BeaconService {
 
 
       } else {
-        let alert = this.alertCtrl.create({
-          title: 'Divice nicht erkannt!',
-
-          buttons: [
-            {
-              text: 'Abbruch',
-              role: 'cancel',
-            }
-          ]
-        });
-        alert.present();
         console.error("This application needs to be running on a device");
         resolve(false);
       }

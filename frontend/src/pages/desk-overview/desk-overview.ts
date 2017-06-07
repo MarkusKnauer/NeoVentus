@@ -1,11 +1,13 @@
-import {Component} from "@angular/core";
-import {Events, NavController} from "ionic-angular";
+import {Component, NgZone} from "@angular/core";
+import {Events, NavController, Platform} from "ionic-angular";
 import {DeskService} from "../../service/desk.service";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {LoginPage} from "../login/login";
 import {DeskPage} from "../desk/desk";
 import {OrderService} from "../../service/order.service";
 import {ReservationService} from "../../service/reservation.service";
+import {BeaconService} from "../../service/beacon.service";
+import {BeaconModel} from "../../model/beacon-module";
 
 /**
  * @author Tim Heidelbach, Dennis Thanner
@@ -20,14 +22,21 @@ export class DeskOverviewPage {
   private user = null;
   private desks: any;
   private now: Date;
-
+  beacons: BeaconModel[] = [];
+  zone: any;
   constructor(private navCtrl: NavController,
               private deskService: DeskService,
               private orderService: OrderService,
               private authGuard: AuthGuardService,
-              private reservationService: ReservationService, private events: Events) {
+              private reservationService: ReservationService, private events: Events,
+              public platform: Platform, public beaconService: BeaconService) {
 
     this.now = new Date();
+
+    // required for UI update
+    this.zone = new NgZone({ enableLongStackTrace: false });
+
+
 
     this.deskService.getAllDesks().then(
       desks => {
@@ -161,4 +170,36 @@ export class DeskOverviewPage {
     return this.user;
   }
 
+
+  ionViewDidLoad() {
+    this.platform.ready().then(() => {
+      this.beaconService.initialise().then((isInitialised) => {
+        if (isInitialised) {
+          this.listenToBeaconEvents();
+        }
+      });
+    });
+  }
+
+  listenToBeaconEvents() {
+    this.events.subscribe('didRangeBeaconsInRegion', (beaconData) => {
+
+// update the UI with the beacon list
+      this.zone.run(() => {
+
+        this.beacons = [];
+
+        let beaconList = beaconData.beacons;
+
+        beaconList.forEach((beacon) => {
+
+          let beaconObject = new BeaconModel(beacon);
+
+          this.beacons.push(beaconObject);
+        });
+
+      });
+
+    });
+  }
 }
