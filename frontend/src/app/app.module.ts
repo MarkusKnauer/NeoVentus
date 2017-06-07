@@ -47,8 +47,10 @@ import {ReservationPage} from "../pages/reservation/reservation";
 import {IBeacon} from "@ionic-native/ibeacon";
 import {BeaconService} from "../service/beacon.service";
 import {LongPressDirective} from "../component/long-press.directive";
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
-import { BLE } from '@ionic-native/ble';
+import {BluetoothSerial} from "@ionic-native/bluetooth-serial";
+import {BLE} from "@ionic-native/ble";
+import {FingerprintAIO} from "@ionic-native/fingerprint-aio";
+import {SecureStorage} from "@ionic-native/secure-storage";
 @NgModule({
   declarations: [
     MyApp,
@@ -127,6 +129,8 @@ import { BLE } from '@ionic-native/ble';
     IBeacon,
     BluetoothSerial,
     BLE,
+    SecureStorage,
+    FingerprintAIO,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     StompService,
     SocketService,

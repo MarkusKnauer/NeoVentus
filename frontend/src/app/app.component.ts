@@ -5,6 +5,7 @@ import {SplashScreen} from "@ionic-native/splash-screen";
 import {LoginPage} from "../pages/login/login";
 import {AuthGuardService} from "../service/auth-guard.service";
 import {LocalStorageService} from "../service/local-storage.service";
+import {ApplicationEvents} from "./events";
 
 
 /**
@@ -36,9 +37,16 @@ export class MyApp {
 
     localStorageService.loadConnectionUrl().then(() => {
       MyApp.CONNECTION_URL = localStorageService.cache[LocalStorageService.CONNECTION_URL];
+      if (MyApp.CONNECTION_URL == null) {
+        // prevent null values ins urls
+        MyApp.CONNECTION_URL = "";
+      }
+      events.publish(ApplicationEvents.CONNECTION_CHANGE_EVENT, MyApp.CONNECTION_URL);
+
+      authGuard.loadUserDetails();
     });
 
-    authGuard.loadUserDetails();
+
     events.subscribe('Open-Menu-Page', (event) => {
       this.nav.setRoot(event.page, event.data);
     })

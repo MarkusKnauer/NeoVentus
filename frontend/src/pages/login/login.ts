@@ -26,30 +26,43 @@ export class LoginPage {
 
   private saveLogin: false;
 
+  private saveLoginAvailable = false;
+
   constructor(public navCtrl: NavController, private userService: UserService, private authGuard: AuthGuardService,
               private toastCtrl: ToastController, private faio: FingerprintAIO, private secureStorage: SecureStorage,
               private platform: Platform) {
     // on cordova look if username and password is saved in secure storage
     if (platform.is("cordova")) {
-      this.secureStorage.create(LoginPage.STORAGE_NAME).then((storage: SecureStorageObject) => {
+      this.faio.isAvailable().then(() => {
+        this.saveLoginAvailable = true;
+        this.secureStorage.create(LoginPage.STORAGE_NAME).then((storage: SecureStorageObject) => {
 
-        storage.get(LoginPage.STORAGE_PREFIX + "username").then((data) => {
-          this.username = data;
-        });
-        storage.get(LoginPage.STORAGE_PREFIX + "password").then((data) => {
-          this.password = data;
-        });
+          Promise.all([
+            storage.get(LoginPage.STORAGE_PREFIX + "username").then((data) => {
+              this.username = data;
+            }, (err) => {
+            }),
+            storage.get(LoginPage.STORAGE_PREFIX + "password").then((data) => {
+              this.password = data;
+            }, (err) => {
+            })
+          ]).then(() => {
+            // if username and password exists show faio
+            if (this.username != null && this.password != null && this.username.length && this.password.length) {
 
-        // if username and password exists show faio
-        if (this.username != null && this.password != null) {
-          this.faio.show({
-            clientId: LoginPage.FAIO_SECRET,
-            clientSecret: LoginPage.FAIO_SECRET,
-            disableBackup: true
-          }).then(() => {
-            this.login();
-          })
-        }
+              this.faio.show({
+                clientId: LoginPage.FAIO_SECRET,
+                clientSecret: LoginPage.FAIO_SECRET,
+                disableBackup: true
+              }).then(() => {
+                this.login();
+              }, () => {
+                console.debug("fingerprint canceled")
+              });
+
+            }
+          });
+        });
       });
     }
 
@@ -66,9 +79,9 @@ export class LoginPage {
    * save username and password login
    */
   private saveToSecureStorage() {
-    if (this.platform.is("ios") && this.saveLogin) {
+    if (this.platform.is("cordova") && this.saveLogin) {
       this.secureStorage.create(LoginPage.STORAGE_NAME).then((storage: SecureStorageObject) => {
-
+        console.debug("Saving user credentials to secure storage");
         storage.set(LoginPage.STORAGE_PREFIX + "username", this.username);
         storage.set(LoginPage.STORAGE_PREFIX + "password", this.password);
 
@@ -102,7 +115,6 @@ export class LoginPage {
    */
   private redirectUser() {
     this.authGuard.isAuthenticatedPromise().then(() => {
-      console.debug("User already authenticated");
       if (this.authGuard.hasRole("ROLE_CHEF")) {
         this.navCtrl.setRoot(KitchenOverviewPage, {forKitchen: 1})
       } else if (this.authGuard.hasRole("ROLE_BAR")) {
