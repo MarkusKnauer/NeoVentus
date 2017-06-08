@@ -1,7 +1,8 @@
 <ion-menu [content]="appContent" id="navdrawer">
 
   <ion-content>
-    <div class="spacer" style="width: 251.2px; height: 13px;"></div>
+    <div class="head">
+      <div class="spacer" style="width: 251.2px; height: 13px"></div>
     <div class="profile-image" *ngIf="authGuard.isAuthenticated()">
       <a style="display:block;" menuClose (click)="openPage(profilepage)">
         <img src="../assets/icon/neoventus_logo.png"
@@ -11,7 +12,7 @@
     <h1 style="font-weight: bold; text-align: center;">NeoVentus</h1>
     <h3 id="username" style="font-weight: 300; text-align: center;">{{authGuard.userDetails?.name}}</h3>
     <div class="spacer" style="width: 251.2px; height: 12px;"></div>
-
+    </div>
 
     <ion-list>
       <ng-container *ngIf="!authGuard.isAuthenticated()">
