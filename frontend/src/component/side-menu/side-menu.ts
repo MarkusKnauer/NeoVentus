@@ -12,9 +12,6 @@ import {UserService} from "../../service/user.service";
 import {LoginPage} from "../../pages/login/login";
 import {AuthGuardService} from "../../service/auth-guard.service";
 
-/**
- * @author Markus Knauer
- */
 @Component({
   templateUrl: "side-menu.html",
   selector: "nv-side-menu"
@@ -52,6 +49,13 @@ export class SideMenuComponent {
     this.getUserName();
     this.getUserRoles();
 
+    this.profilepage = {
+      title: "Profile",
+      component: ProfilePage,
+      icon: "person",
+      roles: ["ROLE_CEO", "ROLE_SERVICE", "ROLE_CHEF", "ROLE_BAR"]
+    };
+
     this.pages = [
       {title: 'Tischübersicht', component: DeskOverviewPage, icon: 'home', roles: ["ROLE_CEO", "ROLE_SERVICE"]},
       {title: 'Schicht', component: ShiftsPage, icon: 'clock', roles: ["ROLE_CEO", "ROLE_SERVICE"]},
@@ -76,6 +80,7 @@ export class SideMenuComponent {
         roles: ["ROLE_CEO", "ROLE_BAR"],
         data: {forKitchen: 0}
       },
+      this.profilepage,
       {
         title: 'Reservierungen',
         component: ReservationPage,
@@ -84,8 +89,6 @@ export class SideMenuComponent {
       },
     ];
 
-
-    this.profilepage = {title: "Profile", component: ProfilePage};
     this.activepage = this.pages[0];
   }
 
