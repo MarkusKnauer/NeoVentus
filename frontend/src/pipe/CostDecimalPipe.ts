@@ -11,9 +11,17 @@ import {Pipe, PipeTransform} from "@angular/core";
 export class CostDecimalPipe implements PipeTransform {
 
   transform(value: string, ...args: any[]): string {
-    if (value == "")
-      value = "0";
-    return parseFloat(value).toFixed(2).replace(".", ",");
-  }
 
+    if (value == "") {
+      value = "0";
+    }
+
+    value = parseFloat(value).toFixed(2);
+
+    if (value == "-0.00") {
+      value = "0.00";
+    }
+
+    return value.replace(".", ",");
+  }
 }

@@ -38,7 +38,7 @@ export class ProfilePage {
               private userService: UserService) {
 
     // TODO: make avatar dynamic
-    this.avatar = "../assets/avatars/default-male.png";
+    this.avatar = "assets/avatars/default-male.png";
 
     this.today = new Date();
 
