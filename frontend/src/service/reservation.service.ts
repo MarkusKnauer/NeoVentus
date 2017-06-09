@@ -1,5 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
+import {ReservationDto} from "../model/reservation-dto";
 import {CachingService} from "./caching.service";
 import {HttpService, ServiceUtils} from "./service-utils";
 import {Events, Platform} from "ionic-angular";
@@ -41,5 +42,9 @@ export class ReservationService extends CachingService implements HttpService {
           });
       });
     }
+  }
+
+  public insertReservation(reservation: ReservationDto) {
+    return this.http.post(this.BASE_URL, reservation);
   }
 }

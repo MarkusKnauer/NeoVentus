@@ -23,6 +23,8 @@ public class Reservation extends AbstractDocument {
 
 	private Date time;
 
+	private String reservationName;
+
 	private Integer duration;
 
 
@@ -31,9 +33,10 @@ public class Reservation extends AbstractDocument {
 	public Reservation(User reservedBy, Desk desk, Date createdAt, Date time, Integer duration) {
 		this.reservedBy = reservedBy;
 		this.desk = desk;
-		this.createdAt = createdAt;
+		this.createdAt = new Date();
 		this.time = time;
 		this.duration = duration;
+		this.reservationName = null;
 	}
 
 
@@ -79,6 +82,14 @@ public class Reservation extends AbstractDocument {
 		this.duration = duration;
 	}
 
+	public String getReservationName() {
+		return this.reservationName;
+	}
+
+	public void setReservationName(String reservationName) {
+		this.reservationName = reservationName;
+	}
+
 	@Override
 	public String toString() {
 
@@ -90,6 +101,8 @@ public class Reservation extends AbstractDocument {
 				this.duration +
 				", Desk: " +
 				this.desk +
+			", Name: " +
+			this.reservationName +
 				"}";
 	}
 }

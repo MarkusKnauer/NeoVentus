@@ -23,7 +23,8 @@ export class ShiftsPage {
   private newDay = [];
   private personalView = true;
 
-  constructor(private authGuard: AuthGuardService, private workingPlanService: WorkingShiftService,  public loadingCtrl: LoadingController, public navCtrl: NavController) {
+  constructor(private authGuard: AuthGuardService, private workingPlanService: WorkingShiftService,
+              public loadingCtrl: LoadingController, public navCtrl: NavController) {
     if(this.authGuard.hasRole("ROLE_SERVICE")){
       this.getPersonalShifts();
     } else {

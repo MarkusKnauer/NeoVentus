@@ -35,16 +35,20 @@ export class MyApp {
       splashScreen.hide();
     });
 
-    localStorageService.loadConnectionUrl().then(() => {
-      MyApp.CONNECTION_URL = localStorageService.cache[LocalStorageService.CONNECTION_URL];
-      if (MyApp.CONNECTION_URL == null) {
-        // prevent null values ins urls
-        MyApp.CONNECTION_URL = "";
-      }
-      events.publish(ApplicationEvents.CONNECTION_CHANGE_EVENT, MyApp.CONNECTION_URL);
+    if (platform.is("cordva")) {
+      localStorageService.loadConnectionUrl().then(() => {
+        MyApp.CONNECTION_URL = localStorageService.cache[LocalStorageService.CONNECTION_URL];
+        if (MyApp.CONNECTION_URL == null) {
+          // prevent null values ins urls
+          MyApp.CONNECTION_URL = "";
+        }
+        events.publish(ApplicationEvents.CONNECTION_CHANGE_EVENT, MyApp.CONNECTION_URL);
 
+        authGuard.loadUserDetails();
+      });
+    } else {
       authGuard.loadUserDetails();
-    });
+    }
 
 
     events.subscribe('Open-Menu-Page', (event) => {

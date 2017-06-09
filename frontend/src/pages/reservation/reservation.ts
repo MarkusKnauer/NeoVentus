@@ -4,6 +4,7 @@ import {AuthGuardService} from "../../service/auth-guard.service";
 import {OrderService} from "../../service/order.service";
 import {ReservationService} from "../../service/reservation.service";
 import {DeskService} from "../../service/desk.service";
+import {ReservationDto} from "../../model/reservation-dto";
 /**
  * @author Markus Knauer
  * @version 0.0.1
@@ -15,15 +16,20 @@ import {DeskService} from "../../service/desk.service";
 })
 export class ReservationPage {
   private loading;
-  private time: Date;
+  private username = null;
+  private time: string;
+  private temp: Date;
+  private isSelected: boolean;
   private desks: any;
   private alldesks: any;
   private guestnumber: number;
+  private reservationName: string;
+  private reservationDto: ReservationDto;
 
   /*
-  public event = {
+   public event = {
    Date: new Date().toISOString(),
-  };
+   };
    */
 
   private newDay = [];
@@ -35,15 +41,17 @@ export class ReservationPage {
               private reservationService: ReservationService,
               private deskService: DeskService) {
 
-    this.time = new Date();
+    this.temp = new Date();
+    this.time = new Date(this.temp.getTime() + 7200000).toISOString();
     this.desks = [];
+    this.isSelected = false;
+    this.guestnumber = 0;
+    this.reservationName = null;
 
     this.deskService.getAllDesks().then(
       alldesks => {
         this.alldesks = alldesks;
       });
-
-
   }
 
   /**
@@ -52,28 +60,28 @@ export class ReservationPage {
    */
   getReservation() {
     console.debug("get Reservation");
+    this.isSelected = true;
+    this.desks = [];
+    if (this.guestnumber < 0 || this.guestnumber > 102) {
 
-    if (this.guestnumber <= 0 || this.guestnumber > 103) {
-
-      alert("Bitte beachten Sie das mindestens einer und maximal 103 Personen auswgewählt werden können!")
+      alert("Im Restaurant haben max. 102 Personen platz!")
 
     } else {
 
       if (this.alldesks != null) {
         if (this.desks.length == 0) {
-          for (let desk of this.alldesks) {
+          if (this.guestnumber != 0) {
+            for (let desk of this.alldesks) {
 
-            this.loadDeskAvailability(desk);
+              this.loadDeskAvailability(desk);
 
+            }
           }
-
         }
       }
     }
 
-
   }
-
 
   /**
    * show loading popup
@@ -93,14 +101,28 @@ export class ReservationPage {
     this.time = time;
   }
 
+  getUserName() {
+    if (this.username == null) {
+      try {
+        this.username = this.authGuard.userDetails.name;
+      } catch (exception) {
+        console.error("Profile - Cannot read username");
+      }
+    }
+    return this.username;
+  }
+
   loadDeskAvailability(desk: any) {
     this.reservationService.getReservationsByDesk(desk).then(
       reservations => {
 
         let next = null;
+        let showdesk = false;
 
         let endtime = new Date();
         let pretime = new Date();
+        let today = new Date();
+        let curtime = new Date(this.time);
 
         for (let reservation of reservations) {
 
@@ -108,46 +130,49 @@ export class ReservationPage {
 
           endtime.setTime(reservationTime.getTime() + 3600000) //give one hour time to eat
 
-          if (this.time > endtime) { // reservation is in the future, ok
-            next = 1;
+          if (curtime > endtime) { // reservation is in the future, ok
+            showdesk = true;
           }
 
           pretime.setTime(reservationTime.getTime() - 3600000)//give one hour time to eat
-          if (this.time < pretime) {
-            next = 1;
+          if (curtime < pretime) {
+            showdesk = true;
           }
-        }
-        if (next != null) this.desks.push(desk);
 
-      }
-    )
-  }
-
-  loadDeskReservationDetails(desk: any) {
-    this.reservationService.getReservationsByDesk(desk).then(
-      reservations => {
-
-        let next = null;
-
-        for (let reservation of reservations) {
-
-          let reservationTime = new Date(reservation.time);
-
-          if (reservationTime > this.time) { // reservation is in the future
-
-            if (next == null) {
-              next = reservationTime;
-
-            } else if (reservationTime < next) { // reservation is before previous reservation
-              next = reservationTime;
+          if (reservationTime.getFullYear() == curtime.getFullYear()) {
+            if (reservationTime.getMonth() == curtime.getMonth()) {
+              if (reservationTime.getDay() == curtime.getDay()) {
+                next += reservationTime;
+              }
             }
           }
         }
-
-        if (next != null && next.getDay() == this.time.getDay()) { // desk is reserved today
+        if (next != null) { // desk is reserved in requested time
           desk.reservation = next;
         }
+        if (showdesk) this.desks.push(desk);
       }
     )
   }
+
+  deskSelected(desk: any) {
+
+
+    alert();
+
+    if (this.reservationName != null) {
+      this.insertReservation(desk);
+    }
+  }
+
+  insertReservation(desk: any) {
+    this.reservationDto = new ReservationDto();
+    this.reservationDto.Desk = desk;
+    this.reservationDto.Time = new Date(this.time);
+    this.reservationDto.ReservedBy = this.getUserName();
+    this.reservationDto.ReservationName = this.reservationName;
+
+    this.reservationService.insertReservation(this.reservationDto);
+  }
+
 }
