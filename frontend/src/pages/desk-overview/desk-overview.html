@@ -67,7 +67,7 @@
             <tr>
               <td width="100%">
 
-                <h2 *ngIf="!desk.price == 0">
+                <h2 *ngIf="desk.inUse">
                   <span class="important">
                   {{desk.price | costDecimal}}
                   </span>€
