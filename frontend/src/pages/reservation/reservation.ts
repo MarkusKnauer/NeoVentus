@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {LoadingController, NavController} from "ionic-angular";
+import {AlertController, LoadingController, NavController} from "ionic-angular";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {OrderService} from "../../service/order.service";
 import {ReservationService} from "../../service/reservation.service";
@@ -39,7 +39,8 @@ export class ReservationPage {
               public navCtrl: NavController,
               private orderService: OrderService,
               private reservationService: ReservationService,
-              private deskService: DeskService) {
+              private deskService: DeskService,
+              private alertCtrl: AlertController) {
 
     this.temp = new Date();
     this.time = new Date(this.temp.getTime() + 7200000).toISOString();
@@ -158,21 +159,49 @@ export class ReservationPage {
   deskSelected(desk: any) {
 
 
-    alert();
-
-    if (this.reservationName != null) {
-      this.insertReservation(desk);
-    }
+    let alert = this.alertCtrl.create({
+      title: "Reservierung Tisch: " + desk.number,
+      inputs: [
+        {
+          name: 'gastname',
+          placeholder: 'Name des Gastes'
+        },
+      ],
+      buttons: [
+        {
+          text: "Abbrechen",
+          handler: () => {
+            alert.dismiss();
+          }
+        },
+        {
+          text: "Reservieren",
+          handler: data => {
+            alert.dismiss().then(() => {
+              // delete not submitted orders to allow go back
+              this.reservationName = data.gastname;
+              this.insertReservation(desk);
+            });
+          }
+        }
+      ],
+      enableBackdropDismiss: false
+    });
+    alert.present();
   }
 
   insertReservation(desk: any) {
-    this.reservationDto = new ReservationDto();
-    this.reservationDto.Desk = desk;
-    this.reservationDto.Time = new Date(this.time);
-    this.reservationDto.ReservedBy = this.getUserName();
-    this.reservationDto.ReservationName = this.reservationName;
 
-    this.reservationService.insertReservation(this.reservationDto);
+    if (this.reservationName != null) {
+
+      this.reservationDto = new ReservationDto();
+      this.reservationDto.Desk = desk;
+      this.reservationDto.Time = new Date(this.time);
+      this.reservationDto.ReservedBy = this.getUserName();
+      this.reservationDto.ReservationName = this.reservationName;
+
+      this.reservationService.insertReservation(this.reservationDto);
+    }
   }
 
 }
