@@ -115,7 +115,7 @@ export class OrderService extends CachingService implements HttpService {
   }
 
 
-  public setOrderItemStateFinished(ids) {
+  public finishOrders(ids) {
     return this.http.put(this.BASE_URL + "/finish", ids);
 
   }

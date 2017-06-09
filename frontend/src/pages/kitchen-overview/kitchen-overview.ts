@@ -31,7 +31,7 @@ export class KitchenOverviewPage {
 
     if (this.forKitchen == 1) {
       this.socketTopic = "/topic/order/kitchen";
-    } else {
+    } else if (this.forKitchen == 0) {
       this.socketTopic = "/topic/order/bar";
     }
 
@@ -83,12 +83,21 @@ export class KitchenOverviewPage {
     this.orderSocketService.unsubscribe();
   }
 
+  /**
+   * load orderItems an group them by desk and category
+   */
   loadOrderItemsGroupedByDeskAndCategory() {
     this.orderService.getAllOpenOrderItemsGroupedByDesk(this.forKitchen)
       .then(data => {
         this.groupByCategory(data);
-        this.copyMap(data);
 
+        //check if cache is empty, to keep the marked orders in case of a page leave
+        if (this.orderService.cache['old_orderItems'] == null || this.orderService.cache['forKitchen'] != this.forKitchen) {
+          this.copyMap(data);
+        } else {
+          this.checkForNewItems(data);
+        }
+        this.orderService.cache['forKitchen'] = this.forKitchen;
       })
   }
 
@@ -130,7 +139,6 @@ export class KitchenOverviewPage {
         });
       }
     }
-
   }
 
   /**
@@ -163,7 +171,6 @@ export class KitchenOverviewPage {
     this.loading = this.loadingCtrl.create({
       content: info
     });
-
     this.loading.present();
   }
 
@@ -176,8 +183,7 @@ export class KitchenOverviewPage {
     let alert = this.alertCtrl.create({
       title: 'Alle Gerichte des Tisches ' + deskNumber + ' fertigstellen?',
 
-      buttons: [
-        {
+      buttons: [{
           text: 'Abbruch',
           role: 'cancel',
         },
@@ -185,21 +191,19 @@ export class KitchenOverviewPage {
           text: 'Fertigstellen',
           handler: () => {
 
-            let ids;
-            ids = '';
+            let ids = '';
 
-            // go through the hierachy per desk
+            // go through the hierachy per desk and get the orderIDs
             for (let itemsPerCat of ordersPerDesk) {
               for (let orderItems of itemsPerCat.itemsPerCat) {
                 for (let orderIds of orderItems.orderIds) {
                   ids += orderIds + ",";
                 }
-
                 this.deleteItemInOverview(orderItems);
               }
             }
 
-            this.orderService.setOrderItemStateFinished(ids).toPromise();
+            this.orderService.finishOrders(ids).toPromise();
 
             //delete desk
             this.orderService.cache['open_orders_grouped_by_desks'][deskNumber].length = 0;
@@ -221,8 +225,7 @@ export class KitchenOverviewPage {
     alert.setTitle(cat.category + ' für Tisch ' + deskNumber + ' fertigstellen?');
     alert.setMessage
     for (let orderItems of cat.itemsPerCat) {
-      let labelText;
-      labelText = orderItems.orderIds.length + " x " + orderItems.item.shortName;
+      let labelText = orderItems.orderIds.length + " x " + orderItems.item.shortName;
 
       orderItems.sideDishes.length != 0 ? labelText += " - " : "";
       for (let sideDish of orderItems.sideDishes) {
@@ -255,9 +258,8 @@ export class KitchenOverviewPage {
           this.deleteItemInOverview(orderItems);
           this.deleteItemInCard(cat, orderItems, deskNumber);
         }
-
-        this.orderService.setOrderItemStateFinished(ids).toPromise();
-
+        // check if something is selected, otherwhise do nothing
+        ids != '' ? this.orderService.finishOrders(ids).toPromise() : '';
       }
     });
     alert.present();
@@ -265,7 +267,6 @@ export class KitchenOverviewPage {
 
   /**
    * deletes or reduces an orderItems in the right overview
-   *
    * @param orderItem
    */
   deleteItemInOverview(orderItem) {
@@ -287,7 +288,6 @@ export class KitchenOverviewPage {
 
   /**
    * deletes an orderItems in a spezific card
-   *
    * @param cat
    * @param orderItem
    * @param deskNumber
@@ -329,7 +329,6 @@ export class KitchenOverviewPage {
     let tmpOrder;
     let newIndex;
     let checkMap = this.orderService.cache['old_orderItems'];
-
 
     for (let key in data) {
 
