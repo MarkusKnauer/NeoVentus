@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, isDevMode} from "@angular/core";
 import {NavController, Platform, ToastController} from "ionic-angular";
 import {FingerprintAIO} from "@ionic-native/fingerprint-aio";
 import {SecureStorage, SecureStorageObject} from "@ionic-native/secure-storage";
@@ -141,7 +141,14 @@ export class LoginPage {
       }
     }, () => {
     });
+  }
 
+  /**
+   *
+   * @returns {number|boolean}
+   */
+  private canLogin() {
+    return this.username.length && this.password.length && (isDevMode() || (this.connectionUrl != null && this.connectionUrl.length));
   }
 
 }

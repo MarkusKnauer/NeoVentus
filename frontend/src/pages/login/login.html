@@ -27,7 +27,7 @@
         </ion-item>
       </ng-container>
       <ion-item-divider></ion-item-divider>
-      <button ion-item color="primary" [disabled]="password?.length == 0 || username?.length == 0" type="submit">Login
+      <button ion-item color="primary" [disabled]="!canLogin()" type="submit">Login
       </button>
     </ion-list>
   </form>

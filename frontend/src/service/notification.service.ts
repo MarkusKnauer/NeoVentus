@@ -10,6 +10,8 @@ import {Platform, ToastController} from "ionic-angular";
 @Injectable()
 export class NotificationService {
 
+  private nextNotificationId: number = 0;
+
   constructor(private socketService: SocketService, private notifications: LocalNotifications, private platform: Platform,
               private toastCtrl: ToastController) {
   }
@@ -38,8 +40,10 @@ export class NotificationService {
       this.notifications.hasPermission().then(enabledNotifications => {
         if (enabledNotifications) {
           this.notifications.schedule({
+            id: this.nextNotificationId,
             title: data.message
           });
+          this.nextNotificationId++;
         } else {
           this.showFallbackNotification(data);
         }
@@ -49,6 +53,7 @@ export class NotificationService {
       this.showFallbackNotification(data);
     }
   }
+
 
   /**
    * show notification fallback
