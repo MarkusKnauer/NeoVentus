@@ -6,6 +6,8 @@ import {UserService} from "../../service/user.service";
 import {DeskOverviewPage} from "../desk-overview/desk-overview";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {KitchenOverviewPage} from "../kitchen-overview/kitchen-overview";
+import {LocalStorageService} from "../../service/local-storage.service";
+import {SettingsPage} from "../settings/settings";
 
 /**
  * @author Dennis Thanner
@@ -28,11 +30,19 @@ export class LoginPage {
 
   private saveLoginAvailable = false;
 
+  private connectionUrl: string = null;
+
   constructor(public navCtrl: NavController, private userService: UserService, private authGuard: AuthGuardService,
               private toastCtrl: ToastController, private faio: FingerprintAIO, private secureStorage: SecureStorage,
-              private platform: Platform) {
+              private platform: Platform, private localStorageService: LocalStorageService) {
     // on cordova look if username and password is saved in secure storage
     if (platform.is("cordova")) {
+      // check connection url
+      this.localStorageService.loadConnectionUrl().then(() => {
+        this.connectionUrl = this.localStorageService.cache[LocalStorageService.CONNECTION_URL];
+      });
+
+      // fingerprint auth
       this.faio.isAvailable().then(() => {
         this.saveLoginAvailable = true;
         this.secureStorage.create(LoginPage.STORAGE_NAME).then((storage: SecureStorageObject) => {
@@ -108,6 +118,13 @@ export class LoginPage {
       });
       infoToast.present();
     })
+  }
+
+  /**
+   * open settings page
+   */
+  private openSettingsPage() {
+    this.navCtrl.push(SettingsPage);
   }
 
   /**

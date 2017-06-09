@@ -78,13 +78,16 @@ export class SettingsPage {
    * @returns {Promise<boolean|boolean>}
    */
   private checkIfConnectionIsOk() {
-    return this.http.post(this.connectionUrl + "/auth/login", {}).toPromise().then(() => {
+    return this.http.post(this.connectionUrl + "/auth/login", {},).timeout(3000).toPromise().then(() => {
       return true;
     }, (resp) => {
-      console.log(resp.status);
-      console.log(resp.json());
-      // login page without data should return not authorized status 401
-      return resp.status == 401;
+      if (resp.name == "TimeoutError") {
+        return false;
+      } else {
+        console.log(resp.json());
+        // login page without data should return not authorized status 401
+        return resp.status == 401;
+      }
     })
   }
 

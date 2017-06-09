@@ -27,7 +27,7 @@ export class UserService implements HttpService {
    * @returns {Subscription}
    */
   public login(username: string, password: string) {
-    return this.http.post(this.BASE_URL + "/auth/login?username=" + username + "&password=" + password, {}).toPromise().then(() => {
+    return this.http.post(this.BASE_URL + "/auth/login?username=" + username.trim() + "&password=" + password, {}).toPromise().then(() => {
       return this.authGuard.loadUserDetails();
     })
   }

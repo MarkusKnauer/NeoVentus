@@ -50,7 +50,7 @@ export class SideMenuComponent {
     this.getUserRoles();
 
     this.profilepage = {
-      title: "Profile",
+      title: "Profil",
       component: ProfilePage,
       icon: "person",
       roles: ["ROLE_CEO", "ROLE_SERVICE", "ROLE_CHEF", "ROLE_BAR"]

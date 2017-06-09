@@ -58,7 +58,8 @@ export class NotificationService {
   private showFallbackNotification(data) {
     let toast = this.toastCtrl.create({
       message: data.message,
-      showCloseButton: true
+      showCloseButton: true,
+      closeButtonText: "Ok"
     });
     toast.present();
   }
