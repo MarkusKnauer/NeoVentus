@@ -12,32 +12,32 @@
   <!-- Person selection-->
   <ion-list>
     <ion-item>
-      <ion-input type="number" (input)="guestnumber = $event.target.value" placeholder="Anzahl Personen"
-                 (ionChange)="getReservation()"></ion-input>
+      <ion-input type="number" min=1 (input)="guestnumber = $event.target.value" placeholder="Anzahl Personen"
+                 (blur)="getReservation()"></ion-input>
     </ion-item>
-  </ion-list>
 
   <!-- Date selection-->
-  <ion-list>
+
     <ion-item>
       <ion-datetime displayFormat="DD.MM.YYYY, HH:mm" (ionChange)="getReservation()"
-                    doneText="Fertig" cancelText="Abbrechen"
-                    (input)="time = $event.target.value"></ion-datetime>
+                    doneText="Fertig" cancelText="Abbrechen" [(ngModel)]="time"
+      ></ion-datetime>
     </ion-item>
   </ion-list>
 
 
   <!-- Tell the User what happens -->
   <ion-list>
-    <ion-item *ngIf="desks.length == 0">
-      <ion-label>
+    <div *ngIf="isSelected">
+      <ion-item *ngIf="desks.length == 0">
         Im gewählten Zeitraum sind leider keine freien Tische mehr verfügbar
-      </ion-label>
-    </ion-item>
-    <ion-item *ngIf="desks.length != 0">
-      Im gewählten Zeitraum sind folgende Tische verfügbar:
-    </ion-item>
+      </ion-item>
+      <ion-item *ngIf="desks.length != 0">
+        Im gewählten Zeitraum sind folgende Tische verfügbar:
+      </ion-item>
+    </div>
   </ion-list>
+
   <ion-grid class="grid-tables">
     <ion-row justify-content-center>
 
@@ -45,15 +45,19 @@
       <ng-container *ngFor="let desk of desks">
         <ion-col col-auto (click)="deskSelected(desk)">
           <div class="desk">
-            <h1 [ngClass]="{unused: !desk.inUse, used: desk.inUse}">
+            <h1>
               {{desk.number}}
             </h1>
             <div class="desk-details">
-              <span *ngIf="!desk.inUse">frei<br/></span>
+              <span>Platzanzahl: {{desk.maximalSeats}}</span>
+
+              <p *ngIf="desk.reservation">
+                <span class="unimportant">Reserviert ab:</span>
+              </p>
               <p *ngIf="desk.reservation">
                 <span class="important">{{ desk.reservation | customTime }}</span>
                 <br/>
-                <span class="unimportant">Reservierung</span>
+
               </p>
             </div>
           </div>
