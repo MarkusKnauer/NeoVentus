@@ -68,7 +68,7 @@ export class SettingsPage {
         })
       }
       toast.present();
-      loading.dismissAll();
+      loading.dismiss();
     })
   }
 

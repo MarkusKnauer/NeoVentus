@@ -42,7 +42,7 @@ export class KitchenOverviewPage {
       this.orderService.getAllOpenOrderItemsGroupedByOrderItem(this.forKitchen),
       this.loadOrderItemsGroupedByDeskAndCategory()
     ]).then(() => {
-      this.loading.dismissAll();
+      this.loading.dismiss();
     });
 
     this.initSocket();

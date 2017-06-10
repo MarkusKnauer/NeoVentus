@@ -1,13 +1,13 @@
-import {Component, NgZone} from "@angular/core";
+import {Component} from "@angular/core";
 import {
   ActionSheetController,
   AlertController,
   Events,
+  Loading,
   LoadingController,
   ModalController,
   NavController,
-  NavParams,
-  Platform
+  NavParams
 } from "ionic-angular";
 import {OrderService} from "../../service/order.service";
 import {AuthGuardService} from "../../service/auth-guard.service";
@@ -32,7 +32,7 @@ export class DeskPage {
 
   public deskNumber: any;
 
-  private loading;
+  private loading: Loading;
 
   private catGroups = [];
 
@@ -59,9 +59,10 @@ export class DeskPage {
       Promise.all([
         this.menuCategoryService.loadCategoryTree(),
         this.orderService.getOrdersByDeskNumber(this.deskNumber)
-      ]).then(() => {
-        this.loading.dismissAll();
+      ]).then((promises) => {
+        console.debug("finished loading", promises, this.loading);
         this.initCatGroups();
+        this.loading.dismiss();
       })
     } else {
       this.navCtrl.push(DeskOverviewPage);
@@ -385,7 +386,7 @@ export class DeskPage {
       // reload data
       this.orderService.getOrdersByDeskNumber(this.deskNumber, true).then(() => {
         this.initCatGroups();
-        this.loading.dismissAll();
+        this.loading.dismiss();
       });
     });
   }

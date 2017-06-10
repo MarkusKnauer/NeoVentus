@@ -78,7 +78,7 @@ export class ShiftsPage {
         }
       )
     ]).then(() => {
-      this.loading.dismissAll();
+      this.loading.dismiss();
     });
 
 
@@ -107,7 +107,7 @@ export class ShiftsPage {
       }
     )
     ]).then(() => {
-      this.loading.dismissAll();
+      this.loading.dismiss();
     });
   }
 
