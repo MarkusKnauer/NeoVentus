@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {Events, ModalController, NavParams, ViewController} from "ionic-angular";
+import {Events, LoadingController, ModalController, NavParams, ViewController} from "ionic-angular";
 import {OrderService} from "../../service/order.service";
 import {BillingCheckoutModalComponent} from "../billing-checkout-modal/billing-checkout-modal";
 /**
@@ -18,7 +18,7 @@ export class BillingModalComponent {
   private selection = {};
 
   constructor(private navParams: NavParams, private viewCtrl: ViewController, private orderService: OrderService,
-              private modalCtrl: ModalController, private events: Events) {
+              private modalCtrl: ModalController, private events: Events, private loadingCtrl: LoadingController) {
     this.deskNumber = navParams.get("deskNumber");
 
     // init component
@@ -31,6 +31,13 @@ export class BillingModalComponent {
    */
   private init(force?: boolean) {
     this.selection = {};
+    let loading;
+    if (force) {
+      loading = this.loadingCtrl.create({
+        content: "Laden"
+      });
+      loading.present();
+    }
     return this.orderService.getOrdersByDeskNumber(this.deskNumber, force).then(() => {
       this.cachedGroups = this.orderService.cache["orders_desk" + this.deskNumber];
       // sort elements by name
@@ -41,6 +48,7 @@ export class BillingModalComponent {
       // publish event to update desk page
       if (force) {
         this.events.publish("order-change-" + this.deskNumber, this.deskNumber);
+        loading.dismiss();
       }
 
       // set default selection to all

@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {NavParams, ViewController} from "ionic-angular";
+import {NavParams, ToastController, ViewController} from "ionic-angular";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {BillingDto} from "../../model/billing-dto";
 import {BillingService} from "../../service/billing.service";
@@ -20,7 +20,7 @@ export class BillingCheckoutModalComponent {
   private customPriceSelected = false;
 
   constructor(navParams: NavParams, private authGuard: AuthGuardService, private billingService: BillingService,
-              private viewCtrl: ViewController) {
+              private viewCtrl: ViewController, private toastCtrl: ToastController) {
     this.ids = navParams.get("ids");
     this.sum = navParams.get("sum");
     this.totalPay = navParams.get("sum");
@@ -53,6 +53,13 @@ export class BillingCheckoutModalComponent {
   checkout() {
     let billing = new BillingDto(this.totalPay, this.authGuard.getUserId(), this.ids);
     this.billingService.insertBilling(billing).then(() => {
+      let toast = this.toastCtrl.create({
+        duration: 3500,
+        showCloseButton: true,
+        closeButtonText: "Ok",
+        message: "Erfolgreich abgerechnet",
+      })
+      toast.present();
       this.viewCtrl.dismiss(true);
     })
   }

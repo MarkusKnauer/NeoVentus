@@ -7,7 +7,8 @@ import {
   LoadingController,
   ModalController,
   NavController,
-  NavParams
+  NavParams,
+  ToastController
 } from "ionic-angular";
 import {OrderService} from "../../service/order.service";
 import {AuthGuardService} from "../../service/auth-guard.service";
@@ -47,7 +48,7 @@ export class DeskPage {
               private authGuard: AuthGuardService, public loadingCtrl: LoadingController, private modalCtrl: ModalController,
               private menuCategoryService: MenuCategoryService, private alertCtrl: AlertController,
               private actionSheetCtrl: ActionSheetController, private localStorageService: LocalStorageService,
-              private events: Events) {
+              private events: Events, private toastCtrl: ToastController) {
     this.localStorageService.loadStornoReasons();
     this.deskNumber = navParams.get("deskNumber");
     this.ordersCacheKey = "orders_desk" + this.deskNumber;
@@ -382,6 +383,15 @@ export class DeskPage {
       this.tmpOrders = [];
 
       this.events.publish("order-change-" + this.deskNumber, this.deskNumber);
+
+      // show user feedback
+      let toast = this.toastCtrl.create({
+        message: "Bestellung" + (orders.length > 1 ? "en " : " ") + "erfolgreich aufgegeben!",
+        duration: 3000,
+        showCloseButton: true,
+        closeButtonText: "Ok"
+      });
+      toast.present();
 
       // reload data
       this.orderService.getOrdersByDeskNumber(this.deskNumber, true).then(() => {
