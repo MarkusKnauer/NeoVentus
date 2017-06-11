@@ -40,7 +40,7 @@ export class ReservationDto {
     return this.desk;
   }
 
-  set Desk(desk: any) {
+  set Desk(desk: string) {
     this.desk = desk;
   }
 

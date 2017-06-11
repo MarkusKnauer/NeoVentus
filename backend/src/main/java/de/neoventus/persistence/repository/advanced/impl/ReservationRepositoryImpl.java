@@ -17,11 +17,9 @@ import java.util.logging.Logger;
 @Repository
 public class ReservationRepositoryImpl implements NVReservationRepository {
 
-	private MongoTemplate mongoTemplate;
-
-	private DeskRepository deskRepository;
-
 	private static final Logger LOGGER = Logger.getLogger(ReservationRepositoryImpl.class.getName());
+	private MongoTemplate mongoTemplate;
+	private DeskRepository deskRepository;
 
 	@Override
 	public void save(ReservationDto dto) {
@@ -36,6 +34,7 @@ public class ReservationRepositoryImpl implements NVReservationRepository {
 		reservation.setCreatedAt(dto.getCreatedAt());
 		reservation.setDesk(deskRepository.findOne(dto.getDesk()));
 		reservation.setDuration(dto.getDuration());
+		reservation.setReservationName(dto.getReservationName());
 		reservation.setTime(dto.getTime());
 
 

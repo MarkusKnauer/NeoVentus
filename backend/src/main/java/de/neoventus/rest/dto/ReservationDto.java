@@ -24,6 +24,8 @@ public class ReservationDto implements Serializable {
 
 	private Date createdAt;
 
+	private String reservationName;
+
 	// Getter and setter
 
 	public String getId() {
@@ -74,4 +76,11 @@ public class ReservationDto implements Serializable {
 		this.duration = duration;
 	}
 
+	public String getReservationName() {
+		return reservationName;
+	}
+
+	public void setReservationName(String reservationName) {
+		this.reservationName = reservationName;
+	}
 }
