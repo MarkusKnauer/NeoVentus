@@ -178,6 +178,7 @@ export class ReservationPage {
         {
           text: "Reservieren",
           handler: data => {
+            console.debug(data);
             this.reservationName = data.gastname;
             this.insertReservation(desk);
           }
@@ -193,12 +194,16 @@ export class ReservationPage {
     if (this.reservationName != null) {
 
       this.reservationDto = new ReservationDto();
-      this.reservationDto.Desk = desk;
+      this.reservationDto.Desk = desk.id;
       this.reservationDto.Time = new Date(this.time);
       this.reservationDto.ReservedBy = this.getUserName();
       this.reservationDto.ReservationName = this.reservationName;
+      console.debug(this.reservationDto);
 
-      this.reservationService.insertReservation(this.reservationDto);
+      this.reservationService.insertReservation(this.reservationDto).toPromise().then((resp) => {
+        // show toast for user feedback !!! DANGER BY DENNIS @Mkey_AFFFFFFFFFFFFFFFFF
+        console.debug(resp);
+      });
     }
   }
 

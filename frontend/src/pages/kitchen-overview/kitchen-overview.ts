@@ -1,8 +1,9 @@
 import {Component} from "@angular/core";
-import {AlertController, LoadingController, NavParams} from "ionic-angular";
+import {AlertController, LoadingController, NavParams, Platform} from "ionic-angular";
 import {OrderService} from "../../service/order.service";
 import {MenuCategoryService} from "../../service/menu-category.service";
 import {OrderSocketService} from "../../service/order-socket-service";
+import {TextToSpeech} from "@ionic-native/text-to-speech";
 
 
 @Component({
@@ -25,7 +26,9 @@ export class KitchenOverviewPage {
               public loadingCtrl: LoadingController,
               private menuCategoryService: MenuCategoryService,
               private alertCtrl: AlertController,
-              private orderSocketService: OrderSocketService) {
+              private orderSocketService: OrderSocketService,
+              private tts: TextToSpeech,
+              private platform: Platform) {
 
     this.forKitchen = navParams.get("forKitchen");
 
@@ -184,9 +187,9 @@ export class KitchenOverviewPage {
       title: 'Alle Gerichte des Tisches ' + deskNumber + ' fertigstellen?',
 
       buttons: [{
-          text: 'Abbruch',
-          role: 'cancel',
-        },
+        text: 'Abbruch',
+        role: 'cancel',
+      },
         {
           text: 'Fertigstellen',
           handler: () => {
@@ -236,7 +239,7 @@ export class KitchenOverviewPage {
 
       alert.addInput({
         type: 'checkbox',
-        label:  labelText,
+        label: labelText,
         value: orderItems,
         checked: true
       });
@@ -329,6 +332,7 @@ export class KitchenOverviewPage {
     let tmpOrder;
     let newIndex;
     let checkMap = this.orderService.cache['old_orderItems'];
+    let hasNewOrders = false;
 
     for (let key in data) {
 
@@ -380,6 +384,7 @@ export class KitchenOverviewPage {
               let oldCount = orderItem.newItemCount;
               oldCount != null ? diffCount += oldCount : "";
               this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[newIndex], 0, diffCount);
+              hasNewOrders = true;
             }
 
             //CASE 2 - nothing changed, check if item is marked as new
@@ -388,6 +393,7 @@ export class KitchenOverviewPage {
               orderItem.isNew != null &&
               orderItem.isNew == true) {
               this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[newIndex], orderItem.stateTimeUntil, orderItem.newItemCount);
+              hasNewOrders = true;
             }
           });
 
@@ -400,6 +406,7 @@ export class KitchenOverviewPage {
             else {
               for (let orderItem of data[key][i].itemsPerCat) {
                 this.markOrderAsNew(orderItem, 0, 0);
+                hasNewOrders = true;
               }
             }
           }
@@ -417,6 +424,13 @@ export class KitchenOverviewPage {
 
     }
     this.copyMap(data);
+
+    if (this.platform.is("cordova")) {
+      this.tts.speak({
+        text: "Neue Bestellungen eingetroffen",
+        locale: "de-DE"
+      });
+    }
   }
 
   /**

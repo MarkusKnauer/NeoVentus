@@ -97,7 +97,8 @@ import {SecureStorage} from "@ionic-native/secure-storage";
         {component: KitchenOverviewPage, name: "KitchenOverview", segment: "kitchen/:forKitchen"},
         {component: SettingsPage, name: "Settings", segment: "settings"},
         {component: ProfilePage, name: "Profile", segment: "profile"},
-        {component: InvoicesPage, name: "billings", segment: "billlings"}
+        {component: InvoicesPage, name: "billings", segment: "billlings"},
+        {component: ReservationPage, name: "reservation", segment: "reservation"},
       ]
     }),
     IonicStorageModule.forRoot()
