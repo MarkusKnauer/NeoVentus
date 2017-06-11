@@ -80,13 +80,14 @@ export class SideMenuComponent {
         roles: ["ROLE_CEO", "ROLE_BAR"],
         data: {forKitchen: 0}
       },
-      this.profilepage,
+
       {
         title: 'Reservierungen',
         component: ReservationPage,
         icon: 'clipboard',
         roles: ["ROLE_CEO", "ROLE_BAR"]
       },
+      this.profilepage,
     ];
 
     this.activepage = this.pages[0];
