@@ -22,7 +22,6 @@ public class ReservationDto implements Serializable {
 
 	private String reservedBy;
 
-	private Date createdAt;
 
 	private String reservationName;
 
@@ -50,14 +49,6 @@ public class ReservationDto implements Serializable {
 
 	public void setDesk(String desk) {
 		this.desk = desk;
-	}
-
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
 	}
 
 	public Date getTime() {

@@ -2,6 +2,7 @@ package de.neoventus.persistence.repository.advanced.impl;
 
 import de.neoventus.persistence.entity.Reservation;
 import de.neoventus.persistence.repository.DeskRepository;
+import de.neoventus.persistence.repository.UserRepository;
 import de.neoventus.persistence.repository.advanced.NVReservationRepository;
 import de.neoventus.rest.dto.ReservationDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ public class ReservationRepositoryImpl implements NVReservationRepository {
 	private static final Logger LOGGER = Logger.getLogger(ReservationRepositoryImpl.class.getName());
 	private MongoTemplate mongoTemplate;
 	private DeskRepository deskRepository;
+	private UserRepository userRepository;
 
 	@Override
 	public void save(ReservationDto dto) {
@@ -31,9 +33,9 @@ public class ReservationRepositoryImpl implements NVReservationRepository {
 			reservation = new Reservation();
 		}
 
-		reservation.setCreatedAt(dto.getCreatedAt());
 		reservation.setDesk(deskRepository.findOne(dto.getDesk()));
 		reservation.setDuration(dto.getDuration());
+		reservation.setReservedBy(userRepository.findOne(dto.getReservedBy()));
 		reservation.setReservationName(dto.getReservationName());
 		reservation.setTime(dto.getTime());
 

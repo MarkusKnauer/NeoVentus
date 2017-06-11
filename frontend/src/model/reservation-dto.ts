@@ -14,8 +14,6 @@ export class ReservationDto {
 
   private reservedBy: string;
 
-  private createdAt: Date;
-
   private reservationName: string;
 
   // Getter and setter
@@ -42,14 +40,6 @@ export class ReservationDto {
 
   set Desk(desk: string) {
     this.desk = desk;
-  }
-
-  get CreatedAt() {
-    return this.createdAt;
-  }
-
-  set CreatedAt(createdAt: Date) {
-    this.createdAt = createdAt;
   }
 
   get Time() {
