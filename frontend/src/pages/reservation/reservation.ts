@@ -170,18 +170,16 @@ export class ReservationPage {
       buttons: [
         {
           text: "Abbrechen",
+          role: 'cancel',
           handler: () => {
-            alert.dismiss();
+            console.log('Cancel clicked');
           }
         },
         {
           text: "Reservieren",
           handler: data => {
-            alert.dismiss().then(() => {
-              // delete not submitted orders to allow go back
-              this.reservationName = data.gastname;
-              this.insertReservation(desk);
-            });
+            this.reservationName = data.gastname;
+            this.insertReservation(desk);
           }
         }
       ],
