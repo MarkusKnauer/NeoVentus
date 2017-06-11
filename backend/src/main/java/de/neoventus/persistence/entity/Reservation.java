@@ -28,12 +28,14 @@ public class Reservation extends AbstractDocument {
 	private Integer duration;
 
 
-	public Reservation(){}
+	public Reservation() {
+		this.createdAt = new Date();
+	}
 
 	public Reservation(User reservedBy, Desk desk, Date createdAt, Date time, Integer duration) {
 		this.reservedBy = reservedBy;
 		this.desk = desk;
-		this.createdAt = new Date();
+		this.createdAt = createdAt;
 		this.time = time;
 		this.duration = duration;
 		this.reservationName = null;
