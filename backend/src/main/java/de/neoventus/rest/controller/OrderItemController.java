@@ -70,6 +70,24 @@ public class OrderItemController {
 		}
 	}
 
+
+	/**
+	 * switch order to desk
+	 *
+	 * @param response
+	 * @param deskId
+	 * @param ids
+	 */
+	@RequestMapping(value = "/change/desk/{deskId}", method = RequestMethod.PUT)
+	public void switchDesk(HttpServletResponse response, @PathVariable String deskId, @RequestParam String ids) {
+		try {
+			this.orderRepository.changeDeskForOrders(deskId, ids.split(","));
+			response.setStatus(HttpStatus.OK.value());
+		} catch (Exception e) {
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		}
+	}
+
 	/**
 	 * get details of a multiple orders
 	 *
