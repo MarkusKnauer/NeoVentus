@@ -1,10 +1,8 @@
 package de.neoventus.persistence.repository.advanced.impl.aggregation;
 
-import de.neoventus.persistence.entity.Reservation;
-import de.neoventus.persistence.entity.User;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * mapping class for aggregation
@@ -13,14 +11,15 @@ import java.util.List;
  */
 public class DeskOverviewDetails {
 
-	private int deskNumber;
-	//	private Desk desk;
-	private List<User> waiters;
-	private double totalPaid;
-	private Reservation nextReservation;
+	private Integer deskNumber;
+	private Set<String> waiters;
+	private Double totalPaid;
+	private Date nextReservation;
 
 	public DeskOverviewDetails() {
-		waiters = new ArrayList<>();
+		waiters = new HashSet<>();
+		nextReservation = null;
+		totalPaid = 0.0;
 	}
 
 	public int getDeskNumber() {
@@ -31,11 +30,11 @@ public class DeskOverviewDetails {
 		this.deskNumber = deskNumber;
 	}
 
-	public List<User> getWaiters() {
+	public Set<String> getWaiters() {
 		return waiters;
 	}
 
-	public void setWaiters(List<User> waiters) {
+	public void setWaiters(Set<String> waiters) {
 		this.waiters = waiters;
 	}
 
@@ -47,19 +46,12 @@ public class DeskOverviewDetails {
 		this.totalPaid = totalPaid;
 	}
 
-	public Reservation getNextReservation() {
+	public Date getNextReservation() {
 		return nextReservation;
 	}
 
-	public void setNextReservation(Reservation nextReservation) {
+	public void setNextReservation(Date nextReservation) {
 		this.nextReservation = nextReservation;
 	}
 
-//	public Desk getDesk() {
-//		return desk;
-//	}
-//
-//	public void setDesk(Desk desk) {
-//		this.desk = desk;
-//	}
 }
