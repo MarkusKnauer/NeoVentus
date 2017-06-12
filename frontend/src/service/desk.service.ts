@@ -45,4 +45,24 @@ export class DeskService extends CachingService implements HttpService {
       }
     });
   }
+
+  public getAllDesksWithDetails() {
+    return this.connectionResolved.then(() => {
+      if (this.cache["desksoverview"] != null) {
+        return new Promise<any>(resolve => {
+          resolve(this.cache["desksoverview"]);
+        });
+
+      } else {
+        return new Promise<any>(resolve => {
+          this.http.get(this.BASE_URL + "/overview")
+            .map(res => res.json())
+            .subscribe(data => {
+              this.saveToCache("desksoverview", data);
+              resolve(data);
+            });
+        });
+      }
+    });
+  }
 }

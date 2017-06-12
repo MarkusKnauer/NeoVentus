@@ -30,13 +30,13 @@
       <ng-container *ngFor="let desk of desks">
         <ion-col *ngIf="!myDesksOnly||desk.mine" col-auto (click)="deskSelected(desk)">
           <div class="desk">
-            <h1 [ngClass]="{unused: !desk.inUse, used: desk.inUse}">
-              {{desk.number}}
+            <h1 [ngClass]="{unused: desk.totalPaid == 0, used: desk.totalPaid != 0}">
+              {{desk.deskNumber}}
             </h1>
             <div class="desk-details">
-              <span *ngIf="!desk.inUse">frei<br/></span>
-              <p *ngIf="desk.reservation">
-                <span class="important">{{ desk.reservation | customTime }}</span>
+              <span *ngIf="desk.totalPaid == 0">frei<br/></span>
+              <p *ngIf="desk.nextReservation">
+                <span class="important">{{ desk.nextReservation | customTime }}</span>
                 <br/>
                 <span class="unimportant">Reservierung</span>
               </p>
@@ -57,8 +57,8 @@
         <ion-item *ngIf="!myDesksOnly||desk.mine" (click)="deskSelected(desk)">
 
           <ion-avatar item-left>
-            <h1 [ngClass]="{unused: !desk.inUse, used: desk.inUse}">
-              {{desk.number}}
+            <h1 [ngClass]="{unused: desk.totalPaid == 0, used: desk.totalPaid != 0}">
+              {{desk.deskNumber}}
             </h1>
           </ion-avatar>
 
@@ -67,15 +67,15 @@
             <tr>
               <td width="100%">
 
-                <h2 *ngIf="desk.inUse">
+                <h2 *ngIf="desk.totalPaid != 0">
                   <span class="important">
-                  {{desk.price | costDecimal}}
+                  {{desk.totalPaid | costDecimal}}
                   </span>€
                 </h2>
               </td>
 
-              <td *ngIf="desk.reservation" valign="bottom">
-                <span class="important">{{ desk.reservation | customTime }}</span>
+              <td *ngIf="desk.nextReservation" valign="bottom">
+                <span class="important">{{ desk.nextReservation | customTime }}</span>
               </td>
 
             </tr>
@@ -85,10 +85,13 @@
               <td>
                 <h3>
                   <span>{{desk.waiter}}</span>
+                  <span *ngFor="let waiter of desk.waiters; let isLast=last">
+                     {{waiter}}{{isLast ? '' : ', '}}
+                  </span>
                 </h3>
               </td>
 
-              <td *ngIf="desk.reservation" valign="top">
+              <td *ngIf="desk.nextReservation" valign="top">
                 <span class="unimportant">Reservierung</span>
               </td>
 

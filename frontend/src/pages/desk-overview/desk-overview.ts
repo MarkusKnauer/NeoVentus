@@ -4,8 +4,6 @@ import {DeskService} from "../../service/desk.service";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {LoginPage} from "../login/login";
 import {DeskPage} from "../desk/desk";
-import {OrderService} from "../../service/order.service";
-import {ReservationService} from "../../service/reservation.service";
 import {BeaconService} from "../../service/beacon.service";
 import {BeaconModel} from "../../model/beacon-module";
 
@@ -21,108 +19,46 @@ export class DeskOverviewPage {
   private myDesksOnly = false;
   private user = null;
   private desks: any;
-  private now: Date;
+
   beacons: BeaconModel[] = [];
   zone: any;
+
   constructor(private navCtrl: NavController,
               private deskService: DeskService,
-              private orderService: OrderService,
               private authGuard: AuthGuardService,
-              private reservationService: ReservationService, private events: Events,
-              public platform: Platform, public beaconService: BeaconService) {
-
-    this.now = new Date();
+              private events: Events,
+              public platform: Platform,
+              public beaconService: BeaconService) {
 
     // required for UI update
-    this.zone = new NgZone({ enableLongStackTrace: false });
+    this.zone = new NgZone({enableLongStackTrace: false});
+
+    this.loadDeskDetails();
 
     // listen to billing changes and reload desk data
-    this.events.subscribe("order-change", (number) => {
+    this.events.subscribe("order-change", () => {
       console.debug("reload desk overview data for desk after billing");
-      let desk = this.desks.find(el => {
-        return el.number == number;
-      });
-      if (desk)
-        this.loadDeskOrderDetails(desk, true);
+      this.loadDeskDetails();
     });
 
-    this.deskService.getAllDesks().then(
+  }
+
+  private loadDeskDetails() {
+    this.deskService.getAllDesksWithDetails().then(
       desks => {
         this.desks = desks;
 
+        this.getUserName();
         for (let desk of desks) {
-
-          this.loadDeskOrderDetails(desk);
-          this.loadDeskReservationDetails(desk);
-        }
-      });
-  }
-
-  loadDeskOrderDetails(desk: any, force?) {
-    this.orderService.getOrdersByDeskNumber(desk.number, force).then(
-      orders => {
-
-        let waiters = new Set<string>();
-        let strWaiters: string = "";
-        let totalPrice: number = 0;
-
-        for (let order of orders) {
-          waiters.add(order.waiter.username); // set to ignore duplicate waiters
-          totalPrice += order.item.price * order.count;
-        }
-
-        let waiterCount: number = 0;
-        waiters.forEach((waiter: string) => {
-          strWaiters += waiter;
-          if (++waiterCount < waiters.size) {
-            strWaiters += ", ";
-          }
-        });
-
-
-        desk.waiter = strWaiters;
-
-
-        if (totalPrice != 0) {
-          desk.inUse = true;
-        } else {
-          desk.inUse = false;
-        }
-        desk.price = totalPrice.toFixed(2);
-
-        if (waiters.has(this.getUserName())) {
-          desk.mine = true;
-        }
-      }
-    )
-  }
-
-  loadDeskReservationDetails(desk: any) {
-    this.reservationService.getReservationsByDesk(desk).then(
-      reservations => {
-
-        let next = null;
-
-        for (let reservation of reservations) {
-
-          let reservationTime = new Date(reservation.time);
-
-          if (reservationTime > this.now) { // reservation is in the future
-
-            if (next == null) {
-              next = reservationTime;
-
-            } else if (reservationTime < next) { // reservation is before previous reservation
-              next = reservationTime;
+          for (let waiter of desk.waiters) {
+            if (waiter == this.user) {
+              desk.mine = true;
+              break;
             }
           }
         }
-
-        if (next != null && next.getDay() == this.now.getDay()) { // desk is reserved today
-          desk.reservation = next;
-        }
       }
-    )
+    );
   }
 
   /**
@@ -138,15 +74,15 @@ export class DeskOverviewPage {
     });
   }
 
-  deskSelected(desk) {
-    this.navCtrl.push(DeskPage, {deskNumber: desk.number.toString()})
+  private deskSelected(desk) {
+    this.navCtrl.push(DeskPage, {deskNumber: desk.deskNumber.toString()})
   }
 
-  toggleView() {
+  private toggleView() {
     this.tileView ? this.tileView = false : this.tileView = true;
   }
 
-  toggleMyDesksOnly = function () {
+  private toggleMyDesksOnly() {
 
     if (this.myDesksOnly) {
       this.myDesksOnly = false;
@@ -167,7 +103,6 @@ export class DeskOverviewPage {
     }
     return this.user;
   }
-
 
   ionViewDidLoad() {
     this.platform.ready().then(() => {
