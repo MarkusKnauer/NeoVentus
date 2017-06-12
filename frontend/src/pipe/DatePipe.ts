@@ -11,6 +11,7 @@ import {Pipe, PipeTransform} from "@angular/core";
 export class CustomDataPipe implements PipeTransform {
 
   transform(value: string, args: string[]): string {
-    return value.toString().split(" ")[4].substring(0, 5);
+    var time = new Date(value);
+    return time.getHours() + ":" + time.getMinutes();
   }
 }
