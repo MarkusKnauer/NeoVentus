@@ -9,8 +9,6 @@ import java.util.Map;
 
 /**
  * @author Julian Beck, Dennis Thanner
- * @version 0.0.3 - added getGroupedNotPayedOrdersByItemForDesk - DT
- *          0.0.2 deleted searchOrderItemOutputDto method - DT
  */
 public interface NVOrderItemRepository {
 
@@ -42,5 +40,13 @@ public interface NVOrderItemRepository {
 	 * @param forKitchen@return
 	 */
 	List<OrderDeskAggregationDto> getUnfinishedOrderForCategoriesGroupedByItemOrderByCount(boolean forKitchen);
+
+	/**
+	 * update orders and change desk
+	 *
+	 * @param deskId
+	 * @param orderIds
+	 */
+	void changeDeskForOrders(String deskId, String... orderIds);
 }
 

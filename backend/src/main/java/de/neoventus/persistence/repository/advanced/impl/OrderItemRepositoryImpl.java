@@ -15,10 +15,13 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
-import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.*;
 import java.util.logging.Logger;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
  * @author Julian Beck, Dennis Thanner
@@ -55,7 +58,7 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 	@Override
 	public List<OrderDeskAggregationDto> getGroupedNotPayedOrdersByItemForDesk(Desk desk) {
 		Aggregation agg = Aggregation.newAggregation(
-			Aggregation.match(Criteria.where("billing").is(null).and("desk").is(desk).and("states.state").ne(OrderItemState.State.CANCELED)),
+			Aggregation.match(where("billing").is(null).and("desk").is(desk).and("states.state").ne(OrderItemState.State.CANCELED)),
 			Aggregation.group("item", "sideDishes", "guestWish").count().as("count").first("waiter")
 				.as("waiter").addToSet("$id").as("orderIds"),
 			Aggregation.project("waiter", "count", "orderIds").and("_id.item").as("item").and("_id.sideDishes").as("sideDishes")
@@ -85,11 +88,11 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 			.and("_id.desk").as("desk");
 
 		Aggregation agg = Aggregation.newAggregation(
-			Aggregation.match(Criteria.where("states.state")
-					.nin(Arrays.asList(OrderItemState.State.CANCELED, OrderItemState.State.FINISHED))
+			Aggregation.match(where("states.state")
+				.nin(Arrays.asList(OrderItemState.State.CANCELED, OrderItemState.State.FINISHED))
 				.and("item").in(itemsInterested).and("desk").in(desks)),
-				group,
-				projection
+			group,
+			projection
 		);
 
 		List<OrderDeskAggregationDto> dbResult = this.mongoTemplate.aggregate(agg, OrderItem.class, OrderDeskAggregationDto.class).getMappedResults();
@@ -113,7 +116,7 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 		List<MenuItem> itemsInterested = this.menuItemRepository.findAllByMenuItemCategoryIn(categories);
 
 		Aggregation agg = Aggregation.newAggregation(
-			Aggregation.match(Criteria.where("states.state")
+			Aggregation.match(where("states.state")
 				.nin(Arrays.asList(OrderItemState.State.CANCELED, OrderItemState.State.FINISHED))
 				.and("item").in(itemsInterested)),
 			Aggregation.group("item", "sideDishes", "guestWish").count().as("count"),
@@ -125,6 +128,18 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 		AggregationResults<OrderDeskAggregationDto> aggR = this.mongoTemplate.aggregate(agg, OrderItem.class, OrderDeskAggregationDto.class);
 
 		return aggR.getMappedResults();
+	}
+
+	/**
+	 * change desk of orders
+	 *
+	 * @param deskId
+	 * @param orderIds
+	 */
+	@Override
+	public void changeDeskForOrders(String deskId, String... orderIds) {
+		Desk d = this.mongoTemplate.findOne(Query.query(where("id").is(deskId)), Desk.class);
+		this.mongoTemplate.updateMulti(Query.query(where("id").in(orderIds)), Update.update("desk", d), OrderItem.class);
 	}
 
 	//Setter

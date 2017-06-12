@@ -105,6 +105,29 @@ public class OrderItemRepositoryTest extends AbstractTest {
 	}
 
 	/**
+	 * test update desk for orders
+	 */
+	@Test
+	public void testUpdateDeskForOrders() {
+		Desk d = new Desk();
+		Desk d1 = new Desk();
+		d = this.deskRepository.save(d);
+		d1 = this.deskRepository.save(d1);
+
+		OrderItem o = new OrderItem();
+		o.setDesk(d);
+		this.orderItemRepository.save(o);
+
+		this.orderItemRepository.changeDeskForOrders(d1.getId(), o.getId());
+
+		o = this.orderItemRepository.findOne(o.getId());
+
+		Logger.getAnonymousLogger().info("Desk:" + d1);
+		Logger.getAnonymousLogger().info("Order Desk:" + o.getDesk());
+		Assert.assertTrue(o.getDesk().getId().equals(d1.getId()));
+	}
+
+	/**
 	 * test custom order aggregation, grouped by menu item
 	 */
 	@Test

@@ -21,6 +21,7 @@ import {OrderDto} from "../../model/order-dto";
 import {LocalStorageService} from "../../service/local-storage.service";
 import {BillingModalComponent} from "../../component/billing-modal/billing-modal";
 import {OrderGroupDetailModalComponent} from "../../component/order-group-detail-modal/order-group-detail-modal";
+import {DeskService} from "../../service/desk.service";
 
 /**
  * @author Julian beck, Dennis Thanner
@@ -48,7 +49,7 @@ export class DeskPage {
               private authGuard: AuthGuardService, public loadingCtrl: LoadingController, private modalCtrl: ModalController,
               private menuCategoryService: MenuCategoryService, private alertCtrl: AlertController,
               private actionSheetCtrl: ActionSheetController, private localStorageService: LocalStorageService,
-              private events: Events, private toastCtrl: ToastController) {
+              private events: Events, private toastCtrl: ToastController, private deskService: DeskService) {
     this.localStorageService.loadStornoReasons();
     this.deskNumber = navParams.get("deskNumber");
     this.ordersCacheKey = "orders_desk" + this.deskNumber;
@@ -56,12 +57,10 @@ export class DeskPage {
       this.presentLoadingDefault('Bestellungen werden geladen.');
 
 
-
       Promise.all([
         this.menuCategoryService.loadCategoryTree(),
         this.orderService.getOrdersByDeskNumber(this.deskNumber)
       ]).then((promises) => {
-        console.debug("finished loading", promises, this.loading);
         this.initCatGroups();
         this.loading.dismiss();
       })
@@ -69,11 +68,16 @@ export class DeskPage {
       this.navCtrl.push(DeskOverviewPage);
     }
 
-    // listen to changes in cache made by ceckout to re group elements
-    this.events.subscribe("order-change-" + this.deskNumber, () => {
-      console.debug("Order Change Event");
-      this.initCatGroups();
-    })
+    // listen to changes in cache made by checkout and table switiching
+    // to re group elements
+    this.events.subscribe("order-change", (number) => {
+      if (number == this.deskNumber) {
+        this.orderService.getOrdersByDeskNumber(this.deskNumber, true).then(() => {
+          console.debug("Order Change Event");
+          this.initCatGroups();
+        });
+      }
+    });
   }
 
   /**
@@ -382,7 +386,7 @@ export class DeskPage {
       this.groupedTmpOrders = [];
       this.tmpOrders = [];
 
-      this.events.publish("order-change-" + this.deskNumber, this.deskNumber);
+      this.events.publish("order-change", this.deskNumber);
 
       // show user feedback
       let toast = this.toastCtrl.create({
@@ -393,15 +397,77 @@ export class DeskPage {
       });
       toast.present();
 
-      // reload data
-      this.orderService.getOrdersByDeskNumber(this.deskNumber, true).then(() => {
-        this.initCatGroups();
-        this.loading.dismiss();
-      });
     });
   }
 
 
+  /**
+   * switch desks from orders
+   */
+  switchDesk() {
+    try {
+      this.deskService.getAllDesks().then((desks) => {
+        let inputs = [];
+        for (let d of desks) {
+          if (d.number != this.deskNumber)
+            inputs.push({
+              name: 'desk',
+              label: 'Tisch ' + d.number,
+              value: d.id,
+              type: "radio",
+            })
+        }
 
+        let alert = this.alertCtrl.create({
+          title: "Tischauswahl",
+          inputs: inputs,
+          buttons: [
+            {
+              text: "Abbrechen",
+              role: "cancel"
+            },
+            {
+              text: "Ok",
+              handler: (id) => {
+                console.debug(id);
+                let orderIds = [];
+                for (let o of this.orderService.cache[this.ordersCacheKey]) {
+                  for (let ids of o.orderIds) {
+                    orderIds.push(ids);
+                  }
+                }
+
+                this.orderService.switchDesk(id, orderIds).then(() => {
+                  // successfully changed orders
+
+                  let toast = this.toastCtrl.create({
+                    message: "Erfolgreich Bestellungen verschoben",
+                    duration: 2000
+                  });
+                  toast.present();
+
+
+                  // update this desk content
+                  this.events.publish("order-change", this.deskNumber);
+
+                  // notify to update new desk
+                  let newDesk = desks.find(el => {
+                    return el.id = id;
+                  });
+                  this.events.publish("order-change", newDesk.number);
+                })
+
+              }
+            }
+          ]
+        });
+
+        alert.present();
+      })
+    } catch (e) {
+      console.error(e);
+    }
+
+  }
 
 }

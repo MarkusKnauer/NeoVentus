@@ -84,7 +84,8 @@
   <ion-grid>
     <ion-row>
       <ion-col col-3>
-        <button ion-button full icon-only color="light4" [disabled]="!orderService.cache[ordersCacheKey]?.length">
+        <button ion-button full icon-only color="light4" (click)="switchDesk()"
+                [disabled]="!orderService.cache[ordersCacheKey]?.length">
           <ion-icon name="move"></ion-icon>
         </button>
       </ion-col>

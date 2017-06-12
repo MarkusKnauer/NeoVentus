@@ -114,12 +114,22 @@ export class OrderService extends CachingService implements HttpService {
     return this.http.put(this.BASE_URL + "/cancel?ids=" + orderIds.join(",") + "&reason=" + encodeURI(reason), {});
   }
 
+  /**
+   * switch desk orders
+   *
+   * @param deskIdTo
+   * @param orderIds
+   * @returns {Promise<T>}
+   */
+  switchDesk(deskIdTo: string, orderIds: Array<string>) {
+    return this.http.put(this.BASE_URL + "/change/desk/" + deskIdTo + "?ids=" + orderIds.join(","), {}).toPromise();
+  }
+
 
   public finishOrders(ids) {
     return this.http.put(this.BASE_URL + "/finish", ids);
 
   }
-
 
 
 }

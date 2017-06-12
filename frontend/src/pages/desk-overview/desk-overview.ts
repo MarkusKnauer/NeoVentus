@@ -42,17 +42,17 @@ export class DeskOverviewPage {
       desks => {
         this.desks = desks;
 
-        for (let desk of desks) {
-
-          // listen to billing changes and reload desk data
-          this.events.subscribe("order-change-" + desk.number, (number) => {
-            console.debug("reload desk overview data for desk after billing");
-            let desk = this.desks.find(el => {
-              return el.number == number;
-            });
-            if (desk)
-              this.loadDeskOrderDetails(desk, true);
+        // listen to billing changes and reload desk data
+        this.events.subscribe("order-change", (number) => {
+          console.debug("reload desk overview data for desk after billing");
+          let desk = this.desks.find(el => {
+            return el.number == number;
           });
+          if (desk)
+            this.loadDeskOrderDetails(desk, true);
+        });
+
+        for (let desk of desks) {
 
           this.loadDeskOrderDetails(desk);
           this.loadDeskReservationDetails(desk);
@@ -82,7 +82,7 @@ export class DeskOverviewPage {
         });
 
 
-        desk.waiter = strWaiters
+        desk.waiter = strWaiters;
 
 
         if (totalPrice != 0) {

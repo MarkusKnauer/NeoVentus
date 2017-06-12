@@ -47,7 +47,7 @@ export class BillingModalComponent {
 
       // publish event to update desk page
       if (force) {
-        this.events.publish("order-change-" + this.deskNumber, this.deskNumber);
+        this.events.publish("order-change", this.deskNumber);
         loading.dismiss();
       }
 
