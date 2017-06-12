@@ -51,6 +51,7 @@ import {BluetoothSerial} from "@ionic-native/bluetooth-serial";
 import {BLE} from "@ionic-native/ble";
 import {FingerprintAIO} from "@ionic-native/fingerprint-aio";
 import {SecureStorage} from "@ionic-native/secure-storage";
+import {TextToSpeech} from "@ionic-native/text-to-speech";
 @NgModule({
   declarations: [
     MyApp,
@@ -132,6 +133,7 @@ import {SecureStorage} from "@ionic-native/secure-storage";
     BLE,
     SecureStorage,
     FingerprintAIO,
+    TextToSpeech,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     StompService,
     SocketService,

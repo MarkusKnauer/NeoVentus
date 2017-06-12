@@ -36,21 +36,19 @@ export class DeskOverviewPage {
     // required for UI update
     this.zone = new NgZone({ enableLongStackTrace: false });
 
-
+    // listen to billing changes and reload desk data
+    this.events.subscribe("order-change", (number) => {
+      console.debug("reload desk overview data for desk after billing");
+      let desk = this.desks.find(el => {
+        return el.number == number;
+      });
+      if (desk)
+        this.loadDeskOrderDetails(desk, true);
+    });
 
     this.deskService.getAllDesks().then(
       desks => {
         this.desks = desks;
-
-        // listen to billing changes and reload desk data
-        this.events.subscribe("order-change", (number) => {
-          console.debug("reload desk overview data for desk after billing");
-          let desk = this.desks.find(el => {
-            return el.number == number;
-          });
-          if (desk)
-            this.loadDeskOrderDetails(desk, true);
-        });
 
         for (let desk of desks) {
 

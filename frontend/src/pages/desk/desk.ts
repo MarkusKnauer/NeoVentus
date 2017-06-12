@@ -59,7 +59,7 @@ export class DeskPage {
 
       Promise.all([
         this.menuCategoryService.loadCategoryTree(),
-        this.orderService.getOrdersByDeskNumber(this.deskNumber)
+        this.orderService.getOrdersByDeskNumber(this.deskNumber, true)
       ]).then((promises) => {
         this.initCatGroups();
         this.loading.dismiss();
@@ -406,7 +406,7 @@ export class DeskPage {
    */
   switchDesk() {
     try {
-      this.deskService.getAllDesks().then((desks) => {
+      this.deskService.getAllDesks().then((desks: Array<any>) => {
         let inputs = [];
         for (let d of desks) {
           if (d.number != this.deskNumber)
@@ -429,7 +429,6 @@ export class DeskPage {
             {
               text: "Ok",
               handler: (id) => {
-                console.debug(id);
                 let orderIds = [];
                 for (let o of this.orderService.cache[this.ordersCacheKey]) {
                   for (let ids of o.orderIds) {
@@ -440,8 +439,12 @@ export class DeskPage {
                 this.orderService.switchDesk(id, orderIds).then(() => {
                   // successfully changed orders
 
+                  let newDesk = desks.find(el => {
+                    return el.id == id;
+                  });
+
                   let toast = this.toastCtrl.create({
-                    message: "Erfolgreich Bestellungen verschoben",
+                    message: "Bestellungen erfolgreich zu Tisch " + newDesk.number + " verschoben",
                     duration: 2000
                   });
                   toast.present();
@@ -451,10 +454,12 @@ export class DeskPage {
                   this.events.publish("order-change", this.deskNumber);
 
                   // notify to update new desk
-                  let newDesk = desks.find(el => {
-                    return el.id = id;
-                  });
                   this.events.publish("order-change", newDesk.number);
+                  console.debug(this.deskNumber, id, newDesk);
+
+                  // redirect to desk overview page
+                  // can use pop method cause overview is standard history
+                  this.navCtrl.pop();
                 })
 
               }
