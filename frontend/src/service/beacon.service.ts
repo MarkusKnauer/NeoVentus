@@ -67,4 +67,29 @@ export class BeaconService {
     return promise;
   }
 
+  stopRangingRegion():any{
+  let promise = new Promise((resolve, reject) => {
+  // we need to be running on a device
+  if (this.platform.is('cordova')) {
+    // setup a beacon region
+    let region = this.ibeacon.BeaconRegion('deskBeacon', '987B5028-30E2-4C08-B0B9-5AB16A57BE6B');
+    this.ibeacon.stopRangingBeaconsInRegion(region).then(
+      () => {
+        resolve(true);
+      },
+      error => {
+        console.error('Failed to begin monitoring: ', error);
+        resolve(false);
+      }
+    );
+
+
+  } else {
+    console.error("This application needs to be running on a device");
+    resolve(false);
+  }
+});
+
+  return promise;
+}
 }

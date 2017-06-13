@@ -161,12 +161,18 @@ export class DeskOverviewPage {
     fullID = beacon.uuid+beacon.major+beacon.minor;
 
     // Service search
+      let beaconDesk : any;
+      for(let desk of this.desks){
+        if(desk.beaconUUID.toUpperCase() === beacon.uuid.toUpperCase() &&
+        desk.beaconMajor.toUpperCase() === beacon.minor.toUpperCase() &&
+        desk.beaconMinor.toUpperCase() === beacon.minor.toUpperCase()){
+          beaconDesk = desk;
+        }
+    }
 
-
-    //Stop Region <-- TODO
     // Push to desk
     if(DeskOverviewPage.actualBeacon != fullID){
-      this.deskSelected(this.desks[0]);
+      this.deskSelected(beaconDesk);
     }
 
     DeskOverviewPage.actualBeacon = fullID;

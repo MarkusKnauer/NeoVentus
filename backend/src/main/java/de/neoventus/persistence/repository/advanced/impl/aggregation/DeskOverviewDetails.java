@@ -16,7 +16,7 @@ public class DeskOverviewDetails {
 	private Double totalPaid;
 	private Date nextReservation;
 
-	private String beaconUID;
+	private String beaconUUID;
 	private String beaconMajor;
 	private String beaconMinor;
 
@@ -58,12 +58,12 @@ public class DeskOverviewDetails {
 		this.nextReservation = nextReservation;
 	}
 
-	public String getBeaconUID() {
-		return beaconUID;
+	public String getBeaconUUID() {
+		return beaconUUID;
 	}
 
-	public void setBeaconUID(String beaconUID) {
-		this.beaconUID = beaconUID;
+	public void setBeaconUUID(String beaconUUID) {
+		this.beaconUUID = beaconUUID;
 	}
 
 	public String getBeaconMajor() {
