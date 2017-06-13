@@ -52,6 +52,9 @@ import {BLE} from "@ionic-native/ble";
 import {FingerprintAIO} from "@ionic-native/fingerprint-aio";
 import {SecureStorage} from "@ionic-native/secure-storage";
 import {TextToSpeech} from "@ionic-native/text-to-speech";
+import {DevicePermissions} from "../service/device-permission.service";
+import { Diagnostic } from '@ionic-native/diagnostic';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -134,6 +137,7 @@ import {TextToSpeech} from "@ionic-native/text-to-speech";
     SecureStorage,
     FingerprintAIO,
     TextToSpeech,
+    Diagnostic,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     StompService,
     SocketService,
@@ -150,6 +154,7 @@ import {TextToSpeech} from "@ionic-native/text-to-speech";
     BillingService,
     WorkingShiftService,
     BeaconService,
+    DevicePermissions,
   ]
 })
 export class AppModule {

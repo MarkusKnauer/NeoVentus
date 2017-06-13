@@ -223,6 +223,7 @@ export class DeskPage {
                 // delete not submitted orders to allow go back
                 this.tmpOrders = [];
                 // go back
+                DeskOverviewPage.clearActualBeacon();
                 this.navCtrl.pop();
               });
             }
@@ -237,6 +238,7 @@ export class DeskPage {
       return false;
     }
   }
+
 
   /**
    * sum desk total order value

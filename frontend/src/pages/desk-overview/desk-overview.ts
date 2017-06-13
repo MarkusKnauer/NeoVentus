@@ -22,6 +22,7 @@ export class DeskOverviewPage {
 
   beacons: BeaconModel[] = [];
   zone: any;
+  static actualBeacon: string;
 
   constructor(private navCtrl: NavController,
               private deskService: DeskService,
@@ -130,9 +131,49 @@ export class DeskOverviewPage {
 
           this.beacons.push(beaconObject);
         });
-
+        this.checkNearestBeacon(this.beacons);
       });
 
     });
+  }
+  checkNearestBeacon(beacons: BeaconModel[]){
+    let beaconTMP: BeaconModel;
+    for(let beac of beacons){
+      if(beaconTMP == null){beaconTMP = beac;}
+      if(beac.rssi > beaconTMP.rssi) beaconTMP = beac;
+    }
+
+    if(beaconTMP != null){
+      console.info("beaconTMP RSSI: "+beaconTMP.rssi);
+
+      if(beaconTMP.rssi >  -50) {
+        this.findBeaconDesk(beaconTMP);
+      }
+    } else{
+      console.info("DANGER!! No Beacons found!!");
+    }
+  }
+
+
+  findBeaconDesk(beacon: BeaconModel){
+    // DB- search for UUID+Major+Minor
+    let fullID : string;
+    fullID = beacon.uuid+beacon.major+beacon.minor;
+
+    // Service search
+
+    // Push to desk
+    if(DeskOverviewPage.actualBeacon != fullID){
+      this.deskSelected(this.desks[0]);
+    }
+
+    DeskOverviewPage.actualBeacon = fullID;
+
+  }
+
+
+  static clearActualBeacon(): void{
+    console.info("clearActualBeacon(): ");
+    this.actualBeacon = "";
   }
 }

@@ -10,11 +10,13 @@ import {Http} from "@angular/http";
 import {AlertController, Events, Platform} from "ionic-angular";
 import {IBeacon} from '@ionic-native/ibeacon';
 import {Injectable} from "@angular/core";
+import {DevicePermissions} from "./device-permission.service";
+
 @Injectable()
 export class BeaconService {
 
-  constructor(private ibeacon: IBeacon,public platform: Platform, public events: Events, private http: Http, private authGuard: AuthGuardService , private alertCtrl: AlertController) {
-
+  constructor(public devicePermissions: DevicePermissions,private ibeacon: IBeacon,public platform: Platform, public events: Events, private http: Http, private authGuard: AuthGuardService , private alertCtrl: AlertController) {
+    this.devicePermissions.checkLocationPermissions();
   }
 
   initialise(): any {
@@ -25,45 +27,21 @@ export class BeaconService {
         // Request permission to use location on iOS
         this.ibeacon.requestAlwaysAuthorization();
 
+        //activate Bluetooth
+        this.devicePermissions.checkIfBluetoothIsOnAndSetItOn();
+        this.devicePermissions.checkIfGPSIsOnAndSetItOn();
+
         // create a new delegate and register it with the native layer
         let delegate = this.ibeacon.Delegate();
         // Subscribe to some of the delegate's event handlers
         delegate.didRangeBeaconsInRegion()
           .subscribe(
             beaconData => {
-              let alert = this.alertCtrl.create({
-                title: "BeaconResult: "+ beaconData.beacons[0].uuid,
-                buttons: [
-                  {
-                    text: "Nein",
-                    handler: () => {
-                      alert.dismiss();
-                    }
-                  }]});
-              alert.present();
-
               this.events.publish('didRangeBeaconsInRegion', beaconData);
-
             },
             error => console.error()
           );
 
-        delegate.didStartMonitoringForRegion()
-          .subscribe( test =>{
-           let alert = this.alertCtrl.create({
-          title: "BeaconMonitor: ",
-          buttons: [
-            {
-              text: "Nein",
-              handler: () => {
-                alert.dismiss();
-              }
-            }]});
-        alert.present(),
-
-        data => console.log('didStartMonitoringForRegion: ', data),
-            error => console.error()
-          });
         // setup a beacon region
          let region = this.ibeacon.BeaconRegion('deskBeacon', '987B5028-30E2-4C08-B0B9-5AB16A57BE6B');
 
@@ -71,17 +49,6 @@ export class BeaconService {
         this.ibeacon.startRangingBeaconsInRegion(region)
           .then(
             () => {
-              let alert = this.alertCtrl.create({
-                title: "Ranging: "+  this.ibeacon.getRangedRegions()[0].identifier,
-                buttons: [
-                  {
-                    text: "Nein",
-                    handler: () => {
-                      alert.dismiss();
-                    }
-                  }]});
-              alert.present();
-
               resolve(true);
             },
             error => {
@@ -99,4 +66,5 @@ export class BeaconService {
 
     return promise;
   }
+
 }
