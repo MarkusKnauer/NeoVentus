@@ -21,7 +21,7 @@ public class SideDishDto implements Serializable {
 
 	private String targetMenuItem;
 
-
+	private boolean activItem;
 	public SideDishDto(){}
 
 	public SideDishDto(String nameDish, String menuItemName) {
@@ -30,6 +30,13 @@ public class SideDishDto implements Serializable {
 	}
 
 	// Setter / Getter
+	public boolean isActivItem() {
+		return activItem;
+	}
+
+	public void setActivItem(boolean activItem) {
+		this.activItem = activItem;
+	}
 
 
 	public String getTargetMenuItem() {

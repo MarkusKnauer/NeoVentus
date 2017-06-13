@@ -34,6 +34,8 @@ public class MenuItem extends AbstractDocument {
 
 	private String currency;
 
+	private boolean activItem;
+
 	@DBRef
 	private MenuItemCategory menuItemCategory;
 
@@ -44,6 +46,7 @@ public class MenuItem extends AbstractDocument {
 	public MenuItem() {
 		this.notices = new ArrayList<>();
 		sideDishGroup = null;
+		setActivItem(true);
 	}
 
 	public MenuItem(MenuItemCategory menuItemCategory, String name, String shortName, Double price, String currency, String description, String mediaUrl,
@@ -57,6 +60,7 @@ public class MenuItem extends AbstractDocument {
 		this.mediaUrl = mediaUrl;
 		this.notices = notices;
 		sideDishGroup = null;
+		setActivItem(true);
 
 	}
 
@@ -74,6 +78,14 @@ public class MenuItem extends AbstractDocument {
 
 	// getter and setter
 
+
+	public boolean isActivItem() {
+		return activItem;
+	}
+
+	public void setActivItem(boolean activItem) {
+		this.activItem = activItem;
+	}
 
 	public String getShortName() {
 		return shortName;

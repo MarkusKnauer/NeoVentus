@@ -162,6 +162,8 @@ export class DeskOverviewPage {
 
     // Service search
 
+
+    //Stop Region <-- TODO
     // Push to desk
     if(DeskOverviewPage.actualBeacon != fullID){
       this.deskSelected(this.desks[0]);

@@ -16,6 +16,13 @@ public class DeskDto implements Serializable {
 	@NotNull
 	private Integer seats;
 
+	private String beaconUUID;
+
+	private String beaconMajor;
+
+	private String beaconMinor;
+
+	private boolean activItem;
 
 	// constructor
 
@@ -24,6 +31,39 @@ public class DeskDto implements Serializable {
 	}
 
 	// getter and setter
+
+
+	public boolean isActivItem() {
+		return activItem;
+	}
+
+	public void setActivItem(boolean activItem) {
+		this.activItem = activItem;
+	}
+
+	public String getBeaconUUID() {
+		return beaconUUID;
+	}
+
+	public void setBeaconUUID(String beaconUUID) {
+		this.beaconUUID = beaconUUID;
+	}
+
+	public String getBeaconMajor() {
+		return beaconMajor;
+	}
+
+	public void setBeaconMajor(String beaconMajor) {
+		this.beaconMajor = beaconMajor;
+	}
+
+	public String getBeaconMinor() {
+		return beaconMinor;
+	}
+
+	public void setBeaconMinor(String beaconMinor) {
+		this.beaconMinor = beaconMinor;
+	}
 
 	public String getId() {
 		return id;

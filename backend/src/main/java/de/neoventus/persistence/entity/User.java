@@ -10,13 +10,6 @@ import java.util.List;
 
 /**
  * @author Dennis Thanner, Julian Beck, Markus Knauer, Tim Heidelbach
- * @version 0.0.8 added workingTimeModell - JB
- * 			0.0.7 added first und lastname - DT
- *          0.0.6 removed local variable StringBuilder
- *          0.0.5 Add variable workerId - JB
- *          0.0.4 edit permissions as enum - MK
- *          0.0.3 user status clean up - DT
- *          0.0.2 added user status - JB
  **/
 public class User extends AbstractDocument {
 
@@ -33,11 +26,14 @@ public class User extends AbstractDocument {
 
 	private String workingTimeModell;
 
+	private boolean activItem;
+
 	@DBRef
 	private List<Desk> desks = new ArrayList<>();
 
 	// constructor
 	public User() {
+		setActivItem(true);
 		this.permissions = new ArrayList<>();
 	}
 
@@ -48,10 +44,18 @@ public class User extends AbstractDocument {
 		this.lastName = lastName;
 		this.workingTimeModell = workingTimeModell;
 		this.permissions = Arrays.asList(permissions);
+		setActivItem(true);
 	}
 
 	// getter and setter
 
+	public boolean isActivItem() {
+		return activItem;
+	}
+
+	public void setActivItem(boolean activItem) {
+		this.activItem = activItem;
+	}
 
 	public String getWorkingTimeModell() {
 		return workingTimeModell;

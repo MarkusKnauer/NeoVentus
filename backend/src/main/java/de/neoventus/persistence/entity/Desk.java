@@ -17,8 +17,17 @@ public class Desk extends AbstractDocument {
 
 	private Integer maximalSeats;
 
+	private String beaconUUID;
+
+	private String beaconMajor;
+
+	private String beaconMinor;
+
+	private boolean activItem;
+
 	// constructor
 	public Desk() {
+		setActivItem(true);
 	}
 
 	public Desk(Integer seats) {
@@ -28,9 +37,60 @@ public class Desk extends AbstractDocument {
 		this.number = number;
 		this.seats = seats;
 		this.maximalSeats = maximalSeats;
+		setActivItem(true);
 	}
+
+	public Desk(Integer number,
+				Integer seats,
+				Integer maximalSeats,
+				String beaconUUID,
+				String beaconMajor,
+				String beaconMinor) {
+
+		this.number = number;
+		this.seats = seats;
+		this.maximalSeats = maximalSeats;
+		this.beaconUUID = beaconUUID;
+		this.beaconMajor = beaconMajor;
+		this.beaconMinor = beaconMinor;
+		setActivItem(true);
+	}
+
+
 	// getter and setter
 
+	public boolean isActivItem() {
+		return activItem;
+	}
+
+	public void setActivItem(boolean activItem) {
+		this.activItem = activItem;
+	}
+
+
+	public String getBeaconUUID() {
+		return beaconUUID;
+	}
+
+	public void setBeaconUUID(String beaconUUID) {
+		this.beaconUUID = beaconUUID;
+	}
+
+	public String getBeaconMajor() {
+		return beaconMajor;
+	}
+
+	public void setBeaconMajor(String beaconMajor) {
+		this.beaconMajor = beaconMajor;
+	}
+
+	public String getBeaconMinor() {
+		return beaconMinor;
+	}
+
+	public void setBeaconMinor(String beaconMinor) {
+		this.beaconMinor = beaconMinor;
+	}
 
 	public Integer getMaximalSeats() {
 		return maximalSeats;

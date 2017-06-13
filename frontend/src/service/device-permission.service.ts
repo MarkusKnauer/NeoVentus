@@ -70,6 +70,8 @@ export class DevicePermissions {
 
   }
 
+
+  //Pop-up mit nachfrage <-- TODO
   checkIfGPSIsOnAndSetItOn(): void{
     this.diagnostic.getLocationMode()
       .then((state) => {

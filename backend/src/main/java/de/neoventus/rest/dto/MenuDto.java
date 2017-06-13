@@ -34,13 +34,22 @@ public class MenuDto implements Serializable {
 
     private String sideDish;
 
+	private boolean activItem;
+
     // constructor
     public MenuDto(){}
 
     // getter and setter
 
+	public boolean isActivItem() {
+		return activItem;
+	}
 
-    public String getSideDish() {
+	public void setActivItem(boolean activItem) {
+		this.activItem = activItem;
+	}
+
+	public String getSideDish() {
         return sideDish;
     }
 

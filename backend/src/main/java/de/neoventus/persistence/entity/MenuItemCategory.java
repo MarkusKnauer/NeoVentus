@@ -9,9 +9,7 @@ import java.util.ArrayList;
 /**
  * Menu Categories
  *
- * @author Julian Beck
- * @version 0.0.2 added @JsonIgnore for variable parent - DS
- * 			0.0.1 created categories for Menu
+ * @author Julian Beck, DS
  */
 public class MenuItemCategory extends AbstractDocument {
 
@@ -27,9 +25,12 @@ public class MenuItemCategory extends AbstractDocument {
 
 	private boolean forKitchen;
 
+	private boolean activItem;
+
 	public MenuItemCategory() {
 		this.subcategory = new ArrayList<MenuItemCategory>();
 		this.parent = null;
+		setActivItem(true);
 	}
 
 	public MenuItemCategory(String name) {
@@ -42,6 +43,7 @@ public class MenuItemCategory extends AbstractDocument {
 		this.forKitchen = forKitchen;
 		this.subcategory = new ArrayList<MenuItemCategory>();
 		this.parent = null;
+		setActivItem(true);
 	}
 
 
@@ -51,6 +53,15 @@ public class MenuItemCategory extends AbstractDocument {
 
 
 	// Setter / Getter
+
+	public boolean isActivItem() {
+		return activItem;
+	}
+
+	public void setActivItem(boolean activItem) {
+		this.activItem = activItem;
+	}
+
 	public String getName() {
 		return name;
 	}

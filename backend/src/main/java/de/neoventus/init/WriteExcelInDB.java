@@ -41,6 +41,10 @@ public class WriteExcelInDB {
 	private MenuItemCategory category = null;
 
 	private List<MenuItem> newMenu;
+	private List<User> allUsers;
+	private List<Desk> allDesks;
+	private List<MenuItem> allMenuItems;
+	private List<MenuItemCategory> allCategory;
 
 
 	@Autowired
@@ -66,24 +70,17 @@ public class WriteExcelInDB {
 			//clearIndexes();
 			// Excel-things
 			Workbook workbook = new XSSFWorkbook(Files.newInputStream(file));
-			List<User> user = userRepository.findAll();
 			for(int i= 0; i< workbook.getNumberOfSheets(); i++){
 				String kw = "KW "+ (i+1);
 				LOGGER.info(""+workbook.getSheetName(i));
 				if(workbook.getSheetName(i).equals("MenuCard")) {
-					menuItemRepository.deleteAll();
-					menuItemCategoryRepository.deleteAll();
 					writeMenuAndCategory(workbook.getSheet("MenuCard"));
 				}else if (workbook.getSheetName(i).equals("DeskOverview")){
-					deskRepository.deleteAll();
 					writeDesk(workbook.getSheet("DeskOverview"));
 				}else if (workbook.getSheetName(i).equals("User")) {
-					userRepository.deleteAll();
-					workingPlanRepository.deleteAll();
 					writeUserDefault(workbook.getSheet("User"));
-					user = userRepository.findAll();
 				}else if (workbook.getSheetName(i).equals(kw)) {
-					if(user != null && !user.isEmpty()){
+					if(allUsers != null && !allUsers.isEmpty()){
 						writeWorkingPlan(workbook.getSheet(kw));
 					}
 				}
@@ -102,8 +99,23 @@ public class WriteExcelInDB {
 
 
 // --------------------- START: SEMANTIC GROUP CATEGORY AND MENU -------------------------------------------------------
+
 	private void writeMenuAndCategory(Sheet excelSheet) {
 		LOGGER.info("Writes Menu-Excelsheet in MongoDB");
+
+		allMenuItems= menuItemRepository.findAll();
+		if(allMenuItems != null){
+			for(MenuItem m: allMenuItems){
+				m.setActivItem(false);
+			}
+		}
+		allCategory = (List<MenuItemCategory>) menuItemCategoryRepository.findAll();
+		if(allCategory != null){
+			for(MenuItemCategory mic: allCategory){
+				mic.setActivItem(false);
+			}
+		}
+
 		Iterator<Row> row = excelSheet.iterator();
 		 newMenu = new ArrayList<MenuItem>();
 		// Jump over the first two lines
@@ -124,6 +136,29 @@ public class WriteExcelInDB {
 		}
 
 	}
+
+	private MenuItemCategory categoryFindByName(String value){
+		if(allCategory != null){
+			for(MenuItemCategory mic: allCategory){
+				if(value.equals(mic.getName())){
+					return mic;
+				}
+			}
+		}
+		return null;
+	}
+
+	private MenuItem menuitemFindByName(String value){
+		if(allMenuItems != null){
+			for(MenuItem m: allMenuItems){
+				if(value.equals(m.getName())){
+					return m;
+				}
+			}
+		}
+		return null;
+	}
+
 	// Subfunction for Category
 	private void writeCategory(Iterator<Cell> cellIterator) {
 		// First cell isn't interessting for DB (value='Category')
@@ -135,20 +170,17 @@ public class WriteExcelInDB {
 
 		}
 		// Constructor Category: Name, Kitchen or Bar
-		if(menuItemCategoryRepository.findByName(value.get(1))== null){
-			category = new MenuItemCategory(value.get(1),!value.get(2).equals("Bar"));
-			if (!value.get(0).equals("")) {
-				category.setParent(menuItemCategoryRepository.findByName(value.get(0)));
-			}
-		} else{
-			category = menuItemCategoryRepository.findByName(value.get(1));
+		if(categoryFindByName(value.get(1))!= null){
+			category = categoryFindByName(value.get(1));
 			category.setForKitchen(!value.get(2).equals("Bar"));
-			if (!value.get(0).equals("")) {
-				category.setParent(menuItemCategoryRepository.findByName(value.get(0)));
-			}
+			category.setActivItem(true);
 			LOGGER.info("Categorie exists");
+		} else{
+			category = new MenuItemCategory(value.get(1),!value.get(2).equals("Bar"));
 		}
-
+		if (!value.get(0).equals("")) {
+			category.setParent(categoryFindByName(value.get(0)));
+		}
 
 		menuItemCategoryRepository.save(category);
 	}
@@ -163,8 +195,16 @@ public class WriteExcelInDB {
 		}
 		// MenuItem-Constructor: Category, name, Shortname, price, currency, description, mediaURL, notices
 		MenuItem menuItem;
-			if (menuItemRepository.findByName(value.get(0)) == null) {
-				menuItem = new MenuItem(
+			if (menuitemFindByName(value.get(0)) != null) {
+				menuItem = menuitemFindByName(value.get(0));
+				menuItem.setMenuItemCategory(category);
+				menuItem.setShortName(value.get(1));
+				menuItem.setPrice(Double.parseDouble(value.get(2)));
+				menuItem.setCurrency(value.get(3));
+				menuItem.setDescription(value.get(4));
+				menuItem.setActivItem(true);
+			} else {
+			menuItem = new MenuItem(
 					category,
 					value.get(0),
 					value.get(1),
@@ -174,13 +214,6 @@ public class WriteExcelInDB {
 					"",
 					new ArrayList<>());
 
-			} else {
-				menuItem = menuItemRepository.findByName(value.get(0));
-				menuItem.setMenuItemCategory(category);
-				menuItem.setShortName(value.get(1));
-				menuItem.setPrice(Double.parseDouble(value.get(2)));
-				menuItem.setCurrency(value.get(3));
-				menuItem.setDescription(value.get(4));
 			}
 			newMenu.add(menuItem);
 			menuItemRepository.save(menuItem);
@@ -190,6 +223,13 @@ public class WriteExcelInDB {
 	private void writeDesk(Sheet excelSheet){
 		LOGGER.info("Writes Desk-Excelsheet in MongoDB");
 		Iterator<Row> row = excelSheet.iterator();
+		allDesks = deskRepository.findAll();
+
+		if(allDesks != null){
+			for(Desk d: allDesks){
+				d.setActivItem(false);
+			}
+		}
 		// Jump over the first two lines
 		row.next();
 		row.next();
@@ -204,21 +244,54 @@ public class WriteExcelInDB {
 			if(!value.get(0).equals("Gesamt")) {
 				//Desk-Constructor: number, seats, max. Seats
 				Desk desk;
-				if(deskRepository.findByNumber((int) Double.parseDouble(value.get(0))) == null) {
-					desk = new Desk((int) Double.parseDouble(value.get(0)), (int) Double.parseDouble(value.get(1)), (int) Double.parseDouble(value.get(2)));
+				if(deskFindByNumber((int) Double.parseDouble(value.get(0))) != null) {
 
-				} else {
-					desk = deskRepository.findByNumber((int) Double.parseDouble(value.get(0)));
+					desk = deskFindByNumber((int) Double.parseDouble(value.get(0)));
 					desk.setSeats((int) Double.parseDouble(value.get(1)));
 					desk.setMaximalSeats((int) Double.parseDouble(value.get(1)));
+					desk.setBeaconUUID(value.get(4));
+					desk.setBeaconMajor(value.get(5));
+					desk.setBeaconMinor(value.get(6));
+					desk.setActivItem(true);
+				} else {
+					desk = new Desk(
+						(int) Double.parseDouble(value.get(0)),
+						(int) Double.parseDouble(value.get(1)),
+						(int) Double.parseDouble(value.get(2)),
+						value.get(4),
+						value.get(5),
+						value.get(6));
 				}
 				deskRepository.save(desk);
 			}
 		}
 	}
 
+	private Desk deskFindByNumber(Integer number){
+		if(allDesks != null){
+			for(Desk d: allDesks){
+				if((int)d.getNumber() == number){
+					return d;
+				}
+			}
+		}
+		return null;
+	}
+
+
+
 	private void writeUserDefault(Sheet excelSheet){
 		LOGGER.info("Writes User-Excelsheet in MongoDB");
+
+		allUsers = userRepository.findAll();
+
+		if(allUsers != null){
+			for(User usr: allUsers){
+				usr.setActivItem(false);
+			}
+		}
+
+
 		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 		Iterator<Row> row = excelSheet.iterator();
 		// Jump over the first two lines
@@ -236,10 +309,8 @@ public class WriteExcelInDB {
 			}
 			// User-Constructor: Username, firstname, lastname, password, WorkingTimeModell, Permissions
 			User user;
-			if(userRepository.findByUsername(value.get(0))==null) {
-				user = new User(value.get(0), value.get(1), value.get(2), bCryptPasswordEncoder.encode(value.get(3)), value.get(4), Permission.valueOf(value.get(5)));
-			} else{
-				user = userRepository.findByUsername(value.get(0));
+			if(userFindByName(value.get(0))!=null) {
+				user = userFindByName(value.get(0));
 				user.setFirstName(value.get(1));
 				user.setLastName(value.get(2));
 				user.setPassword(bCryptPasswordEncoder.encode(value.get(3)));
@@ -250,9 +321,23 @@ public class WriteExcelInDB {
 					perm.add(Permission.valueOf(value.get(5)));
 				}
 				user.setPermissions(perm);
+				user.setActivItem(true);
+			} else{
+				user = new User(value.get(0), value.get(1), value.get(2), bCryptPasswordEncoder.encode(value.get(3)), value.get(4), Permission.valueOf(value.get(5)));
 			}
 			userRepository.save(user);
 		}
+	}
+
+	private User userFindByName(String value){
+		if(allUsers != null){
+			for(User usr: allUsers){
+				if(value.equals(usr.getUsername())){
+					return usr;
+				}
+			}
+		}
+		return null;
 	}
 
 

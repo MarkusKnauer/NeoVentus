@@ -40,6 +40,7 @@ class DefaultDemoDataIntoDB {
 	private List<Desk> desks;
 	private List<MenuItem> menuItems;
 	private List<User> users;
+	private List<SideDishGroup> allSideDishGroup;
 
 	private Random random;
 	private List<OrderItem> orderItems = null;
@@ -71,18 +72,23 @@ class DefaultDemoDataIntoDB {
 		List<MenuItem> menuItems = menuItemRepository.findAll();
 
 		if (checkLists(menuItems)){
-			this.sideDishRepository.deleteAll();
+			//this.sideDishRepository.deleteAll();
 			generateSideDish();
 		}
 		if(checkLists(users)&&checkLists(desks)){
-			this.reservationRepository.deleteAll();
-			generateReservation();
+			//this.reservationRepository.deleteAll();
+			if(this.reservationRepository.count()== 0){
+				generateReservation();
+			}
+
 		}
 		if (checkLists(users)&&checkLists(desks)&&checkLists(wp)&&checkLists(menuItems)){
-			this.billingRepository.deleteAll();
-			this.orderItemRepository.deleteAll();
-			generateFinishedOrderItem();
-			generateActualOrderItem();
+			//this.billingRepository.deleteAll();
+			//this.orderItemRepository.deleteAll();
+			if(this.orderItemRepository.count()== 0 && this.billingRepository.count() == 0){
+				generateFinishedOrderItem();
+				generateActualOrderItem();
+			}
 		}
 		//	generateReservation(); // DBRef: User, Desk
 	//	generateSideDish(); // DbRef: MenuItem
@@ -201,6 +207,12 @@ class DefaultDemoDataIntoDB {
 		// sideDishGroup = saveSideDish("Teesorten", "Schwarztee", "Grüntee", "Waldfruchttee", "Pfefferminztee");
 		// saveMenuSideDishItem(sideDishGroup, "Glas Tee");
 		// ----------------------------- Spare-Rib ---------------------------------------------
+		allSideDishGroup = (List<SideDishGroup>) this.sideDishRepository.findAll();
+		if(allSideDishGroup != null){
+			for( SideDishGroup sdg: allSideDishGroup){
+				sdg.setActivItem(false);
+			}
+		}
 		sideDishGroup = saveSideDish("Spare Ribs", false, "Baked Potato", "Pommes frites", "Rösti", "Krokettten", "Country-Kartoffeln", "Butterreis", "Red Beans", "Maiskolben vom Grill", "Frische Champignons", "Frische Sour Cream");
 		saveMenuSideDishItem(sideDishGroup, "Spare Ribs 300g", "Spare Ribs 550g");
 		// -------------------------------------------------------------------------------------
@@ -212,8 +224,23 @@ class DefaultDemoDataIntoDB {
 		// -------------------------------------------------------------------------------------
 	}
 
+	private SideDishGroup sideDishFindByName(String value){
+		if(allSideDishGroup != null){
+			for( SideDishGroup sdg: allSideDishGroup){
+				return sdg;
+			}
+		}
+		return null;
+	}
 	private SideDishGroup saveSideDish(String sidename, Boolean selectionRequired, String... items) {
-		SideDishGroup sideDishGroup = new SideDishGroup(sidename, selectionRequired);
+		SideDishGroup sideDishGroup;
+		if(sideDishFindByName(sidename) != null){
+			sideDishGroup = sideDishFindByName(sidename);
+			sideDishGroup.setActivItem(true);
+		}else {
+			sideDishGroup = new SideDishGroup(sidename, selectionRequired);
+		}
+
 		this.sideDishRepository.save(sideDishGroup);
 		for (String i : items) {
 			sideDishGroup.addSideDish(menuItemRepository.findByName(i));
@@ -328,10 +355,10 @@ class DefaultDemoDataIntoDB {
 		//for (int j = 0; j < 7; j++) {
 		int j = 0;
 		// Day Counter, if totalDay = 0 <- write all
-		int totalDay = 0;
+		int totalDay = 365;
 		Calendar today = getCalendar(calendar,totalDay);
-LOGGER.info(lastPlan.getWorkingDay()+ " Lastday");
-LOGGER.info(today.getTime()+ " getTime");
+		LOGGER.info(lastPlan.getWorkingDay()+ " Lastday");
+		LOGGER.info(today.getTime()+ " getTime");
 		while(
 			plan!= null&&
 				plan.getWorkingDay().compareTo(today.getTime())<1&&

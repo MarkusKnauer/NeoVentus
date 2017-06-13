@@ -10,10 +10,6 @@ import java.util.ArrayList;
  * A MenuItem could have a list of possible side dishes. For example, to a hamburger you can have wedges or a salat etc.
  *
  * @author Markus Knauer, Julian Beck, Dennis Thanner
- * @version 0.0.4 added DBRef - DT
- *          0.0.3 undo Three SideDishGroup refs MK
- *          0.0.2 add Three SideDishGroup refs JB
- *          0.0.1 Creation - MK
  */
 
 public class SideDishGroup extends AbstractDocument {
@@ -21,6 +17,7 @@ public class SideDishGroup extends AbstractDocument {
 	@Indexed(unique = true)
 	private String name;
 	private boolean selectionRequired;
+	private boolean activItem;
 
 	@DBRef
 	private ArrayList<MenuItem> sideDishes;
@@ -28,17 +25,29 @@ public class SideDishGroup extends AbstractDocument {
 	//constructor
 
 	public SideDishGroup() {
+		setActivItem(true);
 		sideDishes = new ArrayList<>();
+		setActivItem(true);
 	}
 
 	public SideDishGroup(String name, Boolean selectionRequired) {
 		this.name = name;
 		this.selectionRequired = selectionRequired;
 		sideDishes = new ArrayList<>();
+		setActivItem(true);
 	}
 
 
 	// getter, setter
+
+	public boolean isActivItem() {
+		return activItem;
+	}
+
+	public void setActivItem(boolean activItem) {
+		this.activItem = activItem;
+	}
+
 	public String getName() {
 		return name;
 	}
