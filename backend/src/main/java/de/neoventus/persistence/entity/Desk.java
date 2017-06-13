@@ -29,6 +29,14 @@ public class Desk extends AbstractDocument {
 		this.seats = seats;
 		this.maximalSeats = maximalSeats;
 	}
+
+	public Desk(String id, Integer number, Integer seats, Integer maximalSeats) {
+		super(id);
+		this.number = number;
+		this.seats = seats;
+		this.maximalSeats = maximalSeats;
+	}
+
 	// getter and setter
 
 

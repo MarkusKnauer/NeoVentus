@@ -35,7 +35,6 @@
     <feature name="StatusBar">
         <param name="ios-package" onload="true" value="CDVStatusBar" />
     </feature>
-    <engine name="android" spec="^6.2.3" />
     <engine name="ios" spec="^4.4.0" />
     <plugin name="com.unarin.cordova.beacon" spec="^3.4.0" />
     <plugin name="cordova-plugin-add-swift-support" spec="~1.6.2" />
@@ -53,4 +52,5 @@
     <plugin name="cordova.plugins.diagnostic" spec="^3.6.5" />
     <plugin name="de.appplant.cordova.plugin.local-notification" spec="^0.8.5" />
     <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
+  <engine name="android" spec="~6.2.3"/>
 </widget>
