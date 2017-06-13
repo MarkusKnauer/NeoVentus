@@ -16,6 +16,10 @@ public class DeskOverviewDetails {
 	private Double totalPaid;
 	private Date nextReservation;
 
+	private String beaconUID;
+	private String beaconMajor;
+	private String beaconMinor;
+
 	public DeskOverviewDetails() {
 		waiters = new HashSet<>();
 		nextReservation = null;
@@ -52,6 +56,30 @@ public class DeskOverviewDetails {
 
 	public void setNextReservation(Date nextReservation) {
 		this.nextReservation = nextReservation;
+	}
+
+	public String getBeaconUID() {
+		return beaconUID;
+	}
+
+	public void setBeaconUID(String beaconUID) {
+		this.beaconUID = beaconUID;
+	}
+
+	public String getBeaconMajor() {
+		return beaconMajor;
+	}
+
+	public void setBeaconMajor(String beaconMajor) {
+		this.beaconMajor = beaconMajor;
+	}
+
+	public String getBeaconMinor() {
+		return beaconMinor;
+	}
+
+	public void setBeaconMinor(String beaconMinor) {
+		this.beaconMinor = beaconMinor;
 	}
 
 }

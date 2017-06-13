@@ -80,6 +80,9 @@ public class DeskRepositoryImpl implements NVDeskRepository {
 			int deskNumber = desk.getNumber();
 			DeskOverviewDetails details = new DeskOverviewDetails();
 			details.setDeskNumber(deskNumber);
+			details.setBeaconUID(desk.getBeaconUUID());
+			details.setBeaconMajor(desk.getBeaconMajor());
+			details.setBeaconMinor(desk.getBeaconMinor());
 			deskOverview.put(deskNumber, details);
 		}
 
