@@ -1,27 +1,28 @@
 package de.neoventus.persistence.repository.advanced.impl.aggregation;
 
 /**
- * aggregation result to get popular guest wishes
+ * aggregation result to get count for objects
  *
  * @author Dennis Thanner
  */
-public class GuestWishCount {
+public class ObjectCountAggregation<T> {
 
-	private String guestWish;
+	private T object;
 
 	private int count;
 
 	// constructor
-	public GuestWishCount() {
+	public ObjectCountAggregation() {
 	}
 
 	// getter and setter
-	public String getGuestWish() {
-		return guestWish;
+
+	public T getObject() {
+		return object;
 	}
 
-	public void setGuestWish(String guestWish) {
-		this.guestWish = guestWish;
+	public void setObject(T object) {
+		this.object = object;
 	}
 
 	public int getCount() {

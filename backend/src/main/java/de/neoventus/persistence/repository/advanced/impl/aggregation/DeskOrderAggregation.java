@@ -14,7 +14,7 @@ public class DeskOrderAggregation {
 
 	private Desk desk;
 
-	private List<MenuItem> items = new ArrayList<>();
+	private List<ObjectCountAggregation<MenuItem>> items = new ArrayList<>();
 
 	private List<User> waiters = new ArrayList<>();
 	// constructors
@@ -33,11 +33,11 @@ public class DeskOrderAggregation {
 		this.desk = desk;
 	}
 
-	public List<MenuItem> getItems() {
+	public List<ObjectCountAggregation<MenuItem>> getItems() {
 		return items;
 	}
 
-	public void setItems(List<MenuItem> items) {
+	public void setItems(List<ObjectCountAggregation<MenuItem>> items) {
 		this.items = items;
 	}
 

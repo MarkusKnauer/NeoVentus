@@ -6,8 +6,8 @@ import de.neoventus.persistence.entity.OrderItemState;
 import de.neoventus.persistence.repository.MenuItemCategoryRepository;
 import de.neoventus.persistence.repository.SideDishRepository;
 import de.neoventus.persistence.repository.advanced.NVMenuItemRepository;
-import de.neoventus.persistence.repository.advanced.impl.aggregation.GuestWishCount;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.MenuItemProcessingDetails;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.ObjectCountAggregation;
 import de.neoventus.rest.dto.MenuDto;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,16 +59,16 @@ public class MenuItemRepositoryImpl implements NVMenuItemRepository {
 	}
 
 	@Override
-	public List<GuestWishCount> getPopularGuestWishesForItem(String id) {
+	public List<ObjectCountAggregation> getPopularGuestWishesForItem(String id) {
 		Aggregation agg = Aggregation.newAggregation(
 			Aggregation.match(Criteria.where("item.$id").is(new ObjectId(id)).and("guestWish").ne("")),
 			Aggregation.group("guestWish").count().as("count"),
 			Aggregation.sort(Sort.Direction.DESC, "count"),
-			Aggregation.project("count").and("guestWish").previousOperation(),
+			Aggregation.project("count").and("object").previousOperation(),
 			Aggregation.limit(5)
 		);
 
-		return this.mongoTemplate.aggregate(agg, OrderItem.class, GuestWishCount.class).getMappedResults();
+		return this.mongoTemplate.aggregate(agg, OrderItem.class, ObjectCountAggregation.class).getMappedResults();
 	}
 
 	@Override
