@@ -1,9 +1,11 @@
 import {Component} from "@angular/core";
-import {AlertController, LoadingController, NavParams, Platform} from "ionic-angular";
+import {ActionSheetController, AlertController, LoadingController, NavParams, Platform} from "ionic-angular";
 import {OrderService} from "../../service/order.service";
 import {MenuCategoryService} from "../../service/menu-category.service";
 import {OrderSocketService} from "../../service/order-socket-service";
 import {TextToSpeech} from "@ionic-native/text-to-speech";
+import {LocalStorageService} from "../../service/local-storage.service";
+
 
 
 @Component({
@@ -28,7 +30,11 @@ export class KitchenOverviewPage {
               private alertCtrl: AlertController,
               private orderSocketService: OrderSocketService,
               private tts: TextToSpeech,
-              private platform: Platform) {
+              private platform: Platform,
+              private actionSheetCtrl: ActionSheetController,
+              private localStorageService: LocalStorageService) {
+
+    this.localStorageService.loadStornoReasons();
 
     this.forKitchen = navParams.get("forKitchen");
 
@@ -458,6 +464,83 @@ export class KitchenOverviewPage {
       item.isNew = false;
       delete item.newItemCount;
     }, sleepTime);
+  }
+
+  /**
+   * open storno alert to chose storno all or one
+   * @param deskNumber
+   * @param cat
+   * @param item
+   */
+  openStornoAlert(deskNumber, cat, item) {
+    let alert = this.alertCtrl.create();
+    alert.setTitle(item.item.name + ' des Tisches ' + deskNumber + ' stornieren?'),
+
+      alert.addButton('Abbruch');
+
+    alert.addButton({
+      text: 'Storno einzeln',
+      handler: () => {
+        this.openStornoAction(deskNumber, cat, item, false);
+      }
+    });
+
+    if (item.orderIds.length > 1) {
+      alert.addButton({
+        text: 'Storno alle',
+        handler: () => {
+          this.openStornoAction(deskNumber, cat, item, true);
+        }
+      });
+    }
+
+    alert.present();
+  }
+
+  /**
+   * open storno popup to chose which order to abort
+   * @param deskNumber
+   * @param cat
+   * @param item
+   * @param all
+   */
+  openStornoAction(deskNumber, cat, item, all: boolean,) {
+    let orderIds = [];
+    if (all) {
+      orderIds = item.orderIds;
+    } else {
+      orderIds.push(item.orderIds[0]);
+    }
+
+    // get clickable buttons
+    let buttons = [];
+    for (let reason of this.localStorageService.cache[LocalStorageService.STORNO_REASONS_KEY]) {
+      buttons.push({
+        text: reason,
+        handler: () => {
+          actionSheet.dismiss(reason);
+          return false;
+        }
+      });
+    }
+    buttons.push({text: "Abbrechen", role: "cancel"});
+
+    let actionSheet = this.actionSheetCtrl.create({
+      title: "Stornierungsgrund",
+      buttons: buttons
+    });
+    actionSheet.present();
+
+    // after close reload data
+    actionSheet.onDidDismiss((reason) => {
+      // only execute if reason is set
+      if (reason) {
+        this.orderService.cancelOrders(orderIds, reason).toPromise().then(() => {
+          this.deleteItemInOverview(item);
+          this.deleteItemInCard(cat, item, deskNumber);
+        });
+      }
+    })
   }
 
 }

@@ -49,7 +49,7 @@
 
 
             <!--BEGIN card content -->
-            <ion-item-group *ngFor="let cat of keyValuePair.val">
+            <ion-list *ngFor="let cat of keyValuePair.val">
 
               <!-- BEGIN category divider
               <!-- category only show in kitchen the category -->
@@ -67,7 +67,8 @@
               <ng-container *ngFor="let item of cat.itemsPerCat">
 
 
-                <ion-item [ngClass]="{new: item.isNew, old: !item.isNew}">
+                <ion-item [ngClass]="{new: item.isNew, old: !item.isNew}"
+                          (longPress)="openStornoAlert(keyValuePair.key, cat, item)">
                   <span>{{item.orderIds.length}} x {{item.item.shortName}}
                     <ion-badge>{{item.newItemCount}}</ion-badge>
                   </span>
@@ -81,9 +82,10 @@
                   <span>{{item.guestWish}}</span>
                 </span>
                 </ion-item>
+
               </ng-container>
 
-            </ion-item-group>
+            </ion-list>
             <!--END card content -->
 
           </ion-card>
