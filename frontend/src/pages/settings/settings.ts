@@ -1,10 +1,14 @@
 import {Component} from "@angular/core";
-import {Events, LoadingController, ModalController, NavController, Platform, ToastController} from "ionic-angular";
+import {
+  AlertController, Events, LoadingController, ModalController, NavController, Platform,
+  ToastController
+} from "ionic-angular";
 import {ManageStornoReasonsModalComponent} from "../../component/manage-storno-reasons/manage-storno-reasons";
 import {LocalStorageService} from "../../service/local-storage.service";
 import {Http} from "@angular/http";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {ApplicationEvents} from "../../app/events";
+import {DevicePermissions} from "../../service/device-permission.service";
 
 /**
  * @author Markus Knauer, Dennis Thanner
@@ -20,9 +24,14 @@ export class SettingsPage {
 
   private connectionUrl: string = "http://";
 
+  private ibeaconIsON: boolean = false;
+
   constructor(public navCtrl: NavController, private modalCtrl: ModalController, private loadingCtrl: LoadingController,
               private localSorageService: LocalStorageService, private http: Http, private events: Events,
-              private toastCtrl: ToastController, public authGuard: AuthGuardService, public platform: Platform) {
+              private toastCtrl: ToastController, public authGuard: AuthGuardService, public platform: Platform,
+              private alertCtrl: AlertController,
+              public devicePermissions: DevicePermissions
+  ) {
     this.localSorageService.loadConnectionUrl().then(() => {
       this.connectionUrl = this.localSorageService.cache[LocalStorageService.CONNECTION_URL];
       if (this.connectionUrl == null) {
@@ -30,6 +39,44 @@ export class SettingsPage {
       }
     })
   }
+
+  toggleBeaconSetting = function () {
+    this.ibeaconIsON = !this.ibeaconIsON;
+    this.changeIBeaconMode();
+  };
+
+
+  changeIBeaconMode(){
+
+    if(this.ibeaconIsON){
+      if(!(this.devicePermissions.isBluetoothON() && this.devicePermissions.isLocationON())){
+          let alert = this.alertCtrl.create({
+            title: "Möchten Sie IBeacons erlauben (Bluetooth und Standort)?",
+            buttons: [
+              {
+                text: "Nein",
+                handler: () => {
+                  alert.dismiss();
+                }
+              },
+              {
+                text: "Ja",
+                handler: () => {
+                 this.devicePermissions.checkIfGPSIsOnAndSetItOn();
+                 this.devicePermissions.checkIfBluetoothIsOnAndSetItOn();
+                  alert.dismiss();
+                }
+              }
+            ],
+          });
+          alert.present();
+        }
+      }
+    }
+
+
+
+
 
   /**
    * open modal to edit storno reasons
