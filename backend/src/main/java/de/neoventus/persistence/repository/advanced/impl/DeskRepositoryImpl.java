@@ -1,14 +1,14 @@
 package de.neoventus.persistence.repository.advanced.impl;
 
-import de.neoventus.persistence.entity.Desk;
-import de.neoventus.persistence.entity.Reservation;
+import de.neoventus.persistence.entity.*;
 import de.neoventus.persistence.repository.OrderItemRepository;
 import de.neoventus.persistence.repository.advanced.NVDeskRepository;
-import de.neoventus.persistence.repository.advanced.impl.aggregation.DeskDetails;
-import de.neoventus.persistence.repository.advanced.impl.aggregation.OrderDeskAggregationDto;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.DeskOrderAggregation;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.DeskOverviewDetails;
 import de.neoventus.rest.dto.DeskDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -54,11 +54,11 @@ public class DeskRepositoryImpl implements NVDeskRepository {
 	}
 
 	@Override
-	public List<DeskDetails> getDesksWithDetails() {
+	public List<DeskOverviewDetails> getDesksWithDetails() {
 
 		// gets all desks
 		List<Desk> desks = this.mongoTemplate.findAll(Desk.class);
-		LOGGER.info("desks: " + desks.size());
+//		LOGGER.info("desks: " + desks.size());
 
 		// gets all reservations between now and next day
 		Calendar midnight = new GregorianCalendar();
@@ -73,17 +73,40 @@ public class DeskRepositoryImpl implements NVDeskRepository {
 		List<Reservation> reservations = this.mongoTemplate.find(reservationQuery, Reservation.class);
 		LOGGER.info("reservations: " + reservations.size());
 
-		Map<Integer, DeskDetails> deskOverview = new HashMap<>();
+		Map<Integer, DeskOverviewDetails> deskOverview = new HashMap<>();
 		// creates an detail object for each desk
 		for (Desk desk : desks) {
-			deskOverview.put(desk.getNumber(), new DeskDetails(desk));
+			DeskOverviewDetails overviewDetails = new DeskOverviewDetails();
+			overviewDetails.setDeskNumber(desk.getNumber());
+			deskOverview.put(desk.getNumber(), overviewDetails);
 		}
 
-		List<OrderDeskAggregationDto> orderAggregations =
-			this.orderItemRepository.getGroupedNotPayedOrdersByItemForDesk(desks.toArray(new Desk[desks.size()]));
+		Aggregation deskorderAggregation = Aggregation.newAggregation(
+			Aggregation.match(Criteria.where("billing").is(null).and("states.state").ne(OrderItemState.State.CANCELED)),
+			Aggregation.group("id").push("item").as("items").first("waiter").as("waiter")
+				.first("desk").as("desk").first("sideDishes").as("sideDishes"),
+			Aggregation.project("waiter", "desk").and("items").concatArrays("items", "sideDishes"),
+			Aggregation.unwind("items"),
+			Aggregation.group("desk").push("items").as("items").push("waiter").as("waiters"),
+			Aggregation.project("items", "waiters").and("desk").previousOperation()
+		);
+		List<DeskOrderAggregation> deskOrderAggregations = this.mongoTemplate
+			.aggregate(deskorderAggregation, OrderItem.class, DeskOrderAggregation.class).getMappedResults();
 
-		for (OrderDeskAggregationDto dto : orderAggregations) {
-			deskOverview.get(dto.getDesk().getNumber()).getOrders().add(dto);
+		for (DeskOrderAggregation deskOrder : deskOrderAggregations) {
+
+			double sum = 0;
+			for (MenuItem m : deskOrder.getItems()) {
+				sum += m.getPrice();
+			}
+
+			Set<String> waiter = new HashSet<>();
+			for (User u : deskOrder.getWaiters()) {
+				waiter.add(u.getUsername());
+			}
+
+			deskOverview.get(deskOrder.getDesk().getNumber()).setTotalPaid(sum);
+			deskOverview.get(deskOrder.getDesk().getNumber()).setWaiters(waiter);
 		}
 
 		// add the next coming reservation for each table to detail object
@@ -92,8 +115,8 @@ public class DeskRepositoryImpl implements NVDeskRepository {
 			int reservationDeskNumber = reservation.getDesk().getNumber();
 
 			if (deskOverview.get(reservationDeskNumber) == null ||
-				deskOverview.get(reservationDeskNumber).getNextReservation().getTime().after(reservation.getTime())) {
-				deskOverview.get(reservationDeskNumber).setNextReservation(reservation);
+				deskOverview.get(reservationDeskNumber).getNextReservation().after(reservation.getTime())) {
+				deskOverview.get(reservationDeskNumber).setNextReservation(reservation.getTime());
 			}
 		}
 
