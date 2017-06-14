@@ -14,7 +14,6 @@ export class DeskService extends CachingService implements HttpService {
 
   BASE_URL_PREFIX = "/api/desk";
   BASE_URL = this.BASE_URL_PREFIX;
-  connectionResolved = new Promise<any>((resolve) => resolve());
 
   constructor(private http: Http, platform: Platform, events: Events) {
     super();
@@ -27,7 +26,6 @@ export class DeskService extends CachingService implements HttpService {
    * @returns {Observable<Response>}
    */
   public getAllDesks() {
-    return this.connectionResolved.then(() => {
       if (this.cache["desks"] != null) {
         return new Promise<any>(resolve => {
           resolve(this.cache["desks"]);
@@ -43,12 +41,10 @@ export class DeskService extends CachingService implements HttpService {
             });
         });
       }
-    });
   }
 
-  public getAllDesksWithDetails() {
-    return this.connectionResolved.then(() => {
-      if (this.cache["desksoverview"] != null) {
+  public getAllDesksWithDetails(force?: boolean) {
+    if (this.cache["desksoverview"] != null && !force) {
         return new Promise<any>(resolve => {
           resolve(this.cache["desksoverview"]);
         });
@@ -63,6 +59,5 @@ export class DeskService extends CachingService implements HttpService {
             });
         });
       }
-    });
   }
 }

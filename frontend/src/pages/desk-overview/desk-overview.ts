@@ -39,13 +39,13 @@ export class DeskOverviewPage {
     // listen to billing changes and reload desk data
     this.events.subscribe("order-change", () => {
       console.debug("reload desk overview data for desk after billing");
-      this.loadDeskDetails();
+      this.loadDeskDetails(true);
     });
 
   }
 
-  private loadDeskDetails() {
-    this.deskService.getAllDesksWithDetails().then(
+  private loadDeskDetails(force?: boolean) {
+    this.deskService.getAllDesksWithDetails(force).then(
       desks => {
         this.desks = desks;
 

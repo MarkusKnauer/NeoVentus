@@ -1,9 +1,6 @@
 package de.neoventus.persistence.repository.advanced.impl;
 
-import de.neoventus.persistence.entity.Desk;
-import de.neoventus.persistence.entity.OrderItem;
-import de.neoventus.persistence.entity.OrderItemState;
-import de.neoventus.persistence.entity.Reservation;
+import de.neoventus.persistence.entity.*;
 import de.neoventus.persistence.repository.advanced.NVDeskRepository;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.DeskOverviewDetails;
 import de.neoventus.rest.dto.DeskDto;
@@ -69,7 +66,7 @@ public class DeskRepositoryImpl implements NVDeskRepository {
 		// gets all open orders
 		Query orderItemQuery = new Query();
 		orderItemQuery.addCriteria(Criteria.where("states.state")
-			.nin(Arrays.asList(OrderItemState.State.FINISHED, OrderItemState.State.CANCELED)));
+			.ne(OrderItemState.State.CANCELED).and("billing").is(null));
 		List<OrderItem> orders = this.mongoTemplate.find(orderItemQuery, OrderItem.class);
 		LOGGER.info("orders: " + orders.size());
 
@@ -94,6 +91,12 @@ public class DeskRepositoryImpl implements NVDeskRepository {
 			deskOverview.get(orderDeskNumber).setTotalPaid(
 				deskOverview.get(orderDeskNumber).getTotalPaid()
 					+ item.getItem().getPrice());
+
+			for (MenuItem sideDish : item.getSideDishes()) {
+				deskOverview.get(orderDeskNumber).setTotalPaid(
+					deskOverview.get(orderDeskNumber).getTotalPaid()
+						+ sideDish.getPrice());
+			}
 
 			// adds unique item waiters to desk
 			deskOverview.get(orderDeskNumber).getWaiters().add(
