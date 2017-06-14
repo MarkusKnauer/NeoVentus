@@ -15,11 +15,12 @@ export class DevicePermissions {
 
 
   isAndroid() {
-    return this.platform.is('android')
+    return this.platform.is('android') && this.platform.is("cordova");
   }
 
   isiOS() {
-    return this.platform.is('ios');
+    return this.platform.is('ios') && this.platform.is("cordova");
+    ;
   }
 
   isUndefined(type) {
