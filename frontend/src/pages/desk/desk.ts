@@ -22,6 +22,7 @@ import {LocalStorageService} from "../../service/local-storage.service";
 import {BillingModalComponent} from "../../component/billing-modal/billing-modal";
 import {OrderGroupDetailModalComponent} from "../../component/order-group-detail-modal/order-group-detail-modal";
 import {DeskService} from "../../service/desk.service";
+import {BeaconService} from "../../service/beacon.service";
 
 /**
  * @author Julian beck, Dennis Thanner
@@ -223,7 +224,6 @@ export class DeskPage {
                 // delete not submitted orders to allow go back
                 this.tmpOrders = [];
                 // go back
-                DeskOverviewPage.clearActualBeacon();
                 this.navCtrl.pop();
               });
             }
@@ -232,7 +232,6 @@ export class DeskPage {
         enableBackdropDismiss: false
       });
       alert.present();
-
       // prevent from going back
       // decision is prompted as alert
       return false;

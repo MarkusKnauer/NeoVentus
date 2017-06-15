@@ -1,5 +1,5 @@
 import {Component, NgZone} from "@angular/core";
-import {Events, NavController, Platform} from "ionic-angular";
+import {AlertController, Events, NavController, Platform} from "ionic-angular";
 import {DeskService} from "../../service/desk.service";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {LoginPage} from "../login/login";
@@ -22,14 +22,18 @@ export class DeskOverviewPage {
 
   beacons: BeaconModel[] = [];
   zone: any;
-  static actualBeacon: string;
+  static actualBeaconUUID: string = "";
+  isInitialiseBeacon: boolean = false;
+
+
 
   constructor(private navCtrl: NavController,
               private deskService: DeskService,
               private authGuard: AuthGuardService,
               private events: Events,
               public platform: Platform,
-              public beaconService: BeaconService) {
+              public beaconService: BeaconService,
+              private alertCtrl: AlertController) {
 
     // required for UI update
     this.zone = new NgZone({enableLongStackTrace: false});
@@ -51,6 +55,8 @@ export class DeskOverviewPage {
 
         this.getUserName();
         for (let desk of desks) {
+
+          DeskOverviewPage.actualBeaconUUID = desk.beaconUUID;
           for (let waiter of desk.waiters) {
             if (waiter == this.user) {
               desk.mine = true;
@@ -58,8 +64,23 @@ export class DeskOverviewPage {
             }
           }
         }
+
+
+          if(!this.isInitialiseBeacon){
+          this.beaconService.startBeacon(DeskOverviewPage.actualBeaconUUID).then((isInitialised) => {
+            if (isInitialised) {
+
+                this.listenToBeaconEvents();
+                this.isInitialiseBeacon = true;
+
+            }});
+          } else{
+            this.beaconService.startRangingRegion();
+          }
+
       }
     );
+
   }
 
   /**
@@ -69,14 +90,27 @@ export class DeskOverviewPage {
    */
   ionViewWillEnter() {
     this.authGuard.hasAnyRolePromise(["ROLE_CEO", "ROLE_SERVICE"]).then(() => {
+        if(DeskOverviewPage.actualBeaconUUID !== ""){
+          this.beaconService.startRangingRegion();
+        }
     }, () => {
       console.debug("RBMA - Access denied!");
       this.navCtrl.setRoot(LoginPage);
     });
   }
 
+
+  ionViewWillLeave(){
+    this.beaconService.stopRangingRegion();
+  }
+
+
+
+
   private deskSelected(desk) {
-    this.navCtrl.push(DeskPage, {deskNumber: desk.deskNumber.toString()})
+    this.beaconService.stopRangingRegion();
+    this.navCtrl.push(DeskPage, {deskNumber: desk.deskNumber.toString()});
+
   }
 
   private toggleView() {
@@ -105,15 +139,6 @@ export class DeskOverviewPage {
     return this.user;
   }
 
-  ionViewDidLoad() {
-    this.platform.ready().then(() => {
-      this.beaconService.initialise().then((isInitialised) => {
-        if (isInitialised) {
-          this.listenToBeaconEvents();
-        }
-      });
-    });
-  }
 
   listenToBeaconEvents() {
     this.events.subscribe('didRangeBeaconsInRegion', (beaconData) => {
@@ -144,8 +169,6 @@ export class DeskOverviewPage {
     }
 
     if(beaconTMP != null){
-      console.info("beaconTMP RSSI: "+beaconTMP.rssi);
-
       if(beaconTMP.rssi >  -50) {
         this.findBeaconDesk(beaconTMP);
       }
@@ -153,8 +176,6 @@ export class DeskOverviewPage {
       console.info("DANGER!! No Beacons found!!");
     }
   }
-
-
   findBeaconDesk(beacon: BeaconModel){
     // DB- search for UUID+Major+Minor
     let fullID : string;
@@ -171,17 +192,10 @@ export class DeskOverviewPage {
     }
 
     // Push to desk
-    if(DeskOverviewPage.actualBeacon != fullID){
+    if(beaconDesk != null){
       this.deskSelected(beaconDesk);
     }
 
-    DeskOverviewPage.actualBeacon = fullID;
-
   }
 
-
-  static clearActualBeacon(): void{
-    console.info("clearActualBeacon(): ");
-    this.actualBeacon = "";
-  }
 }

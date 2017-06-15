@@ -8,18 +8,24 @@
 import {AuthGuardService} from "./auth-guard.service";
 import {Http} from "@angular/http";
 import {AlertController, Events, Platform} from "ionic-angular";
-import {IBeacon} from '@ionic-native/ibeacon';
+import {BeaconRegion, IBeacon} from '@ionic-native/ibeacon';
 import {Injectable} from "@angular/core";
 import {DevicePermissions} from "./device-permission.service";
 
+
 @Injectable()
 export class BeaconService {
+
+  region: BeaconRegion;
+  delegate: any;
+
+
 
   constructor(public devicePermissions: DevicePermissions,private ibeacon: IBeacon,public platform: Platform, public events: Events, private http: Http, private authGuard: AuthGuardService , private alertCtrl: AlertController) {
     this.devicePermissions.checkLocationPermissions();
   }
 
-  initialise(): any {
+  startBeacon(deskRegion: string): any {
     let promise = new Promise((resolve, reject) => {
       // we need to be running on a device
       if (this.platform.is('cordova')) {
@@ -28,36 +34,34 @@ export class BeaconService {
         this.ibeacon.requestAlwaysAuthorization();
 
         //activate Bluetooth
-        this.devicePermissions.checkIfBluetoothIsOnAndSetItOn();
-        this.devicePermissions.checkIfGPSIsOnAndSetItOn();
+        this.enableBeaconPermission();
 
+        console.info("DeskRegion: "+deskRegion);
+        this.region = this.ibeacon.BeaconRegion('deskBeacon', deskRegion);
         // create a new delegate and register it with the native layer
-        let delegate = this.ibeacon.Delegate();
+        this.delegate = this.ibeacon.Delegate();
         // Subscribe to some of the delegate's event handlers
-        delegate.didRangeBeaconsInRegion()
+        console.info("Region: "+this.region);
+        this.delegate.didRangeBeaconsInRegion()
           .subscribe(
             beaconData => {
+              console.info("didRangeBeaconsINRegion: "+ beaconData.beacons.length);
               this.events.publish('didRangeBeaconsInRegion', beaconData);
             },
             error => console.error()
           );
 
         // setup a beacon region
-         let region = this.ibeacon.BeaconRegion('deskBeacon', '987B5028-30E2-4C08-B0B9-5AB16A57BE6B');
 
-        // start ranging
-        this.ibeacon.startRangingBeaconsInRegion(region)
-          .then(
-            () => {
-              resolve(true);
-            },
-            error => {
-              console.error('Failed to begin monitoring: ', error);
-              resolve(false);
-            }
-          );
-
-
+        this.ibeacon.startRangingBeaconsInRegion(this.region).then(
+          () => {
+            resolve(true);
+          },
+          error => {
+            console.error('Failed to begin monitoring: ', error);
+            resolve(false);
+          }
+        );
       } else {
         console.error("This application needs to be running on a device");
         resolve(false);
@@ -67,13 +71,19 @@ export class BeaconService {
     return promise;
   }
 
+
+  enableBeaconPermission(){
+    this.devicePermissions.checkIfBluetoothIsOnAndSetItOn();
+    this.devicePermissions.checkIfGPSIsOnAndSetItOn();
+  }
+
+
   stopRangingRegion():any{
   let promise = new Promise((resolve, reject) => {
   // we need to be running on a device
   if (this.platform.is('cordova')) {
     // setup a beacon region
-    let region = this.ibeacon.BeaconRegion('deskBeacon', '987B5028-30E2-4C08-B0B9-5AB16A57BE6B');
-    this.ibeacon.stopRangingBeaconsInRegion(region).then(
+    this.ibeacon.stopRangingBeaconsInRegion(this.region).then(
       () => {
         resolve(true);
       },
@@ -92,4 +102,9 @@ export class BeaconService {
 
   return promise;
 }
+
+
+  startRangingRegion():any {
+    this.ibeacon.startRangingBeaconsInRegion(this.region);
+  }
 }

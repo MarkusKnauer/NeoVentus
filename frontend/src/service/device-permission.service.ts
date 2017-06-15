@@ -62,24 +62,41 @@ export class DevicePermissions {
   }
 
   checkIfBluetoothIsOnAndSetItOn(): void{
-    this.diagnostic.getBluetoothState()
-      .then((state) => {
-        if (state == this.diagnostic.bluetoothState.POWERED_OFF){
+        if (!this.isBluetoothON()) {
           this.diagnostic.switchToBluetoothSettings();
         }
-      }).catch(e => console.error(e));
-
   }
 
 
   //Pop-up mit nachfrage <-- TODO
   checkIfGPSIsOnAndSetItOn(): void{
-    this.diagnostic.getLocationMode()
-      .then((state) => {
-        if (state == this.diagnostic.locationMode.LOCATION_OFF){
+        if (!this.isLocationON()){
           this.diagnostic.switchToLocationSettings();
         }
+
+  }
+
+  isBluetoothON():boolean{
+    this.diagnostic.getBluetoothState()
+      .then((state) => {
+        if (state == this.diagnostic.bluetoothState.POWERED_OFF){
+          return false;
+        }
       }).catch(e => console.error(e));
+    return true;
+  }
+  isLocationON():boolean{
+  this.diagnostic.getLocationMode()
+      .then((state) => {
+          if (state == this.diagnostic.locationMode.LOCATION_OFF){
+              return false;
+          }
+      }).catch(e => console.error(e));
+    return true;
+  }
+
+  disableLocation(){
+
   }
 
 }

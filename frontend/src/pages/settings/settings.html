@@ -13,6 +13,11 @@
       <button ion-item (click)="openStornoReasonsModal()">
         Stornierungsgründe verwalten
       </button>
+      <ion-item>
+        <ion-label>IBeacon erlauben</ion-label>
+        <ion-toggle checked={{ibeaconIsON}} ngModel="toggleBeaconSetting()" color="dark" (ionChange)="toggleBeaconSetting()">
+        </ion-toggle>
+      </ion-item>
     </ng-container>
     <ng-container *ngIf="!authGuard.isAuthenticated() && platform.is('cordova')">
       <ion-item-divider>
