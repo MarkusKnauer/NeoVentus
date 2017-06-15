@@ -25,7 +25,7 @@ public interface NVOrderItemRepository {
 	 * @param desk
 	 * @return
 	 */
-	List<OrderDeskAggregationDto> getGroupedNotPayedOrdersByItemForDesk(Desk desk);
+	List<OrderDeskAggregationDto> getGroupedNotPayedOrdersByItemForDesk(Desk... desk);
 
 	/**
 	 * get unfinished unpaid orders grouped by desk

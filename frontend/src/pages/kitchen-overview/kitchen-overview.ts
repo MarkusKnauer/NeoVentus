@@ -208,7 +208,7 @@ export class KitchenOverviewPage {
                 for (let orderIds of orderItems.orderIds) {
                   ids += orderIds + ",";
                 }
-                this.deleteItemInOverview(orderItems);
+                this.deleteItemInOverview(orderItems, orderItems.orderIds.length);
               }
             }
 
@@ -264,8 +264,8 @@ export class KitchenOverviewPage {
             ids += orderIds + ",";
           }
 
-          this.deleteItemInOverview(orderItems);
-          this.deleteItemInCard(cat, orderItems, deskNumber);
+          this.deleteItemInOverview(orderItems, orderItems.orderIds.length);
+          this.deleteItemInCard(cat, orderItems, deskNumber, orderItems.orderIds.length);
         }
         // check if something is selected, otherwhise do nothing
         ids != '' ? this.orderService.finishOrders(ids).toPromise() : '';
@@ -278,7 +278,7 @@ export class KitchenOverviewPage {
    * deletes or reduces an orderItems in the right overview
    * @param orderItem
    */
-  deleteItemInOverview(orderItem) {
+  deleteItemInOverview(orderItem, reduction) {
 
     let rmOrder = this.orderService.cache['open_orders_grouped_by_orderitem'].find((el) => {
       return el.item.id == orderItem.item.id;
@@ -286,12 +286,12 @@ export class KitchenOverviewPage {
 
     let rmOrderIndex = this.orderService.cache['open_orders_grouped_by_orderitem'].indexOf(rmOrder);
 
-    if (rmOrder.count == orderItem.orderIds.length) {
+    if (rmOrder.count == reduction) {
       // delete the whole orderItem
       this.orderService.cache['open_orders_grouped_by_orderitem'].splice(rmOrderIndex, 1);
     } else {
       //reduce the count
-      rmOrder.count -= orderItem.orderIds.length;
+      rmOrder.count -= reduction;
     }
   }
 
@@ -300,15 +300,22 @@ export class KitchenOverviewPage {
    * @param cat
    * @param orderItem
    * @param deskNumber
+   * @param reduction
    */
-  deleteItemInCard(cat, orderItem, deskNumber) {
+  deleteItemInCard(cat, orderItem, deskNumber, reduction) {
     //delete item in cards
     let rmOrder = cat.itemsPerCat.find((el) => {
       return el.item.id == orderItem.item.id;
     });
 
     let rmOrderIndex = cat.itemsPerCat.indexOf(rmOrder);
-    cat.itemsPerCat.splice(rmOrderIndex, 1);
+
+    if (reduction == rmOrder.orderIds.length) {
+      cat.itemsPerCat.splice(rmOrderIndex, 1);
+    } else {
+      rmOrder.orderIds.splice(0, reduction);
+    }
+
 
     if (cat.itemsPerCat.length == 0) {
       let catIndex = this.orderService.cache['open_orders_grouped_by_desks'][deskNumber].indexOf(cat);
@@ -536,8 +543,9 @@ export class KitchenOverviewPage {
       // only execute if reason is set
       if (reason) {
         this.orderService.cancelOrders(orderIds, reason).toPromise().then(() => {
-          this.deleteItemInOverview(item);
-          this.deleteItemInCard(cat, item, deskNumber);
+          //fake performance
+          this.deleteItemInCard(cat, item, deskNumber, orderIds.length);
+          this.deleteItemInOverview(item, orderIds.length);
         });
       }
     })

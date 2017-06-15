@@ -1,4 +1,3 @@
-
 /*
  Generated class for the BeaconProvider provider.
 
@@ -8,7 +7,7 @@
 import {AuthGuardService} from "./auth-guard.service";
 import {Http} from "@angular/http";
 import {AlertController, Events, Platform} from "ionic-angular";
-import {BeaconRegion, IBeacon} from '@ionic-native/ibeacon';
+import {BeaconRegion, IBeacon} from "@ionic-native/ibeacon";
 import {Injectable} from "@angular/core";
 import {DevicePermissions} from "./device-permission.service";
 import {CachingService} from "./caching.service";
@@ -25,6 +24,7 @@ export class BeaconService extends CachingService{
 
   constructor(private storage: Storage,public devicePermissions: DevicePermissions,private ibeacon: IBeacon,public platform: Platform, public events: Events, private http: Http, private authGuard: AuthGuardService , private alertCtrl: AlertController) {
     super();
+
     this.devicePermissions.checkLocationPermissions();
   }
 
@@ -32,7 +32,7 @@ export class BeaconService extends CachingService{
     let promise = new Promise((resolve, reject) => {
       // we need to be running on a device
       if (this.platform.is('cordova')) {
-
+        console.error("STARTING BEACONS", this.platform);
         // Request permission to use location on iOS
         this.ibeacon.requestAlwaysAuthorization();
 
@@ -41,11 +41,11 @@ export class BeaconService extends CachingService{
         // create a new delegate and register it with the native layer
         this.delegate = this.ibeacon.Delegate();
         // Subscribe to some of the delegate's event handlers
-        console.info("Region: "+this.region);
+        console.info("Region: " + this.region);
         this.delegate.didRangeBeaconsInRegion()
           .subscribe(
             beaconData => {
-              console.info("didRangeBeaconsINRegion: "+ beaconData.beacons.length);
+              console.info("didRangeBeaconsINRegion: " + beaconData.beacons.length);
               this.events.publish('didRangeBeaconsInRegion', beaconData);
             },
             error => console.error()
@@ -72,7 +72,7 @@ export class BeaconService extends CachingService{
   }
 
 
-  stopRangingRegion():any{
+  stopRangingRegion(): any {
   let promise = new Promise((resolve, reject) => {
   // we need to be running on a device
   if (this.platform.is('cordova')) {
@@ -88,17 +88,17 @@ export class BeaconService extends CachingService{
     );
 
 
-  } else {
-    console.error("This application needs to be running on a device");
-    resolve(false);
+      } else {
+        console.error("This application needs to be running on a device");
+        resolve(false);
+      }
+    });
+
+    return promise;
   }
-});
-
-  return promise;
-}
 
 
-  startRangingRegion():any {
+  startRangingRegion(): any {
     let promise = new Promise((resolve, reject) => {
       if (this.platform.is('cordova')) {
         this.ibeacon.startRangingBeaconsInRegion(this.region).then(

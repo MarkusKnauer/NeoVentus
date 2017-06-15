@@ -7,7 +7,7 @@ import de.neoventus.persistence.repository.MenuItemCategoryRepository;
 import de.neoventus.persistence.repository.MenuItemRepository;
 import de.neoventus.persistence.repository.OrderItemRepository;
 import de.neoventus.persistence.repository.SideDishRepository;
-import de.neoventus.persistence.repository.advanced.impl.aggregation.GuestWishCount;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.ObjectCountAggregation;
 import de.neoventus.rest.dto.MenuDto;
 import org.junit.After;
 import org.junit.Assert;
@@ -113,10 +113,10 @@ public class MenuItemRepositoryTest extends AbstractTest {
 		o.setGuestWish("Test");
 		this.orderItemRepository.save(o);
 
-		List<GuestWishCount> result = this.menuItemRepository.getPopularGuestWishesForItem(m.getId());
+		List<ObjectCountAggregation> result = this.menuItemRepository.getPopularGuestWishesForItem(m.getId());
 
 		Assert.assertTrue(result.size() == 1);
-		Assert.assertTrue(result.get(0).getGuestWish().equals("Test"));
+		Assert.assertTrue(result.get(0).getObject().equals("Test"));
 
 
 		o = new OrderItem();
@@ -127,8 +127,8 @@ public class MenuItemRepositoryTest extends AbstractTest {
 		result = this.menuItemRepository.getPopularGuestWishesForItem(m.getId());
 
 		Assert.assertTrue(result.size() == 2);
-		Assert.assertTrue(result.get(0).getGuestWish().equals("Test"));
-		Assert.assertTrue(result.get(1).getGuestWish().equals("Test 2"));
+		Assert.assertTrue(result.get(0).getObject().equals("Test"));
+		Assert.assertTrue(result.get(1).getObject().equals("Test 2"));
 	}
 
 

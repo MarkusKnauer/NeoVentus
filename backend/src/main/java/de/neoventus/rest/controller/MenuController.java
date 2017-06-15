@@ -2,8 +2,8 @@ package de.neoventus.rest.controller;
 
 import de.neoventus.persistence.entity.MenuItem;
 import de.neoventus.persistence.repository.MenuItemRepository;
-import de.neoventus.persistence.repository.advanced.impl.aggregation.GuestWishCount;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.MenuItemProcessingDetails;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.ObjectCountAggregation;
 import de.neoventus.rest.dto.MenuDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -80,7 +80,7 @@ public class MenuController {
 	 * @return
 	 */
 	@GetMapping("/popular-wishes/{menuId}")
-	public List<GuestWishCount> listPopularGuestWishes(HttpServletResponse response, @PathVariable String menuId) {
+	public List<ObjectCountAggregation> listPopularGuestWishes(HttpServletResponse response, @PathVariable String menuId) {
 		try {
 			return menuItemRepository.getPopularGuestWishesForItem(menuId);
 		} catch (Exception e) {

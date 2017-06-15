@@ -12,8 +12,8 @@
   <ion-list>
     <ng-container *ngIf="suggestions.length > 0">
       <ion-item-divider color="light">Beliebte Kundenwünsche</ion-item-divider>
-      <ion-item *ngFor="let sugg of suggestions" (click)="wish = sugg.guestWish;">
-        {{sugg.guestWish}}
+      <ion-item *ngFor="let sugg of suggestions" (click)="wish = sugg.object;">
+        {{sugg.object}}
       </ion-item>
     </ng-container>
     <ion-item>
