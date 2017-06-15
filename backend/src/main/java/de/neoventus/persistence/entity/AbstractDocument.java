@@ -13,6 +13,13 @@ public abstract class AbstractDocument {
 	@Id
 	protected String id;
 
+	public AbstractDocument() {
+	}
+
+	public AbstractDocument(String id) {
+		this.id = id;
+	}
+
 	public String getId() {
 		return id;
 	}

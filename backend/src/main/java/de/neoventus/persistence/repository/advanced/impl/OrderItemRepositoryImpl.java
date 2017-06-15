@@ -1,7 +1,6 @@
 package de.neoventus.persistence.repository.advanced.impl;
 
 import de.neoventus.persistence.entity.*;
-import de.neoventus.persistence.repository.DeskRepository;
 import de.neoventus.persistence.repository.MenuItemCategoryRepository;
 import de.neoventus.persistence.repository.MenuItemRepository;
 import de.neoventus.persistence.repository.UserRepository;
@@ -15,13 +14,13 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.*;
 import java.util.logging.Logger;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 
 /**
  * @author Julian Beck, Dennis Thanner
@@ -29,7 +28,6 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 
 	private MongoTemplate mongoTemplate;
-	private DeskRepository deskRepository;
 	private MenuItemRepository menuItemRepository;
 	private UserRepository userRepository;
 	private MenuItemCategoryRepository menuItemCategoryRepository;
@@ -43,7 +41,7 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 		} else {
 			o = new OrderItem();
 		}
-		o.setDesk(dto.getDeskNumber() != null ? deskRepository.findByNumber(dto.getDeskNumber()) : null);
+		o.setDesk(dto.getDeskNumber() != null ? this.mongoTemplate.findOne(query(where("number").is(dto.getDeskNumber())), Desk.class) : null);
 		o.setItem(dto.getMenuItemNumber() != null ? menuItemRepository.findByNumber(dto.getMenuItemNumber()) : null);
 		o.setWaiter(dto.getWaiter() != null ? userRepository.findByWorkerId(dto.getWaiter()) : null);
 		o.setGuestWish(dto.getGuestWish() != null ? dto.getGuestWish() : "");
@@ -56,13 +54,13 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 	}
 
 	@Override
-	public List<OrderDeskAggregationDto> getGroupedNotPayedOrdersByItemForDesk(Desk desk) {
+	public List<OrderDeskAggregationDto> getGroupedNotPayedOrdersByItemForDesk(Desk... desk) {
 		Aggregation agg = Aggregation.newAggregation(
-			Aggregation.match(where("billing").is(null).and("desk").is(desk).and("states.state").ne(OrderItemState.State.CANCELED)),
-			Aggregation.group("item", "sideDishes", "guestWish").count().as("count").first("waiter")
+			Aggregation.match(where("billing").is(null).and("desk").in(desk).and("states.state").ne(OrderItemState.State.CANCELED)),
+			Aggregation.group("item", "sideDishes", "guestWish", "desk").count().as("count").first("waiter")
 				.as("waiter").addToSet("$id").as("orderIds"),
 			Aggregation.project("waiter", "count", "orderIds").and("_id.item").as("item").and("_id.sideDishes").as("sideDishes")
-				.and("_id.guestWish").as("guestWish")
+				.and("_id.guestWish").as("guestWish").and("_id.desk").as("desk")
 		);
 
 		AggregationResults<OrderDeskAggregationDto> aggR = this.mongoTemplate.aggregate(agg, OrderItem.class, OrderDeskAggregationDto.class);
@@ -74,7 +72,7 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 	@Override
 	public Map<Integer, List<OrderDeskAggregationDto>> getUnfinishedOrdersForCategoriesGroupedByDeskAndOrderItem(boolean forKitchen) {
 		long start = System.currentTimeMillis();
-		List<Desk> desks = this.deskRepository.findAll();
+		List<Desk> desks = this.mongoTemplate.findAll(Desk.class);
 		List<MenuItemCategory> categories = this.menuItemCategoryRepository.findByForKitchen(forKitchen);
 		List<MenuItem> itemsInterested = this.menuItemRepository.findAllByMenuItemCategoryIn(categories);
 
@@ -138,8 +136,8 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 	 */
 	@Override
 	public void changeDeskForOrders(String deskId, String... orderIds) {
-		Desk d = this.mongoTemplate.findOne(Query.query(where("id").is(deskId)), Desk.class);
-		this.mongoTemplate.updateMulti(Query.query(where("id").in(orderIds)), Update.update("desk", d), OrderItem.class);
+		Desk d = this.mongoTemplate.findOne(query(where("id").is(deskId)), Desk.class);
+		this.mongoTemplate.updateMulti(query(where("id").in(orderIds)), Update.update("desk", d), OrderItem.class);
 	}
 
 	//Setter
@@ -149,10 +147,6 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 		this.mongoTemplate = mongoTemplate;
 	}
 
-	@Autowired
-	public void setDeskRepository(DeskRepository deskRepository) {
-		this.deskRepository = deskRepository;
-	}
 
 	@Autowired
 	public void setMenuItemRepository(MenuItemRepository menuItemRepository) {
