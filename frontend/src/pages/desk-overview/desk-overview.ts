@@ -24,7 +24,7 @@ export class DeskOverviewPage {
   beacons: BeaconModel[] = [];
   zone: any;
   static actualBeaconUUID: string = "";
-  isInitialiseBeacon: boolean = false;
+  static isInitialiseBeacon: boolean = false;
 
 
 
@@ -67,11 +67,11 @@ export class DeskOverviewPage {
         }
 // Beacon check 2:
         if (BeaconService.isActivated !== null && BeaconService.isActivated) {
-         if (!this.isInitialiseBeacon) {
+         if (!DeskOverviewPage.isInitialiseBeacon) {
             this.beaconService.startBeacon(DeskOverviewPage.actualBeaconUUID).then((isInitialised) => {
               if (isInitialised) {
                 this.listenToBeaconEvents();
-                this.isInitialiseBeacon = true;
+                DeskOverviewPage.isInitialiseBeacon = true;
               }
             });
           } else {
