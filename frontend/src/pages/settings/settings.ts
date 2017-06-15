@@ -9,6 +9,8 @@ import {Http} from "@angular/http";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {ApplicationEvents} from "../../app/events";
 import {DevicePermissions} from "../../service/device-permission.service";
+import {Diagnostic} from "@ionic-native/diagnostic";
+import {BeaconService} from "../../service/beacon.service";
 
 /**
  * @author Markus Knauer, Dennis Thanner
@@ -24,14 +26,26 @@ export class SettingsPage {
 
   private connectionUrl: string = "http://";
 
-  private ibeaconIsON: boolean = false;
+  public ibeaconIsON: boolean =false;
+
 
   constructor(public navCtrl: NavController, private modalCtrl: ModalController, private loadingCtrl: LoadingController,
               private localSorageService: LocalStorageService, private http: Http, private events: Events,
               private toastCtrl: ToastController, public authGuard: AuthGuardService, public platform: Platform,
               private alertCtrl: AlertController,
-              public devicePermissions: DevicePermissions
+              public devicePermissions: DevicePermissions,
+              public diagnostic: Diagnostic,
+              public beaconService: BeaconService,
   ) {
+
+    //Get Beacons from Cache
+    this.beaconService.loadBeaconBoolean().then(()=>{
+      BeaconService.isActivated =  this.ibeaconIsON = this.beaconService.cache[BeaconService.iBeaconIsEnabled];
+      if(this.ibeaconIsON == null){
+        this.ibeaconIsON = false;
+      }
+    });
+
     this.localSorageService.loadConnectionUrl().then(() => {
       this.connectionUrl = this.localSorageService.cache[LocalStorageService.CONNECTION_URL];
       if (this.connectionUrl == null) {
@@ -40,39 +54,120 @@ export class SettingsPage {
     })
   }
 
+  //Toggle Function for change things
   toggleBeaconSetting = function () {
-    this.ibeaconIsON = !this.ibeaconIsON;
-    this.changeIBeaconMode();
+     this.ibeaconIsON = !this.ibeaconIsON;
+    if (this.platform.is('cordova')){
+      this.changeIBeaconMode();
+    }
+    this.beaconService.saveData(BeaconService.iBeaconIsEnabled,this.ibeaconIsON);
+    BeaconService.isActivated = this.ibeaconIsON;
   };
 
-
+  /**
+   * 1. if: Beacon Toggler is 'true'
+   * => Yes, 1.1 if Autohorisation not allowed
+   *  =>  Yes, 1.1.1 Alert-if  wanna beacons in da phone
+   *    => Yes, Allow it!
+   *    => No, go back.
+   *  => No, set GPS and Bluetooth on
+   * => No, 1.2 Alert-if wanna turn off BLE and GPS
+   *
+   */
   changeIBeaconMode(){
 
     if(this.ibeaconIsON){
-      if(!(this.devicePermissions.isBluetoothON() && this.devicePermissions.isLocationON())){
+
+      //Check if Authorisation is Valid
+      if(!(this.diagnostic.isLocationAuthorized())){
           let alert = this.alertCtrl.create({
             title: "Möchten Sie IBeacons erlauben (Bluetooth und Standort)?",
             buttons: [
               {
                 text: "Nein",
                 handler: () => {
+                  this.ibeaconIsON = !this.ibeaconIsON;
                   alert.dismiss();
                 }
               },
               {
                 text: "Ja",
                 handler: () => {
-                 this.devicePermissions.checkIfGPSIsOnAndSetItOn();
-                 this.devicePermissions.checkIfBluetoothIsOnAndSetItOn();
+
+                  // Set Authorisation and GPS and Bluettoth true
+
+                  this.diagnostic.getBluetoothState()
+                    .then((state) => {
+                      if (state == this.diagnostic.bluetoothState.POWERED_OFF){
+                        this.diagnostic.switchToBluetoothSettings();
+                      }
+                    }).catch(e => console.error(e));
+
+                  this.diagnostic.getLocationMode()
+                    .then((state) => {
+                      if (state == this.diagnostic.locationMode.LOCATION_OFF){
+                        this.diagnostic.switchToLocationSettings();
+                      }
+                    }).catch(e => console.error(e));
+
                   alert.dismiss();
                 }
               }
             ],
           });
           alert.present();
-        }
-      }
+        } else{
+     // Is Authorisation valid and set GPS and Bluettoth true.
+        this.diagnostic.getBluetoothState()
+          .then((state) => {
+            if (state == this.diagnostic.bluetoothState.POWERED_OFF){
+              this.diagnostic.switchToBluetoothSettings();
+            }
+          }).catch(e => console.error(e));
+
+        this.diagnostic.getLocationMode()
+          .then((state) => {
+            if (state == this.diagnostic.locationMode.LOCATION_OFF){
+              this.diagnostic.switchToLocationSettings();
+            }
+          }).catch(e => console.error(e));
+       }
+      } else {
+      // turn Ibeacons off
+
+      let alert = this.alertCtrl.create({
+        title: "Möchten Sie Bluetooth und Standort auch ausschalten?",
+        buttons: [
+          {
+            text: "Nein",
+            handler: () => {
+              alert.dismiss();
+            }
+          },
+          {
+            text: "Ja",
+            handler: () => {
+              this.diagnostic.getBluetoothState()
+                .then((state) => {
+                  if (state !== this.diagnostic.bluetoothState.POWERED_OFF){
+                    this.diagnostic.switchToBluetoothSettings();
+                  }
+                }).catch(e => console.error(e));
+
+              this.diagnostic.getLocationMode()
+                .then((state) => {
+                  if (state !== this.diagnostic.locationMode.LOCATION_OFF){
+                    this.diagnostic.switchToLocationSettings();
+                  }
+                }).catch(e => console.error(e));
+              alert.dismiss();
+            }
+          }
+        ],
+      });
+      alert.present();
     }
+  }
 
 
 

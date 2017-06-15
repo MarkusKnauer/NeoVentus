@@ -15,7 +15,7 @@
       </button>
       <ion-item>
         <ion-label>IBeacon erlauben</ion-label>
-        <ion-toggle checked={{ibeaconIsON}} ngModel="toggleBeaconSetting()" color="dark" (ionChange)="toggleBeaconSetting()">
+        <ion-toggle [ngModel]="ibeaconIsON" color="dark" (ngModelChange)="toggleBeaconSetting()">
         </ion-toggle>
       </ion-item>
     </ng-container>

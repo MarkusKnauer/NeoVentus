@@ -6,6 +6,7 @@ import {LoginPage} from "../login/login";
 import {DeskPage} from "../desk/desk";
 import {BeaconService} from "../../service/beacon.service";
 import {BeaconModel} from "../../model/beacon-module";
+import {SettingsPage} from "../settings/settings";
 
 /**
  * @author Tim Heidelbach, Dennis Thanner
@@ -64,20 +65,19 @@ export class DeskOverviewPage {
             }
           }
         }
-
-
-          if(!this.isInitialiseBeacon){
-          this.beaconService.startBeacon(DeskOverviewPage.actualBeaconUUID).then((isInitialised) => {
-            if (isInitialised) {
-
+// Beacon check 2:
+        if (BeaconService.isActivated !== null && BeaconService.isActivated) {
+         if (!this.isInitialiseBeacon) {
+            this.beaconService.startBeacon(DeskOverviewPage.actualBeaconUUID).then((isInitialised) => {
+              if (isInitialised) {
                 this.listenToBeaconEvents();
                 this.isInitialiseBeacon = true;
-
-            }});
-          } else{
+              }
+            });
+          } else {
             this.beaconService.startRangingRegion();
           }
-
+        }
       }
     );
 
@@ -90,9 +90,12 @@ export class DeskOverviewPage {
    */
   ionViewWillEnter() {
     this.authGuard.hasAnyRolePromise(["ROLE_CEO", "ROLE_SERVICE"]).then(() => {
-        if(DeskOverviewPage.actualBeaconUUID !== ""){
+    //Beacon check 1:
+      if(BeaconService.isActivated !== null && BeaconService.isActivated){
+        if(DeskOverviewPage.actualBeaconUUID !== "" ){
           this.beaconService.startRangingRegion();
         }
+      }
     }, () => {
       console.debug("RBMA - Access denied!");
       this.navCtrl.setRoot(LoginPage);

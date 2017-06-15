@@ -75,7 +75,20 @@ export class DevicePermissions {
         }
 
   }
+  checkIfBluetoothIsOFFAndSetItOn(): void{
+    if (this.isBluetoothON()) {
+      this.diagnostic.switchToBluetoothSettings();
+    }
+  }
 
+
+  //Pop-up mit nachfrage <-- TODO
+  checkIfGPSIsOFFAndSetItOn(): void{
+    if (this.isLocationON()){
+      this.diagnostic.switchToLocationSettings();
+    }
+
+  }
   isBluetoothON():boolean{
     this.diagnostic.getBluetoothState()
       .then((state) => {
