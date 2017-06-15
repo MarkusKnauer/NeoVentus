@@ -44,7 +44,8 @@ public class BillingRepositoryImpl implements NVBillingRepository {
 
 		billing.setTotalPaid(dto.getTotalPaid());
 
-		billing.setWaiter(this.userRepository.findOne(dto.getWaiter()));
+		if (dto.getWaiter() != null)
+			billing.setWaiter(this.userRepository.findOne(dto.getWaiter()));
 
 		billing.getItems().clear();
 		for (String orderId : dto.getItems()) {

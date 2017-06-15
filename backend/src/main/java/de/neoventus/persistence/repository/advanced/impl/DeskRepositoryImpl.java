@@ -75,6 +75,9 @@ public class DeskRepositoryImpl implements NVDeskRepository {
 		for (Desk desk : desks) {
 			DeskOverviewDetails overviewDetails = new DeskOverviewDetails();
 			overviewDetails.setDeskNumber(desk.getNumber());
+			overviewDetails.setBeaconMajor(desk.getBeaconMajor());
+			overviewDetails.setBeaconMinor(desk.getBeaconMinor());
+			overviewDetails.setBeaconUUID(desk.getBeaconUUID());
 			deskOverview.put(desk.getNumber(), overviewDetails);
 		}
 

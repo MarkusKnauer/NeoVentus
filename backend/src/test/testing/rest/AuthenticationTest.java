@@ -33,7 +33,7 @@ public class AuthenticationTest extends AbstractTest {
 
 		userRepository.save(u);
 
-		this.mockMvc.perform(formLogin().user("Test").password("test"))
+		this.mockMvc.perform(formLogin("/auth/login").user("Test").password("test"))
 			.andExpect(status().isOk());
 
 	}
@@ -43,7 +43,7 @@ public class AuthenticationTest extends AbstractTest {
 	 */
 	@Test
 	public void testReturnLoginError() throws Exception {
-		this.mockMvc.perform(formLogin().password("invalid")).andExpect(status().isUnauthorized());
+		this.mockMvc.perform(formLogin("/auth/login").password("invalid")).andExpect(status().isUnauthorized());
 	}
 
 

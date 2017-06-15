@@ -63,7 +63,7 @@ public class WebsocketTest extends AbstractTest {
 		blockingQueue = new LinkedBlockingDeque<>();
 		stompClient = new WebSocketStompClient(new SockJsClient(
 			asList(new WebSocketTransport(new StandardWebSocketClient()))));
-		WEBSOCKET_URI = "ws://localhost:" + port + "/socket-api";
+		WEBSOCKET_URI = "ws://localhost:" + port + "/socket/socket-api";
 
 	}
 

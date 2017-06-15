@@ -51,7 +51,7 @@ public abstract class AbstractControllerTest extends AbstractTest {
 
 		userRepository.save(u);
 
-		this.authSession = (MockHttpSession) this.mockMvc.perform(formLogin().user("Test").password("test"))
+		this.authSession = (MockHttpSession) this.mockMvc.perform(formLogin("/auth/login").user("Test").password("test"))
 			.andExpect(status().isOk()).andReturn().getRequest().getSession();
 	}
 
