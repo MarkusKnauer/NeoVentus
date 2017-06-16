@@ -73,8 +73,8 @@ public class UploadController {
 		return "uploadHTML";
 	}
 
-	@PostMapping(URL_PATH+"/uploadExcel")
-	public String excelFileUpload(@RequestParam("file") MultipartFile file,
+	@PostMapping(URL_PATH+"/updateData/uploadExcel")
+	public String excelFileUploadUpdateData(@RequestParam("file") MultipartFile file,
 								  RedirectAttributes redirectAttributes) {
 
 		if (file.isEmpty()) {
@@ -83,7 +83,6 @@ public class UploadController {
 		}
 
 		try {
-
 			// Get the file and save it somewhere
 			byte[] bytes = file.getBytes();
 			Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
@@ -92,13 +91,62 @@ public class UploadController {
 				"You successfully uploaded '" + file.getOriginalFilename() + "'");
 			// Check if file is a Excelformat
 			if(file.getOriginalFilename().endsWith(".xlsx")){
-				this.wexc.readExcelAndWriteintoDB(path);
+				this.wexc.readExcelAndWriteintoDB(path,false);
 			} else{
 				LOGGER.info("No Excel-file");
 				redirectAttributes.addFlashAttribute("message",
 					"Sorry it isn't an Excelformat (.xlsx) '" + file.getOriginalFilename() + "'");
 			}
 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return "redirect:"+URL_PATH+"/uploadStatus";
+	}
+
+	// Multiple Upload
+	@PostMapping(URL_PATH+"/allNew/uploadExcel")
+	public String excelFileUploadAllNew(@RequestParam("file") MultipartFile[] multipartFiles,
+								  RedirectAttributes redirectAttributes) {
+
+		if (multipartFiles == null || multipartFiles.length == 0 ) {
+			redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
+			return "redirect:uploadStatus";
+		}
+
+		for(int i = 0; i < multipartFiles.length; i++){
+			if(multipartFiles[i].getOriginalFilename().contains("Basedata")){
+				MultipartFile tmp = multipartFiles[0];
+				multipartFiles[0] = multipartFiles[i];
+				multipartFiles[i] = tmp;
+
+			}
+		}
+
+
+		LOGGER.info("Length: " + multipartFiles.length);
+		try {
+			clearData();
+			clearIndexes();
+			// Get the file and save it somewhere
+			for(MultipartFile files: multipartFiles){
+				byte[] bytes = files.getBytes();
+				Path path = Paths.get(UPLOADED_FOLDER + files.getOriginalFilename());
+				Files.write(path,bytes);
+				redirectAttributes.addFlashAttribute("message",
+					"You successfully uploaded '" + files.getOriginalFilename() + "'");
+				// Check if file is a Excelformat
+				if(files.getOriginalFilename().endsWith(".xlsx")){
+					this.wexc.readExcelAndWriteintoDB(path, true);
+				} else{
+					LOGGER.info("No Excel-file");
+					redirectAttributes.addFlashAttribute("message",
+						"Sorry it isn't an Excelformat (.xlsx) '" + files.getOriginalFilename() + "'");
+				}
+
+
+			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -110,6 +158,32 @@ public class UploadController {
 	@GetMapping(URL_PATH+"/uploadStatus")
 	public String uploadStatus() {
 		return "uploadStatus";
+	}
+
+
+
+
+	/**
+	 * clear before regenerate to allow changes
+	 */
+	private void clearData() {
+		deskRepository.deleteAll();
+		menuItemRepository.deleteAll();
+		userRepository.deleteAll();
+		workingPlanRepository.deleteAll();
+		orderItemRepository.deleteAll();
+		reservationRepository.deleteAll();
+		menuItemCategoryRepository.deleteAll();
+		sideDishRepository.deleteAll();
+
+	}
+	/**
+	 * clear existing indexes
+	 */
+	private void clearIndexes() {
+		for (String collection : this.mongoTemplate.getDb().getCollectionNames()) {
+			this.mongoTemplate.getDb().getCollection(collection).dropIndexes();
+		}
 	}
 
 }

@@ -8,12 +8,6 @@ import java.util.List;
 
 /**
  * @author Dennis Thanner, Julian Beck, Tim Heidelbach, Markus Knauer
- * @version 0.0.7 new variable sideDishGroup - MK
- * 			0.0.6 new variable menuItemCategory - JB
- * 			0.0.5 changed menuItemId to number DT
- *          0.0.4 removed local variable StringBuilder
- *          0.0.3 code clean up
- *          0.0.2 added full constructor, currency and print currency method
  **/
 public class MenuItem extends AbstractDocument {
 
@@ -34,7 +28,7 @@ public class MenuItem extends AbstractDocument {
 
 	private String currency;
 
-	private boolean activItem;
+	private boolean activeItem;
 
 	@DBRef
 	private MenuItemCategory menuItemCategory;
@@ -46,7 +40,7 @@ public class MenuItem extends AbstractDocument {
 	public MenuItem() {
 		this.notices = new ArrayList<>();
 		sideDishGroup = null;
-		setActivItem(true);
+		setActiveItem(true);
 	}
 
 	public MenuItem(MenuItemCategory menuItemCategory, String name, String shortName, Double price, String currency, String description, String mediaUrl,
@@ -60,7 +54,7 @@ public class MenuItem extends AbstractDocument {
 		this.mediaUrl = mediaUrl;
 		this.notices = notices;
 		sideDishGroup = null;
-		setActivItem(true);
+		setActiveItem(true);
 
 	}
 
@@ -79,12 +73,12 @@ public class MenuItem extends AbstractDocument {
 	// getter and setter
 
 
-	public boolean isActivItem() {
-		return activItem;
+	public boolean isActiveItem() {
+		return activeItem;
 	}
 
-	public void setActivItem(boolean activItem) {
-		this.activItem = activItem;
+	public void setActiveItem(boolean activeItem) {
+		this.activeItem = activeItem;
 	}
 
 	public String getShortName() {

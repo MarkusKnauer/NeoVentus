@@ -25,12 +25,12 @@ public class MenuItemCategory extends AbstractDocument {
 
 	private boolean forKitchen;
 
-	private boolean activItem;
+	private boolean activeItem;
 
 	public MenuItemCategory() {
 		this.subcategory = new ArrayList<MenuItemCategory>();
 		this.parent = null;
-		setActivItem(true);
+		setActiveItem(true);
 	}
 
 	public MenuItemCategory(String name) {
@@ -43,7 +43,7 @@ public class MenuItemCategory extends AbstractDocument {
 		this.forKitchen = forKitchen;
 		this.subcategory = new ArrayList<MenuItemCategory>();
 		this.parent = null;
-		setActivItem(true);
+		setActiveItem(true);
 	}
 
 
@@ -54,12 +54,12 @@ public class MenuItemCategory extends AbstractDocument {
 
 	// Setter / Getter
 
-	public boolean isActivItem() {
-		return activItem;
+	public boolean isActiveItem() {
+		return activeItem;
 	}
 
-	public void setActivItem(boolean activItem) {
-		this.activItem = activItem;
+	public void setActiveItem(boolean activeItem) {
+		this.activeItem = activeItem;
 	}
 
 	public String getName() {

@@ -2,9 +2,17 @@
 <html>
 <body>
 
-<h1>Spring Boot file upload</h1>
+<h1>Multiple Upload for generate all new</h1>
 <!-- action is Path from UploadController-method: singleUpload -->
-<form method="POST" action="/api/upload/uploadExcel" enctype="multipart/form-data">
+<form method="POST" action="/api/upload/allNew/uploadExcel" enctype="multipart/form-data">
+    <input type="file" name="file" multiple = "{1}"/><br/><br/>
+    <input type="submit" value="Submit" />
+</form>
+-----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
+<h1>Single upload for Update</h1>
+<!-- action is Path from UploadController-method: singleUpload -->
+<form method="POST" action="/api/upload/updateData/uploadExcel" enctype="multipart/form-data">
     <input type="file" name="file" /><br/><br/>
     <input type="submit" value="Submit" />
 </form>

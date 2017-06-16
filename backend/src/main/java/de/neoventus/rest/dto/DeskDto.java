@@ -22,7 +22,7 @@ public class DeskDto implements Serializable {
 
 	private String beaconMinor;
 
-	private boolean activItem;
+	private boolean activeItem;
 
 	// constructor
 
@@ -33,12 +33,12 @@ public class DeskDto implements Serializable {
 	// getter and setter
 
 
-	public boolean isActivItem() {
-		return activItem;
+	public boolean isActiveItem() {
+		return activeItem;
 	}
 
-	public void setActivItem(boolean activItem) {
-		this.activItem = activItem;
+	public void setActiveItem(boolean activeItem) {
+		this.activeItem = activeItem;
 	}
 
 	public String getBeaconUUID() {

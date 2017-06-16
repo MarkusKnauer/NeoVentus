@@ -45,7 +45,7 @@ class DefaultDemoDataIntoDB {
 	private Random random;
 	private List<OrderItem> orderItems = null;
 
-	DefaultDemoDataIntoDB(DeskRepository deskRepository, UserRepository userRepository,
+	DefaultDemoDataIntoDB(boolean allNew, DeskRepository deskRepository, UserRepository userRepository,
 								 MenuItemRepository menuItemRepository, MenuItemCategoryRepository menuItemCategoryRepository, OrderItemRepository orderItemRepository,
 								 ReservationRepository reservationRepository, BillingRepository billingRepository, SideDishRepository sideDishRepository, MongoTemplate mongoTemplate,WorkingPlanRepository workingPlanRepository) {
 
@@ -69,23 +69,19 @@ class DefaultDemoDataIntoDB {
 		List<Workingplan> wp = (List<Workingplan>) workingPlanRepository.findAll();
 
 		List<MenuItemCategory> menuItemCategories = (List<MenuItemCategory>) menuItemCategoryRepository.findAll();
-		List<MenuItem> menuItems = menuItemRepository.findAll();
+
 
 		if (checkLists(menuItems)){
-			//this.sideDishRepository.deleteAll();
 			generateSideDish();
 		}
 		if(checkLists(users)&&checkLists(desks)){
-			//this.reservationRepository.deleteAll();
-			if(this.reservationRepository.count()== 0){
+			if(allNew){
 				generateReservation();
 			}
 
 		}
 		if (checkLists(users)&&checkLists(desks)&&checkLists(wp)&&checkLists(menuItems)){
-			//this.billingRepository.deleteAll();
-			//this.orderItemRepository.deleteAll();
-			if(this.orderItemRepository.count()== 0 && this.billingRepository.count() == 0){
+			if(allNew){
 				generateFinishedOrderItem();
 				generateActualOrderItem();
 			}
@@ -132,54 +128,6 @@ class DefaultDemoDataIntoDB {
 
 	}
 
-	private void generateOrderItem() {
-		LOGGER.info("Creating random orders");
-		List<OrderItem> orderItems = new ArrayList<>();
-		List<User> waiter = new ArrayList<>();
-		List<OrderItemState> states;
-		OrderItemState state;
-		// Only for Waiters
-		users.parallelStream().forEach(user -> {
-			if (user.getPermissions().contains(Permission.SERVICE)) waiter.add(user);
-		});
-
-
-		OrderItem ord;
-		List<MenuItem> sideDishSelektion;
-		MenuItem menu;
-		Desk desk;
-		User user;
-		for (int i = 0; i < 50; i++) {
-			sideDishSelektion = new ArrayList<>();
-			menu = menuItems.get((int) (Math.random() * menuItems.size()));
-			user = waiter.get((int) (Math.random() * waiter.size()));
-			desk = desks.get((int) (Math.random() * desks.size()));
-
-			// For BI-Group new Timestemp
-			states = new ArrayList<>();
-			state = new OrderItemState(OrderItemState.State.NEW);
-			Long millitime = System.currentTimeMillis() - ((long) (Math.random() * HOURS_TWO) - HOURS_TWO);
-			state.setDate(new Date(millitime));
-			states.add(state);
-
-			// Check if Menuitem has selectable SideDishGroup options
-			sideDishSelektion.add(menu);
-			while (menu.getSideDishGroup() != null) {
-				menu = menu.getSideDishGroup().getSideDishes().get((int) (Math.random() * menu.getSideDishGroup().getSideDishes().size()));
-				sideDishSelektion.add(menu);
-			}
-
-			for (MenuItem m : sideDishSelektion) {
-				ord = new OrderItem(user, desk, m, "");
-				ord.setStates(states);
-				orderItems.add(ord);
-			}
-		}
-
-		orderItemRepository.save(orderItems);
-		LOGGER.info("Finished creating random orders");
-	}
-
 	// ------------- START Semantic group: SideDishGroup -------------------------
 	public void generateSideDish() {
 		LOGGER.info("Creating Sidedishes");
@@ -210,10 +158,10 @@ class DefaultDemoDataIntoDB {
 		allSideDishGroup = (List<SideDishGroup>) this.sideDishRepository.findAll();
 		if(allSideDishGroup != null){
 			for( SideDishGroup sdg: allSideDishGroup){
-				sdg.setActivItem(false);
+				sdg.setActiveItem(false);
 			}
 		}
-		sideDishGroup = saveSideDish("Spare Ribs", false, "Baked Potato", "Pommes frites", "Rösti", "Krokettten", "Country-Kartoffeln", "Butterreis", "Red Beans", "Maiskolben vom Grill", "Frische Champignons", "Frische Sour Cream");
+		sideDishGroup = saveSideDish("Spare Ribs", false, "Baked Potato", "Pommes frites", "Rösti", "Kroketten", "Country-Kartoffeln", "Butterreis", "Red Beans", "Maiskolben vom Grill", "Frische Champignons", "Frische Sour Cream");
 		saveMenuSideDishItem(sideDishGroup, "Spare Ribs 300g", "Spare Ribs 550g");
 		// -------------------------------------------------------------------------------------
 		sideDishGroup = saveSideDish("Schorle", true, "Apfelsaft", "Orangensaft", "Multivitaminsaft", "Tomatensaft");
@@ -222,12 +170,15 @@ class DefaultDemoDataIntoDB {
 		sideDishGroup = saveSideDish("Wein-Schorle", true, "Cabernet Sauvignon Weiß", "Cabernet Sauvignon Rot");
 		saveMenuSideDishItem(sideDishGroup, "Weinschorle - süß", "Weinschorle - sauer");
 		// -------------------------------------------------------------------------------------
+		LOGGER.info("FINISHED SideDishes");
 	}
 
 	private SideDishGroup sideDishFindByName(String value){
 		if(allSideDishGroup != null){
 			for( SideDishGroup sdg: allSideDishGroup){
-				return sdg;
+				if(sdg.getName().equals(value)){
+					return sdg;
+				}
 			}
 		}
 		return null;
@@ -236,15 +187,27 @@ class DefaultDemoDataIntoDB {
 		SideDishGroup sideDishGroup;
 		if(sideDishFindByName(sidename) != null){
 			sideDishGroup = sideDishFindByName(sidename);
-			sideDishGroup.setActivItem(true);
+			sideDishGroup.setActiveItem(true);
+
+			for (String i : items) {
+				MenuItem tmp = menuItemRepository.findByName(i);
+				if(sideDishGroup.getSideDishes() != null){
+					if(sideDishGroup.getSideDishes().contains(tmp)){
+						sideDishGroup.addSideDish(tmp);
+					}
+				} else{
+					sideDishGroup.addSideDish(tmp);
+				}
+			}
 		}else {
 			sideDishGroup = new SideDishGroup(sidename, selectionRequired);
+			this.sideDishRepository.save(sideDishGroup);
+			for (String i : items) {
+				MenuItem tmp = menuItemRepository.findByName(i);
+				sideDishGroup.addSideDish(tmp);
+			}
 		}
 
-		this.sideDishRepository.save(sideDishGroup);
-		for (String i : items) {
-			sideDishGroup.addSideDish(menuItemRepository.findByName(i));
-		}
 		this.sideDishRepository.save(sideDishGroup);
 		return sideDishGroup;
 	}
@@ -549,15 +512,6 @@ class DefaultDemoDataIntoDB {
 	// *******************************************************************************
 // --------------------- END of OrderItem-functions ----------------------------------------
 
-	/**
-	 * clear before regenerate to allow changes
-	 */
-	private void clearData() {
-		orderItemRepository.deleteAll();
-		reservationRepository.deleteAll();
-		sideDishRepository.deleteAll();
-		billingRepository.deleteAll();
-	}
 	/**
 	 * clear existing indexes
 	 */

@@ -26,19 +26,19 @@ public class UserDto implements Serializable {
 
 	private String lastName;
 
-	private boolean activItem;
+	private boolean activeItem;
 	// constructor
 
 	public UserDto() {
 	}
 
 	// getter and setter
-	public boolean isActivItem() {
-		return activItem;
+	public boolean isActiveItem() {
+		return activeItem;
 	}
 
-	public void setActivItem(boolean activItem) {
-		this.activItem = activItem;
+	public void setActiveItem(boolean activeItem) {
+		this.activeItem = activeItem;
 	}
 
 	public String getId() {

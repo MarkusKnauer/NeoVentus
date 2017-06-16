@@ -1,5 +1,7 @@
 package de.neoventus.persistence.entity;
 
+import org.springframework.data.mongodb.core.index.Indexed;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,6 +11,7 @@ public class Workingplan extends AbstractDocument {
 
 	private Date createdPlan;
 
+	@Indexed(unique = true)
 	private Date workingDay;
 
 	private List<Workingshift> workingshift;

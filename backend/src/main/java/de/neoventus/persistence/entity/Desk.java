@@ -23,11 +23,11 @@ public class Desk extends AbstractDocument {
 
 	private String beaconMinor;
 
-	private boolean activItem;
+	private boolean activeItem;
 
 	// constructor
 	public Desk() {
-		setActivItem(true);
+		setActiveItem(true);
 	}
 
 	public Desk(Integer seats) {
@@ -37,7 +37,7 @@ public class Desk extends AbstractDocument {
 		this.number = number;
 		this.seats = seats;
 		this.maximalSeats = maximalSeats;
-		setActivItem(true);
+		setActiveItem(true);
 	}
 
 	public Desk(Integer number,
@@ -53,18 +53,18 @@ public class Desk extends AbstractDocument {
 		this.beaconUUID = beaconUUID;
 		this.beaconMajor = beaconMajor;
 		this.beaconMinor = beaconMinor;
-		setActivItem(true);
+		setActiveItem(true);
 	}
 
 
 	// getter and setter
 
-	public boolean isActivItem() {
-		return activItem;
+	public boolean isActiveItem() {
+		return activeItem;
 	}
 
-	public void setActivItem(boolean activItem) {
-		this.activItem = activItem;
+	public void setActiveItem(boolean activeItem) {
+		this.activeItem = activeItem;
 	}
 
 

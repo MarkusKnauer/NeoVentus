@@ -20,7 +20,7 @@ public class MenuItemCategoryDto implements Serializable {
 	private String name;
 
 	private String parent;
-	private boolean activItem;
+	private boolean activeItem;
 
 	public MenuItemCategoryDto(){}
 
@@ -30,12 +30,12 @@ public class MenuItemCategoryDto implements Serializable {
 	}
 
 	// Setter / Getter
-	public boolean isActivItem() {
-		return activItem;
+	public boolean isActiveItem() {
+		return activeItem;
 	}
 
-	public void setActivItem(boolean activItem) {
-		this.activItem = activItem;
+	public void setActiveItem(boolean activeItem) {
+		this.activeItem = activeItem;
 	}
 
 

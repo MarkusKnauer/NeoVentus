@@ -26,14 +26,14 @@ public class User extends AbstractDocument {
 
 	private String workingTimeModell;
 
-	private boolean activItem;
+	private boolean activeItem;
 
 	@DBRef
 	private List<Desk> desks = new ArrayList<>();
 
 	// constructor
 	public User() {
-		setActivItem(true);
+		setActiveItem(true);
 		this.permissions = new ArrayList<>();
 	}
 
@@ -44,17 +44,17 @@ public class User extends AbstractDocument {
 		this.lastName = lastName;
 		this.workingTimeModell = workingTimeModell;
 		this.permissions = Arrays.asList(permissions);
-		setActivItem(true);
+		setActiveItem(true);
 	}
 
 	// getter and setter
 
-	public boolean isActivItem() {
-		return activItem;
+	public boolean isActiveItem() {
+		return activeItem;
 	}
 
-	public void setActivItem(boolean activItem) {
-		this.activItem = activItem;
+	public void setActiveItem(boolean activItem) {
+		this.activeItem = activItem;
 	}
 
 	public String getWorkingTimeModell() {

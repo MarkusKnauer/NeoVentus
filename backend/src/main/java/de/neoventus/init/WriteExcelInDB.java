@@ -63,11 +63,10 @@ public class WriteExcelInDB {
 
 
 // PLEASE have a look on the Excelsheet on Drive
-	public void readExcelAndWriteintoDB(Path file) {
+	public void readExcelAndWriteintoDB(Path file, boolean allNew) {
 		LOGGER.info("Writes File in MongoDB");
 		try {
-			//clearData();
-			//clearIndexes();
+			allUsers = userRepository.findAll();
 			// Excel-things
 			Workbook workbook = new XSSFWorkbook(Files.newInputStream(file));
 			for(int i= 0; i< workbook.getNumberOfSheets(); i++){
@@ -88,7 +87,7 @@ public class WriteExcelInDB {
 
 			// load Default-data
 
-			 new DefaultDemoDataIntoDB(deskRepository, userRepository, menuItemRepository, menuItemCategoryRepository, orderItemRepository, reservationRepository, billingRepository, sideDishRepository, mongoTemplate, workingPlanRepository);
+			 new DefaultDemoDataIntoDB(allNew, deskRepository, userRepository, menuItemRepository, menuItemCategoryRepository, orderItemRepository, reservationRepository, billingRepository, sideDishRepository, mongoTemplate, workingPlanRepository);
 
 
 		} catch (IOException e) {
@@ -106,13 +105,13 @@ public class WriteExcelInDB {
 		allMenuItems= menuItemRepository.findAll();
 		if(allMenuItems != null){
 			for(MenuItem m: allMenuItems){
-				m.setActivItem(false);
+				m.setActiveItem(false);
 			}
 		}
 		allCategory = (List<MenuItemCategory>) menuItemCategoryRepository.findAll();
 		if(allCategory != null){
 			for(MenuItemCategory mic: allCategory){
-				mic.setActivItem(false);
+				mic.setActiveItem(false);
 			}
 		}
 
@@ -126,6 +125,7 @@ public class WriteExcelInDB {
 			Row currentRow = row.next();
 			Iterator<Cell> cellIterator = currentRow.iterator();
 			// Check if Line is a category
+			if(currentRow.getCell(0) == null) break;
 			if (currentRow.getCell(0).getStringCellValue().equals("Category")) {
 				writeCategory(cellIterator);
 			} else {
@@ -173,7 +173,7 @@ public class WriteExcelInDB {
 		if(categoryFindByName(value.get(1))!= null){
 			category = categoryFindByName(value.get(1));
 			category.setForKitchen(!value.get(2).equals("Bar"));
-			category.setActivItem(true);
+			category.setActiveItem(true);
 			LOGGER.info("Categorie exists");
 		} else{
 			category = new MenuItemCategory(value.get(1),!value.get(2).equals("Bar"));
@@ -202,7 +202,7 @@ public class WriteExcelInDB {
 				menuItem.setPrice(Double.parseDouble(value.get(2)));
 				menuItem.setCurrency(value.get(3));
 				menuItem.setDescription(value.get(4));
-				menuItem.setActivItem(true);
+				menuItem.setActiveItem(true);
 			} else {
 			menuItem = new MenuItem(
 					category,
@@ -227,7 +227,7 @@ public class WriteExcelInDB {
 
 		if(allDesks != null){
 			for(Desk d: allDesks){
-				d.setActivItem(false);
+				d.setActiveItem(false);
 			}
 		}
 		// Jump over the first two lines
@@ -249,18 +249,47 @@ public class WriteExcelInDB {
 					desk = deskFindByNumber((int) Double.parseDouble(value.get(0)));
 					desk.setSeats((int) Double.parseDouble(value.get(1)));
 					desk.setMaximalSeats((int) Double.parseDouble(value.get(1)));
-					desk.setBeaconUUID(value.get(4));
-					desk.setBeaconMajor(value.get(5));
-					desk.setBeaconMinor(value.get(6));
-					desk.setActivItem(true);
+
+					//Check if UUID exists
+					if(value.get(4) ==null || value.get(4).isEmpty()){
+						desk.setBeaconUUID("");
+					} else{
+						desk.setBeaconUUID(value.get(4));
+						// Check if Minor and Major exists
+						if(value.get(5) ==null || value.get(5).isEmpty()){
+							desk.setBeaconMajor("0000");
+						}else{
+							desk.setBeaconMajor(value.get(5));
+						}
+						if(value.get(6) ==null || value.get(6).isEmpty()){
+							desk.setBeaconMinor("0000");
+						}else{
+							desk.setBeaconMinor(value.get(6));
+						}
+					}
+					desk.setActiveItem(true);
 				} else {
 					desk = new Desk(
 						(int) Double.parseDouble(value.get(0)),
 						(int) Double.parseDouble(value.get(1)),
-						(int) Double.parseDouble(value.get(2)),
-						value.get(4),
-						value.get(5),
-						value.get(6));
+						(int) Double.parseDouble(value.get(2)));
+					//Check if UUID exists
+					if(value.get(4) ==null || value.get(4).isEmpty()){
+						desk.setBeaconUUID("");
+					} else{
+						desk.setBeaconUUID(value.get(4));
+						// Check if Minor and Major exists
+						if(value.get(5) ==null || value.get(5).isEmpty()){
+							desk.setBeaconMajor("0000");
+						}else{
+							desk.setBeaconMajor(value.get(5));
+						}
+						if(value.get(6) ==null || value.get(6).isEmpty()){
+							desk.setBeaconMinor("0000");
+						}else{
+							desk.setBeaconMinor(value.get(6));
+						}
+					}
 				}
 				deskRepository.save(desk);
 			}
@@ -287,7 +316,7 @@ public class WriteExcelInDB {
 
 		if(allUsers != null){
 			for(User usr: allUsers){
-				usr.setActivItem(false);
+				usr.setActiveItem(false);
 			}
 		}
 
@@ -321,7 +350,7 @@ public class WriteExcelInDB {
 					perm.add(Permission.valueOf(value.get(5)));
 				}
 				user.setPermissions(perm);
-				user.setActivItem(true);
+				user.setActiveItem(true);
 			} else{
 				user = new User(value.get(0), value.get(1), value.get(2), bCryptPasswordEncoder.encode(value.get(3)), value.get(4), Permission.valueOf(value.get(5)));
 			}
@@ -375,7 +404,7 @@ public class WriteExcelInDB {
 				cellIterator.next();
 				while (cellIterator.hasNext()) {
 					Cell currentCell = cellIterator.next();
-					GregorianCalendar calendar = new GregorianCalendar(1900, 0, (int)(Double.parseDouble(returnValue(currentCell)))-1,1,0);
+					GregorianCalendar calendar = new GregorianCalendar(1900, 0, (int)(Double.parseDouble(returnValue(currentCell)))-1,4,0);
 					calendars.add(calendar);
 			//  Workingplan(Date createdPlan, Date startShift, Date endShift, List<Workingshift> workingshiftList, User waiter)
 					workingplan.add(new Workingplan(
@@ -428,9 +457,16 @@ public class WriteExcelInDB {
 				}
 			}
 		}
+for(Workingplan plan: workingplan){
+
+}
+		workingPlanRepository.save(workingplan);
+		LOGGER.info("FINISHED: Workingplan");
+		/*
 		BulkOperations bulkOrders = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED,Workingplan.class);
 		bulkOrders.insert(workingplan);
 		bulkOrders.execute();
+		*/
 	}
 
 
@@ -467,13 +503,13 @@ public class WriteExcelInDB {
 	 * clear before regenerate to allow changes
 	 */
 	private void clearData() {
-	//	deskRepository.deleteAll();
-	//	menuItemRepository.deleteAll();
-	//	userRepository.deleteAll();
-	//	workingPlanRepository.deleteAll();
+		deskRepository.deleteAll();
+		menuItemRepository.deleteAll();
+		userRepository.deleteAll();
+		workingPlanRepository.deleteAll();
 		orderItemRepository.deleteAll();
 		reservationRepository.deleteAll();
-	//	menuItemCategoryRepository.deleteAll();
+		menuItemCategoryRepository.deleteAll();
 		sideDishRepository.deleteAll();
 
 	}
