@@ -54,7 +54,7 @@ import {SecureStorage} from "@ionic-native/secure-storage";
 import {TextToSpeech} from "@ionic-native/text-to-speech";
 import {DevicePermissions} from "../service/device-permission.service";
 import { Diagnostic } from '@ionic-native/diagnostic';
-
+import { LocationAccuracy } from 'ionic-native';
 @NgModule({
   declarations: [
     MyApp,
@@ -155,6 +155,7 @@ import { Diagnostic } from '@ionic-native/diagnostic';
     WorkingShiftService,
     BeaconService,
     DevicePermissions,
+    LocationAccuracy,
   ]
 })
 export class AppModule {

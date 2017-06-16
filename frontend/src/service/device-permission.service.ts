@@ -58,6 +58,7 @@ export class DevicePermissions {
           }
         });
       }
+
     });
   }
 
@@ -92,24 +93,18 @@ export class DevicePermissions {
   isBluetoothON():boolean{
     this.diagnostic.getBluetoothState()
       .then((state) => {
-        if (state == this.diagnostic.bluetoothState.POWERED_OFF){
-          return false;
-        }
+        return (state == this.diagnostic.bluetoothState.POWERED_OFF);
       }).catch(e => console.error(e));
     return true;
   }
+
   isLocationON():boolean{
   this.diagnostic.getLocationMode()
       .then((state) => {
-          if (state == this.diagnostic.locationMode.LOCATION_OFF){
-              return false;
-          }
+         return (state == this.diagnostic.locationMode.LOCATION_OFF);
       }).catch(e => console.error(e));
     return true;
   }
 
-  disableLocation(){
-
-  }
 
 }

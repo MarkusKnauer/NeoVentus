@@ -35,7 +35,7 @@ export class SettingsPage {
               private alertCtrl: AlertController,
               public devicePermissions: DevicePermissions,
               public diagnostic: Diagnostic,
-              public beaconService: BeaconService,
+              public beaconService: BeaconService
   ) {
 
     //Get Beacons from Cache
@@ -86,7 +86,7 @@ export class SettingsPage {
               {
                 text: "Nein",
                 handler: () => {
-                  this.ibeaconIsON = !this.ibeaconIsON;
+                  this.toggleBeaconSetting();
                   alert.dismiss();
                 }
               },
@@ -95,43 +95,18 @@ export class SettingsPage {
                 handler: () => {
 
                   // Set Authorisation and GPS and Bluettoth true
+                  this.devicePermissions.checkLocationPermissions();
+                  this.beaconService.turnBLEAndGPSOn();
 
-                  this.diagnostic.getBluetoothState()
-                    .then((state) => {
-                      if (state == this.diagnostic.bluetoothState.POWERED_OFF){
-                        this.diagnostic.switchToBluetoothSettings();
-                      }
-                    }).catch(e => console.error(e));
-
-                  this.diagnostic.getLocationMode()
-                    .then((state) => {
-                      if (state == this.diagnostic.locationMode.LOCATION_OFF){
-                        this.diagnostic.switchToLocationSettings();
-                      }
-                    }).catch(e => console.error(e));
-
-                  alert.dismiss();
                 }
               }
             ],
           });
           alert.present();
-        } else{
-     // Is Authorisation valid and set GPS and Bluettoth true.
-        this.diagnostic.getBluetoothState()
-          .then((state) => {
-            if (state == this.diagnostic.bluetoothState.POWERED_OFF){
-              this.diagnostic.switchToBluetoothSettings();
-            }
-          }).catch(e => console.error(e));
-
-        this.diagnostic.getLocationMode()
-          .then((state) => {
-            if (state == this.diagnostic.locationMode.LOCATION_OFF){
-              this.diagnostic.switchToLocationSettings();
-            }
-          }).catch(e => console.error(e));
-       }
+        } else {
+        // Is Authorisation valid and set GPS and Bluettoth true.
+          this.beaconService.turnBLEAndGPSOn();
+        }
       } else {
       // turn Ibeacons off
 
@@ -147,19 +122,7 @@ export class SettingsPage {
           {
             text: "Ja",
             handler: () => {
-              this.diagnostic.getBluetoothState()
-                .then((state) => {
-                  if (state !== this.diagnostic.bluetoothState.POWERED_OFF){
-                    this.diagnostic.switchToBluetoothSettings();
-                  }
-                }).catch(e => console.error(e));
-
-              this.diagnostic.getLocationMode()
-                .then((state) => {
-                  if (state !== this.diagnostic.locationMode.LOCATION_OFF){
-                    this.diagnostic.switchToLocationSettings();
-                  }
-                }).catch(e => console.error(e));
+              this.beaconService.turnBLEAndGPSOff();
               alert.dismiss();
             }
           }
@@ -168,8 +131,6 @@ export class SettingsPage {
       alert.present();
     }
   }
-
-
 
 
 

@@ -12,6 +12,9 @@ import {Injectable} from "@angular/core";
 import {DevicePermissions} from "./device-permission.service";
 import {CachingService} from "./caching.service";
 import {Storage} from "@ionic/storage";
+import {LocationAccuracy} from "ionic-native";
+import {Diagnostic} from "@ionic-native/diagnostic";
+
 
 @Injectable()
 export class BeaconService extends CachingService{
@@ -22,10 +25,10 @@ export class BeaconService extends CachingService{
   public static iBeaconIsEnabled = "beaconAllowed";
 
 
-  constructor(private storage: Storage,public devicePermissions: DevicePermissions,private ibeacon: IBeacon,public platform: Platform, public events: Events, private http: Http, private authGuard: AuthGuardService , private alertCtrl: AlertController) {
+  constructor( public diagnostic: Diagnostic,private storage: Storage,public devicePermissions: DevicePermissions,private ibeacon: IBeacon,public platform: Platform, public events: Events, private http: Http, private authGuard: AuthGuardService , private alertCtrl: AlertController) {
     super();
 
-    this.devicePermissions.checkLocationPermissions();
+
   }
 
   startBeacon(deskRegion: string): any {
@@ -70,6 +73,49 @@ export class BeaconService extends CachingService{
 
     return promise;
   }
+
+  turnBLEAndGPSOn(){
+    this.diagnostic.getBluetoothState()
+      .then((state) => {
+        if (state == this.diagnostic.bluetoothState.POWERED_OFF){
+          this.ibeacon.enableBluetooth();
+        }
+      }).catch(e => console.error(e));
+
+
+    LocationAccuracy.canRequest().then((canRequest: boolean) => {
+      if(canRequest) {
+        // the accuracy option will be ignored by iOS
+        LocationAccuracy.request(LocationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY).then(
+          () => console.log('Request successful'),
+          error => console.log('Error requesting location permissions', error)
+        );
+      }
+    });
+  }
+
+  turnBLEAndGPSOff(){
+    this.diagnostic.getBluetoothState()
+      .then((state) => {
+        if (state != this.diagnostic.bluetoothState.POWERED_OFF){
+          this.ibeacon.disableBluetooth();
+        }
+      }).catch(e => console.error(e));
+
+
+    LocationAccuracy.canRequest().then((canRequest: boolean) => {
+      if(canRequest) {
+        // the accuracy option will be ignored by iOS
+        LocationAccuracy.request(LocationAccuracy.REQUEST_PRIORITY_NO_POWER).then(
+          () => console.log('Request successful'),
+          error => console.log('Error requesting location permissions', error)
+        );
+      }
+    });
+  }
+
+
+
 
 
   stopRangingRegion(): any {

@@ -104,14 +104,19 @@ export class DeskOverviewPage {
 
 
   ionViewWillLeave(){
-    this.beaconService.stopRangingRegion();
+    if(BeaconService.isActivated !== null && BeaconService.isActivated&&DeskOverviewPage.isInitialiseBeacon){
+      this.beaconService.stopRangingRegion();
+    }
+
   }
 
 
 
 
   private deskSelected(desk) {
-    this.beaconService.stopRangingRegion();
+    if(BeaconService.isActivated !== null && BeaconService.isActivated&&DeskOverviewPage.isInitialiseBeacon) {
+      this.beaconService.stopRangingRegion();
+    }
     this.navCtrl.push(DeskPage, {deskNumber: desk.deskNumber.toString()});
 
   }
