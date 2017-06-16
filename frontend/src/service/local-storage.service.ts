@@ -14,6 +14,9 @@ export class LocalStorageService extends CachingService {
   public static STORNO_REASONS_KEY = "storno_reasons";
   public static CONNECTION_URL = "connection";
 
+  public static DESK_OVERVIEW_TILEVIEW = "desk_overview_tileview";
+  public static DESK_OVERVIEW_MYDESKSONLY = "desk_overview_mydesks";
+
   constructor(private storage: Storage) {
     super();
   }
@@ -87,7 +90,31 @@ export class LocalStorageService extends CachingService {
     this.storage.ready().then(() => {
       this.storage.set(key, JSON.stringify(this.cache[key]));
     });
-
   }
 
+  saveDeskOverviewView(value: boolean) {
+    this.cache[LocalStorageService.DESK_OVERVIEW_TILEVIEW] = value;
+    this.saveCachedJsonData(LocalStorageService.DESK_OVERVIEW_TILEVIEW);
+  }
+
+  loadDeskOverviewView() {
+    return this.storage.ready().then(() => {
+      return this.storage.get(LocalStorageService.DESK_OVERVIEW_TILEVIEW).then((val) => {
+        this.saveToCache(LocalStorageService.DESK_OVERVIEW_TILEVIEW, val);
+      })
+    })
+  }
+
+  saveDeskOverviewMyDesks(value: boolean) {
+    this.cache[LocalStorageService.DESK_OVERVIEW_MYDESKSONLY] = value;
+    this.saveCachedJsonData(LocalStorageService.DESK_OVERVIEW_MYDESKSONLY);
+  }
+
+  loadDeskOverviewMyDesks() {
+    return this.storage.ready().then(() => {
+      return this.storage.get(LocalStorageService.DESK_OVERVIEW_MYDESKSONLY).then((val) => {
+        this.saveToCache(LocalStorageService.DESK_OVERVIEW_MYDESKSONLY, val);
+      })
+    })
+  }
 }

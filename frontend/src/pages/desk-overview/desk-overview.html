@@ -114,8 +114,7 @@
   <ion-toolbar color="light">
     <ion-item id="toggletoolbar">
       <ion-label>Fremde Tische ausblenden</ion-label>
-      <ion-toggle checked={{myDesksOnly}} ngModel="toggleMyDeksOnly()" color="dark" (ionChange)="toggleMyDesksOnly()">
-      </ion-toggle>
+      <ion-toggle [(ngModel)]="myDesksOnly" (ionChange)="toggleMyDesksOnly()" color="dark"></ion-toggle>
     </ion-item>
   </ion-toolbar>
 
