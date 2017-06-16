@@ -6,7 +6,7 @@ import {LoginPage} from "../login/login";
 import {DeskPage} from "../desk/desk";
 import {BeaconService} from "../../service/beacon.service";
 import {BeaconModel} from "../../model/beacon-module";
-import {SettingsPage} from "../settings/settings";
+import {LocalStorageService} from "../../service/local-storage.service";
 
 /**
  * @author Tim Heidelbach, Dennis Thanner
@@ -16,17 +16,17 @@ import {SettingsPage} from "../settings/settings";
 })
 export class DeskOverviewPage {
 
-  private tileView = true;
-  private myDesksOnly = false;
   private user = null;
   private desks: any;
 
+  private tileView = true;
+  private myDesksOnly = false;
+
   beacons: BeaconModel[] = [];
   zone: any;
+
   static actualBeaconUUID: string = "";
   static isInitialiseBeacon: boolean = false;
-
-
 
   constructor(private navCtrl: NavController,
               private deskService: DeskService,
@@ -34,7 +34,8 @@ export class DeskOverviewPage {
               private events: Events,
               public platform: Platform,
               public beaconService: BeaconService,
-              private alertCtrl: AlertController) {
+              private alertCtrl: AlertController,
+              private localStorageService: LocalStorageService) {
 
     // required for UI update
     this.zone = new NgZone({enableLongStackTrace: false});
@@ -47,6 +48,13 @@ export class DeskOverviewPage {
       this.loadDeskDetails(true);
     });
 
+    localStorageService.loadDeskOverviewView().then(() => {
+      this.tileView = (localStorageService.cache[LocalStorageService.DESK_OVERVIEW_TILEVIEW] == 'true');
+    });
+
+    localStorageService.loadDeskOverviewMyDesks().then(() => {
+      this.myDesksOnly = (localStorageService.cache[LocalStorageService.DESK_OVERVIEW_MYDESKSONLY] == 'true');
+    });
   }
 
   private loadDeskDetails(force?: boolean) {
@@ -65,7 +73,8 @@ export class DeskOverviewPage {
             }
           }
         }
-// Beacon check 2:
+
+        // Beacon check 2:
         if (BeaconService.isActivated !== null && BeaconService.isActivated) {
          if (!DeskOverviewPage.isInitialiseBeacon) {
             this.beaconService.startBeacon(DeskOverviewPage.actualBeaconUUID).then((isInitialised) => {
@@ -80,7 +89,6 @@ export class DeskOverviewPage {
         }
       }
     );
-
   }
 
   /**
@@ -102,16 +110,12 @@ export class DeskOverviewPage {
     });
   }
 
-
   ionViewWillLeave(){
     if(BeaconService.isActivated !== null && BeaconService.isActivated&&DeskOverviewPage.isInitialiseBeacon){
       this.beaconService.stopRangingRegion();
     }
 
   }
-
-
-
 
   private deskSelected(desk) {
     if(BeaconService.isActivated !== null && BeaconService.isActivated&&DeskOverviewPage.isInitialiseBeacon) {
@@ -123,18 +127,11 @@ export class DeskOverviewPage {
 
   private toggleView() {
     this.tileView ? this.tileView = false : this.tileView = true;
+    this.localStorageService.saveDeskOverviewView(this.tileView);
   }
 
   private toggleMyDesksOnly() {
-
-    if (this.myDesksOnly) {
-      this.myDesksOnly = false;
-      console.log("all desks");
-
-    } else {
-      console.log("my desks only");
-      this.myDesksOnly = true;
-    }
+    this.localStorageService.saveDeskOverviewMyDesks(this.myDesksOnly);
   };
 
   private getUserName() {
@@ -146,7 +143,6 @@ export class DeskOverviewPage {
     }
     return this.user;
   }
-
 
   listenToBeaconEvents() {
     this.events.subscribe('didRangeBeaconsInRegion', (beaconData) => {
