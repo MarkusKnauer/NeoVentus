@@ -103,6 +103,7 @@ export class SideMenuComponent {
     this.userService.logout().then(() => {
       this.events.publish('Open-Menu-Page', {page: LoginPage});
       this.user = null;
+      this.activepage = this.pages[0];
     }, (err) => {
       console.debug(err)
     })
