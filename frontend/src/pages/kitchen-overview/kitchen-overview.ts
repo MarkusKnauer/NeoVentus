@@ -277,6 +277,7 @@ export class KitchenOverviewPage {
   /**
    * deletes or reduces an orderItems in the right overview
    * @param orderItem
+   * @param reduction
    */
   deleteItemInOverview(orderItem, reduction) {
 
@@ -480,10 +481,8 @@ export class KitchenOverviewPage {
    * @param item
    */
   openStornoAlert(deskNumber, cat, item) {
-    let alert = this.alertCtrl.create();
-    alert.setTitle(item.item.name + ' des Tisches ' + deskNumber + ' stornieren?'),
-
-      alert.addButton('Abbruch');
+    let alert = this.actionSheetCtrl.create();
+    alert.setTitle(item.item.name + ' des Tisches ' + deskNumber + ' stornieren?');
 
     alert.addButton({
       text: 'Storno einzeln',
@@ -500,6 +499,8 @@ export class KitchenOverviewPage {
         }
       });
     }
+
+    alert.addButton('Abbruch');
 
     alert.present();
   }
