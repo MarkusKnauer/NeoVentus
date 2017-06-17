@@ -1,5 +1,6 @@
 <ion-header>
   <ion-navbar>
+    <ion-searchbar [(ngModel)]="queryString"></ion-searchbar>
     <ion-buttons end>
       <button ion-button icon-only color="secondary" text-left (click)="dismiss()">
         <ion-icon name="checkmark"></ion-icon>
@@ -8,9 +9,19 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <ion-slides pager>
-    <ion-slide>
-      <h2 text-center>Favoriten</h2>
+  <ion-list *ngIf="queryString?.length > 0">
+    <ion-item *ngFor="let m of searchMenu()" (longPress)="openDetailModal(m.id)" (click)="addOrder(m)">
+      {{m.number}} | {{m.name}}
+      <ion-badge color="secondary" *ngIf="getTmpOrderCount(m) > 0">{{getTmpOrderCount(m)}}</ion-badge>
+      <span class="right">{{m.price | costDecimal}}€</span>
+    </ion-item>
+    <ion-item icon-left *ngIf="searchMenu().length == 0">
+      <ion-icon name="warning"></ion-icon>
+      Keine Treffer gefunden!
+    </ion-item>
+  </ion-list>
+  <ion-slides>
+    <ion-slide [hidden]="queryString?.length != 0">
       <ion-grid>
         <ion-row>
           <div col-3 *ngFor="let favId of getExistingFavorites()">
@@ -22,10 +33,8 @@
         </ion-row>
       </ion-grid>
     </ion-slide>
-    <!-- todo fix temporary solution  -->
     <ng-container *ngFor="let cat of menuCategoryService.cache['tree']">
-      <ion-slide *ngIf="cat.name.toLowerCase().indexOf('beilage') == -1">
-        <h2 text-center>{{cat.name}}</h2>
+      <ion-slide [hidden]="queryString?.length != 0">
         <ion-grid>
           <ion-row>
             <div col-3 *ngFor="let menuItem of cat.items">
@@ -54,3 +63,23 @@
   </ion-slides>
 
 </ion-content>
+<ion-footer>
+  <ion-navbar>
+    <ion-grid>
+      <ion-row>
+        <ng-container col-auto>
+          <button ion-button [color]="slides.getActiveIndex() == 0 && queryString == ''? 'primary' : 'light'"
+                  (click)="queryString=''; slides.slideTo(0);">
+            Favoriten
+          </button>
+        </ng-container>
+        <ng-container col-auto *ngFor="let cat of menuCategoryService.cache['tree']; let i = index">
+          <button ion-button [color]="slides.getActiveIndex() == (i + 1) && queryString == ''? 'primary' : 'light'"
+                  (click)="queryString=''; slides.slideTo(i + 1);">
+            {{cat.name}}
+          </button>
+        </ng-container>
+      </ion-row>
+    </ion-grid>
+  </ion-navbar>
+</ion-footer>

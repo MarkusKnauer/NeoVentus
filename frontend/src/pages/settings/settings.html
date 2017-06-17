@@ -13,7 +13,7 @@
       <button ion-item (click)="openStornoReasonsModal()">
         Stornierungsgründe verwalten
       </button>
-      <ion-item>
+      <ion-item *ngIf="platform.is('cordova')">
         <ion-label>IBeacon erlauben</ion-label>
         <ion-toggle [ngModel]="ibeaconIsON" color="dark" (ngModelChange)="toggleBeaconSetting()">
         </ion-toggle>

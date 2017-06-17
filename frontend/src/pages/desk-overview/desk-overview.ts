@@ -40,8 +40,10 @@ export class DeskOverviewPage {
     // required for UI update
     this.zone = new NgZone({enableLongStackTrace: false});
 
-    this.loadDeskDetails();
-
+    // load new data
+    this.loadDeskDetails(true);
+    // if cache still exists show them until overwritten of new data
+    this.afterDetailsLoad();
     // listen to billing changes and reload desk data
     this.events.subscribe("order-change", () => {
       console.debug("reload desk overview data for desk after billing");
@@ -57,38 +59,61 @@ export class DeskOverviewPage {
     });
   }
 
+  /**
+   * load desk details
+   *
+   * @param force
+   */
   private loadDeskDetails(force?: boolean) {
-    this.deskService.getAllDesksWithDetails(force).then(
-      desks => {
-        this.desks = desks;
+    return this.deskService.getAllDesksWithDetails(force).then(() => {
+      this.afterDetailsLoad()
+    });
+  }
 
-        this.getUserName();
-        for (let desk of desks) {
+  /**
+   * pull to refresh callback
+   * @param refresher
+   */
+  private onRefresh(refresher) {
+    this.loadDeskDetails(true).then(() => {
+      refresher.complete();
+    })
+  }
 
-          DeskOverviewPage.actualBeaconUUID = desk.beaconUUID;
-          for (let waiter of desk.waiters) {
-            if (waiter == this.user) {
-              desk.mine = true;
-              break;
-            }
-          }
-        }
+  /**
+   * manipulation of details data
+   * and starting beacon listener
+   * after data is loaded
+   */
+  private afterDetailsLoad() {
+    this.desks = this.deskService.cache["desksoverview"];
+    if (this.desks) {
+      this.getUserName();
+      for (let desk of this.desks) {
 
-        // Beacon check 2:
-        if (BeaconService.isActivated !== null && BeaconService.isActivated) {
-         if (!DeskOverviewPage.isInitialiseBeacon) {
-            this.beaconService.startBeacon(DeskOverviewPage.actualBeaconUUID).then((isInitialised) => {
-              if (isInitialised) {
-                this.listenToBeaconEvents();
-                DeskOverviewPage.isInitialiseBeacon = true;
-              }
-            });
-          } else {
-            this.beaconService.startRangingRegion();
+        DeskOverviewPage.actualBeaconUUID = desk.beaconUUID;
+        for (let waiter of desk.waiters) {
+          if (waiter == this.user) {
+            desk.mine = true;
+            break;
           }
         }
       }
-    );
+
+      // Beacon check 2:
+      if (BeaconService.isActivated !== null && BeaconService.isActivated) {
+        if (!DeskOverviewPage.isInitialiseBeacon) {
+          this.beaconService.startBeacon(DeskOverviewPage.actualBeaconUUID).then((isInitialised) => {
+            if (isInitialised) {
+              this.listenToBeaconEvents();
+              DeskOverviewPage.isInitialiseBeacon = true;
+            }
+          });
+        } else {
+          this.beaconService.startRangingRegion();
+        }
+      }
+    }
   }
 
   /**
@@ -98,9 +123,9 @@ export class DeskOverviewPage {
    */
   ionViewWillEnter() {
     this.authGuard.hasAnyRolePromise(["ROLE_CEO", "ROLE_SERVICE"]).then(() => {
-    //Beacon check 1:
-      if(BeaconService.isActivated !== null && BeaconService.isActivated){
-        if(DeskOverviewPage.actualBeaconUUID !== "" ){
+      //Beacon check 1:
+      if (BeaconService.isActivated !== null && BeaconService.isActivated) {
+        if (DeskOverviewPage.actualBeaconUUID !== "") {
           this.beaconService.startRangingRegion();
         }
       }
@@ -110,7 +135,7 @@ export class DeskOverviewPage {
     });
   }
 
-  ionViewWillLeave(){
+  ionViewWillLeave() {
     this.beaconService.stopRangingRegion();
   }
 
@@ -160,38 +185,42 @@ export class DeskOverviewPage {
 
     });
   }
-  checkNearestBeacon(beacons: BeaconModel[]){
+
+  checkNearestBeacon(beacons: BeaconModel[]) {
     let beaconTMP: BeaconModel;
-    for(let beac of beacons){
-      if(beaconTMP == null){beaconTMP = beac;}
-      if(beac.rssi > beaconTMP.rssi) beaconTMP = beac;
+    for (let beac of beacons) {
+      if (beaconTMP == null) {
+        beaconTMP = beac;
+      }
+      if (beac.rssi > beaconTMP.rssi) beaconTMP = beac;
     }
 
-    if(beaconTMP != null){
-      if(beaconTMP.rssi >  -50) {
+    if (beaconTMP != null) {
+      if (beaconTMP.rssi > -50) {
         this.findBeaconDesk(beaconTMP);
       }
-    } else{
+    } else {
       console.info("DANGER!! No Beacons found!!");
     }
   }
-  findBeaconDesk(beacon: BeaconModel){
+
+  findBeaconDesk(beacon: BeaconModel) {
     // DB- search for UUID+Major+Minor
-    let fullID : string;
-    fullID = beacon.uuid+beacon.major+beacon.minor;
+    let fullID: string;
+    fullID = beacon.uuid + beacon.major + beacon.minor;
 
     // Service search
-      let beaconDesk : any;
-      for(let desk of this.desks){
-        if(desk.beaconUUID.toUpperCase() === beacon.uuid.toUpperCase() &&
+    let beaconDesk: any;
+    for (let desk of this.desks) {
+      if (desk.beaconUUID.toUpperCase() === beacon.uuid.toUpperCase() &&
         desk.beaconMajor.toUpperCase() === beacon.minor.toUpperCase() &&
-        desk.beaconMinor.toUpperCase() === beacon.minor.toUpperCase()){
-          beaconDesk = desk;
-        }
+        desk.beaconMinor.toUpperCase() === beacon.minor.toUpperCase()) {
+        beaconDesk = desk;
+      }
     }
 
     // Push to desk
-    if(beaconDesk != null){
+    if (beaconDesk != null) {
       this.deskSelected(beaconDesk);
     }
 
