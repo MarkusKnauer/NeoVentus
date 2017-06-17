@@ -22,8 +22,10 @@ export class ReservationPage {
   private isSelected: boolean;
   private desks: any;
   private alldesks: any;
+  private selecteddesks: any;
   private guestnumber: number;
   private reservationName: string;
+  private reservationText: any;
   private reservationDto: ReservationDto;
 
   /*
@@ -48,6 +50,7 @@ export class ReservationPage {
     this.isSelected = false;
     this.guestnumber = 0;
     this.reservationName = null;
+    this.selecteddesks = null;
 
     this.deskService.getAllDesks().then(
       alldesks => {
@@ -77,6 +80,7 @@ export class ReservationPage {
               this.loadDeskAvailability(desk);
 
             }
+            this.selecteddesks = this.desks[0];
           }
         }
       }
@@ -117,7 +121,7 @@ export class ReservationPage {
     this.reservationService.getReservationsByDesk(desk).then(
       reservations => {
 
-        let next = null;
+        let next = [];
         let showdesk = false;
 
         let endtime = new Date();
@@ -140,20 +144,44 @@ export class ReservationPage {
             showdesk = true;
           }
 
+          if (desk.maximalSeats < this.guestnumber) {
+            showdesk = false;
+          }
+
           if (reservationTime.getFullYear() == curtime.getFullYear()) {
             if (reservationTime.getMonth() == curtime.getMonth()) {
               if (reservationTime.getDay() == curtime.getDay()) {
-                next += reservationTime;
+                next.push(reservationTime.toISOString());
               }
             }
           }
+
+
         }
+
         if (next != null) { // desk is reserved in requested time
-          desk.reservation = next;
+          this.reservationText = next;
+
+          for (let str of this.reservationText) {
+            console.log(str);
+          }
         }
         if (showdesk) this.desks.push(desk);
       }
     )
+    this.suggestDesks()
+  }
+
+  suggestDesks() {
+
+    let currSeats: any;
+    let i = 0;
+    if (this.desks != null) {
+      while (currSeats < this.guestnumber && i < this.desks.length()) {
+        this.selecteddesks.push(this.desks[i])
+      }
+    }
+
   }
 
   deskSelected(desk: any) {
@@ -201,10 +229,31 @@ export class ReservationPage {
       console.debug(this.reservationDto);
 
       this.reservationService.insertReservation(this.reservationDto).toPromise().then((resp) => {
-        // show toast for user feedback !!! DANGER BY DENNIS @Mkey_AFFFFFFFFFFFFFFFFF
+        this.reportUser(desk, this.reservationDto.ReservationName, this.reservationDto.Time);
         console.debug(resp);
       });
     }
+  }
+
+  reportUser(desk: any, reservationName: any, reservationTime: any) {
+
+    let alert = this.alertCtrl.create({
+      title: "Reservierung erfolgreich ",
+      message: "Name: " + reservationName +
+      " Datum: " + reservationTime.getDay() + "." + reservationTime.getMonth() + "." + reservationTime.getFullYear() +
+      +" um " + reservationTime.getHours() + ":" + reservationTime.getMinutes() +
+      " Tisch " + desk.number,
+      buttons: [
+        {
+          text: "OK",
+          handler: data => {
+            console.debug(data);
+          }
+        }
+      ],
+      enableBackdropDismiss: false
+    });
+    alert.present();
   }
 
 }
