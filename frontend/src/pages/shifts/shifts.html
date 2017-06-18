@@ -3,62 +3,26 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>{{headlineString()}}</ion-title>
+    <ion-title>Shicht - {{title}}</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="calendar.mode = 'month'">M</button>
+      <button ion-button (click)="calendar.mode = 'week'">W</button>
+      <button ion-button (click)="calendar.mode = 'day'">T</button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-<!-- Datetime selection-->
-  <ion-list>
-    <ion-item>
-      <ion-label>Starteingabe</ion-label>
-      <ion-datetime displayFormat="DD.MM.YYYY" doneText="Fertig" cancelText="Abbrechen" (ionChange)="getRightShift()" [(ngModel)]="event.startDate"></ion-datetime>
-    </ion-item>
-    <ion-item>
-      <ion-label>Endeingabe</ion-label>
-      <ion-datetime displayFormat="DD.MM.YYYY" doneText="Fertig" cancelText="Abbrechen" (ionChange)="getRightShift()" [(ngModel)]="event.endDate"></ion-datetime>
-    </ion-item>
-  </ion-list>
-
-<!-- Begin DateTime results -->
-  <div class="cards-bg">
-    <ion-grid class="grid-card">
-      <ion-row>
-
-        <!-- card for every Day -->
-        <ion-col *ngFor="let nD of newDay" col-auto>
-
-          <!-- BEGIN card -->
-          <ion-card>
-            <!-- BEGIN card header-->
-            <ion-card-header class="card_header">
-              <ion-item class="card_title">
-                <h1>{{getDate(nD.date)}}</h1>
-              </ion-item>
-            </ion-card-header>
-            <!-- END card header-->
-
-
-            <!--BEGIN card content -->
-            <ion-item-group *ngFor="let shift of nD.shifts">
-
-              <ion-item-divider>
-                  {{shift.userName}}:
-                  <ion-note item-right>
-                    {{getDateTime(shift.startShift)}} - {{getDateTime(shift.endShift)}}
-                  </ion-note>
-              </ion-item-divider>
-              <!-- END category divider-->
-
-            </ion-item-group>
-            <!--END card content -->
-
-          </ion-card>
-          <!-- END card -->
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </div>
+<ion-content>
+  <calendar [currentDate]="calendar.currentDate"
+            [calendarMode]="calendar.mode"
+            [eventSource]="data"
+            (onCurrentDateChanged)="loadData($event, $event)"
+            (onRangeChanged)="loadData($event.startTime, $event.endTime)"
+            (onTitleChanged)="title = $event"
+            queryMode="remote"
+            step="15"
+            allDayLabel="Ganztags"
+            noEventsLabel="Daten werden geladen..."></calendar>
 
 </ion-content>
 <ion-footer>
@@ -66,7 +30,7 @@
   <ion-toolbar color="light">
     <ion-item>
       <ion-label>Gesamtplan anzeigen</ion-label>
-      <ion-toggle checked={{!personalView}} ngModel="toggleMyShiftsOnly()" color="dark" (ionChange)="toggleMyShiftsOnly()">
+      <ion-toggle [checked]="!personalView" color="dark" (ionChange)="personalViewChange()">
       </ion-toggle>
     </ion-item>
   </ion-toolbar>

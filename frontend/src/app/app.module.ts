@@ -1,5 +1,5 @@
 import {BrowserModule} from "@angular/platform-browser";
-import {ErrorHandler, NgModule} from "@angular/core";
+import {ErrorHandler, LOCALE_ID, NgModule} from "@angular/core";
 import {IonicApp, IonicErrorHandler, IonicModule} from "ionic-angular";
 import {SplashScreen} from "@ionic-native/splash-screen";
 import {StatusBar} from "@ionic-native/status-bar";
@@ -53,7 +53,8 @@ import {FingerprintAIO} from "@ionic-native/fingerprint-aio";
 import {SecureStorage} from "@ionic-native/secure-storage";
 import {TextToSpeech} from "@ionic-native/text-to-speech";
 import {DevicePermissions} from "../service/device-permission.service";
-import { Diagnostic } from '@ionic-native/diagnostic';
+import {Diagnostic} from "@ionic-native/diagnostic";
+import {NgCalendarModule} from "ionic2-calendar";
 
 @NgModule({
   declarations: [
@@ -92,6 +93,7 @@ import { Diagnostic } from '@ionic-native/diagnostic';
   imports: [
     HttpModule,
     BrowserModule,
+    NgCalendarModule,
     IonicModule.forRoot(MyApp, {}, {
       links: [
         // browser support links
@@ -103,6 +105,7 @@ import { Diagnostic } from '@ionic-native/diagnostic';
         {component: ProfilePage, name: "Profile", segment: "profile"},
         {component: InvoicesPage, name: "billings", segment: "billlings"},
         {component: ReservationPage, name: "reservation", segment: "reservation"},
+        {component: ShiftsPage, name: "shift", segment: "shift"},
       ]
     }),
     IonicStorageModule.forRoot()
@@ -155,6 +158,7 @@ import { Diagnostic } from '@ionic-native/diagnostic';
     WorkingShiftService,
     BeaconService,
     DevicePermissions,
+    {provide: LOCALE_ID, useValue: 'de-DE'}
   ]
 })
 export class AppModule {
