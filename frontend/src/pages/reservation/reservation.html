@@ -61,17 +61,17 @@
             <div class="desk-details">
               <span>Platzanzahl: {{desk.maximalSeats}}</span>
 
-              <p *ngIf="reservationText">
+              <div *ngIf="desk.reservationText.length">
                 <span class="unimportant">Reserviert ab:</span>
                 <!--<ion-list>
                 <!--<ion-item (longPress)="openDetails"></ion-item>-->
-                <span class="important" *ngFor="let reservation of reservationText">
-                    {{reservation}}
-                  </span>
+                <div class="important" *ngFor="let reservation of desk.reservationText">
+                  {{reservation | date: "HH:mm"}}
+                </div>
                 <!--</ion-list>-->
                 <br/>
 
-              </p>
+              </div>
             </div>
           </div>
         </ion-col>

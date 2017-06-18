@@ -25,7 +25,6 @@ export class ReservationPage {
   private selecteddesks: any;
   private guestnumber: number;
   private reservationName: string;
-  private reservationText: any;
   private reservationDto: ReservationDto;
 
   /*
@@ -56,6 +55,7 @@ export class ReservationPage {
       alldesks => {
         this.alldesks = alldesks;
       });
+
   }
 
   /**
@@ -122,12 +122,16 @@ export class ReservationPage {
       reservations => {
 
         let next = [];
-        let showdesk = false;
+        let showdesk = true;
 
         let endtime = new Date();
         let pretime = new Date();
         let today = new Date();
         let curtime = new Date(this.time);
+
+        if (reservations.length > 0) {
+          showdesk = false;
+        }
 
         for (let reservation of reservations) {
 
@@ -144,10 +148,6 @@ export class ReservationPage {
             showdesk = true;
           }
 
-          if (desk.maximalSeats < this.guestnumber) {
-            showdesk = false;
-          }
-
           if (reservationTime.getFullYear() == curtime.getFullYear()) {
             if (reservationTime.getMonth() == curtime.getMonth()) {
               if (reservationTime.getDay() == curtime.getDay()) {
@@ -160,11 +160,8 @@ export class ReservationPage {
         }
 
         if (next != null) { // desk is reserved in requested time
-          this.reservationText = next;
+          desk.reservationText = next;
 
-          for (let str of this.reservationText) {
-            console.log(str);
-          }
         }
         if (showdesk) this.desks.push(desk);
       }
