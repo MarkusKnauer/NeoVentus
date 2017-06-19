@@ -90,7 +90,6 @@ export class DeskOverviewPage {
     if (this.desks) {
       this.getUserName();
       for (let desk of this.desks) {
-
         DeskOverviewPage.actualBeaconUUID = desk.beaconUUID;
         for (let waiter of desk.waiters) {
           if (waiter == this.user) {
@@ -99,7 +98,6 @@ export class DeskOverviewPage {
           }
         }
       }
-
       // Beacon check 2:
       if (BeaconService.isActivated !== null && BeaconService.isActivated) {
         if (!DeskOverviewPage.isInitialiseBeacon) {
@@ -113,6 +111,7 @@ export class DeskOverviewPage {
           this.beaconService.startRangingRegion();
         }
       }
+
     }
   }
 

@@ -159,7 +159,7 @@ import {NgCalendarModule} from "ionic2-calendar";
     WorkingShiftService,
     BeaconService,
     DevicePermissions,
-    {provide: LOCALE_ID, useValue: 'de-DE'}
+    {provide: LOCALE_ID, useValue: 'de-DE'},
     LocationAccuracy,
   ]
 })
