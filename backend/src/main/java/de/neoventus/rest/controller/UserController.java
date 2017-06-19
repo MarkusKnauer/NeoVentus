@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -57,6 +58,11 @@ public class UserController {
 		return this.userRepository.getUserProfileDetails(userDetails.getUserId());
 	}
 
+	@RequestMapping(value = "/tips", method = RequestMethod.GET)
+	public Map<Long, Double> getUserTips(@AuthenticationPrincipal NVUserDetails userDetails) {
+		return this.userRepository.getLastWeekTips(userDetails.getUserId());
+	}
+
 	/**
 	 * controller method for inserting user
 	 *
@@ -68,13 +74,13 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.POST)
 	public void insert(@RequestBody @Valid UserDto dto, BindingResult bindingResult, HttpServletResponse response) {
 		try {
-			if(bindingResult.hasErrors()) {
+			if (bindingResult.hasErrors()) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 			} else {
 				userRepository.save(dto);
 				LOGGER.info("Saving user to database: " + dto.getUsername());
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			LOGGER.warning("Error inserting user to database: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
@@ -92,13 +98,13 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.PUT)
 	public void update(@RequestBody @Valid UserDto dto, BindingResult bindingResult, HttpServletResponse response) {
 		try {
-			if(bindingResult.hasErrors()) {
+			if (bindingResult.hasErrors()) {
 				response.setStatus(HttpStatus.BAD_REQUEST.value());
 			} else {
 				userRepository.save(dto);
 				LOGGER.info("Update user to database: " + dto.getUsername());
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			LOGGER.warning("Error updating user to database: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
@@ -115,7 +121,7 @@ public class UserController {
 	public void delete(@RequestParam String id, HttpServletResponse response) {
 		try {
 			userRepository.delete(id);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			LOGGER.warning("Error updating user to database: " + e.getMessage());
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}

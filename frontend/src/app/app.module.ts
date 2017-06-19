@@ -5,6 +5,8 @@ import {SplashScreen} from "@ionic-native/splash-screen";
 import {StatusBar} from "@ionic-native/status-bar";
 import {HttpModule} from "@angular/http";
 import "rxjs/Rx";
+import {ChartsModule} from "ng2-charts";
+import "../../node_modules/chart.js/dist/Chart.bundle.min.js";
 
 import {MyApp} from "./app.component";
 import {LoginPage} from "../pages/login/login";
@@ -53,9 +55,10 @@ import {FingerprintAIO} from "@ionic-native/fingerprint-aio";
 import {SecureStorage} from "@ionic-native/secure-storage";
 import {TextToSpeech} from "@ionic-native/text-to-speech";
 import {DevicePermissions} from "../service/device-permission.service";
-import { LocationAccuracy } from 'ionic-native';
+import {LocationAccuracy} from "ionic-native";
 import {Diagnostic} from "@ionic-native/diagnostic";
 import {NgCalendarModule} from "ionic2-calendar";
+import {UserStatisticsPage} from "../pages/tip-monitor/user-statistics";
 
 @NgModule({
   declarations: [
@@ -72,6 +75,7 @@ import {NgCalendarModule} from "ionic2-calendar";
     ProfilePage,
     KitchenOverviewPage,
     ReservationPage,
+    UserStatisticsPage,
 
     // components
     SideMenuComponent,
@@ -95,6 +99,7 @@ import {NgCalendarModule} from "ionic2-calendar";
     HttpModule,
     BrowserModule,
     NgCalendarModule,
+    ChartsModule,
     IonicModule.forRoot(MyApp, {}, {
       links: [
         // browser support links
@@ -107,6 +112,7 @@ import {NgCalendarModule} from "ionic2-calendar";
         {component: InvoicesPage, name: "billings", segment: "billlings"},
         {component: ReservationPage, name: "reservation", segment: "reservation"},
         {component: ShiftsPage, name: "shift", segment: "shift"},
+        {component: UserStatisticsPage, name: "user-statistics", segment: "stats"},
       ]
     }),
     IonicStorageModule.forRoot()
@@ -124,6 +130,7 @@ import {NgCalendarModule} from "ionic2-calendar";
     ProfilePage,
     KitchenOverviewPage,
     ReservationPage,
+    UserStatisticsPage,
     OrderSelectModalComponent,
     MenuDetailModalComponent,
     ManageStornoReasonsModalComponent,

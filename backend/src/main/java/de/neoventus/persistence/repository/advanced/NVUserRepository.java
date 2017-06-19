@@ -3,6 +3,8 @@ package de.neoventus.persistence.repository.advanced;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.UserProfileDetails;
 import de.neoventus.rest.dto.UserDto;
 
+import java.util.Map;
+
 /**
  * @author Dennis Thanner
  **/
@@ -22,5 +24,8 @@ public interface NVUserRepository {
 	 * @return
 	 */
 	UserProfileDetails getUserProfileDetails(String id);
+
+
+	Map<Long, Double> getLastWeekTips(String userId);
 
 }
