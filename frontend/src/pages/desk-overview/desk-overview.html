@@ -28,23 +28,24 @@
     *ngIf="tileView; else elseBlock"
     class="grid-tables">
 
-    <ion-row justify-content-center>
+    <ion-row justify-content-center wrap>
 
       <ng-container *ngFor="let desk of desks">
-        <ion-col *ngIf="!myDesksOnly||desk.mine" col-auto (click)="deskSelected(desk)">
-          <div class="desk">
-            <h1 [ngClass]="{unused: desk.totalPaid == 0, used: desk.totalPaid != 0}">
+        <ion-col col-4 col-sm *ngIf="!myDesksOnly||desk.mine" (click)="deskSelected(desk)">
+
+          <h1 [ngClass]="{unused: desk.totalPaid == 0, used: desk.totalPaid != 0}">
               {{desk.deskNumber}}
             </h1>
+
             <div class="desk-details">
-              <span *ngIf="desk.totalPaid == 0">frei<br/></span>
+              <p *ngIf="desk.totalPaid == 0">frei</p>
               <p *ngIf="desk.nextReservation">
                 <span class="important">{{ desk.nextReservation | customTime }}</span>
                 <br/>
                 <span class="unimportant">Reservierung</span>
               </p>
+
             </div>
-          </div>
         </ion-col>
       </ng-container>
 
@@ -115,7 +116,7 @@
 <ion-footer>
 
   <ion-toolbar color="light">
-    <ion-item id="toggletoolbar">
+    <ion-item class="toggletoolbar">
       <ion-label>Fremde Tische ausblenden</ion-label>
       <ion-toggle [(ngModel)]="myDesksOnly" (ionChange)="toggleMyDesksOnly()" color="dark"></ion-toggle>
     </ion-item>
