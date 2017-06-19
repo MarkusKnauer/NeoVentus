@@ -1,51 +1,49 @@
 .grid-tables {
 
-  .desk {
-    background-color: color($colors, light2);
-    border: 1px solid color($colors, light4);
-    border-radius: 2px;
-    text-align: center;
-    width: 110px;
-    height: 110px;
-    transition: box-shadow 0.5s;
+  background: white;
 
-    h1 {
-      background: color($colors, light3);
-      border-bottom: 1px solid color($colors, light4);
-      width: 100%;
-      padding-top: 10px;
-      padding-bottom: 5px;
-      margin-top: 0;
-      margin-bottom: 0px;
-    }
+  ion-row {
 
-    .desk-details {
-      height: 60px;
-      width: 150px;
-      display: table-cell;
-      vertical-align: middle;
-      padding-left: 5px;
-      padding-right: 5px;
+    ion-col {
+      background-color: color($colors, light2);
+      border: 1px solid color($colors, light4);
+      border-radius: 2px;
+      text-align: center;
+      transition: box-shadow 0.5s;
+      transform: scale(0.95);
+      height: 110px;
+      min-width: 110px;
+      padding: 0;
 
-      p {
-        margin: 0px;
-        line-height: 0.75;
-        padding-top: 10px;
+      h1 {
+        background: color($colors, light3);
+        border-bottom: 1px solid color($colors, light4);
+        padding: 10px;
+        margin: 0;
+      }
+
+      .desk-details {
+        width: 2000px;
+        height: 56px;
+        display: table-cell;
+        padding: 8px;
+
+        p {
+          margin: 0;
+          line-height: 0.75;
+          padding-top: 10px;
+        }
       }
     }
   }
 
-  div.desk:hover {
+  ion-col:hover {
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
   }
 
-  div.desk:active {
+  ion-col:active {
     background: color($colors, light3);
     transform: scale(0.9);
-
-    > h1 {
-      background: color($colors, light3);
-    }
   }
 }
 
@@ -116,7 +114,6 @@ h1.used {
   background: color($colors, secondary-background) !important;
 }
 
-#toggletoolbar {
+.toggletoolbar {
   background-color: color($colors, light);
 }
-

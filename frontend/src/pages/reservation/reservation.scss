@@ -1,110 +1,48 @@
-.grid-tables {
+.grid-reservationtables {
 
-  .desk-res {
-    background-color: color($colors, light2);
-    border: 1px solid color($colors, light4);
-    border-radius: 2px;
-    text-align: center;
-    width: 110px;
-    height: 115px;
-    transition: box-shadow 0.5s;
+  ion-row {
 
-    h1 {
-      background: color($colors, secondary-background);
-      border-bottom: 1px solid color($colors, light4);
-      width: 100%;
-      padding-top: 10px;
-      padding-bottom: 5px;
-      margin-top: 0;
-      margin-bottom: 0px;
-    }
+    ion-col {
+      background-color: color($colors, light2);
+      border: 1px solid color($colors, light4);
+      border-radius: 2px;
+      text-align: center;
+      transition: box-shadow 0.5s;
+      transform: scale(0.95);
+      height: auto;
+      min-width: 110px;
+      padding: 0;
 
-    .desk-details {
-      height: 60px;
-      width: 150px;
-      display: table-cell;
-      vertical-align: middle;
-      padding-left: 5px;
-      padding-right: 5px;
+      h1 {
+        background: color($colors, light3);
+        border-bottom: 1px solid color($colors, light4);
+        padding: 10px;
+        margin: 0;
+      }
 
-      p {
-        margin: 0px;
-        line-height: 0.75;
-        padding-top: 10px;
+      .desk-details {
+        width: 2000px;
+        height: 56px;
+        display: table-cell;
+        padding: 8px;
+
+        p {
+          margin: 0;
+          line-height: 0.75;
+          padding-top: 10px;
+        }
       }
     }
-  }
 
-  div.desk-res:hover {
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
-  }
-
-  div.desk-res:active {
-    background: color($colors, light3);
-    transform: scale(0.9);
-
-    > h1 {
-      background: color($colors, light3);
+    ion-col:hover {
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
     }
-  }
-}
 
-h3 {
-  white-space: normal
-}
-
-span.important {
-  font-weight: bold;
-}
-
-span.unimportant {
-  font-size: 10px;
-}
-
-span.right {
-  float: right;
-  font-weight: bold;
-}
-
-.list-tables {
-
-  h1 {
-    text-align: center;
-    border: 2px solid color($colors, light3);
-    background: color($colors, light2);
-    border-radius: 50px;
-    padding: 2px;
-    height: 40px;
-    width: 40px;
-    min-width: 16px;
-    transition: box-shadow 0.5s;
-
-    display: table-cell;
-    vertical-align: middle;
-  }
-
-  ion-item {
-    height: 60px;
-  }
-
-  ion-item:hover {
-    background: color($colors, light);
-  }
-
-  ion-item:active {
-    background: color($colors, light3);
-
-    h1 {
+    ion-col:active {
+      background: color($colors, light3);
       transform: scale(0.9);
     }
+
   }
 
-  ion-item:hover h1 {
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
-  }
 }
-
-#toggletoolbar {
-  background-color: color($colors, light);
-}
-
