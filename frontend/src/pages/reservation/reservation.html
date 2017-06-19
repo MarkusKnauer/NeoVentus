@@ -7,7 +7,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
 
   <!-- Person selection-->
   <ion-list>
@@ -40,42 +40,38 @@
   <ion-list>
     <div *ngIf="isSelected">
       <ion-item-divider *ngIf="desks.length == 0">
-        Im gewählten Zeitraum sind leider keine freien Tische mehr verfügbar
+        Keine freien Tische verfügbar
       </ion-item-divider>
       <ion-item-divider *ngIf="desks.length != 0">
-        Im gewählten Zeitraum sind folgende Tische verfügbar:
+        Folgende Tische verfügbar:
       </ion-item-divider>
     </div>
   </ion-list>
 
-  <ion-grid class="grid-tables">
-    <ion-row justify-content-center>
+  <ion-grid class="grid-reservationtables">
+    <ion-row justify-content-center wrap>
 
       <!-- Begin freeDishes results -->
-      <ng-container *ngFor="let desk of desks">
-        <ion-col col-auto (click)="deskSelected(desk)">
-          <div class="desk-res">
-            <h1>
+      <ion-col col-4 col-sm (click)="deskSelected(desk)" *ngFor="let desk of desks">
+
+        <h1>
               {{desk.number}}
             </h1>
+
             <div class="desk-details">
-              <span>Platzanzahl: {{desk.maximalSeats}}</span>
+
+              <span>Plätze: {{desk.maximalSeats}}</span>
 
               <div *ngIf="desk.reservationText.length">
                 <span class="unimportant">Reserviert ab:</span>
-                <!--<ion-list>
-                <!--<ion-item (longPress)="openDetails"></ion-item>-->
                 <div class="important" *ngFor="let reservation of desk.reservationText">
                   {{reservation | date: "HH:mm"}}
                 </div>
-                <!--</ion-list>-->
-                <br/>
-
               </div>
+
             </div>
-          </div>
-        </ion-col>
-      </ng-container>
+
+      </ion-col>
 
     </ion-row>
   </ion-grid>
