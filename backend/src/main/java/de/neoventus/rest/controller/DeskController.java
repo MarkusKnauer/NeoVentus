@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -45,6 +46,24 @@ public class DeskController {
 			return deskRepository.findAll();
 		} catch (DataAccessException e) {
 			LOGGER.warning("Error searching for all desks: " + e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return null;
+		}
+	}
+
+
+	/**
+	 * controller method to list free desks to a given time
+	 *
+	 * @param response
+	 * @param timeStamp
+	 * @return
+	 */
+	@RequestMapping("/not-reserved/{timeStamp:[0-9]*}")
+	public List<Desk> getNotReservedDesks(HttpServletResponse response, @PathVariable String timeStamp) {
+		try {
+			return this.deskRepository.getNotReservedDesks(new Date(Long.valueOf(timeStamp)));
+		} catch (Exception e) {
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return null;
 		}

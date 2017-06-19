@@ -33,7 +33,8 @@
   </ion-list>
 </ion-content>
 <ion-footer>
-  <button ion-button full color="secondary" [disabled]="totalSelectedPrice() == 0" (click)="openBillingCheckout()">
+  <button ion-button full color="secondary" [disabled]="totalSelectedPrice() == 0" animated
+          (click)="openBillingCheckout()">
     {{totalSelectedPrice() | costDecimal}}€
     Bezahlen
   </button>

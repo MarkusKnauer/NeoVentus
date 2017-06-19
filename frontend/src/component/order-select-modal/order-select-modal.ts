@@ -1,5 +1,5 @@
-import {Component} from "@angular/core";
-import {Events, ModalController, NavParams, ViewController} from "ionic-angular";
+import {Component, ViewChild} from "@angular/core";
+import {Events, ModalController, NavParams, Slides, ViewController} from "ionic-angular";
 import {MenuCategoryService} from "../../service/menu-category.service";
 import {MenuService} from "../../service/menu.service";
 import {MenuDetailModalComponent} from "../menu-detail-modal/menu-detail-modal";
@@ -21,6 +21,11 @@ export class OrderSelectModalComponent {
 
   private tmpOrders: Array<Order> = [];
 
+  @ViewChild(Slides)
+  public slides: Slides;
+
+  public queryString: string;
+
   constructor(private viewCtrl: ViewController, private menuCategoryService: MenuCategoryService, private menuService: MenuService,
               private modalCtrl: ModalController, private navParams: NavParams, private localStorageService: LocalStorageService,
               private events: Events) {
@@ -33,6 +38,7 @@ export class OrderSelectModalComponent {
       this.localStorageService.loadMenuFavoriteIds();
     }, console.debug);
 
+    this.queryString = "";
   }
 
   /**
@@ -50,6 +56,21 @@ export class OrderSelectModalComponent {
     else {
       return [];
     }
+  }
+
+  /**
+   *
+   */
+  searchMenu() {
+    let menus = this.menuService.cache["all"].filter(menu => {
+      return menu.name.toLowerCase().indexOf(this.queryString.toLowerCase()) != -1 ||
+        menu.shortName.toLowerCase().indexOf(this.queryString.toLowerCase()) != -1 ||
+        menu.number.toString().indexOf(this.queryString) != -1;
+    });
+    menus.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    });
+    return menus;
   }
 
   /**

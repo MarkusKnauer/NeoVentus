@@ -22,7 +22,6 @@ import {LocalStorageService} from "../../service/local-storage.service";
 import {BillingModalComponent} from "../../component/billing-modal/billing-modal";
 import {OrderGroupDetailModalComponent} from "../../component/order-group-detail-modal/order-group-detail-modal";
 import {DeskService} from "../../service/desk.service";
-import {BeaconService} from "../../service/beacon.service";
 
 /**
  * @author Julian beck, Dennis Thanner
@@ -388,6 +387,8 @@ export class DeskPage {
       this.tmpOrders = [];
 
       this.events.publish("order-change", this.deskNumber);
+
+      this.loading.dismiss();
 
       // show user feedback
       let toast = this.toastCtrl.create({

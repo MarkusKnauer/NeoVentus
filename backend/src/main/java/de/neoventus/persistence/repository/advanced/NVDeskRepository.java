@@ -1,8 +1,10 @@
 package de.neoventus.persistence.repository.advanced;
 
+import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.DeskOverviewDetails;
 import de.neoventus.rest.dto.DeskDto;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,7 +24,14 @@ public interface NVDeskRepository {
 	 *
 	 * @return all desks with details
 	 */
-//	Map<Integer, List<DeskOverviewDetails>> getDesksWithDetails();
 	List<DeskOverviewDetails> getDesksWithDetails();
+
+	/**
+	 * list all desks that are not reserved
+	 *
+	 * @param date
+	 * @return
+	 */
+	List<Desk> getNotReservedDesks(Date date);
 
 }

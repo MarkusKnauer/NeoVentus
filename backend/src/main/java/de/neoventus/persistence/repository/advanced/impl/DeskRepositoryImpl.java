@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -25,6 +26,9 @@ import java.util.logging.Logger;
 public class DeskRepositoryImpl implements NVDeskRepository {
 
 	private static final Logger LOGGER = Logger.getLogger(DeskRepositoryImpl.class.getName());
+
+	private static long HOUR_IN_MILLIS = 3600000;
+
 
 	private MongoTemplate mongoTemplate;
 
@@ -123,6 +127,40 @@ public class DeskRepositoryImpl implements NVDeskRepository {
 		}
 
 		return new ArrayList<>(deskOverview.values());
+	}
+
+	@Override
+	public List<Desk> getNotReservedDesks(Date date) {
+
+		List<Desk> all = this.mongoTemplate.findAll(Desk.class);
+		Map<String, Desk> map = new HashMap<>();
+		for (Desk i : all) map.put(i.getId(), i);
+
+
+		Aggregation reservationAggregation = Aggregation.newAggregation(
+			Aggregation.project("desk").and(aggregationOperationContext ->
+				new BasicDBObject("$subtract", Arrays.asList("$time", new Date(0)))
+			).as("timeInMillis"),
+			Aggregation.project("desk").and(ArithmeticOperators.Abs.absoluteValueOf((aggregationOperationContext) ->
+				new BasicDBObject("$subtract", Arrays.asList("$timeInMillis", date.getTime()))
+			)).as("offset"),
+			Aggregation.match(Criteria.where("offset").lte(HOUR_IN_MILLIS)),
+			Aggregation.group("desk"),
+			Aggregation.project().and("desk").previousOperation()
+		);
+
+		AggregationResults<Reservation> aggR = this.mongoTemplate.aggregate(reservationAggregation, Reservation.class, Reservation.class);
+		List<Reservation> reservations = aggR.getMappedResults();
+
+		for (Reservation r : reservations) {
+			map.remove(r.getDesk().getId());
+		}
+
+		List<Desk> result = new ArrayList<>(map.values());
+		result.sort((a, b) ->
+			a.getNumber().compareTo(b.getNumber())
+		);
+		return result;
 	}
 
 	@Autowired

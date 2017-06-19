@@ -157,6 +157,28 @@ public class DeskRepositoryTest extends AbstractTest {
 
 	}
 
+	@Test
+	public void testGetFreeDesks() {
+		Date reservationTime = new Date();
+
+		Desk d = new Desk();
+		d = this.deskRepository.save(d);
+
+		Reservation r = new Reservation();
+		r.setTime(reservationTime);
+		r.setDesk(d);
+		this.reservationRepository.save(r);
+
+		List<Desk> free = this.deskRepository.getNotReservedDesks(reservationTime);
+		Assert.assertTrue(free.size() == 0);
+
+		free = this.deskRepository.getNotReservedDesks(new Date(reservationTime.getTime() + 3590000));
+		Assert.assertTrue(free.size() == 0);
+
+		free = this.deskRepository.getNotReservedDesks(new Date(reservationTime.getTime() + 3610000));
+		Assert.assertTrue(free.size() == 1);
+	}
+
 	/**
 	 * clear the data written
 	 */
