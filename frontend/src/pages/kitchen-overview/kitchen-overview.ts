@@ -20,6 +20,7 @@ export class KitchenOverviewPage {
   //if value is 1 the kitchen with meals will be shown, otherwise the bar with drinks is shown
   private forKitchen;
   private socketTopic;
+  private newOrders: boolean;
   //30 seconds interval
   private timeInterval = 30000;
 
@@ -348,6 +349,7 @@ export class KitchenOverviewPage {
     let checkMap = this.orderService.cache['old_orderItems'];
     let hasNewOrders = false;
 
+    //go through desks
     for (let key in data) {
 
       //check if a desk already exists
@@ -364,53 +366,56 @@ export class KitchenOverviewPage {
           let newCatIndex = data[key].indexOf(tmpOrder);
           existingCats.push(newCatIndex);
 
-          //CASE 0 - added new items in a category
-          if (category.itemsPerCat.length < data[key][newCatIndex].itemsPerCat.length) {
 
-            let indexTil = 9999999999;
-            for (let orderItem of category.itemsPerCat) {
-              // itemsPerCat Array behaves like a stack - new orders are put to the top
+          if (newCatIndex != -1) {
+            //CASE 0 - added new items in a category
+            if (category.itemsPerCat.length < data[key][newCatIndex].itemsPerCat.length) {
+              let indexTil = 9999999999;
+              for (let orderItem of category.itemsPerCat) {
+                // itemsPerCat Array behaves like a stack - new orders are put to the top
+                // find new position of the old orderItems
+                tmpOrder = data[key][newCatIndex].itemsPerCat.find((el) => {
+                  return el.item.id == orderItem.item.id;
+                });
+                newIndex = data[key][newCatIndex].itemsPerCat.indexOf(tmpOrder);
+                newIndex < indexTil ? indexTil = newIndex : "";
+              }
+
+              //loop until the old orderItems
+              for (let i = 0; i < indexTil; i++) {
+                this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[i], 0, 0);
+              }
+            }
+
+            category.itemsPerCat.forEach((orderItem) => {
+
               // find new position of the old orderItems
               tmpOrder = data[key][newCatIndex].itemsPerCat.find((el) => {
                 return el.item.id == orderItem.item.id;
               });
               newIndex = data[key][newCatIndex].itemsPerCat.indexOf(tmpOrder);
-              newIndex < indexTil ? indexTil = newIndex : "";
-            }
 
-            //loop until the old orderItems
-            for (let i = 0; i < indexTil; i++) {
-              this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[i], 0, 0);
-            }
-          }
+              if (newIndex != -1) {
+                //CASE 1 - an existing item  has increased
+                let diffCount = data[key][newCatIndex].itemsPerCat[newIndex].orderIds.length - orderItem.orderIds.length;
+                if (newIndex != -1 && diffCount > 0) {
+                  let oldCount = orderItem.newItemCount;
+                  oldCount != null ? diffCount += oldCount : "";
+                  this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[newIndex], 0, diffCount);
+                  hasNewOrders = true;
+                }
 
-          category.itemsPerCat.forEach((orderItem) => {
-
-            // find new position of the old orderItems
-            tmpOrder = data[key][newCatIndex].itemsPerCat.find((el) => {
-              return el.item.id == orderItem.item.id;
+                //CASE 2 - nothing changed, check if item is marked as new
+                if (newIndex != -1 &&
+                  data[key][newCatIndex].itemsPerCat[newIndex].orderIds.length == orderItem.orderIds.length &&
+                  orderItem.isNew != null &&
+                  orderItem.isNew == true) {
+                  this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[newIndex], orderItem.stateTimeUntil, orderItem.newItemCount);
+                  hasNewOrders = true;
+                }
+              }
             });
-            newIndex = data[key][newCatIndex].itemsPerCat.indexOf(tmpOrder);
-
-            //CASE 1 - an existing item  has increased
-            let diffCount = data[key][newCatIndex].itemsPerCat[newIndex].orderIds.length - orderItem.orderIds.length;
-            if (newIndex != -1 && diffCount > 0) {
-              let oldCount = orderItem.newItemCount;
-              oldCount != null ? diffCount += oldCount : "";
-              this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[newIndex], 0, diffCount);
-              hasNewOrders = true;
-            }
-
-            //CASE 2 - nothing changed, check if item is marked as new
-            if (newIndex != -1 &&
-              data[key][newCatIndex].itemsPerCat[newIndex].orderIds.length == orderItem.orderIds.length &&
-              orderItem.isNew != null &&
-              orderItem.isNew == true) {
-              this.markOrderAsNew(data[key][newCatIndex].itemsPerCat[newIndex], orderItem.stateTimeUntil, orderItem.newItemCount);
-              hasNewOrders = true;
-            }
-          });
-
+          }
         });
 
         //CASE 3 - added a new category to a existing desk
@@ -439,11 +444,12 @@ export class KitchenOverviewPage {
     }
     this.copyMap(data);
 
-    if (this.platform.is("cordova")) {
+    if (this.platform.is("cordova") && this.newOrders) {
       this.tts.speak({
         text: "Neue Bestellungen eingetroffen",
         locale: "de-DE"
       });
+      this.newOrders = false;
     }
   }
 
@@ -463,6 +469,7 @@ export class KitchenOverviewPage {
 
     if (oldTimestamp == 0) {
       item.stateTimeUntil = Date.now() + this.timeInterval;
+      this.newOrders = true;
     } else {
       item.stateTimeUntil = oldTimestamp;
     }
