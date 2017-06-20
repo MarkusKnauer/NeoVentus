@@ -7,17 +7,24 @@
       border: 1px solid color($colors, light4);
       border-radius: 2px;
       text-align: center;
-      transition: box-shadow 0.5s;
+      transition: box-shadow 0.5s ease-in-out;
       transform: scale(0.95);
       height: auto;
       min-width: 110px;
       padding: 0;
 
       h1 {
-        background: color($colors, secondary-background);
+        background-color: color($colors, light3);
         border-bottom: 1px solid color($colors, light4);
         padding: 10px;
         margin: 0;
+        transition: 0.2s background-color ease-in-out;
+      }
+
+      &.selected {
+        h1 {
+          background-color: color($colors, secondary-background);
+        }
       }
 
       .desk-details {
