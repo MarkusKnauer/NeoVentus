@@ -23,17 +23,11 @@ export class ReservationPage {
   private temp: Date;
   private isSelected: boolean;
   private desks: any;
-  //private alldesks: any;
   private selecteddesks: any;
   private guestnumber: number;
   private reservationName: string;
   private reservationDto: ReservationDto;
 
-  /*
-   public event = {
-   Date: new Date().toISOString(),
-   };
-   */
 
   private newDay = [];
 
@@ -53,11 +47,6 @@ export class ReservationPage {
     this.reservationName = null;
     this.selecteddesks = [];
 
-    /*
-    this.deskService.getAllDesks().then(
-      alldesks => {
-        this.alldesks = alldesks;
-     });*/
 
   }
 
@@ -67,7 +56,7 @@ export class ReservationPage {
    */
   getReservation() {
 
-    let currTime = new Date(this.time).getTime();
+    let currTime = new Date(this.time).getTime() - 7200000;
 
     console.debug("get Reservation");
     this.desks = [];
@@ -206,9 +195,11 @@ export class ReservationPage {
 
     if (this.reservationName != null) {
 
+      let temp = new Date(this.time);
+
       this.reservationDto = new ReservationDto();
       this.reservationDto.Desk = desk.id;
-      this.reservationDto.Time = new Date(this.time);
+      this.reservationDto.Time = new Date(temp.getTime() - 7200000);
       this.reservationDto.ReservedBy = this.getUserName();
       this.reservationDto.ReservationName = this.reservationName;
       console.debug(this.reservationDto);
