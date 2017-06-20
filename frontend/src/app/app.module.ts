@@ -58,7 +58,7 @@ import {DevicePermissions} from "../service/device-permission.service";
 import {LocationAccuracy} from "ionic-native";
 import {Diagnostic} from "@ionic-native/diagnostic";
 import {NgCalendarModule} from "ionic2-calendar";
-import {UserStatisticsPage} from "../pages/tip-monitor/user-statistics";
+import {TipMonitorPage} from "../pages/tip-monitor/tip-monitor";
 
 @NgModule({
   declarations: [
@@ -75,7 +75,7 @@ import {UserStatisticsPage} from "../pages/tip-monitor/user-statistics";
     ProfilePage,
     KitchenOverviewPage,
     ReservationPage,
-    UserStatisticsPage,
+    TipMonitorPage,
 
     // components
     SideMenuComponent,
@@ -112,7 +112,7 @@ import {UserStatisticsPage} from "../pages/tip-monitor/user-statistics";
         {component: InvoicesPage, name: "billings", segment: "billlings"},
         {component: ReservationPage, name: "reservation", segment: "reservation"},
         {component: ShiftsPage, name: "shift", segment: "shift"},
-        {component: UserStatisticsPage, name: "user-statistics", segment: "stats"},
+        {component: TipMonitorPage, name: "user-tips", segment: "tips", defaultHistory: ["Profile"]},
       ]
     }),
     IonicStorageModule.forRoot()
@@ -130,7 +130,7 @@ import {UserStatisticsPage} from "../pages/tip-monitor/user-statistics";
     ProfilePage,
     KitchenOverviewPage,
     ReservationPage,
-    UserStatisticsPage,
+    TipMonitorPage,
     OrderSelectModalComponent,
     MenuDetailModalComponent,
     ManageStornoReasonsModalComponent,

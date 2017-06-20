@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Trinkgeld Monitor</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding-top>
+  <canvas baseChart [datasets]="tips" [legend]="false"
+          [labels]="tipsLabel" [chartType]="'line'"></canvas>
+  <ion-list>
+    <ion-item icon-left>
+      <ion-icon name="money"></ion-icon>
+      Trinkgeld der letzten 7 Tage:
+      <span item-right>
+        {{sumTips() | costDecimal}}€
+      </span>
+    </ion-item>
+    <ion-item-divider></ion-item-divider>
+    <ion-item>
+      <ion-label>Monatliches Trinkgeld Ziel:</ion-label>
+      <ion-input [(ngModel)]="monthlyTipGoal" type="number" (blur)="updateDailyGoal()">
+      </ion-input>
+    </ion-item>
+  </ion-list>
+</ion-content>

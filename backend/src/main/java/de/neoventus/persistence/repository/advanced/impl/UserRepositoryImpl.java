@@ -19,6 +19,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * @author Dennis Thanner
@@ -141,6 +142,7 @@ public class UserRepositoryImpl implements NVUserRepository {
 		c.set(Calendar.MINUTE, 0);
 		c.set(Calendar.SECOND, 0);
 		c.add(Calendar.DATE, -7);
+		Logger.getAnonymousLogger().info(c.getTimeInMillis() + "");
 		Aggregation tipAggregation = Aggregation.newAggregation(
 			Aggregation.match(Criteria.where("waiter.$id").is(new ObjectId(userId)).and("billedAt").gte(c.getTime())),
 			Aggregation.unwind("items"),
@@ -156,13 +158,21 @@ public class UserRepositoryImpl implements NVUserRepository {
 
 		DBObject result = this.mongoTemplate.aggregate(tipAggregation, Billing.class, Billing.class).getRawResults();
 
-		Map<Long, Double> tips = new HashMap<>();
+		TreeMap<Long, Double> tips = new TreeMap<>();
 
 		for (Object r : ((BasicDBList) result.get("result"))) {
 			DBObject o = (DBObject) r;
 			Map<String, Integer> dateGroup = ((DBObject) o.get("_id")).toMap();
-			java.sql.Date d = new java.sql.Date(dateGroup.get("year") - 1900, dateGroup.get("month"), dateGroup.get("day"));
+			java.sql.Date d = new java.sql.Date(dateGroup.get("year") - 1900, dateGroup.get("month") - 1, dateGroup.get("day"));
 			tips.put(d.getTime(), ((Double) o.get("tip")));
+		}
+
+		while (tips.size() < 7) {
+			if (!tips.containsKey(c.getTime().getTime())) {
+				tips.put(c.getTime().getTime(), 0.);
+				Logger.getAnonymousLogger().info("Added date: " + c.getTime().toString());
+			}
+			c.add(Calendar.DATE, 1);
 		}
 
 		return tips;
