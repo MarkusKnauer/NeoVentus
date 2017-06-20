@@ -155,13 +155,14 @@ export class ReservationPage {
   }
 
   chanceDesk(desk: any) {
+    this.notenoughSeats = false;
     this.selecteddesks = [];
     this.selecteddesks.push(desk);
 
-    let currSeats = 0;
-    for (let d of desk) {
-      currSeats += desk.maximalSeats;
-    }
+    let currSeats = desk.maximalSeats;
+    /*for (let d of desk) {
+     currSeats += d.maximalSeats;
+     }*/
     if (currSeats < this.guestnumber) {
       this.notenoughSeats = true;
     }
