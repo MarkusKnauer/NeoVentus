@@ -2,7 +2,6 @@ import {Component, Input, ViewChild} from "@angular/core";
 import {Events, Nav} from "ionic-angular";
 import {DeskOverviewPage} from "../../pages/desk-overview/desk-overview";
 import {ShiftsPage} from "../../pages/shifts/shifts";
-import {MessagePage} from "../../pages/messages/message";
 import {InvoicesPage} from "../../pages/invoices/invoices";
 import {KitchenOverviewPage} from "../../pages/kitchen-overview/kitchen-overview";
 import {ReservationPage} from "../../pages/reservation/reservation";
@@ -57,15 +56,24 @@ export class SideMenuComponent {
     };
 
     this.pages = [
-      {title: 'Tischübersicht', component: DeskOverviewPage, icon: 'home', roles: ["ROLE_CEO", "ROLE_SERVICE"]},
-      {title: 'Schicht', component: ShiftsPage, icon: 'clock', roles: ["ROLE_CEO", "ROLE_SERVICE"]},
       {
-        title: 'Nachrichten',
-        component: MessagePage,
-        icon: 'chatboxes',
-        roles: ["ROLE_CEO", "ROLE_SERVICE", "ROLE_CHEF"]
+        title: 'Tischübersicht',
+        component: DeskOverviewPage,
+        icon: 'home',
+        roles: ["ROLE_CEO", "ROLE_SERVICE"]
       },
-      {title: 'Rechnungen', component: InvoicesPage, icon: 'calculator', roles: ["ROLE_CEO", "ROLE_SERVICE"]},
+      {
+        title: 'Schicht',
+        component: ShiftsPage,
+        icon: 'clock',
+        roles: ["ROLE_CEO", "ROLE_SERVICE"]
+      },
+      {
+        title: 'Rechnungen',
+        component: InvoicesPage,
+        icon: 'calculator',
+        roles: ["ROLE_CEO", "ROLE_SERVICE"]
+      },
       {
         title: 'Küche',
         component: KitchenOverviewPage,
@@ -80,7 +88,6 @@ export class SideMenuComponent {
         roles: ["ROLE_CEO", "ROLE_BAR"],
         data: {forKitchen: 0}
       },
-
       {
         title: 'Reservierungen',
         component: ReservationPage,
