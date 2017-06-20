@@ -60,4 +60,22 @@ export class DeskService extends CachingService implements HttpService {
         });
       }
   }
+
+  public getNotReservedDesks(timeStamp: any) {
+    if (this.cache["notReservedDesks"] != null) {
+      return new Promise<any>(resolve => {
+        resolve(this.cache["notReservedDesks"]);
+      });
+
+    } else {
+      return new Promise<any>(resolve => {
+        this.http.get(this.BASE_URL + "/not-reserved/" + timeStamp)
+          .map(res => res.json())
+          .subscribe(data => {
+            this.saveToCache("notReservedDesks", data);
+            resolve(data);
+          });
+      });
+    }
+  }
 }

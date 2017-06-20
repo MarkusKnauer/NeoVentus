@@ -80,7 +80,6 @@ export class ReservationPage {
               this.loadDeskAvailability(desk);
 
             }
-            this.selecteddesks = this.desks[0];
           }
         }
       }
@@ -118,11 +117,22 @@ export class ReservationPage {
   }
 
   loadDeskAvailability(desk: any) {
+
+    let currTime = new Date(this.time).getTime();
+
+    this.deskService.getNotReservedDesks(currTime).then(
+      desks => {
+        this.desks = desks;
+      });
+
+    //this.desks = this.deskService.cache["notReservedDesks"];
+
+    /*
     this.reservationService.getReservationsByDesk(desk).then(
       reservations => {
 
         let next = [];
-        let showdesk = true;
+     let showdesk = false;
 
         let endtime = new Date();
         let pretime = new Date();
@@ -166,15 +176,16 @@ export class ReservationPage {
         if (showdesk) this.desks.push(desk);
       }
     )
+     */
     this.suggestDesks()
   }
 
   suggestDesks() {
 
-    let currSeats: any;
+    let currSeats = 0;
     let i = 0;
     if (this.desks != null) {
-      while (currSeats < this.guestnumber && i < this.desks.length()) {
+      while (currSeats < this.guestnumber && i < this.desks.length) {
         this.selecteddesks.push(this.desks[i])
       }
     }
