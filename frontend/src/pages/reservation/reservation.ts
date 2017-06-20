@@ -5,6 +5,8 @@ import {OrderService} from "../../service/order.service";
 import {ReservationService} from "../../service/reservation.service";
 import {DeskService} from "../../service/desk.service";
 import {ReservationDto} from "../../model/reservation-dto";
+
+
 /**
  * @author Markus Knauer
  * @version 0.0.1
@@ -21,7 +23,7 @@ export class ReservationPage {
   private temp: Date;
   private isSelected: boolean;
   private desks: any;
-  private alldesks: any;
+  //private alldesks: any;
   private selecteddesks: any;
   private guestnumber: number;
   private reservationName: string;
@@ -49,12 +51,13 @@ export class ReservationPage {
     this.isSelected = false;
     this.guestnumber = 0;
     this.reservationName = null;
-    this.selecteddesks = null;
+    this.selecteddesks = [];
 
+    /*
     this.deskService.getAllDesks().then(
       alldesks => {
         this.alldesks = alldesks;
-      });
+     });*/
 
   }
 
@@ -63,6 +66,9 @@ export class ReservationPage {
    * @returns {undefined}
    */
   getReservation() {
+
+    let currTime = new Date(this.time).getTime();
+
     console.debug("get Reservation");
     this.isSelected = true;
     this.desks = [];
@@ -72,10 +78,16 @@ export class ReservationPage {
 
     } else {
 
-      if (this.alldesks != null) {
-        if (this.desks.length == 0) {
+      if (this.desks.length == 0) {
           if (this.guestnumber != 0) {
-            for (let desk of this.alldesks) {
+
+            this.deskService.getNotReservedDesks(currTime).then(
+              desks => {
+                this.desks = desks;
+                this.suggestDesks();
+              });
+
+            for (let desk of this.desks) {
 
               this.loadDeskAvailability(desk);
 
@@ -85,7 +97,7 @@ export class ReservationPage {
       }
     }
 
-  }
+
 
   /**
    * show loading popup
@@ -118,77 +130,36 @@ export class ReservationPage {
 
   loadDeskAvailability(desk: any) {
 
-    let currTime = new Date(this.time).getTime();
+    //todo load Reservation Time (MK)
 
-    this.deskService.getNotReservedDesks(currTime).then(
-      desks => {
-        this.desks = desks;
-      });
-
-    //this.desks = this.deskService.cache["notReservedDesks"];
-
-    /*
-    this.reservationService.getReservationsByDesk(desk).then(
-      reservations => {
-
-        let next = [];
-     let showdesk = false;
-
-        let endtime = new Date();
-        let pretime = new Date();
-        let today = new Date();
-        let curtime = new Date(this.time);
-
-        if (reservations.length > 0) {
-          showdesk = false;
-        }
-
-        for (let reservation of reservations) {
-
-          let reservationTime = new Date(reservation.time);
-
-          endtime.setTime(reservationTime.getTime() + 3600000) //give one hour time to eat
-
-          if (curtime > endtime) { // reservation is in the future, ok
-            showdesk = true;
-          }
-
-          pretime.setTime(reservationTime.getTime() - 3600000)//give one hour time to eat
-          if (curtime < pretime) {
-            showdesk = true;
-          }
-
-          if (reservationTime.getFullYear() == curtime.getFullYear()) {
-            if (reservationTime.getMonth() == curtime.getMonth()) {
-              if (reservationTime.getDay() == curtime.getDay()) {
-                next.push(reservationTime.toISOString());
-              }
-            }
-          }
-
-
-        }
-
-        if (next != null) { // desk is reserved in requested time
-          desk.reservationText = next;
-
-        }
-        if (showdesk) this.desks.push(desk);
-      }
-    )
-     */
-    this.suggestDesks()
   }
 
   suggestDesks() {
 
+    this.selecteddesks = [];
     let currSeats = 0;
     let i = 0;
     if (this.desks != null) {
+
+      for (let desk of this.desks) {
+        if (this.guestnumber == desk.maxSeats) {
+          this.selecteddesks.push(this.desks[i]);
+          return;
+        }
+        i++;
+
+      }
+
+      i = 0;
+
       while (currSeats < this.guestnumber && i < this.desks.length) {
+
         this.selecteddesks.push(this.desks[i])
+        currSeats += this.desks[i].maxSeats;
+        i++;
       }
     }
+
 
   }
 
