@@ -4,23 +4,18 @@ menu-box {
     display: block;
     white-space: normal;
     border-radius: 2px;
-    padding-bottom: 50%;
+    height: 100%;
     position: relative;
     font-size: 85%;
     background-color: color($colors, light2);
+    transition: 0.35s transfrom ease-in-out;
 
-    @media (max-width: 380px) {
-      padding-bottom: 60%;
+    &:active {
+      transform: scale(0.9);
     }
 
     .inner {
-      position: absolute;
-      top: 0.25rem;
-      right: 0.25rem;
-      bottom: 1rem;
-      left: 0.25rem;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      padding: 2px;
     }
 
     ion-badge {
@@ -28,12 +23,15 @@ menu-box {
       left: 100%;
       transform: translate(-50%, -50%);
       position: absolute;
+      z-index: 1;
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
     }
 
-    .price-tag {
-      bottom: 0.25rem;
-      right: 0.25rem;
-      position: absolute;
+    .number {
+      border-bottom: 1px solid $list-border-color;
+      text-align: center;
+      padding: 2px;
+      display: block;
     }
   }
 }
