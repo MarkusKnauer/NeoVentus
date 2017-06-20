@@ -1,9 +1,9 @@
 <div class="box">
   <ion-badge [hidden]="count == 0" color="secondary">{{count}}</ion-badge>
-  <div class="inner">
-    {{item.number}} - {{item.shortName}}
+  <div class="number">
+    {{item.number}}
   </div>
-  <div class="price-tag">
-    {{item.price |costDecimal}} €
+  <div class="inner">
+    {{item.shortName}}
   </div>
 </div>
