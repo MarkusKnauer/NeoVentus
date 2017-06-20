@@ -36,6 +36,10 @@
     </ion-item>
   </ion-list>
 
+  <ion-item *ngIf="notenoughSeats" color="danger">
+    ACHTUNG! Nicht genug Plätze
+  </ion-item>
+
   <ion-col col-3>
     <button animated ion-button full icon-only color="secondary" [disabled]="!isSelected"
             (click)="deskSelected()">

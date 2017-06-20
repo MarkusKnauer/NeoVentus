@@ -27,6 +27,7 @@ export class ReservationPage {
   private guestnumber: number;
   private reservationName: string;
   private reservationDto: ReservationDto;
+  private notenoughSeats: boolean;
 
 
   private newDay = [];
@@ -46,6 +47,7 @@ export class ReservationPage {
     this.guestnumber = 0;
     this.reservationName = null;
     this.selecteddesks = [];
+    this.notenoughSeats = false;
 
 
   }
@@ -155,6 +157,14 @@ export class ReservationPage {
   chanceDesk(desk: any) {
     this.selecteddesks = [];
     this.selecteddesks.push(desk);
+
+    let currSeats = 0;
+    for (let d of desk) {
+      currSeats += desk.maximalSeats;
+    }
+    if (currSeats < this.guestnumber) {
+      this.notenoughSeats = true;
+    }
 
   }
 
