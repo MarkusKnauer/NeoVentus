@@ -218,6 +218,13 @@ export class ReservationPage {
         console.debug(resp);
       });
     }
+
+    this.desks = [];
+    this.isSelected = false;
+    this.guestnumber = 0;
+    this.reservationName = null;
+    this.selecteddesks = [];
+
   }
 
   reportUser(desk: any, reservationName: any, reservationTime: any) {
