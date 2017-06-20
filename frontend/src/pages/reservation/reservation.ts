@@ -70,7 +70,6 @@ export class ReservationPage {
     let currTime = new Date(this.time).getTime();
 
     console.debug("get Reservation");
-    this.isSelected = true;
     this.desks = [];
     if (this.guestnumber < 0 || this.guestnumber > 102) {
 
@@ -142,7 +141,7 @@ export class ReservationPage {
     if (this.desks != null) {
 
       for (let desk of this.desks) {
-        if (this.guestnumber == desk.maxSeats) {
+        if (this.guestnumber == desk.maximalSeats) {
           this.selecteddesks.push(this.desks[i]);
           return;
         }
@@ -155,10 +154,11 @@ export class ReservationPage {
       while (currSeats < this.guestnumber && i < this.desks.length) {
 
         this.selecteddesks.push(this.desks[i])
-        currSeats += this.desks[i].maxSeats;
+        currSeats += this.desks[i].maximalSeats;
         i++;
       }
     }
+    this.isSelected = true;
 
 
   }
