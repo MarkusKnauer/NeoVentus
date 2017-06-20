@@ -143,6 +143,7 @@ export class ReservationPage {
       for (let desk of this.desks) {
         if (this.guestnumber == desk.maximalSeats) {
           this.selecteddesks.push(this.desks[i]);
+          this.isSelected = true;
           return;
         }
         i++;
@@ -157,14 +158,19 @@ export class ReservationPage {
         currSeats += this.desks[i].maximalSeats;
         i++;
       }
+      this.isSelected = true;
     }
-    this.isSelected = true;
-
 
   }
 
-  deskSelected(desk: any) {
+  chanceDesk(desk: any) {
+    this.selecteddesks = [];
+    this.selecteddesks.push(desk);
 
+  }
+
+  deskSelected() {
+    let desk = this.selecteddesks[0];
 
     let alert = this.alertCtrl.create({
       title: "Reservierung Tisch: " + desk.number,
@@ -218,10 +224,10 @@ export class ReservationPage {
 
     let alert = this.alertCtrl.create({
       title: "Reservierung erfolgreich ",
-      message: "Name: " + reservationName +
+      /* message: "Name: " + reservationName +
       " Datum: " + reservationTime.getDay() + "." + reservationTime.getMonth() + "." + reservationTime.getFullYear() +
       +" um " + reservationTime.getHours() + ":" + reservationTime.getMinutes() +
-      " Tisch " + desk.number,
+       " Tisch " + desk.number,*/
       buttons: [
         {
           text: "OK",
