@@ -164,18 +164,36 @@ export class ReservationPage {
   }
 
   chanceDesk(desk: any) {
-    this.notenoughSeats = false;
-    this.selecteddesks = [];
-    this.selecteddesks.push(desk);
 
-    let currSeats = desk.maximalSeats;
-    /*for (let d of desk) {
-     currSeats += d.maximalSeats;
-     }*/
-    if (currSeats < this.guestnumber) {
-      this.notenoughSeats = true;
+    let currSeats = 0;
+
+    if (!this.notenoughSeats) {
+
+      //this.notenoughSeats = false;
+      this.selecteddesks = [];
+      this.selecteddesks.push(desk);
+
+      //let currSeats = desk.maximalSeats;
+      for (let d of this.selecteddesks) {
+        currSeats += d.maximalSeats;
+      }
+      if (currSeats < this.guestnumber) {
+        this.notenoughSeats = true;
+      }
+
+    } else if (this.notenoughSeats) { //Add Desks until Seats reaches level of guests
+
+      this.selecteddesks.push(desk);
+
+      for (let d of this.selecteddesks) {
+        currSeats += d.maximalSeats;
+      }
+      if (currSeats >= this.guestnumber) {
+        this.notenoughSeats = false;
+      }
+
+
     }
-
   }
 
   deskSelected() {
