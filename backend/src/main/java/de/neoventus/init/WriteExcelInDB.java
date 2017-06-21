@@ -137,16 +137,7 @@ public class WriteExcelInDB {
 
 	}
 
-	private MenuItemCategory categoryFindByName(String value){
-		if(allCategory != null){
-			for(MenuItemCategory mic: allCategory){
-				if(value.equals(mic.getName())){
-					return mic;
-				}
-			}
-		}
-		return null;
-	}
+
 
 	private MenuItem menuitemFindByName(String value){
 		if(allMenuItems != null){
@@ -170,16 +161,17 @@ public class WriteExcelInDB {
 
 		}
 		// Constructor Category: Name, Kitchen or Bar
-		if(categoryFindByName(value.get(1))!= null){
-			category = categoryFindByName(value.get(1));
+		if(menuItemCategoryRepository.findByName(value.get(1))!= null){
+			category = menuItemCategoryRepository.findByName(value.get(1));
 			category.setForKitchen(!value.get(2).equals("Bar"));
 			category.setActiveItem(true);
 			LOGGER.info("Categorie exists");
 		} else{
 			category = new MenuItemCategory(value.get(1),!value.get(2).equals("Bar"));
 		}
+
 		if (!value.get(0).equals("")) {
-			category.setParent(categoryFindByName(value.get(0)));
+			category.setParent(menuItemCategoryRepository.findByName(value.get(0)));
 		}
 
 		menuItemCategoryRepository.save(category);
