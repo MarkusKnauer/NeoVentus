@@ -20,7 +20,7 @@
 
     <ion-item>
       <ion-datetime displayFormat="DD.MM.YYYY, HH:mm" (ionChange)="getReservation()"
-                    doneText="Fertig" cancelText="Abbrechen" [(ngModel)]="time"
+                    doneText="Fertig" cancelText="Abbrechen" minuteValues="0,15,30,45" [(ngModel)]="time"
       ></ion-datetime>
     </ion-item>
   </ion-list>
@@ -37,7 +37,8 @@
   </ion-list>
 
   <ion-item *ngIf="notenoughSeats" color="danger">
-    ACHTUNG! Nicht genug Plätze
+    <ion-icon name="warning"></ion-icon>
+    Nicht genug Plätze!
   </ion-item>
 
   <ion-col col-3>

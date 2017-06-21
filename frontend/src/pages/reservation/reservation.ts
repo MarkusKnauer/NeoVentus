@@ -40,8 +40,18 @@ export class ReservationPage {
               private deskService: DeskService,
               private alertCtrl: AlertController) {
 
-    this.temp = new Date();
-    this.time = new Date(this.temp.getTime() + 7200000).toISOString();
+    this.temp = new Date(new Date().getTime() + 7200000);
+
+    // round time to next quarter hour
+    let quarterHours = Math.round(this.temp.getMinutes() / 15);
+    if (quarterHours == 4) {
+      this.temp.setHours(this.temp.getHours() + 1);
+    }
+    let rounded = (quarterHours * 15) % 60;
+    this.temp.setMinutes(rounded);
+
+    this.time = new Date(this.temp.getTime()).toISOString();
+
     this.desks = [];
     this.isSelected = false;
     this.guestnumber = 0;
@@ -69,24 +79,23 @@ export class ReservationPage {
     } else {
 
       if (this.desks.length == 0) {
-          if (this.guestnumber != 0) {
+        if (this.guestnumber != 0) {
 
-            this.deskService.getNotReservedDesks(currTime).then(
-              desks => {
-                this.desks = desks;
-                this.suggestDesks();
-              });
+          this.deskService.getNotReservedDesks(currTime).then(
+            desks => {
+              this.desks = desks;
+              this.suggestDesks();
+            });
 
-            for (let desk of this.desks) {
+          for (let desk of this.desks) {
 
-              this.loadDeskAvailability(desk);
+            this.loadDeskAvailability(desk);
 
-            }
           }
         }
       }
     }
-
+  }
 
 
   /**
@@ -145,7 +154,7 @@ export class ReservationPage {
 
       while (currSeats < this.guestnumber && i < this.desks.length) {
 
-        this.selecteddesks.push(this.desks[i])
+        this.selecteddesks.push(this.desks[i]);
         currSeats += this.desks[i].maximalSeats;
         i++;
       }
@@ -234,8 +243,8 @@ export class ReservationPage {
     let alert = this.alertCtrl.create({
       title: "Reservierung erfolgreich ",
       /* message: "Name: " + reservationName +
-      " Datum: " + reservationTime.getDay() + "." + reservationTime.getMonth() + "." + reservationTime.getFullYear() +
-      +" um " + reservationTime.getHours() + ":" + reservationTime.getMinutes() +
+       " Datum: " + reservationTime.getDay() + "." + reservationTime.getMonth() + "." + reservationTime.getFullYear() +
+       +" um " + reservationTime.getHours() + ":" + reservationTime.getMinutes() +
        " Tisch " + desk.number,*/
       buttons: [
         {

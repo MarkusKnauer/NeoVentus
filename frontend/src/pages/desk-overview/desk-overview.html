@@ -38,7 +38,6 @@
             </h1>
 
             <div class="desk-details">
-              <p *ngIf="desk.totalPaid == 0">frei</p>
               <p *ngIf="desk.nextReservation">
                 <span class="important">{{ desk.nextReservation | customTime }}</span>
                 <br/>
