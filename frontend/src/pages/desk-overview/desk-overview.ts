@@ -201,6 +201,7 @@ export class DeskOverviewPage {
 
     if (beaconTMP != null) {
       if (beaconTMP.rssi > -50) {
+
         this.findBeaconDesk(beaconTMP);
       }
     } else {
@@ -212,17 +213,16 @@ export class DeskOverviewPage {
     // DB- search for UUID+Major+Minor
     let fullID: string;
     fullID = beacon.uuid + beacon.major + beacon.minor;
-
     // Service search
     let beaconDesk: any;
     for (let desk of this.desks) {
       if (desk.beaconUUID.toUpperCase() === beacon.uuid.toUpperCase() &&
-        desk.beaconMajor.toUpperCase() === beacon.minor.toUpperCase() &&
+        desk.beaconMajor.toUpperCase() === beacon.major.toUpperCase() &&
         desk.beaconMinor.toUpperCase() === beacon.minor.toUpperCase()) {
         beaconDesk = desk;
+        break;
       }
     }
-
     // Push to desk
     if (beaconDesk != null) {
       this.deskSelected(beaconDesk);
