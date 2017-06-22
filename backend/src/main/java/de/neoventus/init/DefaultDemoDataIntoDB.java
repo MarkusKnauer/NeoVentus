@@ -161,6 +161,10 @@ class DefaultDemoDataIntoDB {
 				sdg.setActiveItem(false);
 			}
 		}
+		// -------------------------------------------------------------------------------------
+		sideDishGroup = saveSideDish("Softdrink - klein", true, "Coca Cola", "Coca Cola light", "Fanta Orange", "Cola Mix");
+		saveMenuSideDishItem(sideDishGroup, "Softdrinks klein");
+		// -------------------------------------------------------------------------------------
 		sideDishGroup = saveSideDish("Spare Ribs", false, "Baked Potato", "Pommes frites", "Rösti", "Kroketten", "Country-Kartoffeln", "Butterreis", "Red Beans", "Maiskolben vom Grill", "Frische Champignons", "Frische Sour Cream");
 		saveMenuSideDishItem(sideDishGroup, "Spare Ribs 300g", "Spare Ribs 550g");
 		// -------------------------------------------------------------------------------------

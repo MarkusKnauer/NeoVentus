@@ -39,7 +39,12 @@ public class MenuItemLifecycleEvents extends AbstractMongoEventListener<MenuItem
 			if( (max==null)||(max.getNumber() ==null)) {
 				menuItem.setNumber(1);
 			} else {
-				menuItem.setNumber(max.getNumber() + 1);
+				if(max.getNumber()==12){
+					menuItem.setNumber(max.getNumber() + 2);
+				} else{
+					menuItem.setNumber(max.getNumber() + 1);
+				}
+
 			}
 		}
 	}

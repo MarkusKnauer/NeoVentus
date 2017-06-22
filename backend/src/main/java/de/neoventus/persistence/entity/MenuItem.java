@@ -43,7 +43,7 @@ public class MenuItem extends AbstractDocument {
 		setActiveItem(true);
 	}
 
-	public MenuItem(MenuItemCategory menuItemCategory, String name, String shortName, Double price, String currency, String description, String mediaUrl,
+	public MenuItem(MenuItemCategory menuItemCategory, Integer number, String name, String shortName, Double price, String currency, String description, String mediaUrl,
 					List<String> notices) {
 		this.menuItemCategory = menuItemCategory;
 		this.name = name;
@@ -53,6 +53,7 @@ public class MenuItem extends AbstractDocument {
 		this.description = description;
 		this.mediaUrl = mediaUrl;
 		this.notices = notices;
+		this.number = number;
 		sideDishGroup = null;
 		setActiveItem(true);
 

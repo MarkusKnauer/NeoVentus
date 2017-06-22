@@ -126,7 +126,7 @@ public class WriteExcelInDB {
 			Iterator<Cell> cellIterator = currentRow.iterator();
 			// Check if Line is a category
 			if(currentRow.getCell(0) == null) break;
-			if (currentRow.getCell(0).getStringCellValue().equals("Category")) {
+			if (returnValue(currentRow.getCell(0)).equals("Category")) {
 				writeCategory(cellIterator);
 			} else {
 				writeMenuItem(cellIterator);
@@ -187,22 +187,24 @@ public class WriteExcelInDB {
 		}
 		// MenuItem-Constructor: Category, name, Shortname, price, currency, description, mediaURL, notices
 		MenuItem menuItem;
-			if (menuitemFindByName(value.get(0)) != null) {
-				menuItem = menuitemFindByName(value.get(0));
+			if (menuitemFindByName(value.get(1)) != null) {
+				menuItem = menuitemFindByName(value.get(1));
 				menuItem.setMenuItemCategory(category);
-				menuItem.setShortName(value.get(1));
-				menuItem.setPrice(Double.parseDouble(value.get(2)));
-				menuItem.setCurrency(value.get(3));
-				menuItem.setDescription(value.get(4));
+				menuItem.setShortName(value.get(2));
+				menuItem.setPrice(Double.parseDouble(value.get(3)));
+				menuItem.setCurrency(value.get(4));
+				menuItem.setDescription(value.get(5));
+				menuItem.setNumber((int)Double.parseDouble(value.get(0)));
 				menuItem.setActiveItem(true);
 			} else {
 			menuItem = new MenuItem(
 					category,
-					value.get(0),
+				((int) Double.parseDouble(value.get(0))),
 					value.get(1),
-					Double.parseDouble(value.get(2)),
-					value.get(3),
+					value.get(2),
+				    Double.parseDouble(value.get(3)),
 					value.get(4),
+					value.get(5),
 					"",
 					new ArrayList<>());
 
