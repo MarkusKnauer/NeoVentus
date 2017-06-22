@@ -41,13 +41,13 @@ export class DeskOverviewPage {
     this.zone = new NgZone({enableLongStackTrace: false});
 
     // load new data
-    this.loadDeskDetails(true);
+    this.loadDeskDetails(false, true);
     // if cache still exists show them until overwritten of new data
-    this.afterDetailsLoad();
+    this.afterDetailsLoad(false);
     // listen to billing changes and reload desk data
     this.events.subscribe("order-change", () => {
       console.debug("reload desk overview data for desk after billing");
-      this.loadDeskDetails(true);
+      this.loadDeskDetails( true,true);
     });
 
     localStorageService.loadDeskOverviewView().then(() => {
@@ -64,9 +64,9 @@ export class DeskOverviewPage {
    *
    * @param force
    */
-  private loadDeskDetails(force?: boolean) {
+  private loadDeskDetails(beaconEvent: boolean, force?: boolean ) {
     return this.deskService.getAllDesksWithDetails(force).then(() => {
-      this.afterDetailsLoad()
+      this.afterDetailsLoad(beaconEvent)
     });
   }
 
@@ -75,7 +75,7 @@ export class DeskOverviewPage {
    * @param refresher
    */
   private onRefresh(refresher) {
-    this.loadDeskDetails(true).then(() => {
+    this.loadDeskDetails(true, true).then(() => {
       refresher.complete();
     })
   }
@@ -85,7 +85,7 @@ export class DeskOverviewPage {
    * and starting beacon listener
    * after data is loaded
    */
-  private afterDetailsLoad() {
+  private afterDetailsLoad(beaconEvent: boolean) {
     this.desks = this.deskService.cache["desksoverview"];
     if (this.desks) {
       this.getUserName();
@@ -99,7 +99,7 @@ export class DeskOverviewPage {
         }
       }
       // Beacon check 2:
-      if (BeaconService.isActivated !== null && BeaconService.isActivated) {
+      if (!beaconEvent && BeaconService.isActivated !== null && BeaconService.isActivated) {
         if (!DeskOverviewPage.isInitialiseBeacon && DeskOverviewPage.actualBeaconUUID != null && DeskOverviewPage.actualBeaconUUID != "") {
           this.beaconService.startBeacon(DeskOverviewPage.actualBeaconUUID).then((isInitialised) => {
             if (isInitialised) {
