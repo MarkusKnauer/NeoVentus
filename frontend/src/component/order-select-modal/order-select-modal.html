@@ -68,9 +68,10 @@
     <ion-grid>
       <ion-row>
         <ng-container col-auto>
-          <button ion-button [color]="slides.getActiveIndex() == 0 && queryString == ''? 'primary' : 'light'"
+          <button ion-button icon-left [color]="slides.getActiveIndex() == 0 && queryString == ''? 'primary' : 'light'"
                   (click)="queryString=''; slides.slideTo(0);">
-            Favoriten
+            <!--Favoriten-->
+            <ion-icon name="star"></ion-icon>
           </button>
         </ng-container>
         <ng-container col-auto *ngFor="let cat of menuCategoryService.cache['tree']; let i = index">
