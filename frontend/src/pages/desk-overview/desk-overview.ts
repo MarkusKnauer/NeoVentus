@@ -100,7 +100,7 @@ export class DeskOverviewPage {
       }
       // Beacon check 2:
       if (BeaconService.isActivated !== null && BeaconService.isActivated) {
-        if (!DeskOverviewPage.isInitialiseBeacon) {
+        if (!DeskOverviewPage.isInitialiseBeacon && DeskOverviewPage.actualBeaconUUID != null && DeskOverviewPage.actualBeaconUUID != "") {
           this.beaconService.startBeacon(DeskOverviewPage.actualBeaconUUID).then((isInitialised) => {
             if (isInitialised) {
               this.listenToBeaconEvents();
@@ -124,7 +124,7 @@ export class DeskOverviewPage {
     this.authGuard.hasAnyRolePromise(["ROLE_CEO", "ROLE_SERVICE"]).then(() => {
       //Beacon check 1:
       if (BeaconService.isActivated !== null && BeaconService.isActivated) {
-        if (DeskOverviewPage.actualBeaconUUID !== "") {
+        if (DeskOverviewPage.actualBeaconUUID !== "" && DeskOverviewPage.actualBeaconUUID != null) {
           this.beaconService.startRangingRegion();
         }
       }
@@ -200,7 +200,7 @@ export class DeskOverviewPage {
     }
 
     if (beaconTMP != null) {
-      if (beaconTMP.rssi > -50) {
+      if (beaconTMP.rssi > -65) {
 
         this.findBeaconDesk(beaconTMP);
       }
