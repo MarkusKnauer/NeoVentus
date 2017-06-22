@@ -26,56 +26,43 @@ export class DeskService extends CachingService implements HttpService {
    * @returns {Observable<Response>}
    */
   public getAllDesks() {
-      if (this.cache["desks"] != null) {
-        return new Promise<any>(resolve => {
-          resolve(this.cache["desks"]);
-        });
-
-      } else {
-        return new Promise<any>(resolve => {
-          this.http.get(this.BASE_URL + "/all")
-            .map(res => res.json())
-            .subscribe(data => {
-              this.saveToCache("desks", data);
-              resolve(data);
-            });
-        });
-      }
-  }
-
-  public getAllDesksWithDetails(force?: boolean) {
-    if (this.cache["desksoverview"] != null && !force) {
-        return new Promise<any>(resolve => {
-          resolve(this.cache["desksoverview"]);
-        });
-
-      } else {
-        return new Promise<any>(resolve => {
-          this.http.get(this.BASE_URL + "/overview")
-            .map(res => res.json())
-            .subscribe(data => {
-              this.saveToCache("desksoverview", data);
-              resolve(data);
-            });
-        });
-      }
-  }
-
-  public getNotReservedDesks(timeStamp: any) {
-    if (this.cache["notReservedDesks"] != null) {
+    if (this.cache["desks"] != null) {
       return new Promise<any>(resolve => {
-        resolve(this.cache["notReservedDesks"]);
+        resolve(this.cache["desks"]);
       });
 
     } else {
       return new Promise<any>(resolve => {
-        this.http.get(this.BASE_URL + "/not-reserved/" + timeStamp)
+        this.http.get(this.BASE_URL + "/all")
           .map(res => res.json())
           .subscribe(data => {
-            this.saveToCache("notReservedDesks", data);
+            this.saveToCache("desks", data);
             resolve(data);
           });
       });
     }
+  }
+
+  public getAllDesksWithDetails(force?: boolean) {
+    if (this.cache["desksoverview"] != null && !force) {
+      return new Promise<any>(resolve => {
+        resolve(this.cache["desksoverview"]);
+      });
+
+    } else {
+      return new Promise<any>(resolve => {
+        this.http.get(this.BASE_URL + "/overview")
+          .map(res => res.json())
+          .subscribe(data => {
+            this.saveToCache("desksoverview", data);
+            resolve(data);
+          });
+      });
+    }
+  }
+
+  public getNotReservedDesks(timeStamp: any) {
+    return this.http.get(this.BASE_URL + "/not-reserved/" + timeStamp)
+      .map(res => res.json()).toPromise();
   }
 }

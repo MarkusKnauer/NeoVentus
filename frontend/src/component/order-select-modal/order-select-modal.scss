@@ -10,6 +10,16 @@ order-select-modal {
     overflow: auto;
   }
 
+  ion-footer {
+    ion-grid {
+      padding: 0 !important;
+    }
+    [col-auto] {
+      padding-bottom: 0 !important;
+      padding-top: 0 !important;
+    }
+  }
+
   h2 {
     font-size: 75%;
   }

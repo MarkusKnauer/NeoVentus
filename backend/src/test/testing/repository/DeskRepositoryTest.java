@@ -3,6 +3,7 @@ package testing.repository;
 import de.neoventus.persistence.entity.*;
 import de.neoventus.persistence.repository.*;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.DeskOverviewDetails;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.DeskReservationDetails;
 import de.neoventus.rest.dto.DeskDto;
 import org.junit.After;
 import org.junit.Assert;
@@ -169,7 +170,7 @@ public class DeskRepositoryTest extends AbstractTest {
 		r.setDesk(d);
 		this.reservationRepository.save(r);
 
-		List<Desk> free = this.deskRepository.getNotReservedDesks(reservationTime);
+		List<DeskReservationDetails> free = this.deskRepository.getNotReservedDesks(reservationTime);
 		Assert.assertTrue(free.size() == 0);
 
 		free = this.deskRepository.getNotReservedDesks(new Date(reservationTime.getTime() + 3590000));

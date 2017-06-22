@@ -35,13 +35,15 @@ export class MyApp {
       splashScreen.hide();
     });
 
-    if (platform.is("cordva")) {
+    if (platform.is("cordova")) {
       localStorageService.loadConnectionUrl().then(() => {
         MyApp.CONNECTION_URL = localStorageService.cache[LocalStorageService.CONNECTION_URL];
         if (MyApp.CONNECTION_URL == null) {
           // prevent null values ins urls
           MyApp.CONNECTION_URL = "";
         }
+
+        console.info("Reoload connection");
         events.publish(ApplicationEvents.CONNECTION_CHANGE_EVENT, MyApp.CONNECTION_URL);
 
         authGuard.loadUserDetails();

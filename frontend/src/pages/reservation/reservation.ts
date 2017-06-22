@@ -1,7 +1,6 @@
 import {Component} from "@angular/core";
-import {AlertController, LoadingController, NavController} from "ionic-angular";
+import {AlertController, LoadingController, NavController, ToastController} from "ionic-angular";
 import {AuthGuardService} from "../../service/auth-guard.service";
-import {OrderService} from "../../service/order.service";
 import {ReservationService} from "../../service/reservation.service";
 import {DeskService} from "../../service/desk.service";
 import {ReservationDto} from "../../model/reservation-dto";
@@ -30,15 +29,15 @@ export class ReservationPage {
   private notenoughSeats: boolean;
 
 
-  private newDay = [];
 
   constructor(private authGuard: AuthGuardService,
               public loadingCtrl: LoadingController,
               public navCtrl: NavController,
-              private orderService: OrderService,
               private reservationService: ReservationService,
               private deskService: DeskService,
-              private alertCtrl: AlertController) {
+              private alertCtrl: AlertController,
+              private toastCtrl: ToastController) {
+
 
     this.temp = new Date(new Date().getTime() + 7200000);
 
@@ -78,7 +77,6 @@ export class ReservationPage {
 
     } else {
 
-      if (this.desks.length == 0) {
         if (this.guestnumber != 0) {
 
           this.deskService.getNotReservedDesks(currTime).then(
@@ -87,13 +85,7 @@ export class ReservationPage {
               this.suggestDesks();
             });
 
-          for (let desk of this.desks) {
-
-            this.loadDeskAvailability(desk);
-
-          }
         }
-      }
     }
   }
 
@@ -127,12 +119,6 @@ export class ReservationPage {
     return this.username;
   }
 
-  loadDeskAvailability(desk: any) {
-
-    //todo load Reservation Time (MK)
-
-  }
-
   suggestDesks() {
 
     this.selecteddesks = [];
@@ -163,19 +149,37 @@ export class ReservationPage {
 
   }
 
-  chanceDesk(desk: any) {
-    this.notenoughSeats = false;
-    this.selecteddesks = [];
-    this.selecteddesks.push(desk);
+  changeDesk(desk: any) {
 
-    let currSeats = desk.maximalSeats;
-    /*for (let d of desk) {
-     currSeats += d.maximalSeats;
-     }*/
-    if (currSeats < this.guestnumber) {
-      this.notenoughSeats = true;
+    let currSeats = 0;
+
+    if (!this.notenoughSeats) {
+
+      //this.notenoughSeats = false;
+      this.selecteddesks = [];
+      this.selecteddesks.push(desk);
+
+      //let currSeats = desk.maximalSeats;
+      for (let d of this.selecteddesks) {
+        currSeats += d.maximalSeats;
+      }
+      if (currSeats < this.guestnumber) {
+        this.notenoughSeats = true;
+      }
+
+    } else if (this.notenoughSeats) { //Add Desks until Seats reaches level of guests
+
+      this.selecteddesks.push(desk);
+
+      for (let d of this.selecteddesks) {
+        currSeats += d.maximalSeats;
+      }
+      if (currSeats >= this.guestnumber) {
+        this.notenoughSeats = false;
+      }
+
+
     }
-
   }
 
   deskSelected() {
@@ -235,26 +239,18 @@ export class ReservationPage {
     this.guestnumber = 0;
     this.reservationName = null;
     this.selecteddesks = [];
+    this.guestnumber = 0;
 
   }
 
   reportUser(desk: any, reservationName: any, reservationTime: any) {
-
-    let alert = this.alertCtrl.create({
-      title: "Reservierung erfolgreich ",
+    let alert = this.toastCtrl.create({
+      message: "Reservierung erfolgreich hinzugefügt",
       /* message: "Name: " + reservationName +
        " Datum: " + reservationTime.getDay() + "." + reservationTime.getMonth() + "." + reservationTime.getFullYear() +
        +" um " + reservationTime.getHours() + ":" + reservationTime.getMinutes() +
        " Tisch " + desk.number,*/
-      buttons: [
-        {
-          text: "OK",
-          handler: data => {
-            console.debug(data);
-          }
-        }
-      ],
-      enableBackdropDismiss: false
+
     });
     alert.present();
   }

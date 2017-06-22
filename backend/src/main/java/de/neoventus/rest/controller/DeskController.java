@@ -3,6 +3,7 @@ package de.neoventus.rest.controller;
 import de.neoventus.persistence.entity.Desk;
 import de.neoventus.persistence.repository.DeskRepository;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.DeskOverviewDetails;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.DeskReservationDetails;
 import de.neoventus.rest.dto.DeskDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -60,7 +61,7 @@ public class DeskController {
 	 * @return
 	 */
 	@RequestMapping("/not-reserved/{timeStamp:[0-9]*}")
-	public List<Desk> getNotReservedDesks(HttpServletResponse response, @PathVariable String timeStamp) {
+	public List<DeskReservationDetails> getNotReservedDesks(HttpServletResponse response, @PathVariable String timeStamp) {
 		try {
 			return this.deskRepository.getNotReservedDesks(new Date(Long.valueOf(timeStamp)));
 		} catch (Exception e) {
