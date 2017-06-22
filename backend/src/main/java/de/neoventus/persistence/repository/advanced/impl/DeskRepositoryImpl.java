@@ -5,6 +5,7 @@ import de.neoventus.persistence.entity.*;
 import de.neoventus.persistence.repository.advanced.NVDeskRepository;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.DeskOrderAggregation;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.DeskOverviewDetails;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.DeskReservationDetails;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.ObjectCountAggregation;
 import de.neoventus.rest.dto.DeskDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -62,7 +62,6 @@ public class DeskRepositoryImpl implements NVDeskRepository {
 
 		// gets all reservations between now and next day
 		Date now = new Date();
-		Query reservationQuery = new Query();
 		Aggregation reservatiuonAggregation = Aggregation.newAggregation(
 			Aggregation.match(Criteria.where("time").gt(now)),
 			Aggregation.sort(Sort.Direction.ASC, "time"),
@@ -130,12 +129,17 @@ public class DeskRepositoryImpl implements NVDeskRepository {
 	}
 
 	@Override
-	public List<Desk> getNotReservedDesks(Date date) {
+	public List<DeskReservationDetails> getNotReservedDesks(Date date) {
 
 		List<Desk> all = this.mongoTemplate.findAll(Desk.class);
-		Map<String, Desk> map = new HashMap<>();
-		for (Desk i : all) map.put(i.getId(), i);
-
+		Map<String, DeskReservationDetails> map = new HashMap<>();
+		for (Desk i : all) {
+			DeskReservationDetails details = new DeskReservationDetails();
+			details.setNumber(i.getNumber());
+			details.setMaximalSeats(i.getMaximalSeats());
+			details.setId(i.getId());
+			map.put(i.getId(), details);
+		}
 
 		Aggregation reservationAggregation = Aggregation.newAggregation(
 			Aggregation.project("desk").and(aggregationOperationContext ->
@@ -156,7 +160,23 @@ public class DeskRepositoryImpl implements NVDeskRepository {
 			map.remove(r.getDesk().getId());
 		}
 
-		List<Desk> result = new ArrayList<>(map.values());
+		Aggregation nextReservationAgg = Aggregation.newAggregation(
+			Aggregation.match(Criteria.where("time").gt(date)),
+			Aggregation.sort(Sort.Direction.ASC, "time"),
+			Aggregation.group("desk").first("$$ROOT").as("document"),
+			// project only used field from first document
+			Aggregation.project().and("document.time").as("time").and("document.desk").as("desk")
+		);
+		List<Reservation> nextReservations = this.mongoTemplate.aggregate(nextReservationAgg, Reservation.class,
+			Reservation.class).getMappedResults();
+
+		for (Reservation r : nextReservations) {
+			if (map.containsKey(r.getDesk().getId())) {
+				map.get(r.getDesk().getId()).setNextReservation(r.getTime());
+			}
+		}
+
+		List<DeskReservationDetails> result = new ArrayList<>(map.values());
 		result.sort((a, b) ->
 			a.getNumber().compareTo(b.getNumber())
 		);

@@ -59,7 +59,7 @@ public class RestaurantDemoInit {
      *
      * @see PostConstruct
      */
-	// @PostConstruct
+	@PostConstruct
 	public void initialize() {
         //new DefaultDemoDataIntoDB(true,deskRepository, userRepository, menuItemRepository, menuItemCategoryRepository, orderItemRepository, reservationRepository,billingRepository,sideDishRepository, mongoTemplate,workingPlanRepository);
 	}

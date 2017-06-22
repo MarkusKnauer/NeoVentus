@@ -12,7 +12,8 @@
       </ion-item-divider>
       <ion-item-sliding *ngFor="let order of cat.orders">
         <ion-item (longPress)="openProcessingDetailModal(order)">
-          <button *ngIf="getTmpOrderCount(order.item, order.sideDishes, order.guestWish) > 0" ion-button clear
+          <button [ngClass]="{'hidden-x': getTmpOrderCount(order.item, order.sideDishes, order.guestWish) == 0}"
+                  ion-button clear
                   color="danger" class="order-shortcut" icon-only
                   (click)="removeTmpOrder(order.item, order.sideDishes, order.guestWish)">
             <ion-icon name="remove"></ion-icon>
@@ -56,8 +57,8 @@
           <ion-icon name="add"></ion-icon>
         </button>
         {{tmpOrder.item.name}}
-        <span class="side-dish" *ngFor="let side of tmpOrder.sideDishes"> - {{side.name}}</span>
-        <span *ngIf="tmpOrder.guestWish && tmpOrder.guestWish.length != 0"> - SW: {{tmpOrder.guestWish}}</span>
+        <div class="side-dish" *ngFor="let side of tmpOrder.sideDishes"> - {{side.name}}</div>
+        <div *ngIf="tmpOrder.guestWish && tmpOrder.guestWish.length != 0"> - SW: {{tmpOrder.guestWish}}</div>
         <span class="right secondary-text">
           {{tmpOrder.count * tmpOrder.item.price | costDecimal}} €
         </span>

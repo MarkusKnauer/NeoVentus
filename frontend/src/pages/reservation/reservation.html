@@ -64,7 +64,7 @@
     <ion-row justify-content-center wrap>
 
       <!-- Begin freeDishes results -->
-      <ion-col col-4 col-sm (click)="chanceDesk(desk)" *ngFor="let desk of desks"
+      <ion-col col-4 col-sm (click)="changeDesk(desk)" *ngFor="let desk of desks"
                [ngClass]="{'selected': selecteddesks.indexOf(desk) != -1}">
 
         <h1>
@@ -75,14 +75,13 @@
 
               <span>Plätze: {{desk.maximalSeats}}</span>
 
-              <!--
-              <div *ngIf="desk.reservationText.length">
+
+              <div *ngIf="desk.nextReservation">
                 <span class="unimportant">Reserviert ab:</span>
-                <div class="important" *ngFor="let reservation of desk.reservationText">
-                  {{reservation | date: "HH:mm"}}
+                <div class="important">
+                  {{desk.nextReservation | date: "HH:mm"}}
                 </div>
               </div>
-              -->
 
             </div>
 
