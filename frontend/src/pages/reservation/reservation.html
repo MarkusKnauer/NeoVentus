@@ -64,7 +64,7 @@
     <ion-row justify-content-center wrap>
 
       <!-- Begin freeDishes results -->
-      <ion-col col-4 col-sm (click)="changeDesk(desk)" *ngFor="let desk of desks"
+      <ion-col col-4 col-md-2 col-lg-1 (click)="changeDesk(desk)" *ngFor="let desk of desks"
                [ngClass]="{'selected': selecteddesks.indexOf(desk) != -1}">
 
         <h1>

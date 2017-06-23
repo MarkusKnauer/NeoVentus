@@ -63,7 +63,9 @@
                     (click)="removeTmpOrder(tmpOrder.item, tmpOrder.sideDishes, tmpOrder.guestWish)">
             <ion-icon name="remove"></ion-icon>
           </button>
-          {{tmpOrder.count}}
+            <span class="count-container">
+              {{tmpOrder.count}}
+            </span>
           <button icon-only ion-button clear color="secondary" class="order-shortcut"
                   (click)="addTmpOrder(tmpOrder.item, tmpOrder.sideDishes, tmpOrder.guestWish)">
             <ion-icon name="add"></ion-icon>
@@ -82,23 +84,6 @@
         </p>
         <span item-right>{{getGroupPrice(tmpOrder) | costDecimal}} €</span>
       </ion-item>
-      <!--<ion-item *ngFor="let tmpOrder of groupedTmpOrders">-->
-      <!--<button ion-button clear color="danger" class="order-shortcut" icon-only-->
-      <!--(click)="removeTmpOrder(tmpOrder.item, tmpOrder.sideDishes, tmpOrder.guestWish)">-->
-      <!--<ion-icon name="remove"></ion-icon>-->
-      <!--</button>-->
-      <!--{{tmpOrder.count}}-->
-      <!--<button class="order-shortcut" clear ion-button icon-only color="secondary"-->
-      <!--(click)="addTmpOrder(tmpOrder.item, tmpOrder.sideDishes, tmpOrder.guestWish)">-->
-      <!--<ion-icon name="add"></ion-icon>-->
-      <!--</button>-->
-      <!--{{tmpOrder.item.name}}-->
-      <!--<div class="side-dish" *ngFor="let side of tmpOrder.sideDishes"> - {{side.name}}</div>-->
-      <!--<div *ngIf="tmpOrder.guestWish && tmpOrder.guestWish.length != 0"> - SW: {{tmpOrder.guestWish}}</div>-->
-      <!--<span class="right secondary-text">-->
-      <!--{{getGroupPrice(tmpOrder)  | costDecimal}} €-->
-      <!--</span>-->
-      <!--</ion-item>-->
     </ng-container>
     <!--total price -->
     <ion-item padding-vertical>

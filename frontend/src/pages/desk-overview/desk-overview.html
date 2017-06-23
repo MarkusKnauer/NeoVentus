@@ -28,10 +28,10 @@
     *ngIf="tileView; else elseBlock"
     class="grid-tables">
 
-    <ion-row justify-content-center wrap>
+    <ion-row justify-content-center>
 
       <ng-container *ngFor="let desk of desks">
-        <ion-col col-4 col-sm *ngIf="!myDesksOnly||desk.mine" (click)="deskSelected(desk)">
+        <ion-col col-4 col-md-2 col-lg-1 *ngIf="!myDesksOnly||desk.mine" (click)="deskSelected(desk)">
 
           <h1 [ngClass]="{unused: desk.totalPaid == 0, used: desk.totalPaid != 0}">
               {{desk.deskNumber}}
@@ -86,12 +86,12 @@
             <tr>
 
               <td>
-                <h3>
+                <p>
                   <span>{{desk.waiter}}</span>
                   <span *ngFor="let waiter of desk.waiters; let isLast=last">
                      {{waiter}}{{isLast ? '' : ', '}}
                   </span>
-                </h3>
+                </p>
               </td>
 
               <td *ngIf="desk.nextReservation" valign="top">
