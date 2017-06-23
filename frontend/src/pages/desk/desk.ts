@@ -252,6 +252,16 @@ export class DeskPage {
     }
   }
 
+  getGroupPrice(group) {
+    let sum = 0;
+    sum += group.item.price * group.count;
+
+    for (let sd of group.sideDishes) {
+      sum += sd.price * group.count;
+    }
+
+    return sum;
+  }
 
   /**
    * sum desk total order value
@@ -262,7 +272,7 @@ export class DeskPage {
     let sum = 0;
     for (let cat of this.catGroups) {
       for (let order of cat.orders) {
-        sum += order.item.price * order.count;
+        sum += this.getGroupPrice(order);
       }
     }
     for (let tmpOrder of this.tmpOrders) {
