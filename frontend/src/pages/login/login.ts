@@ -9,6 +9,7 @@ import {KitchenOverviewPage} from "../kitchen-overview/kitchen-overview";
 import {LocalStorageService} from "../../service/local-storage.service";
 import {SettingsPage} from "../settings/settings";
 import {Role} from "../../app/roles";
+import {SplashScreen} from '@ionic-native/splash-screen';
 
 /**
  * @author Dennis Thanner
@@ -35,7 +36,8 @@ export class LoginPage {
 
   constructor(public navCtrl: NavController, private userService: UserService, private authGuard: AuthGuardService,
               private toastCtrl: ToastController, private faio: FingerprintAIO, private secureStorage: SecureStorage,
-              private platform: Platform, private localStorageService: LocalStorageService) {
+              private platform: Platform, private localStorageService: LocalStorageService,
+              private splashScreen: SplashScreen) {
     // on cordova look if username and password is saved in secure storage
     if (platform.is("cordova")) {
       // check connection url
@@ -75,6 +77,7 @@ export class LoginPage {
           });
         });
       });
+      this.splashScreen.hide();
     }
 
   }
