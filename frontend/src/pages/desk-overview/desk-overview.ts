@@ -7,6 +7,7 @@ import {DeskPage} from "../desk/desk";
 import {BeaconService} from "../../service/beacon.service";
 import {BeaconModel} from "../../model/beacon-module";
 import {LocalStorageService} from "../../service/local-storage.service";
+import {Role} from "../../app/roles";
 
 /**
  * @author Tim Heidelbach, Dennis Thanner
@@ -121,7 +122,7 @@ export class DeskOverviewPage {
    * RBMA
    */
   ionViewWillEnter() {
-    this.authGuard.hasAnyRolePromise(["ROLE_CEO", "ROLE_SERVICE"]).then(() => {
+    this.authGuard.hasAnyRolePromise([Role.CEO, Role.SERVICE]).then(() => {
       //Beacon check 1:
       if (BeaconService.isActivated !== null && BeaconService.isActivated) {
         if (DeskOverviewPage.actualBeaconUUID !== "" && DeskOverviewPage.actualBeaconUUID != null) {

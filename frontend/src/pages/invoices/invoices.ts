@@ -1,6 +1,9 @@
 import {Component} from "@angular/core";
 import {NavController} from "ionic-angular";
 import {BillingService} from "../../service/billing.service";
+import {LoginPage} from "../login/login";
+import {AuthGuardService} from "../../service/auth-guard.service";
+import {Role} from "../../app/roles";
 
 /**
  * @author Markus Knauer
@@ -13,7 +16,8 @@ import {BillingService} from "../../service/billing.service";
 })
 export class InvoicesPage {
 
-  constructor(public navCtrl: NavController, private billingService: BillingService) {
+  constructor(public navCtrl: NavController, private billingService: BillingService,
+              private authGuard: AuthGuardService) {
     this.load();
   }
 
@@ -22,6 +26,19 @@ export class InvoicesPage {
       if (refresher)
         refresher.complete();
     })
+  }
+
+  /**
+   * view life cycle method
+   *
+   * RBMA
+   */
+  ionViewWillEnter() {
+    this.authGuard.hasAnyRolePromise([Role.SERVICE, Role.CEO]).then(() => {
+    }, () => {
+      console.debug("RBMA - Access denied!");
+      this.navCtrl.setRoot(LoginPage);
+    });
   }
 
 }

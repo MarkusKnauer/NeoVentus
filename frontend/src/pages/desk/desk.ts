@@ -22,6 +22,8 @@ import {LocalStorageService} from "../../service/local-storage.service";
 import {BillingModalComponent} from "../../component/billing-modal/billing-modal";
 import {OrderGroupDetailModalComponent} from "../../component/order-group-detail-modal/order-group-detail-modal";
 import {DeskService} from "../../service/desk.service";
+import {LoginPage} from "../login/login";
+import {Role} from "../../app/roles";
 
 /**
  * @author Julian beck, Dennis Thanner
@@ -109,6 +111,19 @@ export class DeskPage {
       } else {
         this.initCatGroups();
       }
+    });
+  }
+
+  /**
+   * view life cycle method
+   *
+   * RBMA
+   */
+  ionViewWillEnter() {
+    this.authGuard.hasAnyRolePromise([Role.CEO, Role.SERVICE]).then(() => {
+    }, () => {
+      console.debug("RBMA - Access denied!");
+      this.navCtrl.setRoot(LoginPage);
     });
   }
 

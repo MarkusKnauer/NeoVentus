@@ -17,7 +17,7 @@
     <ion-item-divider></ion-item-divider>
     <ion-item>
       <ion-label>Monatliches Trinkgeld Ziel:</ion-label>
-      <ion-input [(ngModel)]="monthlyTipGoal" type="number" (blur)="updateDailyGoal()">
+      <ion-input [(ngModel)]="monthlyTipGoal" type="number" (input)="updateDailyGoal()" (blur)="saveDailyGoal()">
       </ion-input>
     </ion-item>
   </ion-list>

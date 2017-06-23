@@ -3,10 +3,12 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Schicht - {{title}}</ion-title>
+    <ion-title>{{title}}</ion-title>
     <ion-buttons end>
       <button ion-button (click)="calendar.mode = 'month'">M</button>
-      <button ion-button (click)="calendar.mode = 'week'">W</button>
+      <button *ngIf="personalView || platform.is('tablet') || platform.is('core')" ion-button
+              (click)="calendar.mode = 'week'">W
+      </button>
       <button ion-button (click)="calendar.mode = 'day'">T</button>
     </ion-buttons>
   </ion-navbar>

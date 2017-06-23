@@ -3,6 +3,7 @@ import {Content, NavController} from "ionic-angular";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {UserService} from "../../service/user.service";
 import {TipMonitorPage} from "../tip-monitor/tip-monitor";
+import {LoginPage} from "../login/login";
 
 /**
  * @author Markus Knauer, Tim Heidelbach
@@ -74,6 +75,19 @@ export class ProfilePage {
       }
     }
     return this.userroles;
+  }
+
+  /**
+   * view life cycle method
+   *
+   * RBMA
+   */
+  ionViewWillEnter() {
+    this.authGuard.isAuthenticatedPromise().then(() => {
+    }, () => {
+      console.debug("RBMA - Access denied!");
+      this.navCtrl.setRoot(LoginPage);
+    });
   }
 
   getUserProfile() {

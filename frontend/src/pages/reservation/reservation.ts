@@ -4,6 +4,8 @@ import {AuthGuardService} from "../../service/auth-guard.service";
 import {ReservationService} from "../../service/reservation.service";
 import {DeskService} from "../../service/desk.service";
 import {ReservationDto} from "../../model/reservation-dto";
+import {LoginPage} from "../login/login";
+import {Role} from "../../app/roles";
 
 
 /**
@@ -241,6 +243,19 @@ export class ReservationPage {
     this.selecteddesks = [];
     this.guestnumber = 0;
 
+  }
+
+  /**
+   * view life cycle method
+   *
+   * RBMA
+   */
+  ionViewWillEnter() {
+    this.authGuard.hasAnyRolePromise([Role.SERVICE, Role.BAR, Role.CEO]).then(() => {
+    }, () => {
+      console.debug("RBMA - Access denied!");
+      this.navCtrl.setRoot(LoginPage);
+    });
   }
 
   reportUser(desk: any, reservationName: any, reservationTime: any) {

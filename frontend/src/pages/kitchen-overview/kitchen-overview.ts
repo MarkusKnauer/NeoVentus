@@ -1,11 +1,20 @@
 import {Component} from "@angular/core";
-import {ActionSheetController, AlertController, LoadingController, NavParams, Platform} from "ionic-angular";
+import {
+  ActionSheetController,
+  AlertController,
+  LoadingController,
+  NavController,
+  NavParams,
+  Platform
+} from "ionic-angular";
 import {OrderService} from "../../service/order.service";
 import {MenuCategoryService} from "../../service/menu-category.service";
 import {OrderSocketService} from "../../service/order-socket-service";
 import {TextToSpeech} from "@ionic-native/text-to-speech";
 import {LocalStorageService} from "../../service/local-storage.service";
-
+import {AuthGuardService} from "../../service/auth-guard.service";
+import {LoginPage} from "../login/login";
+import {Role} from "../../app/roles";
 
 
 @Component({
@@ -33,7 +42,9 @@ export class KitchenOverviewPage {
               private tts: TextToSpeech,
               private platform: Platform,
               private actionSheetCtrl: ActionSheetController,
-              private localStorageService: LocalStorageService) {
+              private localStorageService: LocalStorageService,
+              private authGuard: AuthGuardService,
+              private navCtrl: NavController) {
 
     this.localStorageService.loadStornoReasons();
 
@@ -57,6 +68,19 @@ export class KitchenOverviewPage {
 
     this.initSocket();
 
+  }
+
+  /**
+   * view life cycle method
+   *
+   * RBMA
+   */
+  ionViewWillEnter() {
+    this.authGuard.hasAnyRolePromise([this.forKitchen == 1 ? Role.CHEF : Role.BAR, Role.CEO]).then(() => {
+    }, () => {
+      console.debug("RBMA - Access denied!");
+      this.navCtrl.setRoot(LoginPage);
+    });
   }
 
   /**

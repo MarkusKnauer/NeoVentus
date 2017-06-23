@@ -8,6 +8,7 @@ import {AuthGuardService} from "../../service/auth-guard.service";
 import {KitchenOverviewPage} from "../kitchen-overview/kitchen-overview";
 import {LocalStorageService} from "../../service/local-storage.service";
 import {SettingsPage} from "../settings/settings";
+import {Role} from "../../app/roles";
 
 /**
  * @author Dennis Thanner
@@ -132,9 +133,9 @@ export class LoginPage {
    */
   private redirectUser() {
     this.authGuard.isAuthenticatedPromise().then(() => {
-      if (this.authGuard.hasRole("ROLE_CHEF")) {
+      if (this.authGuard.hasRole(Role.CHEF)) {
         this.navCtrl.setRoot(KitchenOverviewPage, {forKitchen: 1})
-      } else if (this.authGuard.hasRole("ROLE_BAR")) {
+      } else if (this.authGuard.hasRole(Role.BAR)) {
         this.navCtrl.setRoot(KitchenOverviewPage, {forKitchen: 0})
       } else {
         this.navCtrl.setRoot(DeskOverviewPage)

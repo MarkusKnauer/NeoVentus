@@ -92,10 +92,15 @@ export class AuthGuardService implements HttpService {
    * @returns {Promise}
    */
   public hasAnyRolePromise(roles: string[]) {
+    console.debug("checking roles", roles, this.userDetails)
     if (!this.userDetailPromise)
       return Promise.reject(false);
     return this.userDetailPromise.then(() => {
-      return this.hasAnyRole(roles);
+      let r = this.hasAnyRole(roles);
+      if (r)
+        return Promise.resolve();
+      else
+        return Promise.reject(r);
     });
   }
 

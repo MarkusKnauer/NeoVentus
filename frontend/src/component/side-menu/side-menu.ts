@@ -10,6 +10,7 @@ import {ProfilePage} from "../../pages/profile/profile";
 import {UserService} from "../../service/user.service";
 import {LoginPage} from "../../pages/login/login";
 import {AuthGuardService} from "../../service/auth-guard.service";
+import {Role} from "../../app/roles";
 
 @Component({
   templateUrl: "side-menu.html",
@@ -52,7 +53,7 @@ export class SideMenuComponent {
       title: "Profil",
       component: ProfilePage,
       icon: "person",
-      roles: ["ROLE_CEO", "ROLE_SERVICE", "ROLE_CHEF", "ROLE_BAR"]
+      roles: [Role.CEO, Role.SERVICE, Role.CHEF, Role.BAR]
     };
 
     this.pages = [
@@ -60,39 +61,39 @@ export class SideMenuComponent {
         title: 'Tischübersicht',
         component: DeskOverviewPage,
         icon: 'home',
-        roles: ["ROLE_CEO", "ROLE_SERVICE"]
+        roles: [Role.CEO, Role.SERVICE]
       },
       {
         title: 'Schicht',
         component: ShiftsPage,
         icon: 'clock',
-        roles: ["ROLE_CEO", "ROLE_SERVICE"]
+        roles: [Role.CEO, Role.SERVICE]
       },
       {
         title: 'Rechnungen',
         component: InvoicesPage,
         icon: 'calculator',
-        roles: ["ROLE_CEO", "ROLE_SERVICE"]
+        roles: [Role.CEO, Role.SERVICE]
       },
       {
         title: 'Küche',
         component: KitchenOverviewPage,
         icon: 'bonfire',
-        roles: ["ROLE_CEO", "ROLE_CHEF"],
+        roles: [Role.CEO, Role.CHEF],
         data: {forKitchen: 1}
       },
       {
         title: 'Bar',
         component: KitchenOverviewPage,
         icon: 'beer',
-        roles: ["ROLE_CEO", "ROLE_BAR"],
+        roles: [Role.CEO, Role.BAR],
         data: {forKitchen: 0}
       },
       {
         title: 'Reservierungen',
         component: ReservationPage,
         icon: 'clipboard',
-        roles: ["ROLE_CEO", "ROLE_BAR"]
+        roles: [Role.CEO, Role.BAR, Role.SERVICE]
       },
       this.profilepage,
     ];

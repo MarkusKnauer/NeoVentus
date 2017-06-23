@@ -116,8 +116,10 @@ public class DeskRepositoryImpl implements NVDeskRepository {
 				waiter.add(u.getUsername());
 			}
 
-			deskOverview.get(deskOrder.getDesk().getNumber()).setTotalPaid(sum);
-			deskOverview.get(deskOrder.getDesk().getNumber()).setWaiters(waiter);
+			if (deskOrder.getDesk() != null) {
+				deskOverview.get(deskOrder.getDesk().getNumber()).setTotalPaid(sum);
+				deskOverview.get(deskOrder.getDesk().getNumber()).setWaiters(waiter);
+			}
 		}
 
 		// add the next coming reservation for each table to detail object

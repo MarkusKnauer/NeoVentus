@@ -1,8 +1,9 @@
 import {Component, ViewChild} from "@angular/core";
-import {LoadingController, NavController} from "ionic-angular";
+import {LoadingController, NavController, Platform} from "ionic-angular";
 import {WorkingShiftService} from "../../service/workingShifts.service";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {CalendarComponent, IEvent} from "ionic2-calendar/calendar";
+import {Role} from "../../app/roles";
 
 /**
  * @author Markus Knauer
@@ -31,11 +32,11 @@ export class ShiftsPage {
     end: new Date()
   };
 
-  private title = "";
+  public title = "";
 
   constructor(private authGuard: AuthGuardService, private workingPlanService: WorkingShiftService,
-              public loadingCtrl: LoadingController, public navCtrl: NavController) {
-    if (this.authGuard.hasRole("ROLE_SERVICE")) {
+              public loadingCtrl: LoadingController, public navCtrl: NavController, public platform: Platform) {
+    if (this.authGuard.hasRole(Role.SERVICE)) {
       this.personalView = true;
     } else {
       this.personalView = false;
