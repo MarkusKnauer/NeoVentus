@@ -1,5 +1,7 @@
 package de.neoventus.persistence.repository.advanced.impl;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.DBObject;
 import de.neoventus.persistence.entity.Billing;
 import de.neoventus.persistence.entity.User;
 import de.neoventus.persistence.repository.DeskRepository;
@@ -16,9 +18,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * @author Dennis Thanner
@@ -132,6 +133,49 @@ public class UserRepositoryImpl implements NVUserRepository {
 		profileDetails.setExpLevelStart(currentLevel == 0 ? 0 : levelStartExp);
 
 		return profileDetails;
+	}
+
+	@Override
+	public Map<Long, Double> getLastWeekTips(String userId) {
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.HOUR, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		c.add(Calendar.DATE, -7);
+		Logger.getAnonymousLogger().info(c.getTimeInMillis() + "");
+		Aggregation tipAggregation = Aggregation.newAggregation(
+			Aggregation.match(Criteria.where("waiter.$id").is(new ObjectId(userId)).and("billedAt").gte(c.getTime())),
+			Aggregation.unwind("items"),
+			Aggregation.group("id").sum("items.price").as("cost")
+				.first("totalPaid").as("paid").first("waiter").as("waiter").first("billedAt").as("billedAt"),
+			Aggregation.project("id", "cost", "paid", "waiter")
+				.and("billedAt").extractDayOfMonth().as("day")
+				.and("billedAt").extractYear().as("year")
+				.and("billedAt").extractMonth().as("month"),
+			Aggregation.group("day", "year", "month").sum("cost").as("totalCost").sum("paid").as("totalPaid"),
+			Aggregation.project("_id").and("totalPaid").minus("totalCost").as("tip")
+		);
+
+		DBObject result = this.mongoTemplate.aggregate(tipAggregation, Billing.class, Billing.class).getRawResults();
+
+		TreeMap<Long, Double> tips = new TreeMap<>();
+
+		for (Object r : ((BasicDBList) result.get("result"))) {
+			DBObject o = (DBObject) r;
+			Map<String, Integer> dateGroup = ((DBObject) o.get("_id")).toMap();
+			java.sql.Date d = new java.sql.Date(dateGroup.get("year") - 1900, dateGroup.get("month") - 1, dateGroup.get("day"));
+			tips.put(d.getTime(), ((Double) o.get("tip")));
+		}
+
+		while (tips.size() < 7) {
+			if (!tips.containsKey(c.getTime().getTime())) {
+				tips.put(c.getTime().getTime(), 0.);
+				Logger.getAnonymousLogger().info("Added date: " + c.getTime().toString());
+			}
+			c.add(Calendar.DATE, 1);
+		}
+
+		return tips;
 	}
 
 	@Autowired

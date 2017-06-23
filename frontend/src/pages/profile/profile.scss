@@ -53,11 +53,11 @@
       background: color($colors, light2);
     }
 
-    ion-item {
+    ion-item, [ion-item] {
 
       background: color($colors, light);
 
-      ion-note {
+      ion-note, span {
         color: color($colors, dark);
         font-weight: bold;
       }

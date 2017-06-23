@@ -2,6 +2,7 @@ import {Component, ViewChild} from "@angular/core";
 import {Content, NavController} from "ionic-angular";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {UserService} from "../../service/user.service";
+import {TipMonitorPage} from "../tip-monitor/tip-monitor";
 
 /**
  * @author Markus Knauer, Tim Heidelbach
@@ -86,6 +87,11 @@ export class ProfilePage {
         this.expLevelStart = profile.expLevelStart;
       }
     )
+  }
+
+  openTipMonitor() {
+    console.debug(this);
+    this.navCtrl.push(TipMonitorPage);
   }
 
   fixDimensions() {

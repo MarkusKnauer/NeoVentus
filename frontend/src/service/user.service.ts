@@ -48,4 +48,12 @@ export class UserService implements HttpService {
         });
     });
   }
+
+  /**
+   * retrieve user last week tips
+   * @returns {Promise<T>}
+   */
+  public getLastWeekTips() {
+    return this.http.get(this.BASE_URL + "/api/user/tips").toPromise();
+  }
 }

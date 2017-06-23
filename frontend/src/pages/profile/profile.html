@@ -91,12 +91,12 @@
       </ion-note>
     </ion-item>
 
-    <ion-item *ngIf="userroles == 'ROLE_SERVICE'">
+    <button ion-item *ngIf="userroles == 'ROLE_SERVICE'" (click)="openTipMonitor()">
       Trinkgeld
-      <ion-note item-right>
+      <span item-right>
         {{tips|costDecimal}} €
-      </ion-note>
-    </ion-item>
+      </span>
+    </button>
 
     <ion-item *ngIf="userroles == 'ROLE_SERVICE'">
       Schritte

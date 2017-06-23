@@ -17,6 +17,8 @@ export class LocalStorageService extends CachingService {
   public static DESK_OVERVIEW_TILEVIEW = "desk_overview_tileview";
   public static DESK_OVERVIEW_MYDESKSONLY = "desk_overview_mydesks";
 
+  public static MONTHLY_TIP_GOAL = "tip_goal";
+
   constructor(private storage: Storage) {
     super();
   }
@@ -108,6 +110,14 @@ export class LocalStorageService extends CachingService {
   saveDeskOverviewMyDesks(value: boolean) {
     this.cache[LocalStorageService.DESK_OVERVIEW_MYDESKSONLY] = value;
     this.saveCachedJsonData(LocalStorageService.DESK_OVERVIEW_MYDESKSONLY);
+  }
+
+  loadMonthlyTipGoal() {
+    return this.storage.ready().then(() => {
+      return this.storage.get(LocalStorageService.MONTHLY_TIP_GOAL).then((val) => {
+        this.saveToCache(LocalStorageService.MONTHLY_TIP_GOAL, val);
+      })
+    })
   }
 
   loadDeskOverviewMyDesks() {
