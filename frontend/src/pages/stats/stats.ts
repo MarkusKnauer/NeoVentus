@@ -22,6 +22,40 @@ export class StatsPage {
     labels: ["Test", "Test1", "Test2", "Test3"]
   };
 
+  public colors = [
+    {
+      // blue
+      backgroundColor: "rgba(72, 138, 255, 0.75)"
+    },
+    {
+      // green
+      backgroundColor: "rgba(50, 219, 100, 0.75)"
+    },
+    {
+      // red
+      backgroundColor: "rgba(245, 61, 61, 0.75)"
+    },
+    {
+      backgroundColor: "rgba(255, 194, 68, 0.75)", //yellow
+    },
+    {
+      // grey
+      backgroundColor: "rgba(186, 186, 186, 0.75)"
+    }
+  ];
+
+  public colorsSingle = [
+    {
+      backgroundColor: [
+        "rgba(72, 138, 255, 0.75)", // blue
+        "rgba(50, 219, 100, 0.75)", // green
+        "rgba(245, 61, 61, 0.75)", // red
+        "rgba(255, 194, 68, 0.75)", //yellow
+        "rgba(186, 186, 186, 0.75)" //grey
+      ]
+    }
+  ];
+
   public topMenusKitchen = [];
   public topMenusBar = [];
 

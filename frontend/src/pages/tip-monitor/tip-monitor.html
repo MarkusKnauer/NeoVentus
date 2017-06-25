@@ -4,8 +4,14 @@
   </ion-navbar>
 </ion-header>
 <ion-content padding-top>
-  <canvas baseChart [datasets]="tips" [legend]="false"
-          [labels]="tipsLabel" [chartType]="'line'"></canvas>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-12 col-md-8 offset-md-2>
+        <canvas baseChart [datasets]="tips" [legend]="false"
+                [labels]="tipsLabel" [colors]="colors" [chartType]="'line'"></canvas>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <ion-list>
     <ion-item icon-left>
       <ion-icon name="money"></ion-icon>

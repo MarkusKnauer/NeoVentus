@@ -24,6 +24,29 @@ export class TipMonitorPage {
 
   public monthlyTipGoal: string = "0";
 
+  public colors = [
+    {
+      // blue
+      backgroundColor: "rgba(72, 138, 255, 0.5)"
+    },
+    {
+      // green
+      backgroundColor: "rgba(50, 219, 100, 0.5)"
+    },
+    {
+      // red
+      backgroundColor: "rgba(245, 61, 61, 0.5)"
+    },
+    {
+      //yellow
+      backgroundColor: "rgba(255, 194, 68, 0.5)",
+    },
+    {
+      // grey
+      backgroundColor: "rgba(186, 186, 186, 0.5)"
+    }
+  ];
+
   constructor(private userService: UserService, private localStorageService: LocalStorageService,
               private authGuard: AuthGuardService, private navCtrl: NavController) {
     Promise.all([
