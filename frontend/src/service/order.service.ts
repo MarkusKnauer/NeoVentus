@@ -131,5 +131,22 @@ export class OrderService extends CachingService implements HttpService {
 
   }
 
+  /**
+   * get category distribution from this month
+   *
+   * @returns {Promise<T>}
+   */
+  public getCategoryDistributionThisMonth() {
+    return this.http.get(this.BASE_URL + "/stats/category-distribution").toPromise();
+  }
+
+  /**
+   * get top 10 menu items
+   *
+   * @returns {Promise<T>}
+   */
+  public getTop10MenuItemsThisMonth(forKitchen: boolean) {
+    return this.http.get(this.BASE_URL + "/stats/top10/items/" + (forKitchen ? "1" : "0")).toPromise();
+  }
 
 }

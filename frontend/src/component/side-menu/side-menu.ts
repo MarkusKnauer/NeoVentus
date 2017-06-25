@@ -11,6 +11,7 @@ import {UserService} from "../../service/user.service";
 import {LoginPage} from "../../pages/login/login";
 import {AuthGuardService} from "../../service/auth-guard.service";
 import {Role} from "../../app/roles";
+import {StatsPage} from "../../pages/stats/stats";
 
 @Component({
   templateUrl: "side-menu.html",
@@ -96,6 +97,12 @@ export class SideMenuComponent {
         roles: [Role.CEO, Role.BAR, Role.SERVICE]
       },
       this.profilepage,
+      {
+        title: "Statistiken",
+        component: StatsPage,
+        icon: "trending-up",
+        roles: [Role.CEO]
+      }
     ];
 
     this.activepage = this.pages[0];

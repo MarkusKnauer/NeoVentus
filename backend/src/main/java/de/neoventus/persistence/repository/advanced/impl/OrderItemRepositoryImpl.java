@@ -5,6 +5,7 @@ import de.neoventus.persistence.repository.MenuItemCategoryRepository;
 import de.neoventus.persistence.repository.MenuItemRepository;
 import de.neoventus.persistence.repository.UserRepository;
 import de.neoventus.persistence.repository.advanced.NVOrderItemRepository;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.ObjectCountAggregation;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.OrderDeskAggregationDto;
 import de.neoventus.rest.dto.OrderItemDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,6 +128,71 @@ public class OrderItemRepositoryImpl implements NVOrderItemRepository {
 
 		return aggR.getMappedResults();
 	}
+
+	@Override
+	public List<ObjectCountAggregation> getTop10OrderedMenuItems(boolean forKitchen) {
+		List<MenuItem> menuItems = this.menuItemRepository.findAllByMenuItemCategoryIn(this.menuItemCategoryRepository.findByForKitchen(forKitchen));
+		Calendar c = new GregorianCalendar();
+		c.set(Calendar.MILLISECOND, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.DAY_OF_MONTH, 1);
+
+		Aggregation agg = Aggregation.newAggregation(
+			Aggregation.match(where("states.0.date").gte(c.getTime()).and("states.state").ne(OrderItemState.State.CANCELED)
+				.and("item").in(menuItems)),
+			Aggregation.group("item").count().as("count"),
+			Aggregation.sort(Sort.Direction.DESC, "count"),
+			Aggregation.limit(10),
+			Aggregation.project("count").and("object").previousOperation()
+		);
+
+
+		return this.mongoTemplate.aggregate(agg, OrderItem.class, ObjectCountAggregation.class).getMappedResults();
+	}
+
+	@Override
+	public List<Map<String, Object>> getMenuCategoryDistribution() {
+		List<MenuItemCategory> categories = this.menuItemCategoryRepository.getRootElements();
+
+		Calendar c = new GregorianCalendar();
+		c.set(Calendar.MILLISECOND, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.DAY_OF_MONTH, 1);
+
+		Aggregation agg = Aggregation.newAggregation(
+			Aggregation.match(where("states.0.date").gte(c.getTime()).and("states.state").ne(OrderItemState.State.CANCELED)),
+			Aggregation.group("item").count().as("count"),
+			Aggregation.sort(Sort.Direction.DESC, "count"),
+			Aggregation.project("count").and("object").previousOperation()
+		);
+
+		List<ObjectCountAggregation> aggResult = this.mongoTemplate.aggregate(agg, OrderItem.class, ObjectCountAggregation.class).getMappedResults();
+
+		Map<String, Map<String, Object>> result = new HashMap<>();
+		for (MenuItemCategory cat : categories) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("category", cat.getName());
+			map.put("count", 0);
+			result.put(cat.getId(), map);
+		}
+
+		for (ObjectCountAggregation<MenuItem> itemAgg : aggResult) {
+			MenuItemCategory itemRootCategory = itemAgg.getObject().getMenuItemCategory();
+			while (itemRootCategory.getParent() != null) {
+				itemRootCategory = itemRootCategory.getParent();
+			}
+
+			Map<String, Object> catResult = result.get(itemRootCategory.getId());
+			catResult.put("count", itemAgg.getCount() + (int) catResult.get("count"));
+		}
+
+		return new ArrayList<>(result.values());
+	}
+
 
 	/**
 	 * change desk of orders

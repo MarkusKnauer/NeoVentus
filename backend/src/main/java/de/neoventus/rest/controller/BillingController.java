@@ -2,6 +2,7 @@ package de.neoventus.rest.controller;
 
 import de.neoventus.persistence.entity.Billing;
 import de.neoventus.persistence.repository.BillingRepository;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.ObjectRevenueAggregation;
 import de.neoventus.rest.auth.NVUserDetails;
 import de.neoventus.rest.dto.BillingDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,38 @@ public class BillingController {
 			return billingRepository.findOne(billingId);
 		} catch (DataAccessException e) {
 			LOGGER.warning("Error searching billing by Id " + billingId + ": " + e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return null;
+		}
+	}
+
+	/**
+	 * controller method to get this years revenue by quarter
+	 *
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/stats/revenue/quarter")
+	public List<ObjectRevenueAggregation> getQuartersRevenue(HttpServletResponse response) {
+		try {
+			return billingRepository.getQuartersRevenue();
+		} catch (DataAccessException e) {
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return null;
+		}
+	}
+
+	/**
+	 * controller method to expose top 10 waiters
+	 *
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/stats/top10/waiters")
+	public List<ObjectRevenueAggregation> getTop10Waiter(HttpServletResponse response) {
+		try {
+			return billingRepository.getTop10Waiters();
+		} catch (DataAccessException e) {
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return null;
 		}

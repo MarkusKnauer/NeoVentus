@@ -67,4 +67,21 @@ export class BillingService extends CachingService implements HttpService {
     })
   }
 
+  /**
+   * get this years quarters revenue
+   *
+   * @returns {Promise<T>}
+   */
+  public getQuartersRevenue() {
+    return this.http.get(this.BASE_URL + "/stats/revenue/quarter").toPromise();
+  }
+
+  /**
+   * get this months top 10 waiters
+   * @returns {Promise<T>}
+   */
+  public getTop10Waiters() {
+    return this.http.get(this.BASE_URL + "/stats/top10/waiters").toPromise();
+  }
+
 }

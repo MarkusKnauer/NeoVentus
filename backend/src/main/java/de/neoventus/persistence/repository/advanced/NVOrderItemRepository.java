@@ -1,6 +1,7 @@
 package de.neoventus.persistence.repository.advanced;
 
 import de.neoventus.persistence.entity.Desk;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.ObjectCountAggregation;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.OrderDeskAggregationDto;
 import de.neoventus.rest.dto.OrderItemDto;
 
@@ -35,11 +36,25 @@ public interface NVOrderItemRepository {
 	Map<Integer, List<OrderDeskAggregationDto>> getUnfinishedOrdersForCategoriesGroupedByDeskAndOrderItem(boolean forKitchen);
 
 	/**
-	 * get unfinehs unpaid order grouped by item
+	 * get unfinished unpaid order grouped by item
 	 *
 	 * @param forKitchen@return
 	 */
 	List<OrderDeskAggregationDto> getUnfinishedOrderForCategoriesGroupedByItemOrderByCount(boolean forKitchen);
+
+	/**
+	 * get top most ordered  menu items
+	 *
+	 * @return
+	 */
+	List<ObjectCountAggregation> getTop10OrderedMenuItems(boolean forKitchen);
+
+	/**
+	 * get orders distributed on menu category
+	 *
+	 * @return
+	 */
+	List<Map<String, Object>> getMenuCategoryDistribution();
 
 	/**
 	 * update orders and change desk

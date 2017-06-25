@@ -1,6 +1,9 @@
 package de.neoventus.persistence.repository.advanced;
 
+import de.neoventus.persistence.repository.advanced.impl.aggregation.ObjectRevenueAggregation;
 import de.neoventus.rest.dto.BillingDto;
+
+import java.util.List;
 
 
 /**
@@ -14,5 +17,17 @@ public interface NVBillingRepository {
 	 * @param dto the Billing data transfer object
 	 */
 	void save(BillingDto dto);
+
+	/**
+	 * return this years quarters revenues
+	 */
+	List<ObjectRevenueAggregation> getQuartersRevenue();
+
+	/**
+	 * return this months top 10 waiters
+	 *
+	 * @return
+	 */
+	List<ObjectRevenueAggregation> getTop10Waiters();
 
 }

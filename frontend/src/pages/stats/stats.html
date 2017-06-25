@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>
+      Statistiken
+    </ion-title>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-12 col-md-6>
+        <h2>Quartalsübericht</h2>
+        <canvas baseChart [datasets]="quarters.data" [legend]="false"
+                [labels]="quarters.labels" [chartType]="'bar'"></canvas>
+      </ion-col>
+      <ion-col col-12 col-md-6>
+        <h2>Kategorien</h2>
+        <canvas baseChart [data]="category.data" [legend]="false"
+                [labels]="category.labels" [chartType]="'doughnut'"></canvas>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-12 col-md-6>
+        <h2>Top 10 Gerichte</h2>
+        <ion-list>
+          <ion-item *ngFor="let item of topMenusKitchen">
+            {{item.object.name}}
+            <span item-right>
+              {{item.count}}
+            </span>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <ion-col col-12 col-md-6>
+        <h2>Top 10 Getränke</h2>
+        <ion-list>
+          <ion-item *ngFor="let item of topMenusBar">
+            {{item.object.name}}
+            <span item-right>
+              {{item.count}}
+            </span>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-12 col-md-6>
+        <h2>Top 10 Servicemitarbeiter</h2>
+        <ion-list>
+          <ion-item *ngFor="let waiter of topWaiters">
+            {{waiter.object.lastName}}, {{waiter.object.firstName}}
+            <span item-right>
+              {{waiter.revenue | costDecimal}}€
+            </span>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

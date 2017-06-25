@@ -6,6 +6,7 @@ import de.neoventus.persistence.entity.OrderItemState;
 import de.neoventus.persistence.repository.DeskRepository;
 import de.neoventus.persistence.repository.OrderItemRepository;
 import de.neoventus.persistence.repository.UserRepository;
+import de.neoventus.persistence.repository.advanced.impl.aggregation.ObjectCountAggregation;
 import de.neoventus.persistence.repository.advanced.impl.aggregation.OrderDeskAggregationDto;
 import de.neoventus.rest.auth.NVUserDetails;
 import de.neoventus.rest.dto.OrderItemDto;
@@ -70,6 +71,39 @@ public class OrderItemController {
 		}
 	}
 
+	/**
+	 * get top 10 ordered items this month
+	 *
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/stats/top10/items/{forKitchen}")
+	public List<ObjectCountAggregation> getTop10OrderedMenuItems(HttpServletResponse response, @PathVariable String forKitchen) {
+		try {
+			return this.orderRepository.getTop10OrderedMenuItems(Integer.parseInt(forKitchen) == 1);
+		} catch (Exception e) {
+			LOGGER.warning("Error getting top 10 ordered menu items" + e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return null;
+		}
+	}
+
+	/**
+	 * get category distribution this month
+	 *
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/stats/category-distribution")
+	public List<Map<String, Object>> getCategoryDistribution(HttpServletResponse response) {
+		try {
+			return this.orderRepository.getMenuCategoryDistribution();
+		} catch (Exception e) {
+			LOGGER.warning("Error getting category distribution" + e.getMessage());
+			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return null;
+		}
+	}
 
 	/**
 	 * switch order to desk
