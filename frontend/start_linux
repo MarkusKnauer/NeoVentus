@@ -1,2 +1,2 @@
 #!/bin/bash
-ionic serve -c
+ionic serve -c -p 80

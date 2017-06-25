@@ -1,3 +1,3 @@
 @echo off
 title Start NeoVentus Frontend
-ionic serve -c
+ionic serve -c -p 80
