@@ -42,7 +42,7 @@ public class ReservationRepositoryTest extends AbstractTest {
 			desk = new Desk();
 			desk.setNumber(999);
 
-			deskRepository.save(getDesk());
+			this.desk = deskRepository.save(getDesk());
 		}
 		return desk;
 	}
@@ -55,7 +55,7 @@ public class ReservationRepositoryTest extends AbstractTest {
 
 		ReservationDto dto = new ReservationDto();
 
-		dto.setDesk(deskRepository.findByNumber(getDesk().getNumber()).getId());
+		dto.setDesk(new String[]{deskRepository.findByNumber(getDesk().getNumber()).getId()});
 		dto.setTime(new Date());
 
 		reservationRepository.save(dto);
@@ -64,6 +64,7 @@ public class ReservationRepositoryTest extends AbstractTest {
 
 		Assert.assertNotNull(reservationList);
 		Assert.assertTrue(reservationList.size() == 1);
+		Assert.assertTrue(reservationList.get(0).getDesk().get(0).getId().equals(getDesk().getId()));
 	}
 
 

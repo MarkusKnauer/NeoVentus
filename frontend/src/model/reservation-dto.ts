@@ -6,7 +6,7 @@ export class ReservationDto {
 
   private id: string;
 
-  private desk: string;
+  private desk: Array<string>;
 
   private time: Date;
 
@@ -38,7 +38,7 @@ export class ReservationDto {
     return this.desk;
   }
 
-  set Desk(desk: string) {
+  set Desk(desk: Array<string>) {
     this.desk = desk;
   }
 

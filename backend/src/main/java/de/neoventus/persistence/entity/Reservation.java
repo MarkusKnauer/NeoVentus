@@ -2,7 +2,9 @@ package de.neoventus.persistence.entity;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Dennis Thanner, Tim Heidelbach
@@ -17,7 +19,7 @@ public class Reservation extends AbstractDocument {
 	private User reservedBy;
 
 	@DBRef
-	private Desk desk;
+	private List<Desk> desk = new ArrayList<>();
 
 	private Date createdAt;
 
@@ -30,11 +32,13 @@ public class Reservation extends AbstractDocument {
 
 	public Reservation() {
 		this.createdAt = new Date();
+		this.desk = new ArrayList<>();
 	}
 
 	public Reservation(User reservedBy, Desk desk, Date createdAt, Date time, Integer duration) {
 		this.reservedBy = reservedBy;
-		this.desk = desk;
+		this.desk = new ArrayList<>();
+		this.desk.add(desk);
 		this.createdAt = createdAt;
 		this.time = time;
 		this.duration = duration;
@@ -52,11 +56,11 @@ public class Reservation extends AbstractDocument {
 		this.reservedBy = reservedBy;
 	}
 
-	public Desk getDesk() {
+	public List<Desk> getDesk() {
 		return desk;
 	}
 
-	public void setDesk(Desk desk) {
+	public void setDesk(List<Desk> desk) {
 		this.desk = desk;
 	}
 

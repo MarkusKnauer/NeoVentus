@@ -44,7 +44,7 @@ export class ReservationPage {
     this.temp = new Date(new Date().getTime() + 7200000);
 
     // round time to next quarter hour
-    let quarterHours = Math.round(this.temp.getMinutes() / 15);
+    let quarterHours = Math.ceil(this.temp.getMinutes() / 15);
     if (quarterHours == 4) {
       this.temp.setHours(this.temp.getHours() + 1);
     }
@@ -159,7 +159,13 @@ export class ReservationPage {
 
       //this.notenoughSeats = false;
       this.selecteddesks = [];
-      this.selecteddesks.push(desk);
+
+      console.debug(this.selecteddesks);
+      let deskExist = this.selecteddesks.find(el => {
+        return el.id == desk.id;
+      });
+      if (deskExist == null)
+        this.selecteddesks.push(desk);
 
       //let currSeats = desk.maximalSeats;
       for (let d of this.selecteddesks) {
@@ -171,7 +177,11 @@ export class ReservationPage {
 
     } else if (this.notenoughSeats) { //Add Desks until Seats reaches level of guests
 
-      this.selecteddesks.push(desk);
+      let deskExist = this.selecteddesks.find(el => {
+        return el.id == desk.id;
+      });
+      if (deskExist == null)
+        this.selecteddesks.push(desk);
 
       for (let d of this.selecteddesks) {
         currSeats += d.maximalSeats;
@@ -185,10 +195,12 @@ export class ReservationPage {
   }
 
   deskSelected() {
-    let desk = this.selecteddesks[0];
+
 
     let alert = this.alertCtrl.create({
-      title: "Reservierung Tisch: " + desk.number,
+      title: "Reservierung Tisch: " + this.selecteddesks.map(el => {
+        return el.number;
+      }).join(", "),
       inputs: [
         {
           name: 'gastname',
@@ -208,7 +220,7 @@ export class ReservationPage {
           handler: data => {
             console.debug(data);
             this.reservationName = data.gastname;
-            this.insertReservation(desk);
+            this.insertReservation();
           }
         }
       ],
@@ -217,22 +229,22 @@ export class ReservationPage {
     alert.present();
   }
 
-  insertReservation(desk: any) {
+  insertReservation() {
 
     if (this.reservationName != null) {
 
       let temp = new Date(this.time);
 
       this.reservationDto = new ReservationDto();
-      this.reservationDto.Desk = desk.id;
+      this.reservationDto.Desk = this.selecteddesks.map(el => {
+        return el.id
+      });
       this.reservationDto.Time = new Date(temp.getTime() - 7200000);
       this.reservationDto.ReservedBy = this.getUserName();
       this.reservationDto.ReservationName = this.reservationName;
-      console.debug(this.reservationDto);
 
       this.reservationService.insertReservation(this.reservationDto).toPromise().then((resp) => {
-        this.reportUser(desk, this.reservationDto.ReservationName, this.reservationDto.Time);
-        console.debug(resp);
+        this.reportUser();
       });
     }
 
@@ -258,14 +270,10 @@ export class ReservationPage {
     });
   }
 
-  reportUser(desk: any, reservationName: any, reservationTime: any) {
+  reportUser() {
     let alert = this.toastCtrl.create({
       message: "Reservierung erfolgreich hinzugefügt",
-      /* message: "Name: " + reservationName +
-       " Datum: " + reservationTime.getDay() + "." + reservationTime.getMonth() + "." + reservationTime.getFullYear() +
-       +" um " + reservationTime.getHours() + ":" + reservationTime.getMinutes() +
-       " Tisch " + desk.number,*/
-
+      duration: 3000
     });
     alert.present();
   }

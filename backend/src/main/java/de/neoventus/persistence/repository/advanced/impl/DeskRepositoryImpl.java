@@ -62,14 +62,16 @@ public class DeskRepositoryImpl implements NVDeskRepository {
 
 		// gets all reservations between now and next day
 		Date now = new Date();
-		Aggregation reservatiuonAggregation = Aggregation.newAggregation(
+		Aggregation reservationAggregation = Aggregation.newAggregation(
 			Aggregation.match(Criteria.where("time").gt(now)),
+			Aggregation.unwind("desk"),
 			Aggregation.sort(Sort.Direction.ASC, "time"),
 			Aggregation.group("desk").first("$$ROOT").as("document"),
+			Aggregation.group("_id").addToSet("document.desk").as("desk").first("document").as("document"),
 			// project only used field from first document
-			Aggregation.project().and("document.time").as("time").and("document.desk").as("desk")
+			Aggregation.project("desk").and("document.time").as("time")
 		);
-		List<Reservation> reservations = this.mongoTemplate.aggregate(reservatiuonAggregation, Reservation.class,
+		List<Reservation> reservations = this.mongoTemplate.aggregate(reservationAggregation, Reservation.class,
 			Reservation.class).getMappedResults();
 		LOGGER.info("reservations: " + reservations.size());
 
@@ -124,7 +126,7 @@ public class DeskRepositoryImpl implements NVDeskRepository {
 
 		// add the next coming reservation for each table to detail object
 		for (Reservation reservation : reservations) {
-			deskOverview.get(reservation.getDesk().getNumber()).setNextReservation(reservation.getTime());
+			deskOverview.get(reservation.getDesk().get(0).getNumber()).setNextReservation(reservation.getTime());
 		}
 
 		return new ArrayList<>(deskOverview.values());
@@ -151,30 +153,33 @@ public class DeskRepositoryImpl implements NVDeskRepository {
 				new BasicDBObject("$subtract", Arrays.asList("$timeInMillis", date.getTime()))
 			)).as("offset"),
 			Aggregation.match(Criteria.where("offset").lte(HOUR_IN_MILLIS)),
-			Aggregation.group("desk"),
-			Aggregation.project().and("desk").previousOperation()
+			Aggregation.unwind("desk"),
+			Aggregation.group("desk").addToSet("desk").as("desk"),
+			Aggregation.project("desk")
 		);
 
 		AggregationResults<Reservation> aggR = this.mongoTemplate.aggregate(reservationAggregation, Reservation.class, Reservation.class);
 		List<Reservation> reservations = aggR.getMappedResults();
 
 		for (Reservation r : reservations) {
-			map.remove(r.getDesk().getId());
+			map.remove(r.getDesk().get(0).getId());
 		}
 
 		Aggregation nextReservationAgg = Aggregation.newAggregation(
 			Aggregation.match(Criteria.where("time").gt(date)),
+			Aggregation.unwind("desk"),
 			Aggregation.sort(Sort.Direction.ASC, "time"),
 			Aggregation.group("desk").first("$$ROOT").as("document"),
+			Aggregation.group("_id").addToSet("document.desk").as("desk").first("document").as("document"),
 			// project only used field from first document
-			Aggregation.project().and("document.time").as("time").and("document.desk").as("desk")
+			Aggregation.project("desk").and("document.time").as("time")
 		);
 		List<Reservation> nextReservations = this.mongoTemplate.aggregate(nextReservationAgg, Reservation.class,
 			Reservation.class).getMappedResults();
 
 		for (Reservation r : nextReservations) {
-			if (map.containsKey(r.getDesk().getId())) {
-				map.get(r.getDesk().getId()).setNextReservation(r.getTime());
+			if (map.containsKey(r.getDesk().get(0).getId())) {
+				map.get(r.getDesk().get(0).getId()).setNextReservation(r.getTime());
 			}
 		}
 

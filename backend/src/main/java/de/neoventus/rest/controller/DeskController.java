@@ -65,6 +65,7 @@ public class DeskController {
 		try {
 			return this.deskRepository.getNotReservedDesks(new Date(Long.valueOf(timeStamp)));
 		} catch (Exception e) {
+			e.printStackTrace();
 			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return null;
 		}

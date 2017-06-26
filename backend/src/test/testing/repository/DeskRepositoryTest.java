@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
 import testing.AbstractTest;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -139,12 +140,12 @@ public class DeskRepositoryTest extends AbstractTest {
 		Date now = new Date();
 
 		Reservation r = new Reservation();
-		r.setDesk(d);
+		r.setDesk(Arrays.asList(d));
 		r.setTime(new Date(now.getTime() + 2000));
 		this.reservationRepository.save(r);
 
 		r = new Reservation();
-		r.setDesk(d);
+		r.setDesk(Arrays.asList(d));
 		r.setTime(new Date(now.getTime() + 3000));
 		this.reservationRepository.save(r);
 
@@ -167,7 +168,7 @@ public class DeskRepositoryTest extends AbstractTest {
 
 		Reservation r = new Reservation();
 		r.setTime(reservationTime);
-		r.setDesk(d);
+		r.setDesk(Arrays.asList(d));
 		this.reservationRepository.save(r);
 
 		List<DeskReservationDetails> free = this.deskRepository.getNotReservedDesks(reservationTime);

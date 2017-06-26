@@ -33,7 +33,9 @@ public class ReservationRepositoryImpl implements NVReservationRepository {
 			reservation = new Reservation();
 		}
 
-		reservation.setDesk(deskRepository.findOne(dto.getDesk()));
+		for (String deskId : dto.getDesk()) {
+			reservation.getDesk().add(deskRepository.findOne(deskId));
+		}
 		reservation.setDuration(dto.getDuration());
 		reservation.setReservedBy(userRepository.findByUsername(dto.getReservedBy()));
 		reservation.setReservationName(dto.getReservationName());

@@ -1,19 +1,22 @@
 package de.neoventus.rest.dto;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author Tim Heidelbach
- * @version 0.0.1
+ * @author Dennis Thanner
  */
 public class ReservationDto implements Serializable {
 
 	private String id;
 
 	@NotNull
-	private String desk;
+	@NotEmpty
+	private String[] desk;
 
 	@NotNull
 	private Date time;
@@ -43,11 +46,11 @@ public class ReservationDto implements Serializable {
 		this.reservedBy = reservedBy;
 	}
 
-	public String getDesk() {
+	public String[] getDesk() {
 		return desk;
 	}
 
-	public void setDesk(String desk) {
+	public void setDesk(String[] desk) {
 		this.desk = desk;
 	}
 
